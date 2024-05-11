@@ -1,0 +1,782 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/tertiary_color"
+    android:backgroundTint="@color/tertiary_color">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/numbers_layout_In_keyboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+
+            <Button
+                android:id="@+id/button_0"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_0"
+                android:textAllCaps="false"
+                android:textColor="@color/primary_color"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+
+            <Button
+                android:id="@+id/button_1"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_1"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_2"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_2"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_3"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_3"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_4"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_4"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_5"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_5"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_6"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_6"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_7"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_7"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_8"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_8"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_9"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_9"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/alphabets_row_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <Button
+                android:id="@+id/button_q"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/q"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_w"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/w"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_e"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/e"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_r"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/r"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_t"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/t"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_y"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/y"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_u"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/u"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_i"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/i"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_o"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/o"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_p"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/p"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/alphabets_row_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <Button
+                android:id="@+id/button_a"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/a"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_s"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/s"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_d"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/d"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_f"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/f"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_g"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/g"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_h"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/h"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_j"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/j"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_k"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/k"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_l"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/l"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/alphabets_row_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <ImageButton
+                android:id="@+id/button_to_upper_case"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1.5"
+                android:background="@drawable/rounded16_conners"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/to_upper_case_icon"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                tools:ignore="SpUsage" />
+
+
+            <Button
+                android:id="@+id/button_z"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/z"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_x"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/x"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_c"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/c"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_v"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/v"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_b"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/b"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_n"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/n"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_m"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/m"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <ImageButton
+                android:id="@+id/button_alphabet_delete"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1.5"
+                android:background="@drawable/rounded16_conners"
+                android:backgroundTint="@color/orange"
+                android:contentDescription="@string/todo"
+                app:tint="@color/white"
+                android:src="@drawable/forward_arrow"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                tools:ignore="SpUsage" />
+
+        </LinearLayout>
+
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/email_buttons_layout"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:background="@android:color/transparent"-->
+        <!--            android:gravity="center"-->
+        <!--            android:orientation="horizontal"-->
+        <!--            android:weightSum="3">-->
+
+        <!--            <Button-->
+        <!--                android:id="@+id/button_gmail"-->
+        <!--                style="@style/CustomButtonStyle4"-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="@dimen/forty_three"-->
+        <!--                android:layout_margin="@dimen/zero.two"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:gravity="center"-->
+        <!--                android:text="@string/gmail"-->
+        <!--                android:textAllCaps="false"-->
+        <!--                android:textSize="@dimen/nine"-->
+        <!--                android:textStyle="bold"-->
+        <!--                app:backgroundTint="@null"-->
+        <!--                tools:ignore="NestedWeights,SpUsage" />-->
+
+        <!--            <Button-->
+        <!--                android:id="@+id/button_outlook"-->
+        <!--                style="@style/CustomButtonStyle4"-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="@dimen/forty_three"-->
+        <!--                android:layout_margin="@dimen/zero.two"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:gravity="center"-->
+        <!--                android:text="@string/outlook"-->
+        <!--                android:textAllCaps="false"-->
+        <!--                android:textSize="@dimen/nine"-->
+        <!--                android:textStyle="bold"-->
+        <!--                app:backgroundTint="@null"-->
+        <!--                tools:ignore="NestedWeights,SpUsage" />-->
+
+        <!--            <Button-->
+        <!--                android:id="@+id/button_unknown_email"-->
+        <!--                style="@style/CustomButtonStyle4"-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="@dimen/forty_three"-->
+        <!--                android:layout_margin="@dimen/zero.two"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:gravity="center"-->
+        <!--                android:text="@string/unknown_email"-->
+        <!--                android:textAllCaps="false"-->
+        <!--                android:textSize="@dimen/nine"-->
+        <!--                android:textStyle="bold"-->
+        <!--                app:backgroundTint="@null"-->
+        <!--                tools:ignore="NestedWeights,SpUsage" />-->
+
+        <!--        </LinearLayout>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <Button
+                android:id="@+id/button_to_number_keys"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/one"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/to_numbers"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_full_stop"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/full_stop"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_space_bar"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:text="@string/space"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <Button
+                android:id="@+id/button_at"
+                style="@style/CustomButtonStyle4"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/at_symbol"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
+            <ImageButton
+                android:id="@+id/button_enter"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="2"
+                android:background="@drawable/rounded16_conners"
+                android:backgroundTint="@color/lime"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/forward_arrow"
+                android:text="@string/space"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                tools:ignore="SpUsage" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</merge>
