@@ -134,8 +134,8 @@ public class JobsActivity extends AppCompatActivity {
         btnProfile.setOnClickListener(v -> hideOtherLayout(1, btnProfile));
         btnApplications.setOnClickListener(v -> hideOtherLayout(1, btnApplications));
         btnNotifications.setOnClickListener(v -> hideOtherLayout(1, btnNotifications));
-        backFromList.setOnClickListener(v->handleBackFromList());
-        search_btn.setOnClickListener(v->handleSearchBtn());
+        backFromList.setOnClickListener(v -> handleBackFromList());
+        search_btn.setOnClickListener(v -> handleSearchBtn());
     }
 
     // ===================================================================== Home page ======================================================================
@@ -238,6 +238,7 @@ public class JobsActivity extends AppCompatActivity {
             TextView ratings;
             ImageView companyIcon;
             LinearLayout RatingsDisplay;
+            String description, companyName;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -258,8 +259,23 @@ public class JobsActivity extends AppCompatActivity {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     // Show position in a toast
+//                    jobPost1.put("jobTitle", "Software Developer");
+//                    jobPost1.put("companyName", "Reverside/Geeks4learning");
+//                    jobPost1.put("location", "Sandton");
+//                    jobPost1.put("jobType", "Part Time");
+//                    jobPost1.put("salary", "R80 000.00/Monthly");
+//                    jobPost1.put("ratings", 5);
+//                    jobPost1.put("companyIcon", R.drawable.baseline_work_icon);
+//                    jobPost1.put("description", "Manthul Inc. is seeking a talented Graphic Designer to join our creative team in London. The ideal candidate should have a strong portfolio showcasing their design skills and proficiency in Adobe Creative Suite. Responsibilities include designing marketing materials, branding assets, and digital graphics. We offer competitive salary, benefits, and a collaborative work environment. If you're passionate about design and want to work with a dynamic team, apply now!");
+//                    jobPosts.add(jobPost1);
                     Context context = v.getContext();
-                    Utils.showToast(context, "Clicked position: " + position);
+                    String s = companyName + "\n" +
+                            jobTitle.getText().toString() + "\n" +
+                            jobType.getText().toString() + "\n" +
+                            salary.getText().toString()+"\n"+
+                            location.getText().toString() + "\n" +
+                            description;
+                    Utils.showToast(context, s);
                 }
             }
 
@@ -280,6 +296,8 @@ public class JobsActivity extends AppCompatActivity {
                 companyIcon.getLayoutParams().height = 40; // Set height to 40 pixels
                 companyIcon.requestLayout(); // Apply the changes
                 companyIcon.setImageResource((int) jobPost.get("companyIcon"));
+                description = jobPost.get("description").toString();
+                companyName = jobPost.get("companyName").toString();
             }
         }
 
@@ -382,10 +400,11 @@ public class JobsActivity extends AppCompatActivity {
     }
 
     // ===================================================================== Job List page =============================================================================
-    private void handleBackFromList(){
+    private void handleBackFromList() {
         job_list_screen.setVisibility(View.GONE);
         dash_board_screen.setVisibility(View.VISIBLE);
     }
+
     private void handleSearchBtn() {
         String text = text_to_search.getText().toString().trim();
         if (!text.isEmpty()) {
@@ -427,6 +446,7 @@ public class JobsActivity extends AppCompatActivity {
             TextView location;
             TextView jobType;
             ImageView companyIcon;
+            String description, companyName, salary;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -445,21 +465,31 @@ public class JobsActivity extends AppCompatActivity {
                 if (position != RecyclerView.NO_POSITION) {
                     // Show position in a toast
                     Context context = v.getContext();
-                    Utils.showToast(context, "Clicked position: " + position);
+                    String s = companyName + "\n" +
+                            jobTitle.getText().toString() + "\n" +
+                            jobType.getText().toString() + "\n" +
+                            salary+"\n"+
+                            location.getText().toString() + "\n" +
+                            description;
+                    Utils.showToast(context, s);
                 }
             }
 
             public void bind(Map<String, Object> jobPost) {
+
                 jobTitle.setText(jobPost.get("jobTitle").toString());
                 location.setText(jobPost.get("location").toString());
                 jobType.setText(jobPost.get("jobType").toString());
-                String ratingValue = String.valueOf(jobPost.get("ratings"));
+
 
                 // Set the size of the companyIcon ImageView
                 companyIcon.getLayoutParams().width = 40; // Set width to 40 pixels
                 companyIcon.getLayoutParams().height = 40; // Set height to 40 pixels
                 companyIcon.requestLayout(); // Apply the changes
                 companyIcon.setImageResource((int) jobPost.get("companyIcon"));
+                description = jobPost.get("description").toString();
+                salary= jobPost.get("salary").toString();
+                companyName = jobPost.get("companyName").toString();
             }
         }
 

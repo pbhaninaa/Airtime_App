@@ -25,17 +25,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void setOnclickListeners() {
-        CandidateBtn.setOnClickListener(v->handleCandidateClick());
+        CandidateBtn.setOnClickListener(v->handleCompanyClick());
         CompanyBtn.setOnClickListener(v->handleCompanyClick());
     }
 
     private void handleCompanyClick() {
-        Intent intent = new Intent(MainActivity.this, JobsActivity.class);
-        intent.putExtra("constraintLayoutId", R.id.login_page);
-        startActivity(intent);
-//        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//        Intent intent = new Intent(MainActivity.this, JobsActivity.class);
 //        intent.putExtra("constraintLayoutId", R.id.login_page);
 //        startActivity(intent);
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.putExtra("constraintLayoutId", R.id.login_page);
+        startActivity(intent);
 
     }
 

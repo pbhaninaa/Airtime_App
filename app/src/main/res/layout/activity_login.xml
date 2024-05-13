@@ -241,8 +241,8 @@
         android:id="@+id/sign_up_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBaseline_toBottomOf="parent">
 
         <RelativeLayout
@@ -297,6 +297,7 @@
 
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -310,8 +311,8 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:hint="john@gmail.com"
-                        android:textColor="@color/white"
                         android:padding="12sp"
+                        android:textColor="@color/white"
                         android:textColorHint="#8e64c4" />
                 </LinearLayout>
 
@@ -319,7 +320,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20sp"
-                    android:layout_weight="3"
                     android:background="@drawable/text_box_background"
                     android:orientation="horizontal"
                     android:padding="5sp">
@@ -331,9 +331,9 @@
                         android:layout_weight="3"
                         android:background="@android:color/transparent"
                         android:hint="Password"
-                        android:textColor="@color/white"
                         android:inputType="textPassword"
                         android:padding="12sp"
+                        android:textColor="@color/white"
                         android:textColorHint="#8e64c4" />
 
                     <ImageButton
@@ -343,7 +343,7 @@
                         android:layout_gravity="end"
                         android:layout_weight="1"
                         android:backgroundTint="@android:color/transparent"
-                        android:src="@drawable/open_eye"/>
+                        android:src="@drawable/open_eye" />
 
 
                 </LinearLayout>
@@ -352,7 +352,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20sp"
-                    android:layout_weight="3"
                     android:background="@drawable/text_box_background"
                     android:orientation="horizontal"
                     android:padding="5sp">
@@ -365,8 +364,8 @@
                         android:background="@android:color/transparent"
                         android:hint="Password"
                         android:inputType="textPassword"
-                        android:textColor="@color/white"
                         android:padding="12sp"
+                        android:textColor="@color/white"
                         android:textColorHint="#8e64c4" />
 
                     <ImageButton
@@ -405,6 +404,160 @@
                     android:gravity="center"
                     android:text="App version "
                     android:textColor="#8b5fc2" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="-6dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <View
+                    android:layout_width="200sp"
+                    android:layout_height="10sp"
+                    android:layout_marginBottom="20sp"
+                    android:background="#f0e5ff" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--    sign_up_page -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/create_profile_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background"
+        android:visibility="gone"
+        android:orientation="vertical"
+        app:layout_constraintBaseline_toBottomOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBaseline_toBottomOf="parent"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/logo" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15sp"
+                    android:background="@drawable/text_box_background"
+                    android:hint="First Name "
+                    android:padding="12sp"
+                    android:textColor="@color/white"
+                    android:textColorHint="#8e64c4" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15sp"
+                    android:background="@drawable/text_box_background"
+                    android:hint="Last Name "
+                    android:padding="12sp"
+                    android:textColor="@color/white"
+                    android:textColorHint="#8e64c4" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="clip_horizontal"
+                    android:layout_marginTop="15sp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:text="Home Language"
+                        android:textStyle="bold"
+                        android:padding="12sp"
+                        android:textColor="@color/white" />
+                    <Spinner
+                        android:id="@+id/languages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:background="@drawable/text_box_background"
+                        android:padding="12sp"
+                        android:textColor="@color/white" />
+
+
+                </LinearLayout>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15sp"
+                    android:background="@drawable/text_box_background"
+                    android:hint="Mobile Number"
+                    android:padding="12sp"
+                    android:textColor="@color/white"
+                    android:textColorHint="#8e64c4" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15sp"
+                    android:background="@drawable/text_box_background"
+                    android:hint="Address"
+                    android:padding="12sp"
+                    android:textColor="@color/white"
+                    android:textColorHint="#8e64c4" />
+
+
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15sp"
+                    android:background="@drawable/text_box_background"
+                    android:hint="john@gmail.com"
+                    android:padding="12sp"
+                    android:textColor="@color/white"
+                    android:textColorHint="#8e64c4" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15sp"
+                    android:background="@drawable/text_box_background"
+                    android:hint="john@gmail.com"
+                    android:padding="12sp"
+                    android:textColor="@color/white"
+                    android:textColorHint="#8e64c4" />
+
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="15sp"
+                    android:background="@drawable/text_box_background"
+                    android:padding="15sp"
+                    android:text="Create Account"
+                    android:textStyle="bold" />
 
 
             </LinearLayout>

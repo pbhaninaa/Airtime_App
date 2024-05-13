@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class LoginActivity extends AppCompatActivity {
@@ -36,6 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     private ImageButton ShowPasswordInRegister;
     private ImageButton ShowConformPasswordInRegister;
     private Button CreateAccountBtn;
+    private Spinner languagesSpinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +53,14 @@ public class LoginActivity extends AppCompatActivity {
         // Load screen based on the constraintLayoutId received from Intent
         int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.login_page);
         screenToLoad(constraintLayoutId);
+
+
+        String[] values = {"IsiXhosa", "IsiZulu", "Tswana","IsiPedi","Ndebele","English"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, values);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        languagesSpinner.setAdapter(adapter);
+
     }
 
     private void screenToLoad(int screenToLoad) {
@@ -78,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         ForgotPasswordBtn = findViewById(R.id.forgot_password);
         GoogleBtn = findViewById(R.id.google_btn);
         FacebookBtn = findViewById(R.id.facebook_btn);
-
+        languagesSpinner = findViewById(R.id.languages);
 
         SignUpBtn = findViewById(R.id.sign_up_btn);
         getEmailTextInRegister = findViewById(R.id.email_in_register_page);

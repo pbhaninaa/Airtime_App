@@ -4,7 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     tools:context=".MainActivity">
+
+
+<!--    <com.aldoapps.autoformatedittext.AutoFormatEditText-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="Text"-->
+<!--        android:layout_marginTop="150sp"-->
+<!--        android:inputType="numberDecimal"-->
+<!--        android:digits="0123456789."-->
+<!--        android:gravity="right"/>-->
     <!--    landing_page -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/landing_page"

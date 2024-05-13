@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TestingMySkills"
         tools:targetApi="31">
+
         <activity
             android:name=".JobsActivity"
             android:exported="false" />
