@@ -4,25 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     android:gravity="center"
     tools:context=".MainActivity">
 
 
-<!--    <com.aldoapps.autoformatedittext.AutoFormatEditText-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:hint="Text"-->
-<!--        android:layout_marginTop="150sp"-->
-<!--        android:inputType="numberDecimal"-->
-<!--        android:digits="0123456789."-->
-<!--        android:gravity="right"/>-->
-    <!--    landing_page -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/landing_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/background"
+
         app:layout_constraintBaseline_toBottomOf="parent">
 
         <RelativeLayout
@@ -48,8 +40,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Finding a job has \n never been easier"
-                    android:textColor="#f0e5ff"
+                    android:text="Welcome text"
+                    android:textColor="@color/white"
                     android:textSize="25sp"
                     android:textStyle="bold" />
 
@@ -58,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="15sp"
                     android:gravity="center"
-                    android:text="Welcome to job finder app that will only show the jobs"
+                    android:text="App definition"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
@@ -74,7 +66,7 @@
                         android:layout_height="4dp"
                         android:layout_margin="5sp"
                         android:background="@drawable/round_conners_background"
-                        android:backgroundTint="#f0e5ff"
+                        android:backgroundTint="@color/white"
                         android:padding="16sp" />
 
                     <View
@@ -82,7 +74,7 @@
                         android:layout_height="4dp"
                         android:layout_margin="5sp"
                         android:background="@drawable/round_conners_background"
-                        android:backgroundTint="#f0e5ff"
+                        android:backgroundTint="@color/white"
                         android:padding="16sp" />
 
                     <View
@@ -101,68 +93,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="-6dp"
-                android:background="@drawable/top_coners_backgroud"
+                android:layout_marginBottom="25sp"
                 android:gravity="bottom"
                 android:orientation="horizontal">
 
-                <LinearLayout
+
+                <Button
                     android:id="@+id/candidate_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="@drawable/top_left_conner_cut"
-                    android:orientation="vertical"
-                    android:padding="25sp"
-                    android:topRightRadius="30dp">
+                    style="@style/CustomButtonStyle3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/fifteen"
+                    android:layout_marginRight="@dimen/fifteen"
+                    android:layout_marginTop="20sp"
+                    android:background="@drawable/text_box_background"
+                    android:text="Continue"
+                    android:textStyle="bold" />
 
-                    <ImageView
-                        android:layout_width="30sp"
-                        android:layout_height="30sp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="15sp"
-                        android:layout_marginBottom="10sp"
-                        android:src="@drawable/icon_profile"
-                        android:topRightRadius="30dp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="Candidate"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/company_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="@drawable/top_right_conner_cut"
-                    android:orientation="vertical"
-                    android:padding="25sp"
-                    android:topRightRadius="30dp">
-
-                    <ImageView
-                        android:layout_width="30sp"
-                        android:layout_height="30sp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="15sp"
-                        android:layout_marginBottom="10sp"
-                        android:src="@drawable/icon_profile"
-                        android:topRightRadius="30dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="Company"
-                        android:textStyle="bold" />
-                </LinearLayout>
             </LinearLayout>
 
         </RelativeLayout>

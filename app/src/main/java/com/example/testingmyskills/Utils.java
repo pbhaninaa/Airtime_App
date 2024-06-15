@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 public class Utils {
     private static final String PREF_NAME = "UserPrefs";
     private static final String EMAIL_KEY = "email";
@@ -32,6 +34,19 @@ public class Utils {
         toast.setView(layout);
         toast.show();
     }
+    public static void success(Context context, String message) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.custom_toast, null);
+
+        TextView text = layout.findViewById(R.id.textViewToast);
+        layout.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.dark_green));
+        text.setText(message);
+
+        Toast toast = new Toast(context);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
 
 
 
@@ -48,6 +63,10 @@ public class Utils {
     public static String getEmail(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(EMAIL_KEY, "");
+    }
+    public static boolean isUserLogged(Context context){
+        SharedPreferences prefs = context.getSharedPreferences("StayLogged", Context.MODE_PRIVATE);
+        return prefs.getBoolean("isUserLogged", false);
     }
     // Function to get password from SharedPreferences
     public static String getPassword(Context context) {

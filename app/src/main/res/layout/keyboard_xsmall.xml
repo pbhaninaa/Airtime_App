@@ -633,61 +633,6 @@
 
         </LinearLayout>
 
-        <!--        <LinearLayout-->
-        <!--            android:id="@+id/email_buttons_layout"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:background="@android:color/transparent"-->
-        <!--            android:gravity="center"-->
-        <!--            android:orientation="horizontal"-->
-        <!--            android:weightSum="3">-->
-
-        <!--            <Button-->
-        <!--                android:id="@+id/button_gmail"-->
-        <!--                style="@style/CustomButtonStyle4"-->
-        <!--                android:layout_width="0dp"-->
-        <!--                android:layout_height="@dimen/forty_three"-->
-        <!--                android:layout_margin="@dimen/zero.two"-->
-        <!--                android:layout_weight="1"-->
-        <!--                android:gravity="center"-->
-        <!--                android:text="@string/gmail"-->
-        <!--                android:textAllCaps="false"-->
-        <!--                android:textSize="@dimen/nine"-->
-        <!--                android:textStyle="bold"-->
-        <!--                app:backgroundTint="@null"-->
-        <!--                tools:ignore="NestedWeights,SpUsage" />-->
-
-        <!--            <Button-->
-        <!--                android:id="@+id/button_outlook"-->
-        <!--                style="@style/CustomButtonStyle4"-->
-        <!--                android:layout_width="0dp"-->
-        <!--                android:layout_height="@dimen/forty_three"-->
-        <!--                android:layout_margin="@dimen/zero.two"-->
-        <!--                android:layout_weight="1"-->
-        <!--                android:gravity="center"-->
-        <!--                android:text="@string/outlook"-->
-        <!--                android:textAllCaps="false"-->
-        <!--                android:textSize="@dimen/nine"-->
-        <!--                android:textStyle="bold"-->
-        <!--                app:backgroundTint="@null"-->
-        <!--                tools:ignore="NestedWeights,SpUsage" />-->
-
-        <!--            <Button-->
-        <!--                android:id="@+id/button_unknown_email"-->
-        <!--                style="@style/CustomButtonStyle4"-->
-        <!--                android:layout_width="0dp"-->
-        <!--                android:layout_height="@dimen/forty_three"-->
-        <!--                android:layout_margin="@dimen/zero.two"-->
-        <!--                android:layout_weight="1"-->
-        <!--                android:gravity="center"-->
-        <!--                android:text="@string/unknown_email"-->
-        <!--                android:textAllCaps="false"-->
-        <!--                android:textSize="@dimen/nine"-->
-        <!--                android:textStyle="bold"-->
-        <!--                app:backgroundTint="@null"-->
-        <!--                tools:ignore="NestedWeights,SpUsage" />-->
-
-        <!--        </LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -705,7 +650,6 @@
                 android:layout_margin="@dimen/one"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="@string/to_numbers"
                 android:textAllCaps="false"
                 android:textSize="@dimen/nine"
                 android:textStyle="bold"
@@ -750,7 +694,6 @@
                 android:layout_margin="@dimen/zero.two"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/at_symbol"
                 android:textAllCaps="false"
                 android:textSize="@dimen/nine"
                 android:textStyle="bold"

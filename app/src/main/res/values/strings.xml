@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Job finder app</string>
-    <string name="app_bank">Dashpay Pos</string>
+    <string name="app_name">USSD Mobile Portal</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -17,6 +16,8 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="manager_details">Manager\n%s / %s</string>
     <string name="supervisor_details">Supervisor\n%s / %s</string>
+    <string name="salutation"><font color="#FF000000">Hello, 0782141216</font>\n<small><font color="#808080">last updated a minute ago</font></small></string>
+
 
     <string name="next">Next</string>
     <string name="previous">Previous</string>
@@ -139,11 +140,6 @@
     <string name="get_approval">Get Approval</string>
     <string name="manager_approval_required">Manager approval required</string>
     <string name="these_payment_options_n_are_outside_of_nthe_design_scope">THESE PAYMENT OPTIONS\n ARE OUTSIDE Of\nTHE DESIGN SCOPE</string>
-    <string name="gmail">@gmail.com</string>
-    <string name="outlook">@outlook.com</string>
-    <string name="unknown_email">.com</string>
-    <string name="to_numbers">123</string>
-    <string name="at_symbol">@</string>
     <string name="q">q</string>
     <string name="w">w</string>
     <string name="e">e</string>

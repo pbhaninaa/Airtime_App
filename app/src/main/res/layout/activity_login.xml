@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".LoginActivity">
+    tools:context=".UserManagement">
 
     <!--    login_page -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/login_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:visibility="gone"
+        android:orientation="vertical"
         app:layout_constraintBaseline_toBottomOf="parent">
 
         <RelativeLayout
@@ -31,23 +31,23 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@drawable/logo" />
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40sp"
+                    android:layout_marginTop="@dimen/four"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="15sp"
+                        android:padding="@dimen/ten"
                         android:text="Sign In"
                         android:textColor="@color/white"
                         android:textSize="25sp"
@@ -59,9 +59,9 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:contextClickable="true"
-                        android:padding="15sp"
+                        android:padding="@dimen/ten"
                         android:text="Register"
-                        android:textColor="#8e64c4"
+                        android:textColor="@color/tertiary_color"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
@@ -84,7 +84,7 @@
                         android:inputType="textEmailAddress"
                         android:padding="12sp"
                         android:textColor="@color/white"
-                        android:textColorHint="#8e64c4" />
+                        android:textColorHint="@color/tertiary_color" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -106,7 +106,7 @@
                         android:inputType="textPassword"
                         android:padding="12sp"
                         android:textColor="@color/white"
-                        android:textColorHint="#8e64c4" />
+                        android:textColorHint="@color/tertiary_color" />
 
                     <ImageButton
                         android:id="@+id/show_password_in_login_page"
@@ -121,11 +121,10 @@
 
                 <Button
                     android:id="@+id/sign_in_btn"
+                    style="@style/CustomButtonStyle3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20sp"
                     android:background="@drawable/text_box_background"
-                    android:padding="15sp"
                     android:text="Sign In"
                     android:textStyle="bold" />
 
@@ -150,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:text="Remember me"
-                        android:textColor="#f0e5ff" />
+                        android:textColor="@color/white" />
 
                     <TextView
                         android:id="@+id/forgot_password"
@@ -158,7 +157,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Forgot password"
-                        android:textColor="#f0e5ff" />
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
 
@@ -172,11 +171,6 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Or sign in with"
-                    android:textColor="#f0e5ff" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -189,47 +183,13 @@
                     android:paddingBottom="20sp">
 
 
-                    <ImageButton
-                        android:id="@+id/google_btn"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="15sp"
-                        android:layout_marginBottom="10sp"
-                        android:layout_weight="1"
-                        android:background="@drawable/round_conners_background"
-                        android:backgroundTint="#b175ff"
-                        android:padding="18sp"
-                        android:src="@drawable/google"
-                        android:topRightRadius="30dp" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0sp"
-                        android:layout_weight="0.2" />
-
-                    <ImageButton
-                        android:id="@+id/facebook_btn"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="15sp"
-                        android:layout_marginBottom="10sp"
-                        android:layout_weight="1"
-                        android:background="@drawable/round_conners_background"
-                        android:backgroundTint="#b175ff"
-                        android:padding="18sp"
-                        android:src="@drawable/facebook"
-                        android:topRightRadius="30dp" />
-
-
                 </LinearLayout>
 
                 <View
                     android:layout_width="200sp"
                     android:layout_height="10sp"
                     android:layout_marginBottom="20sp"
-                    android:background="#f0e5ff" />
+                    android:background="@color/tertiary_color" />
 
             </LinearLayout>
 
@@ -270,7 +230,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40sp"
+                    android:layout_marginTop="4sp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -278,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:contextClickable="true"
-                        android:padding="15sp"
+                        android:padding="@dimen/ten"
                         android:text="Register"
                         android:textColor="@color/white"
                         android:textSize="25sp"
@@ -288,9 +248,9 @@
                         android:id="@+id/sign_up_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="15sp"
+                        android:padding="@dimen/ten"
                         android:text="Sign In"
-                        android:textColor="@color/secondary_color"
+                        android:textColor="@color/tertiary_color"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
@@ -311,9 +271,10 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:hint="john@gmail.com"
+                        android:inputType="textEmailAddress"
                         android:padding="12sp"
                         android:textColor="@color/white"
-                        android:textColorHint="#8e64c4" />
+                        android:textColorHint="@color/tertiary_color" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -334,7 +295,7 @@
                         android:inputType="textPassword"
                         android:padding="12sp"
                         android:textColor="@color/white"
-                        android:textColorHint="#8e64c4" />
+                        android:textColorHint="@color/tertiary_color" />
 
                     <ImageButton
                         android:id="@+id/show_password_in_register_page"
@@ -366,7 +327,7 @@
                         android:inputType="textPassword"
                         android:padding="12sp"
                         android:textColor="@color/white"
-                        android:textColorHint="#8e64c4" />
+                        android:textColorHint="@color/tertiary_color" />
 
                     <ImageButton
                         android:id="@+id/show_confirm_password_in_register_page"
@@ -386,14 +347,14 @@
                     android:layout_marginTop="20sp"
                     android:gravity="center"
                     android:text="By tap Sign Up button you accept  \n terms and privacy this app"
-                    android:textColor="#f0e5ff" />
+                    android:textColor="@color/white" />
 
                 <Button
                     android:id="@+id/create_account"
+                    style="@style/CustomButtonStyle3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_box_background"
-                    android:padding="15sp"
                     android:text="Create Account"
                     android:textStyle="bold" />
 
@@ -403,7 +364,7 @@
                     android:layout_marginTop="35sp"
                     android:gravity="center"
                     android:text="App version "
-                    android:textColor="#8b5fc2" />
+                    android:textColor="@color/tertiary_color" />
 
 
             </LinearLayout>
@@ -421,19 +382,18 @@
                     android:layout_width="200sp"
                     android:layout_height="10sp"
                     android:layout_marginBottom="20sp"
-                    android:background="#f0e5ff" />
+                    android:background="@color/tertiary_color" />
 
             </LinearLayout>
 
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--    sign_up_page -->
+    <!--    create_profile_screen -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/create_profile_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
         android:visibility="gone"
         android:orientation="vertical"
         app:layout_constraintBaseline_toBottomOf="parent">
@@ -451,7 +411,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:paddingLeft="20dp" android:paddingEnd="20dp">
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -460,102 +420,111 @@
                     android:src="@drawable/logo" />
 
                 <EditText
+                    android:id="@+id/Fname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15sp"
+                    android:layout_marginTop="@dimen/five"
                     android:background="@drawable/text_box_background"
                     android:hint="First Name "
                     android:padding="12sp"
                     android:textColor="@color/white"
-                    android:textColorHint="#8e64c4" />
+                    android:textColorHint="@color/tertiary_color" />
 
                 <EditText
+                    android:id="@+id/Lname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15sp"
+                    android:layout_marginTop="@dimen/five"
                     android:background="@drawable/text_box_background"
                     android:hint="Last Name "
                     android:padding="12sp"
                     android:textColor="@color/white"
-                    android:textColorHint="#8e64c4" />
+                    android:textColorHint="@color/tertiary_color" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="clip_horizontal"
-                    android:layout_marginTop="15sp"
+                    android:layout_marginTop="@dimen/five"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="5"
-                        android:text="Home Language"
-                        android:textStyle="bold"
                         android:padding="12sp"
-                        android:textColor="@color/white" />
+                        android:text="Home Language"
+                        android:textColor="@color/tertiary_color"
+                        android:textStyle="bold" />
+
                     <Spinner
                         android:id="@+id/languages"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:background="@drawable/text_box_background"
-                        android:padding="12sp"
-                        android:textColor="@color/white" />
+                        android:padding="6sp"
+                        android:spinnerMode="dropdown"
+                        android:theme="@style/SpinnerItemStyle" />
 
 
                 </LinearLayout>
 
                 <EditText
+                    android:id="@+id/mNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15sp"
+                    android:layout_marginTop="@dimen/five"
                     android:background="@drawable/text_box_background"
                     android:hint="Mobile Number"
+                    android:inputType="number"
                     android:padding="12sp"
                     android:textColor="@color/white"
-                    android:textColorHint="#8e64c4" />
+                    android:textColorHint="@color/tertiary_color" />
 
                 <EditText
+                    android:id="@+id/address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15sp"
+                    android:layout_marginTop="@dimen/five"
                     android:background="@drawable/text_box_background"
                     android:hint="Address"
                     android:padding="12sp"
                     android:textColor="@color/white"
-                    android:textColorHint="#8e64c4" />
-
+                    android:textColorHint="@color/tertiary_color" />
 
 
                 <EditText
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15sp"
+                    android:layout_marginTop="@dimen/five"
                     android:background="@drawable/text_box_background"
                     android:hint="john@gmail.com"
+                    android:inputType="textEmailAddress"
                     android:padding="12sp"
                     android:textColor="@color/white"
-                    android:textColorHint="#8e64c4" />
+                    android:textColorHint="@color/tertiary_color" />
 
                 <EditText
+                    android:id="@+id/emailC"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15sp"
+                    android:layout_marginTop="@dimen/five"
                     android:background="@drawable/text_box_background"
                     android:hint="john@gmail.com"
+                    android:inputType="textEmailAddress"
                     android:padding="12sp"
                     android:textColor="@color/white"
-                    android:textColorHint="#8e64c4" />
+                    android:textColorHint="@color/tertiary_color" />
 
 
                 <Button
+                    android:id="@+id/CreateAccBtn"
+                    style="@style/CustomButtonStyle3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="15sp"
                     android:background="@drawable/text_box_background"
-                    android:padding="15sp"
                     android:text="Create Account"
                     android:textStyle="bold" />
 
@@ -575,11 +544,12 @@
                     android:layout_width="200sp"
                     android:layout_height="10sp"
                     android:layout_marginBottom="20sp"
-                    android:background="#f0e5ff" />
+                    android:background="@color/tertiary_color" />
 
             </LinearLayout>
 
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

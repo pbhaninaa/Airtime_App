@@ -4,7 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="two_dp">2dp</dimen>
-
+    <dimen name="scroll_height_collapsed">450sp</dimen>
+    <dimen name="scroll_height_expanded">500sp</dimen>
     <!-- Additional dimens from 1 to 100 in words -->
     <dimen name="zero.two">0.2dp</dimen>
     <dimen name="one">1dp</dimen>

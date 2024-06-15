@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:state_checked="true" android:color="@color/tertiary_color"/>
     <!-- Checked state -->
-    <item android:state_checked="true" android:color="#f0e5ff" />
-    <stroke android:width="2dp" android:color="#f0e5ff" />
+    <item android:state_checked="true" android:color="@color/tertiary_color" />
+    <stroke android:width="2dp" android:color="@color/tertiary_color" />
     <!-- Unchecked state -->
-    <item android:color="#8e64c4" />
+    <item android:color="@color/secondary_color" />
 </selector>

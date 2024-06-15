@@ -16,93 +16,51 @@
         android:layout_weight="3"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/post_company_icon"
-            android:layout_width="50sp"
-            android:layout_height="50sp"
-            android:layout_gravity="center"
-            android:background="@drawable/job_icon_background"
-            android:src="@drawable/baseline_work_icon" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
+            android:layout_weight="2"
             android:gravity="left"
             android:orientation="vertical"
             android:paddingStart="20sp">
 
             <TextView
-                android:id="@+id/post_job_type"
+                android:id="@+id/ite_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="FULL TIME"
+                android:text="100 GB Data"
                 android:textColor="@color/primary_color"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/post_job_title"
+                android:id="@+id/item_life_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Graphic Designer"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/post_job_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Manthul Inc . London"
+                android:text="Last for 30 days"
                 android:textColor="@color/light_gray" />
+
         </LinearLayout>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
-        android:layout_weight="3"
-        android:orientation="horizontal"
-        android:padding="5sp">
-
-        <TextView
-            android:id="@+id/post_job_salary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:padding="5sp"
-            android:text="$1.200/Monthly"
-            android:textColor="@color/black"
-            android:textSize="15sp" />
-
         <LinearLayout
-            android:id="@+id/post_ratings_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:background="@drawable/ratings_background"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="5sp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/baseline_star_24" />
-
-            <TextView
-                android:id="@+id/post_company_ratings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2sp"
-                android:text="4.3"
-                android:textColor="#E58817"
-                android:textSize="15sp" />
-        </LinearLayout>
-
+            android:layout_gravity="left"
+            android:layout_weight="2"
+            android:gravity="right"
+            android:orientation="vertical"
+            android:paddingStart="20sp">
+           <TextView
+               android:id="@+id/item_price"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_weight="2"
+               android:padding="5sp"
+               android:text="R 350.00"
+               android:textColor="@color/black"
+               android:textSize="15sp" />
+       </LinearLayout>
 
     </LinearLayout>
 

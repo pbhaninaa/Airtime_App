@@ -14,7 +14,7 @@
         android:layout_gravity="bottom"
         android:gravity="bottom"
         android:text="Toast Message"
-        android:textColor="#461584"
+        android:textColor="@color/white"
         android:textSize="10sp" />
 
 </LinearLayout>
