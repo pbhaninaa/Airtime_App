@@ -70,6 +70,7 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
     private Button mButtonQuestion;
     private Button mButtonAmpersand;
     private Button mButtonAsterisk;
+    private Button mButtonComma;
     private LinearLayout NumsLayout, CharsLayout;
     private boolean displaNums;
     private SparseArray<String> keyValues = new SparseArray<>();
@@ -100,6 +101,7 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
         mButtonSpace = findViewById(R.id.button_space_bar);
         mButtonAtt = findViewById(R.id.button_at);
         mButtonDot = findViewById(R.id.button_full_stop);
+        mButtonComma = findViewById(R.id.button_comma);
         mButtonToNumbers = findViewById(R.id.button_to_number_keys);
 
 
@@ -158,6 +160,7 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
         mButtonDot.setOnClickListener(this);
         mButtonEnter.setOnClickListener(this);
         mButtonToNumbers.setOnClickListener(this);
+        mButtonComma.setOnClickListener(this);
 
 
         mButtonq.setOnClickListener(this);
@@ -253,6 +256,7 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
         keyValues.put(R.id.button_space_bar, " ");
         keyValues.put(R.id.button_enter, "\n");
         keyValues.put(R.id.button_full_stop, ".");
+        keyValues.put(R.id.button_comma,",");
 
         keyValues.put(R.id.button_at, "@");
         keyValues.put(R.id.button_hash, "#");

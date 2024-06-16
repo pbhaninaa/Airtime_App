@@ -851,37 +851,6 @@
                 app:backgroundTint="@null"
                 tools:ignore="NestedWeights,SpUsage" />
 
-            <Button
-                android:id="@+id/button_full_stop"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/forty_three"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/full_stop"
-                android:textAllCaps="false"
-                android:textSize="@dimen/nine"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_space_bar"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/forty_three"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="4"
-                android:gravity="center"
-                android:text="@string/space"
-                android:textAllCaps="false"
-                android:textSize="@dimen/nine"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
 
             <Button
                 android:id="@+id/button_comma"
@@ -898,6 +867,36 @@
                 android:textStyle="bold"
                 app:backgroundTint="@null"
                 tools:ignore="NestedWeights,SpUsage" />
+            <Button
+                android:id="@+id/button_space_bar"
+                style="@style/keyboardKeys"
+
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:text="@string/space"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+            <Button
+                android:id="@+id/button_full_stop"
+                style="@style/keyboardKeys"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/forty_three"
+                android:layout_margin="@dimen/zero.two"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/full_stop"
+                android:textAllCaps="false"
+                android:textSize="@dimen/nine"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="NestedWeights,SpUsage" />
+
 
             <Button
                 android:id="@+id/button_enter"
