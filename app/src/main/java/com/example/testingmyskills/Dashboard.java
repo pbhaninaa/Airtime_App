@@ -1,18 +1,11 @@
 package com.example.testingmyskills;
 
-import static com.example.testingmyskills.MainActivity.MSISDN;
-import static com.example.testingmyskills.MainActivity.PASSWORD;
-import static com.example.testingmyskills.MainActivity.SERVER_URL;
-import static com.example.testingmyskills.MainActivity.USERNAME;
-import static com.example.testingmyskills.MainActivity.econetItems;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,10 +14,12 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -61,14 +56,17 @@ public class Dashboard extends AppCompatActivity {
     private ImageView profilePicture;
     private TextView moreBtn;
     private ImageButton btnHome;
-    private ImageButton btnNotifications, FilterButton;
+    private static ImageButton btnNotifications;
+    private ImageButton FilterButton;
     private ImageButton btnProfile, moreItemsBtn;
     private ScrollView scrollView;
 
 
     private LinearLayout bottomNav, EconetBtn, TelnetBtn, NetoneBtn, SpecialBtn, filterSection;
-    ApiCalls api = new ApiCalls(SERVER_URL, USERNAME, PASSWORD);
+    ApiCalls api = new ApiCalls(MainActivity.SERVER_URL, MainActivity.USERNAME, MainActivity.PASSWORD);
     private boolean show;
+    private AlphaKeyboard MyKeyboard;
+    static String currencySymbol;
 
     public Dashboard() throws MalformedURLException {
     }
@@ -77,11 +75,12 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs);
-        getDefaultBalance(MSISDN);
+        initialiseViews(); // Initialize views first
+        getDefaultBalance(MainActivity.MSISDN);
         show = true;
 
         Utils.hideSoftNavBar(Dashboard.this);
-        initialiseViews(); // Initialize views first
+        setupFocusListeners();
         setOnclickListeners();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -95,11 +94,11 @@ public class Dashboard extends AppCompatActivity {
 
         dash_board_screen.setVisibility(View.VISIBLE);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, econetItems);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.econetItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filter_spinner.setAdapter(adapter);
 
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, econetItems);
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.econetItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ItemTypeSpinner.setAdapter(adapter3);
 
@@ -152,6 +151,8 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void initialiseViews() {
+        currencySymbol = getString(R.string.currency_symbol);
+        MyKeyboard = new AlphaKeyboard(this);
         dash_board_screen = findViewById(R.id.dash_board_screen);
         salutation = findViewById(R.id.user_salutation);
         profilePicture = findViewById(R.id.user_profile_picture);
@@ -195,9 +196,9 @@ public class Dashboard extends AppCompatActivity {
         btnNotifications.setOnClickListener(v -> hideOtherLayout(R.id.buy_screen, btnNotifications));
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
-        NetoneBtn.setOnClickListener(v -> getNetoneBalance(MSISDN));
-        TelnetBtn.setOnClickListener(v -> getTelnetBalance(MSISDN));
-        EconetBtn.setOnClickListener(v -> getEconetBalance(MSISDN));
+        NetoneBtn.setOnClickListener(v -> getNetoneBalance(MainActivity.MSISDN));
+        TelnetBtn.setOnClickListener(v -> getTelnetBalance(MainActivity.MSISDN));
+        EconetBtn.setOnClickListener(v -> getEconetBalance(MainActivity.MSISDN));
         SpecialBtn.setOnClickListener(v -> getSpecials());
         FilterButton.setOnClickListener(v -> hideFilter());
     }
@@ -301,6 +302,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void handleTransaction() {
+        Utils.hideAlphaKeyboard(MyKeyboard);
         String phone = Phone.getText().toString().trim();
         String ItemType = Item.getText().toString().trim();
         String ItemAmount = Amount.getText().toString().trim();
@@ -314,7 +316,7 @@ public class Dashboard extends AppCompatActivity {
 
         new Thread(() -> {
             try {
-                Map<String, Object> response = api.loadValue(MSISDN, 10, "load airtime test XMLRPC HM 1", 840);
+                Map<String, Object> response = api.loadValue(MainActivity.MSISDN, 10, "load airtime test XMLRPC HM 1", 840);
                 if ((int) response.get("Status") == 1) {
                     runOnUiThread(() -> Utils.success(this, String.valueOf(response.get("Description"))));
                 } else if ((int) response.get("Status") == 0) {
@@ -328,6 +330,14 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void hideOtherLayout(int layoutToShow, ImageButton icon) {
+        if (layoutToShow == R.id.buy_screen) {
+            Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
+            Phone.setShowSoftInputOnFocus(false);
+            Phone.setTextIsSelectable(true);
+            InputConnection ic = Phone.onCreateInputConnection(new EditorInfo());
+            MyKeyboard.setInputConnection(ic);
+        }
+
         if (layoutToShow == R.id.create_profile_screen) {
             Intent intent = new Intent(this, UserManagement.class);
             intent.putExtra("constraintLayoutId", layoutToShow);
@@ -344,7 +354,39 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public static class RecommendedAd extends RecyclerView.Adapter<RecommendedAd.ViewHolder> {
+    private void setupFocusListeners() {
+        Phone.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                MyKeyboard.setInputConnection(Phone.onCreateInputConnection(new EditorInfo()));
+                Phone.setShowSoftInputOnFocus(false);
+                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
+            }
+        });
+
+        ItemPrice.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                MyKeyboard.setInputConnection(ItemPrice.onCreateInputConnection(new EditorInfo()));
+                ItemPrice.setShowSoftInputOnFocus(false);
+                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
+            }
+        });
+        Amount.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                MyKeyboard.setInputConnection(Amount.onCreateInputConnection(new EditorInfo()));
+                Amount.setShowSoftInputOnFocus(false);
+                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
+            }
+        });
+        Item.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                MyKeyboard.setInputConnection(Item.onCreateInputConnection(new EditorInfo()));
+                Item.setShowSoftInputOnFocus(false);
+                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
+            }
+        });
+    }
+
+    public class RecommendedAd extends RecyclerView.Adapter<RecommendedAd.ViewHolder> {
 
         private List<Map<String, Object>> jobPosts;
 
@@ -369,7 +411,7 @@ public class Dashboard extends AppCompatActivity {
             return jobPosts.size();
         }
 
-        public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             TextView Type;
             TextView LifeTime;
             TextView Price;
@@ -390,15 +432,12 @@ public class Dashboard extends AppCompatActivity {
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-
-
                     BuyTittle.setText(Type.getText().toString() + "\n that last for " + time);
                     Item.setText(type);
                     Amount.setText(amount);
+                    ItemPrice.setText(currencySymbol + price);
 
-                    BuyScreen.setVisibility(View.VISIBLE);
-                    dash_board_screen.setVisibility(View.GONE);
-                    job_list_screen.setVisibility(View.GONE);
+                    hideOtherLayout(R.id.buy_screen, btnNotifications);
 
                 }
             }
@@ -407,11 +446,11 @@ public class Dashboard extends AppCompatActivity {
                 amount = jobPost.get("amount").toString();
                 type = jobPost.get("type").toString();
                 time = jobPost.get("lifeTime").toString();
-                price = jobPost.get("price").toString();
+                price = Utils.FormatAmount(jobPost.get("price").toString());
 
                 Type.setText(amount + " " + type);
                 LifeTime.setText(time);
-                Price.setText(price);
+                Price.setText(currencySymbol + price);
 
 
             }
@@ -420,20 +459,51 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public static List<Map<String, Object>> getProducts() {
-        List<Map<String, Object>> Items = new ArrayList<>();
+        List<Map<String, Object>> items = new ArrayList<>();
 
-        // Add 10 different items
+        // Add MTN Data items
         for (int i = 1; i <= 10; i++) {
             Map<String, Object> item = new HashMap<>();
-            item.put("type", " GB MTN Data");
-            item.put("amount", i * 10);
+            item.put("type", "MTN Data");
+            item.put("amount", i * 10 + "GB");
             item.put("lifeTime", i * 3 + " Days");
-            item.put("price", "R " + (i * 50 + 10.00));
-            Items.add(item);
+            item.put("price", i * 50 + 10.00);
+            items.add(item);
         }
 
-        return Items;
+        // Add Airtime items
+        for (int i = 1; i <= 5; i++) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("type", "Airtime");
+            item.put("amount", currencySymbol + i * 10);
+            item.put("lifeTime", "for a year");
+            item.put("price", i * 20 + 5.00);
+            items.add(item);
+        }
+
+        // Add SMS items
+        for (int i = 1; i <= 8; i++) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("type", "SMS");
+            item.put("amount", i * 50 );
+            item.put("lifeTime", "30 Days");
+            item.put("price", i * 5 + 2.00);
+            items.add(item);
+        }
+
+        // Add Minutes items
+        for (int i = 1; i <= 7; i++) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("type", "Minutes");
+            item.put("amount", i * 100 + " Minutes");
+            item.put("lifeTime", "60 Days");
+            item.put("price", i * 30 + 15.00);
+            items.add(item);
+        }
+
+        return items;
     }
+
 
     private void handleBackFromList() {
         bottomNav.setVisibility(View.VISIBLE);

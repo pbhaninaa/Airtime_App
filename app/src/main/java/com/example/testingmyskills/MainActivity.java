@@ -6,15 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
-
-import com.example.testingmyskills.Dao.ApiCalls;
-
-import org.apache.xmlrpc.XmlRpcException;
-
-import java.net.MalformedURLException;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     public static final String SERVER_URL = "http://102.219.85.66:7022/xmlrpc";
@@ -39,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleCompanyClick() {
         if (isUserLogged(this)) {
-            System.out.println("============================================================User found=====================================================");
             Intent intent = new Intent(MainActivity.this, Dashboard.class);
             startActivity(intent);
         } else {

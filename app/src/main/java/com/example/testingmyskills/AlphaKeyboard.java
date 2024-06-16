@@ -1,7 +1,5 @@
 package com.example.testingmyskills;
 
-
-import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -11,44 +9,21 @@ import android.view.View;
 import android.view.inputmethod.InputConnection;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.content.Context;
 
 import androidx.core.content.ContextCompat;
 
+public class AlphaKeyboard extends LinearLayout implements View.OnClickListener {
 
-
-public class MyKeyboardXsmall extends LinearLayout implements View.OnClickListener {
-
-    // constructors
-    public MyKeyboardXsmall(Context context) {
-        this(context, null, 0);
-    }
-
-    public MyKeyboardXsmall(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public MyKeyboardXsmall(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs);
-    }
-
-    // keyboard keys (buttons)
     private boolean isUpperCase = false;
-    private  boolean showNumbers = false;
     private ImageButton mButtonDelete;
     private ImageButton mButtonToUpperCase;
-    private ImageButton mButtonEnter;
-    private Button mButtonGmail;
-    private Button mButtonOutlook;
-    private Button mButtonUnknownEmail;
+    private Button mButtonEnter;
+    private Button mButtonToNumbers;
     private Button mButtonSpace;
     private Button mButtonAtt;
     private Button mButtonDot;
-
-
     private Button mButtonq;
     private Button mButtonw;
     private Button mButtone;
@@ -85,77 +60,105 @@ public class MyKeyboardXsmall extends LinearLayout implements View.OnClickListen
     private Button mButton8;
     private Button mButton9;
     private Button mButton0;
+    // Define new buttons for special characters
+    private Button mButtonHash;
+    private Button mButtonExclamation;
+    private Button mButtonBackslash;
+    private Button mButtonForwardslash;
+    private Button mButtonSemicolon;
+    private Button mButtonColon;
+    private Button mButtonQuestion;
+    private Button mButtonAmpersand;
+    private Button mButtonAsterisk;
+    private LinearLayout NumsLayout, CharsLayout;
+    private boolean displaNums;
+    private SparseArray<String> keyValues = new SparseArray<>();
+    private InputConnection inputConnection;
 
+    public AlphaKeyboard(Context context) {
+        this(context, null, 0);
+    }
 
-    // This will map the button resource id to the String value that we want to
-    // input when that button is clicked.
-    SparseArray<String> keyValues = new SparseArray<>();
+    public AlphaKeyboard(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-    // Our communication link to the EditText
-    InputConnection inputConnection;
+    public AlphaKeyboard(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
 
     private void init(Context context, AttributeSet attrs) {
-
-        // initialize buttons
         LayoutInflater.from(context).inflate(R.layout.keyboard_xsmall, this, true);
 
-        mButtonDelete = (ImageButton) findViewById(R.id.button_alphabet_delete);
-        mButtonToUpperCase = (ImageButton) findViewById(R.id.button_to_upper_case);
-        mButtonEnter = (ImageButton) findViewById(R.id.button_enter);
-        mButtonSpace = (Button) findViewById(R.id.button_space_bar);
-        mButtonAtt = (Button) findViewById(R.id.button_at);
-        mButtonDot = (Button) findViewById(R.id.button_full_stop);
+        NumsLayout = findViewById(R.id.numbers_layout_In_keyboard);
+        CharsLayout = findViewById(R.id.special_chars_layout);
+        displaNums = false;
+        mButtonDelete = findViewById(R.id.button_alphabet_delete);
+        mButtonToUpperCase = findViewById(R.id.button_to_upper_case);
+        mButtonEnter = findViewById(R.id.button_enter);
+        mButtonSpace = findViewById(R.id.button_space_bar);
+        mButtonAtt = findViewById(R.id.button_at);
+        mButtonDot = findViewById(R.id.button_full_stop);
+        mButtonToNumbers = findViewById(R.id.button_to_number_keys);
 
 
+        mButtonq = findViewById(R.id.button_q);
+        mButtonw = findViewById(R.id.button_w);
+        mButtone = findViewById(R.id.button_e);
+        mButtonr = findViewById(R.id.button_r);
+        mButtont = findViewById(R.id.button_t);
+        mButtony = findViewById(R.id.button_y);
+        mButtonu = findViewById(R.id.button_u);
+        mButtoni = findViewById(R.id.button_i);
+        mButtono = findViewById(R.id.button_o);
+        mButtonp = findViewById(R.id.button_p);
+        mButtona = findViewById(R.id.button_a);
+        mButtons = findViewById(R.id.button_s);
+        mButtond = findViewById(R.id.button_d);
+        mButtonf = findViewById(R.id.button_f);
+        mButtong = findViewById(R.id.button_g);
+        mButtonh = findViewById(R.id.button_h);
+        mButtonj = findViewById(R.id.button_j);
+        mButtonk = findViewById(R.id.button_k);
+        mButtonl = findViewById(R.id.button_l);
+        mButtonz = findViewById(R.id.button_z);
+        mButtonx = findViewById(R.id.button_x);
+        mButtonc = findViewById(R.id.button_c);
+        mButtonv = findViewById(R.id.button_v);
+        mButtonb = findViewById(R.id.button_b);
+        mButtonn = findViewById(R.id.button_n);
+        mButtonm = findViewById(R.id.button_m);
 
-        mButtonq = (Button) findViewById(R.id.button_q);
-        mButtonw = (Button) findViewById(R.id.button_w);
-        mButtone = (Button) findViewById(R.id.button_e);
-        mButtonr = (Button) findViewById(R.id.button_r);
-        mButtont = (Button) findViewById(R.id.button_t);
-        mButtony = (Button) findViewById(R.id.button_y);
-        mButtonu = (Button) findViewById(R.id.button_u);
-        mButtoni = (Button) findViewById(R.id.button_i);
-        mButtono = (Button) findViewById(R.id.button_o);
-        mButtonp = (Button) findViewById(R.id.button_p);
-        mButtona = (Button) findViewById(R.id.button_a);
-        mButtons = (Button) findViewById(R.id.button_s);
-        mButtond = (Button) findViewById(R.id.button_d);
-        mButtonf = (Button) findViewById(R.id.button_f);
-        mButtong = (Button) findViewById(R.id.button_g);
-        mButtonh = (Button) findViewById(R.id.button_h);
-        mButtonj = (Button) findViewById(R.id.button_j);
-        mButtonk = (Button) findViewById(R.id.button_k);
-        mButtonl = (Button) findViewById(R.id.button_l);
-        mButtonz = (Button) findViewById(R.id.button_z);
-        mButtonx = (Button) findViewById(R.id.button_x);
-        mButtonc = (Button) findViewById(R.id.button_c);
-        mButtonv = (Button) findViewById(R.id.button_v);
-        mButtonb = (Button) findViewById(R.id.button_b);
-        mButtonn = (Button) findViewById(R.id.button_n);
-        mButtonm = (Button) findViewById(R.id.button_m);
+        mButton1 = findViewById(R.id.button_1);
+        mButton2 = findViewById(R.id.button_2);
+        mButton3 = findViewById(R.id.button_3);
+        mButton4 = findViewById(R.id.button_4);
+        mButton5 = findViewById(R.id.button_5);
+        mButton6 = findViewById(R.id.button_6);
+        mButton7 = findViewById(R.id.button_7);
+        mButton8 = findViewById(R.id.button_8);
+        mButton9 = findViewById(R.id.button_9);
+        mButton0 = findViewById(R.id.button_0);
 
-        mButton1 = (Button) findViewById(R.id.button_1);
-        mButton2 =(Button) findViewById(R.id.button_2);
-        mButton3 = (Button)findViewById(R.id.button_3);
-        mButton4 = (Button) findViewById(R.id.button_4);
-        mButton5 =(Button) findViewById(R.id.button_5);
-        mButton6 = (Button)findViewById(R.id.button_6);
-        mButton7 =(Button) findViewById(R.id.button_7);
-        mButton8 = (Button)findViewById(R.id.button_8);
-        mButton9 =(Button) findViewById(R.id.button_9);
-        mButton0 = (Button)findViewById(R.id.button_0);
-        // set button click listeners
+        // Find new special character buttons
+        mButtonHash = findViewById(R.id.button_hash);
+        mButtonExclamation = findViewById(R.id.button_exclamation);
+        mButtonBackslash = findViewById(R.id.button_backslash);
+        mButtonForwardslash = findViewById(R.id.button_forwardslash);
+        mButtonSemicolon = findViewById(R.id.button_semicolon);
+        mButtonColon = findViewById(R.id.button_colon);
+        mButtonQuestion = findViewById(R.id.button_question);
+        mButtonAmpersand = findViewById(R.id.button_ampersand);
+        mButtonAsterisk = findViewById(R.id.button_asterisk);
 
         mButtonDelete.setOnClickListener(this);
         mButtonSpace.setOnClickListener(this);
         mButtonAtt.setOnClickListener(this);
         mButtonDot.setOnClickListener(this);
         mButtonEnter.setOnClickListener(this);
+        mButtonToNumbers.setOnClickListener(this);
 
-        mButtonOutlook.setOnClickListener(this);
-        mButtonGmail.setOnClickListener(this);
-        mButtonUnknownEmail.setOnClickListener(this);
 
         mButtonq.setOnClickListener(this);
         mButtonw.setOnClickListener(this);
@@ -197,9 +200,20 @@ public class MyKeyboardXsmall extends LinearLayout implements View.OnClickListen
 
         mButtonToUpperCase.setOnClickListener(this);
 
-        // map buttons IDs to input strings
-        keyValues.put(R.id.button_1, "01");
-        keyValues.put(R.id.button_2, "02");
+        // Set click listeners for special character buttons
+        mButtonExclamation.setOnClickListener(this);
+        mButtonHash.setOnClickListener(this);
+        mButtonBackslash.setOnClickListener(this);
+        mButtonForwardslash.setOnClickListener(this);
+        mButtonSemicolon.setOnClickListener(this);
+        mButtonColon.setOnClickListener(this);
+        mButtonQuestion.setOnClickListener(this);
+        mButtonAmpersand.setOnClickListener(this);
+        mButtonAsterisk.setOnClickListener(this);
+
+
+        keyValues.put(R.id.button_1, "1");
+        keyValues.put(R.id.button_2, "2");
         keyValues.put(R.id.button_3, "3");
         keyValues.put(R.id.button_4, "4");
         keyValues.put(R.id.button_5, "5");
@@ -208,6 +222,7 @@ public class MyKeyboardXsmall extends LinearLayout implements View.OnClickListen
         keyValues.put(R.id.button_8, "8");
         keyValues.put(R.id.button_9, "9");
         keyValues.put(R.id.button_0, "0");
+
         keyValues.put(R.id.button_q, "q");
         keyValues.put(R.id.button_w, "w");
         keyValues.put(R.id.button_e, "e");
@@ -235,91 +250,79 @@ public class MyKeyboardXsmall extends LinearLayout implements View.OnClickListen
         keyValues.put(R.id.button_n, "n");
         keyValues.put(R.id.button_m, "m");
 
-        keyValues.put(R.id.button_1, "1");
-        keyValues.put(R.id.button_2, "2");
-        keyValues.put(R.id.button_3, "3");
-        keyValues.put(R.id.button_4, "4");
-        keyValues.put(R.id.button_5, "5");
-        keyValues.put(R.id.button_6, "6");
-        keyValues.put(R.id.button_7, "7");
-        keyValues.put(R.id.button_8, "8");
-        keyValues.put(R.id.button_9, "9");
-        keyValues.put(R.id.button_0, "0");
-
         keyValues.put(R.id.button_space_bar, " ");
         keyValues.put(R.id.button_enter, "\n");
-        keyValues.put(R.id.button_at, "@");
         keyValues.put(R.id.button_full_stop, ".");
 
+        keyValues.put(R.id.button_at, "@");
+        keyValues.put(R.id.button_hash, "#");
+        keyValues.put(R.id.button_exclamation, "!");
+        keyValues.put(R.id.button_backslash, "\\");
+        keyValues.put(R.id.button_forwardslash, "/");
+        keyValues.put(R.id.button_semicolon, ";");
+        keyValues.put(R.id.button_colon, ":");
+        keyValues.put(R.id.button_question, "?");
+        keyValues.put(R.id.button_ampersand, "&");
+        keyValues.put(R.id.button_asterisk, "*");
     }
-
 
     @Override
     public void onClick(View v) {
-        // do nothing if the InputConnection has not been set yet
         if (inputConnection == null) return;
-
+        if (v.getId() == R.id.button_to_number_keys) {
+            updateToNumbers();
+        }
         if (v.getId() == R.id.button_to_upper_case) {
-            // Toggle between uppercase and lowercase
             isUpperCase = !isUpperCase;
-
-            // Update button texts accordingly
             updateButtonCase();
+
         } else {
-            // Handle other button clicks
-            // Delete text or input key value
-            // All communication goes through the InputConnection
             if (v.getId() == R.id.button_alphabet_delete) {
-                // Handle delete button
                 CharSequence selectedText = inputConnection.getSelectedText(0);
                 if (TextUtils.isEmpty(selectedText)) {
-                    // no selection, so delete previous character
                     inputConnection.deleteSurroundingText(1, 0);
                 } else {
-                    // delete the selection
                     inputConnection.commitText("", 1);
                 }
-            } else if (v.getId() == R.id.button_enter || v.getId() == R.id.button_at ||
-                    v.getId() == R.id.button_full_stop || v.getId() == R.id.button_space_bar) {
-                // Handle special buttons (enter, @, ., space)
-                String stringValue = keyValues.get(v.getId());
-                inputConnection.commitText(stringValue, 1);
             } else {
-                // Handle regular character buttons
                 String value = keyValues.get(v.getId());
-                // Toggle case if needed
-                if (isUpperCase && Character.isLetter(value.charAt(0))) {
-                    value = value.toUpperCase();
+                if (value != null) {
+                    if (isUpperCase && Character.isLetter(value.charAt(0))) {
+                        value = value.toUpperCase();
+                    }
+                    inputConnection.commitText(value, 1);
                 }
-                inputConnection.commitText(value, 1);
             }
         }
     }
 
-    // Helper method to update button texts according to the current case state
+    private void updateToNumbers() {
+        if (displaNums) {
+            NumsLayout.setVisibility(VISIBLE);
+            mButtonToNumbers.setText("Chars");
+            CharsLayout.setVisibility(GONE);
+            displaNums = false;
+        } else {
+            NumsLayout.setVisibility(GONE);
+            CharsLayout.setVisibility(VISIBLE);
+            mButtonToNumbers.setText("123");
+            displaNums = true;
+        }
+    }
+
     private void updateButtonCase() {
         ImageButton toggleBtn = findViewById(R.id.button_to_upper_case);
         if (isUpperCase) {
-            // Tint the image with lime color
             toggleBtn.setColorFilter(ContextCompat.getColor(getContext(), R.color.lime), PorterDuff.Mode.SRC_IN);
         } else {
-            // Tint the image with light blue color
             toggleBtn.setColorFilter(ContextCompat.getColor(getContext(), R.color.primary_color), PorterDuff.Mode.SRC_IN);
         }
-
 
         for (int i = 0; i < keyValues.size(); i++) {
             int key = keyValues.keyAt(i);
             String value = keyValues.valueAt(i);
-            // Check if the value is an alphabetic character
             if (Character.isLetter(value.charAt(0))) {
-                // Toggle case
-                if (isUpperCase) {
-                    value = value.toUpperCase();
-                } else {
-                    value = value.toLowerCase();
-                }
-                // Update the button text if it corresponds to this key
+                value = isUpperCase ? value.toUpperCase() : value.toLowerCase();
                 Button button = findViewById(key);
                 if (button != null) {
                     button.setText(value);
@@ -327,6 +330,7 @@ public class MyKeyboardXsmall extends LinearLayout implements View.OnClickListen
             }
         }
     }
+
     public void setInputConnection(InputConnection ic) {
         this.inputConnection = ic;
     }

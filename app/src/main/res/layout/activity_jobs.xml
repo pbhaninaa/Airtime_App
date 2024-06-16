@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EEEEEE"
-    tools:context=".Dashboard">
+    tools:context="com.example.testingmyskills.Dashboard">
     <!--    dash_board_screen -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/dash_board_screen"
@@ -653,14 +653,14 @@
                             android:padding="@dimen/twelve"
                             android:textColor="@color/primary_color" />
 
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/ten"
-                            android:background="@drawable/rounded_with_white_background"
-                            android:hint="Reserved"
-                            android:padding="@dimen/twelve"
-                            android:textColor="@color/primary_color" />
+<!--                        <EditText-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginBottom="@dimen/ten"-->
+<!--                            android:background="@drawable/rounded_with_white_background"-->
+<!--                            android:hint="Reserved"-->
+<!--                            android:padding="@dimen/twelve"-->
+<!--                            android:textColor="@color/primary_color" />-->
 
                         <Button
                             android:id="@+id/buy"

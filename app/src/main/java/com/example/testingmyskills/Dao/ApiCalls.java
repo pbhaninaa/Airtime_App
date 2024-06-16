@@ -1,6 +1,6 @@
 package com.example.testingmyskills.Dao;
 
-import static com.example.testingmyskills.MainActivity.PROVIDER_CODE;
+import com.example.testingmyskills.MainActivity;
 
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
@@ -8,7 +8,6 @@ import org.apache.xmlrpc.XmlRpcException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +58,7 @@ public class ApiCalls {
     public Map<String, Object> loadBundle(String msisdn, int amount, int currency, int accountType, int quantity, String reference) throws XmlRpcException {
         Map<String, Object> params = new HashMap<>();
         params.put("MSISDN", msisdn);
-        params.put("ProviderCode", PROVIDER_CODE);
+        params.put("ProviderCode", MainActivity.PROVIDER_CODE);
         params.put("Amount", amount);
         params.put("Currency", currency);
         params.put("AccountType", accountType);
@@ -71,7 +70,7 @@ public class ApiCalls {
     public Map<String, Object> deductValue(String msisdn, int amount, String reference) throws XmlRpcException {
         Map<String, Object> params = new HashMap<>();
         params.put("MSISDN", msisdn);
-        params.put("ProviderCode", PROVIDER_CODE);
+        params.put("ProviderCode", MainActivity.PROVIDER_CODE);
         params.put("Amount", amount);
         params.put("Reference", reference);
         return (Map<String, Object>) client.execute("deduct_value", new Object[]{username, password, params});
