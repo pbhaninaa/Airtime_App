@@ -72,7 +72,6 @@ public class UserManagement extends AppCompatActivity {
         setupFocusListeners();
 
     }
-
     private void initialiseViews() {
         alphaKeyboard = new AlphaKeyboard(this);
         hideKeyboardBtn = alphaKeyboard.findViewById(R.id.button_enter);
@@ -109,7 +108,6 @@ public class UserManagement extends AppCompatActivity {
             }
         });
     }
-
     private void screenToLoad(int screenToLoad) {
         if (screenToLoad == R.id.login_page) {
 
@@ -142,10 +140,8 @@ public class UserManagement extends AppCompatActivity {
 
 
     }
-
     private void getProfile() {
         SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
-
         // Populate EditText fields
         Firstname.setText(prefs.getString("name", ""));
         Lastname.setText(prefs.getString("surname", ""));
@@ -169,7 +165,6 @@ public class UserManagement extends AppCompatActivity {
             }
         }
     }
-
     private void setupFocusListeners() {
         getPasswordTextInLogin.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
@@ -249,7 +244,6 @@ public class UserManagement extends AppCompatActivity {
             }
         });
     }
-
     private void setOnclickListeners() {
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
         ShowPasswordInLogin.setOnClickListener(v -> handleShowPassword());
@@ -263,11 +257,9 @@ public class UserManagement extends AppCompatActivity {
         hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
 
     }
-
     private void hideKeyboard() {
         Utils.hideAlphaKeyboard(alphaKeyboard);
     }
-
     private void handleAccCreation() {
         // Get the values from the input fields
         String language = languagesSpinner.getSelectedItem().toString().trim();
@@ -283,7 +275,7 @@ public class UserManagement extends AppCompatActivity {
                 addressLine.isEmpty() || emailAddress.isEmpty() || emailC.isEmpty()) {
             // Show an error message to the user
             Utils.showToast(this, "Please fill all the fields");
-        } else if (!isValidEmail(emailAddress)) {
+        } else if (!Utils.isValidEmail(emailAddress)) {
             // Show an error message if email is not valid
             Utils.showToast(this, "Invalid email address format");
         } else if (!emailAddress.equals(emailC)) {
@@ -306,15 +298,6 @@ public class UserManagement extends AppCompatActivity {
             Utils.showToast(this, "Profile saved successfully");
         }
     }
-
-    private boolean isValidEmail(String email) {
-        // Email regex pattern to validate email format
-        String emailPattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
-
-        // Check if the provided email matches the regex pattern
-        return email.matches(emailPattern);
-    }
-
     private void handleCreateClick() {
         String email = getEmailTextInRegister.getText().toString().trim();
         String password = getPasswordTextInRegister.getText().toString().trim();
@@ -336,7 +319,7 @@ public class UserManagement extends AppCompatActivity {
         }
 
         // Check if email is in correct format using regular expression
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (!Utils.isValidEmail(email)) {
             getEmailTextInRegister.setError("Invalid email format");
             return;
         }
@@ -357,16 +340,13 @@ public class UserManagement extends AppCompatActivity {
         // Optionally, you can show a toast indicating successful account creation
         Utils.showToast(UserManagement.this, "Account created successfully");
     }
-
     private void handleSignUp() {
         SignInLayout.setVisibility(View.VISIBLE);
         SignUpLayout.setVisibility(View.GONE);
     }
-
     private void handleForgotPasswordClick() {
         Utils.showToast(UserManagement.this, "Forgot password");
     }
-
     private void handleSignIn() {
         String email = getEmailTextInLogin.getText().toString().trim();
         String password = getPasswordTextInLogin.getText().toString().trim();
@@ -409,7 +389,6 @@ public class UserManagement extends AppCompatActivity {
             Utils.showToast(UserManagement.this, "Incorrect email or password");
         }
     }
-
     private void handleShowPassword() {
         showPassword = !showPassword; // Invert the value
 
@@ -433,12 +412,10 @@ public class UserManagement extends AppCompatActivity {
 
         }
     }
-
     private void handleRegisterClick() {
         SignInLayout.setVisibility(View.GONE);
         SignUpLayout.setVisibility(View.VISIBLE);
     }
-
     private boolean isProfileEmpty() {
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         String language = sharedPreferences.getString("language", "");

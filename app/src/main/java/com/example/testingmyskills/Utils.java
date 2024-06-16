@@ -2,6 +2,7 @@ package com.example.testingmyskills;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,12 +86,27 @@ public class Utils {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(PASSWORD_KEY, "");
     }
+    public static void logout(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+
+        SharedPreferences prefs = context.getSharedPreferences("StayLogged", Context.MODE_PRIVATE);
+        SharedPreferences.Editor StayLogged= prefs.edit();
+        StayLogged.clear();
+        StayLogged.apply();
+
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor user= preferences.edit();
+        user.clear();
+        user.apply();
+    }
     public static String FormatAmount(String a) {
         String amountString = a.replace(",", "");
         try {
             double parsedAmount = Double.parseDouble(amountString);
             double amountConverted = Math.round(parsedAmount * 100.00) / 100.00;
-
             // Format the double value with commas separating every three digits before the decimal point and two decimal places
             DecimalFormat decimalFormat = new DecimalFormat("#,###,###,##0.00");
             return decimalFormat.format(amountConverted);
@@ -100,4 +116,11 @@ public class Utils {
         }
     }
 
+    public static boolean isValidEmail(String email) {
+        // Email regex pattern to validate email format
+        String emailPattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
+
+        // Check if the provided email matches the regex pattern
+        return email.matches(emailPattern);
+    }
 }

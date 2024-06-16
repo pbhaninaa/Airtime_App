@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,7 +53,7 @@ public class Dashboard extends AppCompatActivity {
     private Spinner filter_spinner, ItemTypeSpinner;
 
 
-    private TextView salutation, selectedNet, AccountBalance, Message, Notifications;
+    private TextView salutation, selectedNet, AccountBalance, Message ;
     private ImageView profilePicture;
     private TextView moreBtn;
     private ImageButton btnHome;
@@ -60,6 +61,7 @@ public class Dashboard extends AppCompatActivity {
     private ImageButton FilterButton;
     private ImageButton btnProfile, moreItemsBtn;
     private ScrollView scrollView;
+    private FrameLayout LogoutBtn;
 
 
     private LinearLayout bottomNav, EconetBtn, TelnetBtn, NetoneBtn, SpecialBtn, filterSection;
@@ -183,10 +185,10 @@ public class Dashboard extends AppCompatActivity {
         ItemTypeSpinner = findViewById(R.id.item_type_spinner);
         SpecialBtn = findViewById(R.id.specials);
         moreItemsBtn = findViewById(R.id.more);
-        Notifications = findViewById(R.id.notifications);
         FilterButton = findViewById(R.id.filter_button);
         filterSection = findViewById(R.id.filter_section);
         scrollView = findViewById(R.id.scroll_view);
+        LogoutBtn = findViewById(R.id.profile_picture_container);
 
     }
 
@@ -204,6 +206,13 @@ public class Dashboard extends AppCompatActivity {
         SpecialBtn.setOnClickListener(v -> getSpecials());
         FilterButton.setOnClickListener(v -> hideFilter());
         hideKeyboardBtn.setOnClickListener(v->hideKeyboard());
+        LogoutBtn.setOnClickListener(v->logout());
+    }
+
+    private void logout() {
+      Utils.logout(this);
+        Intent intent = new Intent(this,UserManagement.class);
+        startActivity(intent);
     }
 
     private void hideFilter() {
@@ -222,18 +231,9 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void getProfile() {
-        int notifications = 35;
-        // Check if notifications count is less than 1
-        if (notifications < 1) {
-            Notifications.setVisibility(View.GONE); // Hide the Notifications view
-        } else {
-            Notifications.setVisibility(View.VISIBLE); // Ensure the Notifications view is visible
-        }
 
-// Set the text of Notifications
-        Notifications.setText(String.valueOf(notifications));
+
         SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
-
         // Populate EditText fields
         String name = prefs.getString("name", "");
         String phoneNumber = name + "(" + prefs.getString("phone", "") + ")";

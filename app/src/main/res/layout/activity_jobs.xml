@@ -11,7 +11,6 @@
         android:id="@+id/dash_board_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:orientation="vertical"
         app:layout_constraintBaseline_toBottomOf="parent">
 
@@ -62,32 +61,18 @@
 
                         <FrameLayout
                             android:id="@+id/profile_picture_container"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/eight"
                             android:layout_gravity="right"
                             android:background="@drawable/round_conners_background">
-
-
-                            <TextView
-                                android:id="@+id/notifications"
-                                android:layout_width="20sp"
-                                android:layout_height="20sp"
-                                android:layout_marginLeft="30sp"
-                                android:layout_marginTop="1sp"
-                                android:layout_marginRight="2sp"
-                                android:background="@drawable/round_conners_background"
-                                android:backgroundTint="@color/secondary_color"
-                                android:gravity="center"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/ten"
-                                android:textStyle="bold" />
 
                             <ImageView
                                 android:id="@+id/user_profile_picture"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:src="@drawable/envelop" />
+                                android:src="@drawable/logout" />
 
                         </FrameLayout>
 
@@ -409,8 +394,8 @@
 
                 <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="240sp"
-                    android:layout_marginBottom="5sp">
+                    android:layout_height="300sp"
+                    android:layout_marginBottom="@dimen/fifty">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
