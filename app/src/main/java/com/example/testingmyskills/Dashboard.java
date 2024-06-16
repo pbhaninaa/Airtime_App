@@ -66,6 +66,7 @@ public class Dashboard extends AppCompatActivity {
     ApiCalls api = new ApiCalls(MainActivity.SERVER_URL, MainActivity.USERNAME, MainActivity.PASSWORD);
     private boolean show;
     private AlphaKeyboard MyKeyboard;
+    private Button hideKeyboardBtn;
     static String currencySymbol;
 
     public Dashboard() throws MalformedURLException {
@@ -153,6 +154,7 @@ public class Dashboard extends AppCompatActivity {
     private void initialiseViews() {
         currencySymbol = getString(R.string.currency_symbol);
         MyKeyboard = new AlphaKeyboard(this);
+        hideKeyboardBtn = MyKeyboard.findViewById(R.id.button_enter);
         dash_board_screen = findViewById(R.id.dash_board_screen);
         salutation = findViewById(R.id.user_salutation);
         profilePicture = findViewById(R.id.user_profile_picture);
@@ -201,6 +203,7 @@ public class Dashboard extends AppCompatActivity {
         EconetBtn.setOnClickListener(v -> getEconetBalance(MainActivity.MSISDN));
         SpecialBtn.setOnClickListener(v -> getSpecials());
         FilterButton.setOnClickListener(v -> hideFilter());
+        hideKeyboardBtn.setOnClickListener(v->hideKeyboard());
     }
 
     private void hideFilter() {
@@ -285,7 +288,8 @@ public class Dashboard extends AppCompatActivity {
                 // Handle the response
                 selectedNet.setText("Selected Network: Econet");
                 int balance = (int) response.get("Amount");
-                AccountBalance.setText(("Current Balance " + response.get("Amount")));
+                String a = String.valueOf(balance);
+                AccountBalance.setText(("Current Balance "+currencySymbol + Utils.FormatAmount(a)));
                 if (balance < 1000) {
                     Message.setText("You need to recharge.");
                 } else if (balance >= 1000 && balance < 5000) {
@@ -432,12 +436,13 @@ public class Dashboard extends AppCompatActivity {
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
+                    hideOtherLayout(R.id.buy_screen, btnNotifications);
                     BuyTittle.setText(Type.getText().toString() + "\n that last for " + time);
                     Item.setText(type);
                     Amount.setText(amount);
                     ItemPrice.setText(currencySymbol + price);
 
-                    hideOtherLayout(R.id.buy_screen, btnNotifications);
+
 
                 }
             }
@@ -524,7 +529,9 @@ public class Dashboard extends AppCompatActivity {
         moreItemsBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.tertiary_color), PorterDuff.Mode.SRC_IN);
     }
-
+    private void hideKeyboard() {
+        Utils.hideAlphaKeyboard(MyKeyboard);
+    }
     private void clearFields() {
         Phone.setText("");
         Item.setText("");

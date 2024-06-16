@@ -694,7 +694,6 @@
             <ImageButton
                 android:id="@+id/button_to_upper_case"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
@@ -711,7 +710,6 @@
             <Button
                 android:id="@+id/button_z"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
@@ -727,7 +725,6 @@
             <Button
                 android:id="@+id/button_x"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
@@ -743,7 +740,6 @@
             <Button
                 android:id="@+id/button_c"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
@@ -759,7 +755,6 @@
             <Button
                 android:id="@+id/button_v"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
@@ -775,7 +770,6 @@
             <Button
                 android:id="@+id/button_b"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
@@ -791,7 +785,6 @@
             <Button
                 android:id="@+id/button_n"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
@@ -807,7 +800,6 @@
             <Button
                 android:id="@+id/button_m"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
@@ -823,7 +815,6 @@
             <ImageButton
                 android:id="@+id/button_alphabet_delete"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
@@ -917,7 +908,7 @@
                 android:layout_margin="@dimen/zero.two"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="enter"
+                android:text="Hide me"
                 android:textAllCaps="false"
                 android:textSize="@dimen/nine"
                 android:textStyle="bold"

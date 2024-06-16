@@ -17,7 +17,7 @@
     <string name="manager_details">Manager\n%s / %s</string>
     <string name="supervisor_details">Supervisor\n%s / %s</string>
     <string name="salutation"><font color="#FF000000">Hello, 0782141216</font>\n<small><font color="#808080">last updated a minute ago</font></small></string>
-<string name="currency_symbol">R </string>
+<string name="currency_symbol">$ </string>
 
     <string name="next">Next</string>
     <string name="previous">Previous</string>
