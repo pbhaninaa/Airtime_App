@@ -3,9 +3,11 @@ package com.example.testingmyskills;
 import static com.example.testingmyskills.Utils.isUserLogged;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,13 +17,21 @@ public class MainActivity extends AppCompatActivity {
     public static final String MSISDN = "263781801175";
     public static final int PROVIDER_CODE = 100;
     private Button CandidateBtn;
+    private ConstraintLayout landing_page;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Utils.hideSoftNavBar(MainActivity.this);
         initialiseViews();
+        if (isUserLogged(this)) {
+            Intent intent = new Intent(MainActivity.this, Dashboard.class);
+            startActivity(intent);
+        } else {
+            landing_page.setVisibility(View.VISIBLE);
+        }
+        Utils.hideSoftNavBar(MainActivity.this);
+
         setOnclickListeners();
     }
 
@@ -43,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initialiseViews() {
         CandidateBtn = findViewById(R.id.candidate_btn);
+        landing_page = findViewById(R.id.landing_page);
     }
 
     @Override

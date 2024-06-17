@@ -8,13 +8,12 @@
     android:gravity="center"
     tools:context="com.example.testingmyskills.MainActivity">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/landing_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-
+        android:visibility="gone"
         app:layout_constraintBaseline_toBottomOf="parent">
 
         <RelativeLayout
@@ -104,8 +103,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/fifteen"
-                    android:layout_marginRight="@dimen/fifteen"
                     android:layout_marginTop="20sp"
+                    android:layout_marginRight="@dimen/fifteen"
                     android:background="@drawable/text_box_background"
                     android:text="Continue"
                     android:textStyle="bold" />
