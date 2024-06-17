@@ -22,14 +22,15 @@
             android:weightSum="10">
 
             <Button
-                android:id="@+id/button_at"
+                android:id="@+id/button_comma"
                 style="@style/keyboardKeys"
+
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@"
+                android:text="@string/comma"
                 android:textAllCaps="false"
                 android:textSize="@dimen/nine"
                 android:textStyle="bold"
@@ -844,29 +845,28 @@
                 android:layout_margin="@dimen/one"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="123"
+                android:text="#/;"
                 android:textAllCaps="false"
                 android:textSize="@dimen/nine"
                 android:textStyle="bold"
                 app:backgroundTint="@null"
                 tools:ignore="NestedWeights,SpUsage" />
 
-
             <Button
-                android:id="@+id/button_comma"
+                android:id="@+id/button_at"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/comma"
+                android:text="@"
                 android:textAllCaps="false"
                 android:textSize="@dimen/nine"
                 android:textStyle="bold"
                 app:backgroundTint="@null"
                 tools:ignore="NestedWeights,SpUsage" />
+
             <Button
                 android:id="@+id/button_space_bar"
                 style="@style/keyboardKeys"
