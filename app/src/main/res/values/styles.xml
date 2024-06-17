@@ -78,6 +78,13 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">20sp</item>
     </style>
+    <style name="CustomButtonStyle5" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/white_box_with_shadow</item>
+<!--        <item name="color">@color/white</item>-->
+        <item name="backgroundTint">@color/tertiary_color</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 
     <style name="TextBox" parent="Widget.AppCompat.Button">
         <item name="android:textColor">@color/primary_color</item>

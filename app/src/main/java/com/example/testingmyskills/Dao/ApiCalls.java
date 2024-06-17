@@ -1,6 +1,6 @@
 package com.example.testingmyskills.Dao;
 
-import com.example.testingmyskills.MainActivity;
+import com.example.testingmyskills.UI.MainActivity;
 
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;

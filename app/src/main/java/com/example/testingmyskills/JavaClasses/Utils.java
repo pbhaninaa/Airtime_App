@@ -1,8 +1,7 @@
-package com.example.testingmyskills;
+package com.example.testingmyskills.JavaClasses;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +12,14 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.example.testingmyskills.R;
+
 import java.text.DecimalFormat;
 
 public class Utils {
-    private static final String PREF_NAME = "UserPrefs";
-    private static final String EMAIL_KEY = "email";
-    private static final String PASSWORD_KEY = "password";
+    public static final String PREF_NAME = "UserPrefs";
+    public static final String EMAIL_KEY = "email";
+    public static final String PASSWORD_KEY = "password";
     public static void hideSoftNavBar(Activity activity) {
         View decorView = activity.getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION

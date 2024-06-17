@@ -1,4 +1,4 @@
-package com.example.testingmyskills;
+package com.example.testingmyskills.JavaClasses;
 
 import android.graphics.PorterDuff;
 import android.text.TextUtils;
@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.content.Context;
 
 import androidx.core.content.ContextCompat;
+
+import com.example.testingmyskills.R;
 
 public class AlphaKeyboard extends LinearLayout implements View.OnClickListener {
 

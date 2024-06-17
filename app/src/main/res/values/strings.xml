@@ -268,4 +268,8 @@
     <string name="original_amount">Original amount</string>
     <string name="corrected_amount">Corrected amount</string>
     <string name="correction_successfully_done">Correction successfully done</string>
+    <string name="yes">YES</string>
+    <string name="no">No</string>
+    <string name="are_you_sure_you_wanna_logout">Are you sure you \nwanna logout?</string>
+    <string name="items_found">" Items found"</string>
 </resources>

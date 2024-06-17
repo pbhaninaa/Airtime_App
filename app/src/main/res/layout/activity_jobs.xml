@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EEEEEE"
-    tools:context="com.example.testingmyskills.Dashboard">
+    tools:context="com.example.testingmyskills.UI.Dashboard">
     <!--    dash_board_screen -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/dash_board_screen"
@@ -64,9 +64,9 @@
                             android:id="@+id/profile_picture_container"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="@dimen/eight"
                             android:layout_gravity="right"
-                            android:background="@drawable/round_conners_background">
+                            android:background="@drawable/round_conners_background"
+                            android:padding="@dimen/eight">
 
                             <ImageView
                                 android:id="@+id/user_profile_picture"
@@ -89,7 +89,8 @@
                     android:layout_marginTop="@dimen/five"
                     android:layout_weight="2.5"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/EconetBtn"
@@ -639,14 +640,14 @@
                             android:padding="@dimen/twelve"
                             android:textColor="@color/primary_color" />
 
-<!--                        <EditText-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_marginBottom="@dimen/ten"-->
-<!--                            android:background="@drawable/rounded_with_white_background"-->
-<!--                            android:hint="Reserved"-->
-<!--                            android:padding="@dimen/twelve"-->
-<!--                            android:textColor="@color/primary_color" />-->
+                        <!--                        <EditText-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:layout_marginBottom="@dimen/ten"-->
+                        <!--                            android:background="@drawable/rounded_with_white_background"-->
+                        <!--                            android:hint="Reserved"-->
+                        <!--                            android:padding="@dimen/twelve"-->
+                        <!--                            android:textColor="@color/primary_color" />-->
 
                         <Button
                             android:id="@+id/buy"
@@ -669,12 +670,77 @@
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+<!--    confirmation_screen-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/confirmation_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#11000000"
+        android:visibility="gone"
+        android:padding="@dimen/twenty_five">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.5">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/are_you_sure_you_wanna_logout"
+                android:textColor="@color/primary_color"
+                android:textSize="@dimen/twenty_five"
+                android:textStyle="bold"
+                tools:ignore="SpUsage" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/twenty_five">
+
+                <Button
+                    android:id="@+id/yes"
+                    style="@style/CustomButtonStyle5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/white_box_with_shadow"
+                    android:text="@string/yes"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5" />
+
+                <Button
+                    android:id="@+id/no"
+                    style="@style/CustomButtonStyle5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/white_box_with_shadow"
+                    android:text="@string/no"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <!--Don't remove-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#11000000"
         android:layout_alignParentBottom="true"
+        android:background="#11000000"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="10dp"

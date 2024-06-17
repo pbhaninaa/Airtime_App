@@ -1,4 +1,4 @@
-package com.example.testingmyskills;
+package com.example.testingmyskills.JavaClasses;
 
 import android.content.Context;
 import android.graphics.Bitmap;

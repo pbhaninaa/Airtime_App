@@ -1,4 +1,7 @@
-package com.example.testingmyskills;
+package com.example.testingmyskills.UI;
+
+import static com.example.testingmyskills.JavaClasses.Utils.PASSWORD_KEY;
+import static com.example.testingmyskills.JavaClasses.Utils.PREF_NAME;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -17,9 +20,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
+import com.example.testingmyskills.JavaClasses.EmailSender;
+import com.example.testingmyskills.R;
+import com.example.testingmyskills.JavaClasses.Utils;
 
 public class UserManagement extends AppCompatActivity {
     private ConstraintLayout SignInLayout;
@@ -72,6 +79,7 @@ public class UserManagement extends AppCompatActivity {
         setupFocusListeners();
 
     }
+
     private void initialiseViews() {
         alphaKeyboard = new AlphaKeyboard(this);
         hideKeyboardBtn = alphaKeyboard.findViewById(R.id.button_enter);
@@ -108,6 +116,7 @@ public class UserManagement extends AppCompatActivity {
             }
         });
     }
+
     private void screenToLoad(int screenToLoad) {
         if (screenToLoad == R.id.login_page) {
 
@@ -140,6 +149,7 @@ public class UserManagement extends AppCompatActivity {
 
 
     }
+
     private void getProfile() {
         SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         // Populate EditText fields
@@ -165,6 +175,7 @@ public class UserManagement extends AppCompatActivity {
             }
         }
     }
+
     private void setupFocusListeners() {
         getPasswordTextInLogin.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
@@ -244,6 +255,7 @@ public class UserManagement extends AppCompatActivity {
             }
         });
     }
+
     private void setOnclickListeners() {
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
         ShowPasswordInLogin.setOnClickListener(v -> handleShowPassword());
@@ -257,9 +269,22 @@ public class UserManagement extends AppCompatActivity {
         hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
 
     }
+
+    private void sendPasswordEmail() {
+        SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        String email = prefs.getString("emailAddress", "");
+        SharedPreferences pref = this.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String password = pref.getString(PASSWORD_KEY, "");
+        String subject = "Your Password Reset Request";
+        String body = "Dear user,\n\nYour password is: " + password + "\n\nPlease keep it safe.";
+        EmailSender emailSender = new EmailSender(this,email, subject, body);
+        emailSender.execute();
+    }
+
     private void hideKeyboard() {
         Utils.hideAlphaKeyboard(alphaKeyboard);
     }
+
     private void handleAccCreation() {
         // Get the values from the input fields
         String language = languagesSpinner.getSelectedItem().toString().trim();
@@ -298,6 +323,7 @@ public class UserManagement extends AppCompatActivity {
             Utils.showToast(this, "Profile saved successfully");
         }
     }
+
     private void handleCreateClick() {
         String email = getEmailTextInRegister.getText().toString().trim();
         String password = getPasswordTextInRegister.getText().toString().trim();
@@ -340,13 +366,16 @@ public class UserManagement extends AppCompatActivity {
         // Optionally, you can show a toast indicating successful account creation
         Utils.showToast(UserManagement.this, "Account created successfully");
     }
+
     private void handleSignUp() {
         SignInLayout.setVisibility(View.VISIBLE);
         SignUpLayout.setVisibility(View.GONE);
     }
+
     private void handleForgotPasswordClick() {
-        Utils.showToast(UserManagement.this, "Forgot password");
+        sendPasswordEmail();
     }
+
     private void handleSignIn() {
         String email = getEmailTextInLogin.getText().toString().trim();
         String password = getPasswordTextInLogin.getText().toString().trim();
@@ -389,6 +418,7 @@ public class UserManagement extends AppCompatActivity {
             Utils.showToast(UserManagement.this, "Incorrect email or password");
         }
     }
+
     private void handleShowPassword() {
         showPassword = !showPassword; // Invert the value
 
@@ -412,10 +442,12 @@ public class UserManagement extends AppCompatActivity {
 
         }
     }
+
     private void handleRegisterClick() {
         SignInLayout.setVisibility(View.GONE);
         SignUpLayout.setVisibility(View.VISIBLE);
     }
+
     private boolean isProfileEmpty() {
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         String language = sharedPreferences.getString("language", "");

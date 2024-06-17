@@ -1,4 +1,4 @@
-package com.example.testingmyskills;
+package com.example.testingmyskills.UI;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -26,13 +26,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
 import com.example.testingmyskills.Dao.ApiCalls;
+import com.example.testingmyskills.R;
+import com.example.testingmyskills.JavaClasses.Utils;
 
 import org.apache.xmlrpc.XmlRpcException;
 
@@ -43,21 +45,22 @@ import java.util.List;
 import java.util.Map;
 
 public class Dashboard extends AppCompatActivity {
-    private static ConstraintLayout dash_board_screen;
-    private static ConstraintLayout BuyScreen;
-    private static ConstraintLayout job_list_screen;
-    private static EditText Phone, Item, Amount, ItemPrice;
+    private ConstraintLayout dash_board_screen;
+    private ConstraintLayout BuyScreen;
+    private ConstraintLayout ConfirmationScreen;
+    private ConstraintLayout job_list_screen;
+    private EditText Phone, Item, Amount, ItemPrice;
     private ImageButton backFromList;
-    private Button BuyBtn;
-    private static TextView number_of_posts, BuyTittle;
+    private Button BuyBtn, Yes, No;
+    private TextView number_of_posts, BuyTittle;
     private Spinner filter_spinner, ItemTypeSpinner;
 
 
-    private TextView salutation, selectedNet, AccountBalance, Message ;
-    private ImageView profilePicture;
+    private TextView selectedNet, AccountBalance, Message;
+
     private TextView moreBtn;
     private ImageButton btnHome;
-    private static ImageButton btnNotifications;
+    private ImageButton btnNotifications;
     private ImageButton FilterButton;
     private ImageButton btnProfile, moreItemsBtn;
     private ScrollView scrollView;
@@ -78,9 +81,9 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs);
-        initialiseViews(); // Initialize views first
         getDefaultBalance(MainActivity.MSISDN);
         show = true;
+        initialiseViews();
 
         Utils.hideSoftNavBar(Dashboard.this);
         setupFocusListeners();
@@ -95,8 +98,6 @@ public class Dashboard extends AppCompatActivity {
         jobListRecyclerView.setAdapter(new RecommendedAd(getProducts()));//
 
 
-        dash_board_screen.setVisibility(View.VISIBLE);
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.econetItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filter_spinner.setAdapter(adapter);
@@ -107,7 +108,7 @@ public class Dashboard extends AppCompatActivity {
 
 
         String n = String.valueOf(getProducts().size());
-        number_of_posts.setText(n + " Items found");
+        number_of_posts.setText(String.format("%s%s", n, getString(R.string.items_found)));
 
         ItemTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -151,6 +152,8 @@ public class Dashboard extends AppCompatActivity {
         });
         btnHome.setColorFilter(ContextCompat.getColor(this, R.color.tertiary_color), PorterDuff.Mode.SRC_IN);
         getProfile();
+
+        dash_board_screen.setVisibility(View.VISIBLE);
     }
 
     private void initialiseViews() {
@@ -158,8 +161,6 @@ public class Dashboard extends AppCompatActivity {
         MyKeyboard = new AlphaKeyboard(this);
         hideKeyboardBtn = MyKeyboard.findViewById(R.id.button_enter);
         dash_board_screen = findViewById(R.id.dash_board_screen);
-        salutation = findViewById(R.id.user_salutation);
-        profilePicture = findViewById(R.id.user_profile_picture);
         moreBtn = findViewById(R.id.show_more_posts);
         btnHome = findViewById(R.id.nav_dash_board_btn);
         btnNotifications = findViewById(R.id.nav_notifications_btn);
@@ -189,6 +190,9 @@ public class Dashboard extends AppCompatActivity {
         filterSection = findViewById(R.id.filter_section);
         scrollView = findViewById(R.id.scroll_view);
         LogoutBtn = findViewById(R.id.profile_picture_container);
+        ConfirmationScreen = findViewById(R.id.confirmation_screen);
+        Yes = findViewById(R.id.yes);
+        No = findViewById(R.id.no);
 
     }
 
@@ -205,16 +209,27 @@ public class Dashboard extends AppCompatActivity {
         EconetBtn.setOnClickListener(v -> getEconetBalance(MainActivity.MSISDN));
         SpecialBtn.setOnClickListener(v -> getSpecials());
         FilterButton.setOnClickListener(v -> hideFilter());
-        hideKeyboardBtn.setOnClickListener(v->hideKeyboard());
-        LogoutBtn.setOnClickListener(v->logout());
+        hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
+        LogoutBtn.setOnClickListener(v -> logout());
+        No.setOnClickListener(v->handleNo());
+        Yes.setOnClickListener(v->handleYes());
     }
 
     private void logout() {
-      Utils.logout(this);
+        dash_board_screen.setVisibility(View.GONE);
+        ConfirmationScreen.setVisibility(View.VISIBLE);
+        bottomNav.setVisibility(View.GONE);
+    }
+    private void handleNo(){
+        dash_board_screen.setVisibility(View.VISIBLE);
+        bottomNav.setVisibility(View.VISIBLE);
+        ConfirmationScreen.setVisibility(View.GONE);
+    }
+private void handleYes(){
+//          Utils.logout(this);
         Intent intent = new Intent(this,UserManagement.class);
         startActivity(intent);
-    }
-
+}
     private void hideFilter() {
         ViewGroup.LayoutParams params = scrollView.getLayoutParams();
         if (show) {
@@ -289,7 +304,7 @@ public class Dashboard extends AppCompatActivity {
                 selectedNet.setText("Selected Network: Econet");
                 int balance = (int) response.get("Amount");
                 String a = String.valueOf(balance);
-                AccountBalance.setText(("Current Balance "+currencySymbol + Utils.FormatAmount(a)));
+                AccountBalance.setText(("Current Balance " + currencySymbol + Utils.FormatAmount(a)));
                 if (balance < 1000) {
                     Message.setText("You need to recharge.");
                 } else if (balance >= 1000 && balance < 5000) {
@@ -443,7 +458,6 @@ public class Dashboard extends AppCompatActivity {
                     ItemPrice.setText(currencySymbol + price);
 
 
-
                 }
             }
 
@@ -490,7 +504,7 @@ public class Dashboard extends AppCompatActivity {
         for (int i = 1; i <= 8; i++) {
             Map<String, Object> item = new HashMap<>();
             item.put("type", "SMS");
-            item.put("amount", i * 50 );
+            item.put("amount", i * 50);
             item.put("lifeTime", "30 Days");
             item.put("price", i * 5 + 2.00);
             items.add(item);
@@ -529,9 +543,11 @@ public class Dashboard extends AppCompatActivity {
         moreItemsBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.tertiary_color), PorterDuff.Mode.SRC_IN);
     }
+
     private void hideKeyboard() {
         Utils.hideAlphaKeyboard(MyKeyboard);
     }
+
     private void clearFields() {
         Phone.setText("");
         Item.setText("");
