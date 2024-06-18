@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String USERNAME = "QuposUSDTest";
     public static final String PASSWORD = "pass123";
     public static final String MSISDN = "263781801175";
-    public static final int PROVIDER_CODE = 100;
+    public static final String PROVIDER_CODE = "100";
     private Button CandidateBtn;
     private ConstraintLayout landing_page;
 
