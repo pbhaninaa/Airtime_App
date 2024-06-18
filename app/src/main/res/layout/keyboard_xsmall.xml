@@ -367,7 +367,6 @@
             <Button
                 android:id="@+id/button_q"
                 style="@style/keyboardKeys"
-
                 android:layout_width="0dp"
                 android:layout_height="@dimen/forty_three"
                 android:layout_margin="@dimen/zero.two"
