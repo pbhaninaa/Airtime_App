@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EEEEEE"
-    tools:context="com.example.testingmyskills.UI.Dashboard">
+    tools:context="com.example.testingmyskills.UI.Dashboard"
+    tools:ignore="RtlHardcoded,RtlSymmetry,SpUsage,UselessParent">
     <!--    dash_board_screen -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/dash_board_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone"
         app:layout_constraintBaseline_toBottomOf="parent">
 
         <RelativeLayout
@@ -27,12 +27,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/twenty">
+                android:padding="@dimen/twenty"
+                tools:ignore="UselessParent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:baselineAligned="false">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -40,7 +42,8 @@
                         android:layout_weight="0.5"
                         android:gravity="left"
                         android:orientation="horizontal"
-                        android:paddingTop="@dimen/eight">
+                        android:paddingTop="@dimen/eight"
+                        tools:ignore="RtlHardcoded">
 
                         <TextView
                             android:id="@+id/user_salutation"
@@ -58,7 +61,8 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:gravity="right"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        tools:ignore="RtlHardcoded">
 
                         <FrameLayout
                             android:id="@+id/profile_picture_container"
@@ -66,13 +70,15 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="right"
                             android:background="@drawable/round_conners_background"
-                            android:padding="@dimen/eight">
+                            android:padding="@dimen/eight"
+                            tools:ignore="RtlHardcoded">
 
                             <ImageView
                                 android:id="@+id/user_profile_picture"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
+                                android:contentDescription="TODO"
                                 android:src="@drawable/logout" />
 
                         </FrameLayout>
@@ -100,17 +106,19 @@
                         android:layout_weight="4.5"
                         android:background="@drawable/white_box_with_shadow"
                         android:orientation="vertical"
-                        android:padding="@dimen/fifteen">
+                        android:padding="@dimen/fifteen"
+                        tools:ignore="NestedWeights,RtlHardcoded">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:paddingStart="@dimen/six"
-                            android:text="Econet"
+                            android:text="@string/econet"
                             android:textColor="@color/primary_color"
                             android:textSize="@dimen/sixteen"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            tools:ignore="RtlHardcoded,RtlSymmetry,SpUsage" />
                     </LinearLayout>
 
                     <View
@@ -126,14 +134,15 @@
                         android:layout_weight="4.5"
                         android:background="@drawable/white_box_with_shadow"
                         android:orientation="vertical"
-                        android:padding="@dimen/fifteen">
+                        android:padding="@dimen/fifteen"
+                        tools:ignore="RtlHardcoded">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:paddingStart="@dimen/six"
-                            android:text="Telnet"
+                            android:text="@string/telnet"
                             android:textColor="@color/primary_color"
                             android:textSize="@dimen/sixteen"
                             android:textStyle="bold" />
@@ -159,7 +168,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:paddingStart="@dimen/six"
-                            android:text="Netone"
+                            android:text="@string/netone"
                             android:textColor="@color/primary_color"
                             android:textSize="@dimen/sixteen"
                             android:textStyle="bold" />
@@ -173,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8sp"
                     android:gravity="start"
-                    android:text="Balances"
+                    android:text="@string/balances"
                     android:textColor="@color/black" />
 
                 <LinearLayout
@@ -200,6 +209,7 @@
                             android:layout_marginRight="@dimen/five"
                             android:background="@drawable/round_conners_background"
                             android:backgroundTint="@color/primary_color"
+                            android:contentDescription="TODO"
                             android:gravity="center" />
 
                         <TextView
@@ -208,7 +218,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/eight"
                             android:gravity="center"
-                            android:text="Balances"
+                            android:text="@string/balances"
                             android:textColor="@color/white"
                             android:textSize="@dimen/twelve"
                             android:textStyle="bold" />
@@ -218,6 +228,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/banner_background"
+                        android:baselineAligned="false"
                         android:gravity="center"
                         android:paddingStart="15sp"
                         android:paddingEnd="15sp"
@@ -265,6 +276,7 @@
                                 android:layout_marginRight="@dimen/five"
                                 android:background="@drawable/round_conners_background"
                                 android:backgroundTint="@color/secondary_color"
+                                android:contentDescription="TODO"
                                 android:gravity="center" />
 
                         </RelativeLayout>
@@ -291,7 +303,8 @@
                         android:layout_weight="4.5"
                         android:background="@drawable/white_box_with_shadow"
                         android:orientation="vertical"
-                        android:padding="@dimen/fifteen">
+                        android:padding="@dimen/fifteen"
+                        tools:ignore="NestedWeights">
 
 
                         <Spinner
@@ -299,7 +312,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="start"
-                            android:text="R 0.00 left"
                             android:textColor="@color/black"
                             android:textSize="@dimen/sixteen" />
                     </LinearLayout>
@@ -334,20 +346,18 @@
                                 android:backgroundTint="@color/primary_color"
                                 android:gravity="center"
                                 android:padding="@dimen/eight"
-                                android:text="."
+                                android:text="@string/full_stop"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/one"
                                 android:textStyle="bold" />
 
-                            <TextView
+                            <Spinner
+                                android:id="@+id/currency_type_spinner"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="start"
-                                android:paddingStart="@dimen/six"
-                                android:text="Specials"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/sixteen"
-                                android:textStyle="bold" />
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sixteen" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -374,10 +384,10 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="Recommended Items"
+                        android:text="@string/recommended_items"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -386,7 +396,7 @@
                         android:id="@+id/show_more_posts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="More"
+                        android:text="@string/more"
                         android:textColor="@color/primary_color"
                         android:textSize="15sp"
                         android:textStyle="normal" />
@@ -456,6 +466,7 @@
                         android:layout_gravity="left"
                         android:layout_weight="1"
                         android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/todo"
                         android:src="@drawable/baseline_keyboard_arrow_left_24"
                         app:tint="@color/white" />
 
@@ -464,7 +475,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:text="Popular Items"
+                        android:text="@string/popular_items"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -476,6 +487,7 @@
                         android:layout_gravity="left"
                         android:layout_weight="1"
                         android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/todo"
                         android:src="@drawable/filter_icon"
                         app:tint="@color/white" />
                 </LinearLayout>
@@ -484,7 +496,7 @@
                 <LinearLayout
                     android:id="@+id/filter_section"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_marginTop="20sp"
                     android:layout_weight="3"
                     android:orientation="horizontal"
@@ -493,14 +505,15 @@
 
                     <TextView
                         android:id="@+id/number_of_posts"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8sp"
                         android:layout_weight="3"
-                        android:text="120 items found"
+                        android:text="@string/_120_items_found"
                         android:textColor="@color/black"
                         android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="NestedWeights" />
 
                     <Spinner
                         android:id="@+id/filter_spinner"
@@ -508,8 +521,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8sp"
                         android:textColor="@color/black"
-                        android:textSize="8sp"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/eight"
+                        android:textStyle="bold"
+                        tools:ignore="SmallSp" />
 
                 </LinearLayout>
 
@@ -522,7 +536,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/jobListRecyclerView"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:clipToPadding="false"
                         android:padding="25sp"
                         android:scrollbars="vertical"
@@ -577,7 +591,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:text="Item to buy"
+                        android:text="@string/item_to_buy"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -603,8 +617,19 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/ten"
                             android:background="@drawable/rounded_with_white_background"
-                            android:hint="Mobile number"
+                            android:hint="@string/mobile_number"
                             android:inputType="phone"
+                            android:padding="@dimen/twelve"
+                            android:textColor="@color/primary_color" />
+
+                        <Spinner
+                            android:id="@+id/item_type_spinner1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_marginBottom="@dimen/ten"
+                            android:background="@drawable/rounded_with_white_background"
+                            android:hint="@string/data"
                             android:padding="@dimen/twelve"
                             android:textColor="@color/primary_color" />
 
@@ -613,8 +638,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/ten"
+                            android:autofillHints="none"
+                            android:visibility="gone"
                             android:background="@drawable/rounded_with_white_background"
-                            android:hint="Data "
+                            android:hint="@string/data"
                             android:padding="@dimen/twelve"
                             android:textColor="@color/primary_color" />
 
@@ -623,9 +650,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/ten"
+                            android:autofillHints="none"
                             android:background="@drawable/rounded_with_white_background"
-                            android:hint="100GB"
-
+                            android:hint="@string/_100gb"
                             android:padding="@dimen/twelve"
                             android:textColor="@color/primary_color" />
 
@@ -634,20 +661,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/ten"
+                            android:autofillHints="none"
                             android:background="@drawable/rounded_with_white_background"
-                            android:hint="Price"
+                            android:hint="@string/price"
                             android:inputType="number"
                             android:padding="@dimen/twelve"
                             android:textColor="@color/primary_color" />
-
-                        <!--                        <EditText-->
-                        <!--                            android:layout_width="match_parent"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:layout_marginBottom="@dimen/ten"-->
-                        <!--                            android:background="@drawable/rounded_with_white_background"-->
-                        <!--                            android:hint="Reserved"-->
-                        <!--                            android:padding="@dimen/twelve"-->
-                        <!--                            android:textColor="@color/primary_color" />-->
 
                         <Button
                             android:id="@+id/buy"
@@ -656,7 +675,7 @@
                             android:layout_height="wrap_content"
                             android:background="@drawable/text_box_background"
                             android:backgroundTint="@color/secondary_color"
-                            android:text="Buy"
+                            android:text="@string/buy"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -670,26 +689,26 @@
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-<!--    confirmation_screen-->
+    <!--    confirmation_screen-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/confirmation_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#11000000"
-        android:visibility="gone"
-        android:padding="@dimen/twenty_five">
+        android:padding="@dimen/twenty_five"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintHorizontal_bias="0.5">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5">
 
             <TextView
                 android:layout_width="wrap_content"

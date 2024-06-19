@@ -32,9 +32,8 @@
     </style>
 
 
-
     <style name="CustomButtonStyle3" parent="Widget.AppCompat.Button">
-<!--        <item name="theme">@style/AppTheme</item>-->
+        <!--        <item name="theme">@style/AppTheme</item>-->
         <item name="android:background">@drawable/rounded_conners_with_gradient</item>
         <item name="backgroundTint">@color/tertiary_color</item>
         <item name="android:textColor">@color/white</item>
@@ -43,21 +42,19 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:elevation">0dp</item>
         <item name="android:textSize">20sp</item>
-
     </style>
     <style name="keyboardKeys" parent="Widget.AppCompat.Button">
-<!--        <item name="theme">@style/AppTheme</item>-->
-        <item name="android:background">@drawable/white_box_with_shadow</item>
+        <!--        <item name="theme">@style/AppTheme</item>-->
+<!--        <item name="android:background">@drawable/keyboard_keys_shadow</item>-->
         <item name="android:textColor">@color/primary_color</item>
-        <item name="android:padding">@dimen/twelve</item>
-        <item name="android:layout_marginTop">@dimen/twenty</item>
+        <item name="android:padding">@dimen/eight</item>
+        <item name="android:layout_height">@dimen/fifty</item>
+        <item name="android:background">@drawable/keyboard_button_active_state</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:elevation">0dp</item>
-        <item name="android:textSize">20sp</item>
-
     </style>
     <style name="CustomButtonStyle2" parent="Widget.AppCompat.Button">
-<!--        <item name="theme">@style/AppTheme</item>-->
+        <!--        <item name="theme">@style/AppTheme</item>-->
         <item name="android:background">@drawable/rounded_conners_with_gradient</item>
         <item name="backgroundTint">@color/secondary_color</item>
         <item name="android:textColor">@color/white</item>
@@ -78,9 +75,10 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">20sp</item>
     </style>
+
     <style name="CustomButtonStyle5" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/white_box_with_shadow</item>
-<!--        <item name="color">@color/white</item>-->
+        <!--        <item name="color">@color/white</item>-->
         <item name="backgroundTint">@color/tertiary_color</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">20sp</item>
@@ -98,7 +96,6 @@
         <item name="android:paddingStart">16dp</item> <!-- Padding from the start -->
         <item name="android:paddingEnd">16dp</item> <!-- Padding from the end -->
     </style>
-
 
 
     <style name="PrimaryButtonStyle" parent="Widget.AppCompat.Button">

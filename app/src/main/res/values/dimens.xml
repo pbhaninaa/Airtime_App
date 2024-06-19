@@ -7,6 +7,7 @@
     <dimen name="scroll_height_collapsed">450sp</dimen>
     <dimen name="scroll_height_expanded">500sp</dimen>
     <!-- Additional dimens from 1 to 100 in words -->
+    <dimen name="keyboard_text_size">15dp</dimen>
     <dimen name="zero.two">0.2dp</dimen>
     <dimen name="one">1dp</dimen>
     <dimen name="two">2dp</dimen>

@@ -74,7 +74,7 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
     private Button mButtonAsterisk;
     private Button mButtonComma;
     private LinearLayout NumsLayout, CharsLayout;
-    private boolean displaNums;
+    private String displaNums;
     private SparseArray<String> keyValues = new SparseArray<>();
     private InputConnection inputConnection;
 
@@ -96,7 +96,7 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
 
         NumsLayout = findViewById(R.id.numbers_layout_In_keyboard);
         CharsLayout = findViewById(R.id.special_chars_layout);
-        displaNums = false;
+        displaNums = "nums";
         mButtonDelete = findViewById(R.id.button_alphabet_delete);
         mButtonToUpperCase = findViewById(R.id.button_to_upper_case);
         mButtonEnter = findViewById(R.id.button_enter);
@@ -303,16 +303,22 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
     }
 
     private void updateToNumbers() {
-        if (displaNums) {
+        if (displaNums.equals("nums")) {
             NumsLayout.setVisibility(VISIBLE);
             mButtonToNumbers.setText("Chars");
             CharsLayout.setVisibility(GONE);
-            displaNums = false;
-        } else {
+            displaNums = "chars";
+        } else if (displaNums.equals("chars")){
             NumsLayout.setVisibility(GONE);
             CharsLayout.setVisibility(VISIBLE);
             mButtonToNumbers.setText("123");
-            displaNums = true;
+            displaNums = "";
+        }
+        else {
+            NumsLayout.setVisibility(GONE);
+            CharsLayout.setVisibility(GONE);
+            mButtonToNumbers.setText("#/;");
+            displaNums = "nums";
         }
     }
 

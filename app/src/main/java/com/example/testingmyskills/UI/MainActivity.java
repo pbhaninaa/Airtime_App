@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.testingmyskills.Dao.ApiRequestTask;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
 
@@ -27,14 +28,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initialiseViews();
-        if (isUserLogged(this)) {
+        if (!isUserLogged(this)) {
             Intent intent = new Intent(MainActivity.this, Dashboard.class);
             startActivity(intent);
         } else {
             landing_page.setVisibility(View.VISIBLE);
         }
         Utils.hideSoftNavBar(MainActivity.this);
-
         setOnclickListeners();
     }
 
@@ -70,6 +70,16 @@ public class MainActivity extends AppCompatActivity {
             "Data Bundles",
             "Voice Bundles",
             "SMS Bundles"
+    };
+    public static String[] Items = {
+
+            "Airtime",
+            "Data Bundles",
+            "Voice Bundles",
+            "SMS Bundles"
+    };  public static String[] Currencies = {
+            "$",
+            "ZID"
     };
 
     public static String[] getAllCountries() {

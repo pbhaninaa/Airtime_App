@@ -31,10 +31,12 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.testingmyskills.Dao.ApiRequestTask;
+import com.example.testingmyskills.Dao.XMLRPCClient;
 import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
-import com.example.testingmyskills.Dao.ApiCalls;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
+
 
 import org.apache.xmlrpc.XmlRpcException;
 
@@ -45,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Dashboard extends AppCompatActivity {
+    public String MSISDN = "263781801175";
     private ConstraintLayout dash_board_screen;
     private ConstraintLayout BuyScreen;
     private ConstraintLayout ConfirmationScreen;
@@ -53,7 +56,7 @@ public class Dashboard extends AppCompatActivity {
     private ImageButton backFromList;
     private Button BuyBtn, Yes, No;
     private TextView number_of_posts, BuyTittle;
-    private Spinner filter_spinner, ItemTypeSpinner;
+    private Spinner filter_spinner, ItemTypeSpinner, ItemTypeSpinner2, SelectedCurrency;
 
 
     private TextView selectedNet, AccountBalance, Message;
@@ -65,14 +68,13 @@ public class Dashboard extends AppCompatActivity {
     private ImageButton btnProfile, moreItemsBtn;
     private ScrollView scrollView;
     private FrameLayout LogoutBtn;
-
-
     private LinearLayout bottomNav, EconetBtn, TelnetBtn, NetoneBtn, SpecialBtn, filterSection;
-    ApiCalls api = new ApiCalls(MainActivity.SERVER_URL, MainActivity.USERNAME, MainActivity.PASSWORD);
+    //    ApiCalls api = new ApiCalls();
     private boolean show;
     private AlphaKeyboard MyKeyboard;
     private Button hideKeyboardBtn;
     static String currencySymbol;
+    private String ItemToBuy;
 
     public Dashboard() throws MalformedURLException {
     }
@@ -81,7 +83,8 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs);
-        getDefaultBalance(MainActivity.MSISDN);
+        String transactionType = "account_balance_enquiry";
+        getDefaultBalance(transactionType, MSISDN);
         show = true;
         initialiseViews();
 
@@ -89,26 +92,34 @@ public class Dashboard extends AppCompatActivity {
         setupFocusListeners();
         setOnclickListeners();
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new RecommendedAd(getProducts()));
+        recyclerViews();
+        adaptors();
 
-        RecyclerView jobListRecyclerView = findViewById(R.id.jobListRecyclerView);
-        jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        jobListRecyclerView.setAdapter(new RecommendedAd(getProducts()));//
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.econetItems);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        filter_spinner.setAdapter(adapter);
-
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.econetItems);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        ItemTypeSpinner.setAdapter(adapter3);
-
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
 
         String n = String.valueOf(getProducts().size());
         number_of_posts.setText(String.format("%s%s", n, getString(R.string.items_found)));
+        filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // Retrieve the selected item
+                String selectedItem = parentView.getItemAtPosition(position).toString();
+
+                if (selectedItem.equals("All")) {
+                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                    recyclerView.setAdapter(new RecommendedAd(getProducts()));
+                } else {
+                    // we will call a function wil param,s
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Handle no selection if needed
+            }
+        });
 
         ItemTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -130,18 +141,18 @@ public class Dashboard extends AppCompatActivity {
                 // Handle no selection if needed
             }
         });
-        filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        ItemTypeSpinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Retrieve the selected item
-                String selectedItem = parentView.getItemAtPosition(position).toString();
+                String a = parentView.getItemAtPosition(position).toString();
 
-                if (selectedItem.equals("All")) {
+                if (a.equals("All")) {
                     RecyclerView recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(getProducts()));
                 } else {
-                    // we will call a function wil param,s
+                    ItemToBuy = a;
                 }
             }
 
@@ -150,14 +161,76 @@ public class Dashboard extends AppCompatActivity {
                 // Handle no selection if needed
             }
         });
+        SelectedCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // Retrieve the selected item (currency symbol)
+                String selectedCurrencySymbol = parentView.getItemAtPosition(position).toString();
+
+                // Update the currency symbol string resource
+                updateCurrencySymbol(selectedCurrencySymbol);
+                RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                recyclerView.setAdapter(new RecommendedAd(getProducts()));
+//                recyclerViews();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Handle no selection if needed
+            }
+        });
+
         btnHome.setColorFilter(ContextCompat.getColor(this, R.color.tertiary_color), PorterDuff.Mode.SRC_IN);
         getProfile();
 
         dash_board_screen.setVisibility(View.VISIBLE);
     }
 
+    private void adaptors() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.econetItems);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filter_spinner.setAdapter(adapter);
+
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.Items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ItemTypeSpinner2.setAdapter(adapter2);
+
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.econetItems);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ItemTypeSpinner.setAdapter(adapter3);
+
+        ArrayAdapter<String> adapter4 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.Currencies);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        SelectedCurrency.setAdapter(adapter4);
+
+
+    }
+
+    private void recyclerViews() {
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new RecommendedAd(getProducts()));
+
+        RecyclerView jobListRecyclerView = findViewById(R.id.jobListRecyclerView);
+        jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        jobListRecyclerView.setAdapter(new RecommendedAd(getProducts()));//
+
+    }
+
+    private void updateCurrencySymbol(String newCurrencySymbol) {
+        // Update the currency symbol string resource
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("currency_symbol", newCurrencySymbol);
+        editor.apply();
+
+        // Notify any parts of your app that need to react to this change
+        // For example, update UI elements or perform calculations using the new symbol
+    }
+
     private void initialiseViews() {
-        currencySymbol = getString(R.string.currency_symbol);
+
         MyKeyboard = new AlphaKeyboard(this);
         hideKeyboardBtn = MyKeyboard.findViewById(R.id.button_enter);
         dash_board_screen = findViewById(R.id.dash_board_screen);
@@ -193,7 +266,8 @@ public class Dashboard extends AppCompatActivity {
         ConfirmationScreen = findViewById(R.id.confirmation_screen);
         Yes = findViewById(R.id.yes);
         No = findViewById(R.id.no);
-
+        ItemTypeSpinner2 = findViewById(R.id.item_type_spinner1);
+        SelectedCurrency = findViewById(R.id.currency_type_spinner);
     }
 
     private void setOnclickListeners() {
@@ -211,8 +285,8 @@ public class Dashboard extends AppCompatActivity {
         FilterButton.setOnClickListener(v -> hideFilter());
         hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
         LogoutBtn.setOnClickListener(v -> logout());
-        No.setOnClickListener(v->handleNo());
-        Yes.setOnClickListener(v->handleYes());
+        No.setOnClickListener(v -> handleNo());
+        Yes.setOnClickListener(v -> handleYes());
     }
 
     private void logout() {
@@ -220,16 +294,19 @@ public class Dashboard extends AppCompatActivity {
         ConfirmationScreen.setVisibility(View.VISIBLE);
         bottomNav.setVisibility(View.GONE);
     }
-    private void handleNo(){
+
+    private void handleNo() {
         dash_board_screen.setVisibility(View.VISIBLE);
         bottomNav.setVisibility(View.VISIBLE);
         ConfirmationScreen.setVisibility(View.GONE);
     }
-private void handleYes(){
+
+    private void handleYes() {
 //          Utils.logout(this);
-        Intent intent = new Intent(this,UserManagement.class);
+        Intent intent = new Intent(this, UserManagement.class);
         startActivity(intent);
-}
+    }
+
     private void hideFilter() {
         ViewGroup.LayoutParams params = scrollView.getLayoutParams();
         if (show) {
@@ -246,7 +323,6 @@ private void handleYes(){
     }
 
     private void getProfile() {
-
 
         SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         // Populate EditText fields
@@ -295,61 +371,64 @@ private void handleYes(){
         selectedNet.setText("Selected Network: Netone");
     }
 
-    private void getDefaultBalance(String number) {
+    private void getDefaultBalance(String transactionType, String number) {
         new Thread(() -> {
             try {
-                Map<String, Object> response = api.accountBalanceEnquiry(number);
-//
-                // Handle the response
-                selectedNet.setText("Selected Network: Econet");
-                int balance = (int) response.get("Amount");
-                String a = String.valueOf(balance);
-                AccountBalance.setText(("Current Balance " + currencySymbol + Utils.FormatAmount(a)));
-                if (balance < 1000) {
-                    Message.setText("You need to recharge.");
-                } else if (balance >= 1000 && balance < 5000) {
-                    Message.setText("Your balance is low. Consider recharging soon.");
-                } else if (balance >= 5000 && balance < 10000) {
-                    Message.setText("Your balance is sufficient.");
-                } else {
-                    Message.setText("Your balance is high.");
-                }
+
+                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(transactionType, number);
+                System.out.println(response);
+
+
+//                System.out.println(response.get("Amount")+"=====================================");
+
             } catch (XmlRpcException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }).start();
     }
 
     private void handleTransaction() {
-        Utils.hideAlphaKeyboard(MyKeyboard);
         String phone = Phone.getText().toString().trim();
         String ItemType = Item.getText().toString().trim();
         String ItemAmount = Amount.getText().toString().trim();
         String Price = ItemPrice.getText().toString().trim();
-        String s = "You are attempting to buy" + "\n" +
-                ItemAmount + " " +
-                ItemType + "\n for " +
-                phone + "\n";
-//        Utils.showToast(this, s);
-        clearFields();
+        if (phone.isEmpty() || ItemAmount.isEmpty() || Price.isEmpty()) {
+            return;
+        }
+        if (!ItemToBuy.isEmpty() || !ItemType.isEmpty()) {
+            Utils.hideAlphaKeyboard(MyKeyboard);
+            String s = "You are attempting to buy" + "\n" +
+                    ItemAmount + " " +
+                    ItemType + "\n for " +
+                    phone + "\n";
+            Utils.showToast(this, s);
+            clearFields();
+        } else {
+            Utils.showToast(this, "Select Item");
+        }
 
-        new Thread(() -> {
-            try {
-                Map<String, Object> response = api.loadValue(MainActivity.MSISDN, 10, "load airtime test XMLRPC HM 1", 840);
-                if ((int) response.get("Status") == 1) {
-                    runOnUiThread(() -> Utils.success(this, String.valueOf(response.get("Description"))));
-                } else if ((int) response.get("Status") == 0) {
-                    runOnUiThread(() -> Utils.showToast(this, String.valueOf(response.get("Description"))));
-                }
-            } catch (XmlRpcException e) {
-                e.printStackTrace();
-            }
-        }).start();
+//        new Thread(() -> {
+//            try {
+//                Map<String, Object> response = api.loadValue(MainActivity.MSISDN, 10, "load airtime test XMLRPC HM 1", 840);
+//                if ((int) response.get("Status") == 1) {
+//                    runOnUiThread(() -> Utils.success(this, String.valueOf(response.get("Description"))));
+//                } else if ((int) response.get("Status") == 0) {
+//                    runOnUiThread(() -> Utils.showToast(this, String.valueOf(response.get("Description"))));
+//                }
+//            } catch (XmlRpcException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
 
     }
 
     private void hideOtherLayout(int layoutToShow, ImageButton icon) {
+
         if (layoutToShow == R.id.buy_screen) {
+            Item.setVisibility(View.GONE);
+            ItemTypeSpinner2.setVisibility(View.VISIBLE);
             Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
             Phone.setShowSoftInputOnFocus(false);
             Phone.setTextIsSelectable(true);
@@ -456,7 +535,7 @@ private void handleYes(){
                     Item.setText(type);
                     Amount.setText(amount);
                     ItemPrice.setText(currencySymbol + price);
-
+                    ItemTypeSpinner2.setVisibility(View.GONE);
 
                 }
             }
