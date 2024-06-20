@@ -294,4 +294,8 @@
     <string name="popular_items">Popular Items</string>
     <string name="no_ballance_to_display">No Ballance to display</string>
     <string name="account_balance_wasn_t_recoverd">Account balance wasn\'t recoverd</string>
+    <string name="safe">You have a high balance. Feel free to make large transactions!</string>
+    <string name="medium_safe">Your balance is sufficient for most transactions.</string>
+    <string name="less_safe">Your balance is getting low. Consider topping up soon.</string>
+    <string name="not_safe">Your balance is very low. Please top up immediately.</string>
 </resources>

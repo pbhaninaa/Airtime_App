@@ -2,6 +2,7 @@ package com.example.testingmyskills.UI;
 
 import static com.example.testingmyskills.UI.MainActivity.MSISDN;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -33,7 +34,6 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.testingmyskills.Dao.ApiRequestTask;
 import com.example.testingmyskills.Dao.XMLRPCClient;
 import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
 import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
@@ -87,7 +87,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs);
         String transactionType = "account_balance_enquiry";
-        APICall(MSISDN, transactionType, this);
+        APICall(transactionType, this);
         show = true;
         initialiseViews();
 
@@ -135,7 +135,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(getProducts()));
                 } else {
-                    // we will call a function wil param,s
+                    // we will call a function with params
                 }
             }
 
@@ -191,21 +191,17 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     @Override
-    public void onBalanceReceived(Map<String, Object> response) {
-        // Use the response here
-
-
+    public void onBalanceReceived(Map<String, Object> response) {      // Use the response here
         String amount = Objects.requireNonNull(response.get("Amount")).toString();
-        AccountBalance.setText((String.format("Account Balance :%s %s", currencySymbol, Utils.FormatAmount(amount))));
-
-        System.out.println("REs1: " + response);
-//        AccountBalance.setText("REs1: " + response);
+        AccountBalance.setText((String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(amount))));
+        double balance = Double.parseDouble(amount);
+        Utils.setMessage(this, balance, Message);
     }
 
-    private void APICall(String transactionType, String number, BalanceResponseCallback callback) {
+    private void APICall(String number, BalanceResponseCallback callback) {
         new Thread(() -> {
             try {
-                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(transactionType, number);
+                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(MainActivity.MSISDN, number);
                 runOnUiThread(() -> {
                     callback.onBalanceReceived(response);
                 });
@@ -504,6 +500,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             this.jobPosts = jobPosts;
         }
 
+        @NonNull
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.job_structure_display, parent, false);
@@ -543,24 +540,25 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     hideOtherLayout(R.id.buy_screen, btnNotifications);
-                    BuyTittle.setText(Type.getText().toString() + "\n that last for " + time);
+                    BuyTittle.setText(String.format("%s\n that last for %s", Type.getText().toString(), time));
                     Item.setText(type);
                     Amount.setText(amount);
-                    ItemPrice.setText(currencySymbol + price);
+                    ItemPrice.setText(String.format("%s%s", currencySymbol, price));
                     ItemTypeSpinner2.setVisibility(View.GONE);
+                    Item.setVisibility(View.VISIBLE);
 
                 }
             }
 
             public void bind(Map<String, Object> jobPost) {
-                amount = jobPost.get("amount").toString();
-                type = jobPost.get("type").toString();
-                time = jobPost.get("lifeTime").toString();
-                price = Utils.FormatAmount(jobPost.get("price").toString());
+                amount = Objects.requireNonNull(jobPost.get("amount")).toString();
+                type = Objects.requireNonNull(jobPost.get("type")).toString();
+                time = Objects.requireNonNull(jobPost.get("lifeTime")).toString();
+                price = Utils.FormatAmount(Objects.requireNonNull(jobPost.get("price")).toString());
 
-                Type.setText(amount + " " + type);
+                Type.setText(String.format("%s %s", amount, type));
                 LifeTime.setText(time);
-                Price.setText(currencySymbol + price);
+                Price.setText(String.format("%s%s", currencySymbol, price));
 
 
             }
