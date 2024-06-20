@@ -2,6 +2,7 @@ package com.example.testingmyskills.UI;
 
 import static com.example.testingmyskills.JavaClasses.Utils.PASSWORD_KEY;
 import static com.example.testingmyskills.JavaClasses.Utils.PREF_NAME;
+import static com.example.testingmyskills.UI.MainActivity.MSISDN;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -25,7 +26,6 @@ import android.widget.TextView;
 
 import com.example.testingmyskills.Dao.XMLRPCClient;
 import com.example.testingmyskills.Interfaces.AccountValidationCallback;
-import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
 import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
 import com.example.testingmyskills.JavaClasses.EmailSender;
 import com.example.testingmyskills.R;
@@ -34,6 +34,7 @@ import com.example.testingmyskills.JavaClasses.Utils;
 import org.apache.xmlrpc.XmlRpcException;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class UserManagement extends AppCompatActivity implements AccountValidationCallback {
     private ConstraintLayout SignInLayout;
@@ -85,17 +86,25 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         languagesSpinner.setAdapter(adapter);
         setupFocusListeners();
 
+
     }
+
     @Override
     public void validateUser(Map<String, Object> response) {
-
+        int status = (int) response.get("Status");
+        String des = Objects.requireNonNull(response.get("Description")).toString();
+        if (status == 0) {
+            Utils.showToast(this, des);
+        } else if (status == 1) {
+            saveAccount();
+        }
         System.out.println("Account Validation Res: " + response);
-//        AccountBalance.setText("REs1: " + response);
     }
-    private void APICall(String transactionType, String number, AccountValidationCallback callback) {
+
+    private void APICall(String number, AccountValidationCallback callback) {
         new Thread(() -> {
             try {
-                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(transactionType, number);
+                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(number, "validate_msisdn");
                 runOnUiThread(() -> {
                     callback.validateUser(response);
                 });
@@ -106,6 +115,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             }
         }).start();
     }
+
     private void initialiseViews() {
         alphaKeyboard = new AlphaKeyboard(this);
         hideKeyboardBtn = alphaKeyboard.findViewById(R.id.button_enter);
@@ -303,7 +313,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         String password = pref.getString(PASSWORD_KEY, "");
         String subject = "Your Password Reset Request";
         String body = "Dear user,\n\nYour password is: " + password + "\n\nPlease keep it safe.";
-        EmailSender emailSender = new EmailSender(this,email, subject, body);
+        EmailSender emailSender = new EmailSender(this, email, subject, body);
         emailSender.execute();
     }
 
@@ -333,20 +343,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             // Show an error message if email and confirmation do not match
             Utils.showToast(this, "Email addresses do not match");
         } else {
-            // Save the values in SharedPreferences
-            SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("language", language);
-            editor.putString("name", name);
-            editor.putString("surname", surname);
-            editor.putString("phone", phone);
-            editor.putString("addressLine", addressLine);
-            editor.putString("emailAddress", emailAddress);
-            editor.apply();
-            Intent intent = new Intent(this, Dashboard.class);
-            startActivity(intent);
-            // Show a success message
-            Utils.showToast(this, "Profile saved successfully");
+            APICall(phone, this);
+
         }
     }
 
@@ -433,6 +431,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 SignInLayout.setVisibility(View.GONE);
                 RegScreen.setVisibility(View.VISIBLE);
             } else {
+
                 Intent intent = new Intent(UserManagement.this, Dashboard.class);
                 startActivity(intent);
                 getEmailTextInLogin.setText("");
@@ -487,5 +486,25 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 phone.isEmpty() || addressLine.isEmpty() || emailAddress.isEmpty();
     }
 
+    private void saveAccount() {
+        String language = languagesSpinner.getSelectedItem().toString().trim();
+        String name = Firstname.getText().toString().trim();
+        String surname = Lastname.getText().toString().trim();
+        String phone = phoneNumber.getText().toString().trim();
+        String addressLine = address.getText().toString().trim();
+        String emailAddress = email.getText().toString().trim();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("language", language);
+        editor.putString("name", name);
+        editor.putString("surname", surname);
+        editor.putString("phone", phone);
+        editor.putString("addressLine", addressLine);
+        editor.putString("emailAddress", emailAddress);
+        editor.apply();
+        Intent intent = new Intent(this, Dashboard.class);
+        startActivity(intent);
+    }
 
 }

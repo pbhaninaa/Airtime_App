@@ -33,9 +33,7 @@ public class XMLRPCClient {
         struct.put("ProviderCode",100);
 
         Object[] params = new Object[]{USERNAME, PASSWORD, struct};
-        System.out.println("Testing ================================================"+ Arrays.toString(params));
         Object response = client.execute(transactionType, params);
-        System.out.println("Testing1 ================================================"+response);
 
         if (response instanceof Map) {
             @SuppressWarnings("unchecked")

@@ -78,6 +78,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private Button hideKeyboardBtn;
     static String currencySymbol;
     private String ItemToBuy;
+    public static String MSISDN;
 
     public Dashboard() throws MalformedURLException {
     }
@@ -86,6 +87,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs);
+        getProfile();
         String transactionType = "account_balance_enquiry";
         APICall(transactionType, this);
         show = true;
@@ -185,23 +187,31 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         });
 
         btnHome.setColorFilter(ContextCompat.getColor(this, R.color.tertiary_color), PorterDuff.Mode.SRC_IN);
-        getProfile();
 
         dash_board_screen.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onBalanceReceived(Map<String, Object> response) {      // Use the response here
-        String amount = Objects.requireNonNull(response.get("Amount")).toString();
-        AccountBalance.setText((String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(amount))));
-        double balance = Double.parseDouble(amount);
-        Utils.setMessage(this, balance, Message);
+    public void onBalanceReceived(Map<String, Object> response) {
+        try {
+            String amount = Objects.requireNonNull(response.get("Amount")).toString();
+            String Balance = amount.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(amount)));
+
+            AccountBalance.setText(Balance);
+
+            double balance = Double.parseDouble(amount);
+
+            Utils.setMessage(this, balance, Message);
+        } catch (Exception e) {
+            System.out.println("Error occurred: " + e.getMessage());
+        }
+
     }
 
-    private void APICall(String number, BalanceResponseCallback callback) {
+    private void APICall(String transactionType, BalanceResponseCallback callback) {
         new Thread(() -> {
             try {
-                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(MainActivity.MSISDN, number);
+                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(MSISDN, transactionType);
                 runOnUiThread(() -> {
                     callback.onBalanceReceived(response);
                 });
@@ -357,6 +367,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
         String salutation = "Hello " + phoneNumber;
         String updateTime = "last updated a minute ago";
+        MSISDN = prefs.getString("phone", "");
 
         // Create a SpannableStringBuilder to apply different colors
         SpannableStringBuilder builder = new SpannableStringBuilder();

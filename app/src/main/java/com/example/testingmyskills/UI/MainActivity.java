@@ -11,7 +11,7 @@ import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String MSISDN = "263781801175";
+    public static  String MSISDN = "263781801175";
     private Button CandidateBtn;
     private ConstraintLayout landing_page;
 
