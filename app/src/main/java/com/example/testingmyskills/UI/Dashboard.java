@@ -205,7 +205,24 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         } catch (Exception e) {
             System.out.println("Error occurred: " + e.getMessage());
         }
+        System.out.println("Dash Res: " + response);
+    }
 
+    @Override
+    public void onLoadValues(Map<String, Object> response) {
+        try {
+            String amount = Objects.requireNonNull(response.get("Amount")).toString();
+            String Balance = amount.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(amount)));
+
+            AccountBalance.setText(Balance);
+
+            double balance = Double.parseDouble(amount);
+
+            Utils.setMessage(this, balance, Message);
+        } catch (Exception e) {
+            System.out.println("Error occurred: " + e.getMessage());
+        }
+        System.out.println("Load Res: " + response);
     }
 
     private void APICall(String transactionType, BalanceResponseCallback callback) {
@@ -214,6 +231,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(MSISDN, transactionType);
                 runOnUiThread(() -> {
                     callback.onBalanceReceived(response);
+                    callback.onLoadValues(response);
                 });
             } catch (XmlRpcException e) {
                 e.printStackTrace();
@@ -423,10 +441,12 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     ItemType + "\n for " +
                     phone + "\n";
             Utils.showToast(this, s);
+            APICall("load_value",this);
             clearFields();
         } else {
             Utils.showToast(this, "Select Item");
         }
+
 
 //        new Thread(() -> {
 //            try {

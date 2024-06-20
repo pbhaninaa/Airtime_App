@@ -1,7 +1,9 @@
 package com.example.testingmyskills.Dao;
+
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +32,10 @@ public class XMLRPCClient {
         // Prepare the parameters
         Map<String, Object> struct = new HashMap<>();
         struct.put("MSISDN", msisdn);
-        struct.put("ProviderCode",100);
+        struct.put("ProviderCode", 100);
+        struct.put("Currency", 840);
+        struct.put("Amount",2);
+        struct.put("Reference","load airtime test XMLRPC HM 1");
 
         Object[] params = new Object[]{USERNAME, PASSWORD, struct};
         Object response = client.execute(transactionType, params);
