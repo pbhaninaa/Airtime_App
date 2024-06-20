@@ -1,25 +1,17 @@
 package com.example.testingmyskills.UI;
 
 import static com.example.testingmyskills.JavaClasses.Utils.isUserLogged;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
-import com.example.testingmyskills.Dao.ApiRequestTask;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String SERVER_URL = "http://102.219.85.66:7022/xmlrpc";
-    public static final String USERNAME = "QuposUSDTest";
-    public static final String PASSWORD = "pass123";
     public static final String MSISDN = "263781801175";
-    public static final String PROVIDER_CODE = "100";
     private Button CandidateBtn;
     private ConstraintLayout landing_page;
 

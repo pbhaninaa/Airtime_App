@@ -23,12 +23,19 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.testingmyskills.Dao.XMLRPCClient;
+import com.example.testingmyskills.Interfaces.AccountValidationCallback;
+import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
 import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
 import com.example.testingmyskills.JavaClasses.EmailSender;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
 
-public class UserManagement extends AppCompatActivity {
+import org.apache.xmlrpc.XmlRpcException;
+
+import java.util.Map;
+
+public class UserManagement extends AppCompatActivity implements AccountValidationCallback {
     private ConstraintLayout SignInLayout;
     private ConstraintLayout SignUpLayout, RegScreen;
     private TextView RegisterBtn;
@@ -79,7 +86,26 @@ public class UserManagement extends AppCompatActivity {
         setupFocusListeners();
 
     }
+    @Override
+    public void validateUser(Map<String, Object> response) {
 
+        System.out.println("Account Validation Res: " + response);
+//        AccountBalance.setText("REs1: " + response);
+    }
+    private void APICall(String transactionType, String number, AccountValidationCallback callback) {
+        new Thread(() -> {
+            try {
+                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(transactionType, number);
+                runOnUiThread(() -> {
+                    callback.validateUser(response);
+                });
+            } catch (XmlRpcException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
     private void initialiseViews() {
         alphaKeyboard = new AlphaKeyboard(this);
         hideKeyboardBtn = alphaKeyboard.findViewById(R.id.button_enter);

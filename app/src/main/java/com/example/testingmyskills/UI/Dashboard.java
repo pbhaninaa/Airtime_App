@@ -1,5 +1,7 @@
 package com.example.testingmyskills.UI;
 
+import static com.example.testingmyskills.UI.MainActivity.MSISDN;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -33,6 +35,7 @@ import android.widget.TextView;
 
 import com.example.testingmyskills.Dao.ApiRequestTask;
 import com.example.testingmyskills.Dao.XMLRPCClient;
+import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
 import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
@@ -45,9 +48,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public class Dashboard extends AppCompatActivity {
-    public String MSISDN = "263781801175";
+public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
     private ConstraintLayout dash_board_screen;
     private ConstraintLayout BuyScreen;
     private ConstraintLayout ConfirmationScreen;
@@ -84,7 +87,7 @@ public class Dashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs);
         String transactionType = "account_balance_enquiry";
-        getDefaultBalance(transactionType, MSISDN);
+        APICall(MSISDN, transactionType, this);
         show = true;
         initialiseViews();
 
@@ -187,6 +190,33 @@ public class Dashboard extends AppCompatActivity {
         dash_board_screen.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onBalanceReceived(Map<String, Object> response) {
+        // Use the response here
+
+
+        String amount = Objects.requireNonNull(response.get("Amount")).toString();
+        AccountBalance.setText((String.format("Account Balance :%s %s", currencySymbol, Utils.FormatAmount(amount))));
+
+        System.out.println("REs1: " + response);
+//        AccountBalance.setText("REs1: " + response);
+    }
+
+    private void APICall(String transactionType, String number, BalanceResponseCallback callback) {
+        new Thread(() -> {
+            try {
+                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(transactionType, number);
+                runOnUiThread(() -> {
+                    callback.onBalanceReceived(response);
+                });
+            } catch (XmlRpcException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
+
     private void adaptors() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.econetItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -278,9 +308,9 @@ public class Dashboard extends AppCompatActivity {
         btnNotifications.setOnClickListener(v -> hideOtherLayout(R.id.buy_screen, btnNotifications));
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
-        NetoneBtn.setOnClickListener(v -> getNetoneBalance(MainActivity.MSISDN));
-        TelnetBtn.setOnClickListener(v -> getTelnetBalance(MainActivity.MSISDN));
-        EconetBtn.setOnClickListener(v -> getEconetBalance(MainActivity.MSISDN));
+        NetoneBtn.setOnClickListener(v -> getNetoneBalance(MSISDN));
+        TelnetBtn.setOnClickListener(v -> getTelnetBalance(MSISDN));
+        EconetBtn.setOnClickListener(v -> getEconetBalance(MSISDN));
         SpecialBtn.setOnClickListener(v -> getSpecials());
         FilterButton.setOnClickListener(v -> hideFilter());
         hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
@@ -369,24 +399,6 @@ public class Dashboard extends AppCompatActivity {
 
     private void getNetoneBalance(String msisdn) {
         selectedNet.setText("Selected Network: Netone");
-    }
-
-    private void getDefaultBalance(String transactionType, String number) {
-        new Thread(() -> {
-            try {
-
-                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(transactionType, number);
-                System.out.println(response);
-
-
-//                System.out.println(response.get("Amount")+"=====================================");
-
-            } catch (XmlRpcException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
     }
 
     private void handleTransaction() {
@@ -633,4 +645,5 @@ public class Dashboard extends AppCompatActivity {
         Amount.setText("");
         ItemPrice.setText("");
     }
+
 }

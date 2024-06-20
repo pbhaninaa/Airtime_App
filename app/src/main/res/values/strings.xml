@@ -292,4 +292,6 @@
     <string name="more">More</string>
     <string name="_120_items_found">120 items found</string>
     <string name="popular_items">Popular Items</string>
+    <string name="no_ballance_to_display">No Ballance to display</string>
+    <string name="account_balance_wasn_t_recoverd">Account balance wasn\'t recoverd</string>
 </resources>
