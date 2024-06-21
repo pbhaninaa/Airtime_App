@@ -15,6 +15,8 @@ import androidx.core.content.ContextCompat;
 import com.example.testingmyskills.R;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Utils {
     public static final String PREF_NAME = "UserPrefs";
@@ -141,5 +143,38 @@ public class Utils {
             Message.setText(R.string.not_safe);
 //            Message.setTextColor(ContextCompat.getColor(activity, R.color.red)); // Assuming you have a red color defined
         }
+    }
+    public static String ref() {
+        String strWorkstationNum = "1"; // Example workstation number
+
+        String strBasketPrefix = "QU";
+        Date date = new Date();
+        String strBasket = "";
+        String basketID = "";
+        String format = "";
+        String strTemp = "0";
+        String strWID = "0";
+
+        if (strWorkstationNum.length() == 2) {
+            strWID = strWorkstationNum;
+            format = "ddHHmmss";
+            SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+            basketID = dateFormat.format(date);
+            strBasket = strBasketPrefix + strWID + basketID;
+        } else if (strWorkstationNum.length() == 1) {
+            strWID = strTemp + strWorkstationNum;
+            format = "ddHHmmss";
+            SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+            basketID = dateFormat.format(date);
+            strBasket = strBasketPrefix + strWID + basketID;
+        } else {
+            format = "MMddHHmmss";
+            SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+            basketID = dateFormat.format(date);
+            strBasket = strBasketPrefix + basketID;
+        }
+
+        System.out.println("Generated Basket ID: " + strBasket);
+        return strBasket;
     }
 }
