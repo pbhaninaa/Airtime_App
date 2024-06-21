@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBaseline_toBottomOf="parent">
 
         <RelativeLayout
@@ -35,7 +36,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:paddingBottom="@dimen/fifty"
+                    android:contentDescription="@string/todo"
+                    android:padding="@dimen/fifty"
                     android:src="@drawable/icon_logo" />
 
                 <LinearLayout
@@ -48,8 +50,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/ten"
-                        android:text="Sign In"
-                        android:textColor="@color/white"
+                        android:text="@string/sign_in"
+                        android:textColor="@color/gold_yellow"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
@@ -59,8 +61,9 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:contextClickable="true"
+                        android:focusable="true"
                         android:padding="@dimen/ten"
-                        android:text="Register"
+                        android:text="@string/register"
                         android:textColor="@color/tertiary_color"
                         android:textSize="25sp"
                         android:textStyle="bold" />
@@ -79,8 +82,9 @@
                         android:id="@+id/email_in_login_page"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:autofillHints="none"
                         android:background="@android:color/transparent"
-                        android:hint="john@gmail.com"
+                        android:hint="@string/john_gmail_com"
                         android:inputType="textEmailAddress"
                         android:padding="12sp"
                         android:textColor="@color/white"
@@ -101,12 +105,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
+                        android:autofillHints="none"
                         android:background="@android:color/transparent"
-                        android:hint="Password"
+                        android:hint="@string/password"
                         android:inputType="textPassword"
                         android:padding="12sp"
                         android:textColor="@color/white"
-                        android:textColorHint="@color/tertiary_color" />
+                        android:textColorHint="@color/tertiary_color"
+                        tools:ignore="NestedWeights" />
 
                     <ImageButton
                         android:id="@+id/show_password_in_login_page"
@@ -115,16 +121,17 @@
                         android:layout_gravity="end"
                         android:layout_weight="1"
                         android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/todo"
                         android:src="@drawable/open_eye" />
 
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/sign_in_btn"
-                    style="@style/CustomButtonStyle3"
+                    style="@style/CustomButtonStyle2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sign In"
+                    android:text="@string/sign_in"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -139,24 +146,25 @@
                         android:id="@+id/remember_me_check_box"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="@drawable/check_box"
                         android:buttonTint="@drawable/check_box"
-                        android:checked="false"
-                        android:textColor="@color/white" />
+                        android:checked="false" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="Remember me"
-                        android:textColor="@color/white" />
+                        android:text="@string/remember_me"
+                        android:textColor="@color/gold_yellow"
+                        tools:ignore="NestedWeights" />
 
                     <TextView
                         android:id="@+id/forgot_password"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Forgot password"
-                        android:textColor="@color/white" />
+                        android:text="@string/forgot_password"
+                        android:textColor="@color/gold_yellow" />
 
                 </LinearLayout>
 
@@ -173,22 +181,23 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_weight="3"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingLeft="40sp"
                     android:paddingRight="40sp"
-                    android:paddingBottom="20sp">
+                    android:paddingBottom="20sp"
+                    tools:ignore="UselessLeaf">
 
 
                 </LinearLayout>
 
                 <View
-                    android:layout_width="200sp"
-                    android:layout_height="10sp"
+                    android:layout_width="@dimen/two_hundred"
+                    android:layout_height="@dimen/ten"
                     android:layout_marginBottom="20sp"
-                    android:background="@color/tertiary_color" />
+                    android:background="@color/gold_yellow" />
 
             </LinearLayout>
 
@@ -223,7 +232,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/logo" />
+                    android:contentDescription="@string/todo"
+                    android:padding="@dimen/fifty"
+                    android:src="@drawable/icon_logo" />
 
 
                 <LinearLayout
@@ -237,9 +248,10 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:contextClickable="true"
+                        android:focusable="true"
                         android:padding="@dimen/ten"
-                        android:text="Register"
-                        android:textColor="@color/white"
+                        android:text="@string/register"
+                        android:textColor="@color/gold_yellow"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
@@ -248,7 +260,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/ten"
-                        android:text="Sign In"
+                        android:text="@string/sign_in"
                         android:textColor="@color/tertiary_color"
                         android:textSize="25sp"
                         android:textStyle="bold" />
@@ -268,8 +280,9 @@
                         android:id="@+id/email_in_register_page"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:autofillHints="none"
                         android:background="@android:color/transparent"
-                        android:hint="john@gmail.com"
+                        android:hint="@string/john_gmail_com"
                         android:inputType="textEmailAddress"
                         android:padding="12sp"
                         android:textColor="@color/white"
@@ -289,8 +302,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
+                        android:autofillHints="none"
                         android:background="@android:color/transparent"
-                        android:hint="Password"
+                        android:hint="@string/password"
                         android:inputType="textPassword"
                         android:padding="12sp"
                         android:textColor="@color/white"
@@ -303,6 +317,7 @@
                         android:layout_gravity="end"
                         android:layout_weight="1"
                         android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/todo"
                         android:src="@drawable/open_eye" />
 
 
@@ -321,8 +336,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
+                        android:autofillHints="none"
                         android:background="@android:color/transparent"
-                        android:hint="Password"
+                        android:hint="@string/password"
                         android:inputType="textPassword"
                         android:padding="12sp"
                         android:textColor="@color/white"
@@ -335,6 +351,7 @@
                         android:layout_gravity="end"
                         android:layout_weight="1"
                         android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/todo"
                         android:src="@drawable/open_eye" />
 
                 </LinearLayout>
@@ -345,25 +362,17 @@
                     android:layout_margin="20sp"
                     android:layout_marginTop="20sp"
                     android:gravity="center"
-                    android:text="By tap Sign Up button you accept  \n terms and privacy this app"
-                    android:textColor="@color/white" />
+                    android:text="@string/by_tap_sign_up_button_you_accept_n_terms_and_privacy_this_app"
+                    android:textColor="@color/gold_yellow" />
 
                 <Button
                     android:id="@+id/create_account"
-                    style="@style/CustomButtonStyle3"
+                    style="@style/CustomButtonStyle2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_box_background"
-                    android:text="Create Account"
+                    android:text="@string/create_account"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="35sp"
-                    android:gravity="center"
-                    android:text="App version "
-                    android:textColor="@color/tertiary_color" />
 
 
             </LinearLayout>
@@ -379,9 +388,10 @@
 
                 <View
                     android:layout_width="200sp"
-                    android:layout_height="10sp"
+                    android:layout_height="@dimen/ten"
                     android:layout_marginBottom="20sp"
-                    android:background="@color/tertiary_color" />
+                    android:background="@color/gold_yellow"
+                    tools:ignore="SmallSp" />
 
             </LinearLayout>
 
@@ -410,22 +420,27 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingEnd="20dp">
+                android:paddingStart="@dimen/twenty"
+                android:paddingEnd="@dimen/twenty">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/logo" />
+                    android:layout_marginTop="@dimen/twenty"
+                    android:layout_marginBottom="@dimen/twenty"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/icon_logo" />
 
                 <EditText
                     android:id="@+id/Fname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/five"
+                    android:autofillHints="none"
                     android:background="@drawable/text_box_background"
-                    android:hint="First Name "
+                    android:hint="@string/first_name"
+                    android:inputType="text"
                     android:padding="12sp"
                     android:textColor="@color/white"
                     android:textColorHint="@color/tertiary_color" />
@@ -435,8 +450,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/five"
+                    android:autofillHints="none"
                     android:background="@drawable/text_box_background"
-                    android:hint="Last Name "
+                    android:hint="@string/last_name"
+                    android:inputType="text"
                     android:padding="12sp"
                     android:textColor="@color/white"
                     android:textColorHint="@color/tertiary_color" />
@@ -453,7 +470,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="5"
                         android:padding="12sp"
-                        android:text="Home Language"
+                        android:text="@string/home_language"
                         android:textColor="@color/tertiary_color"
                         android:textStyle="bold" />
 
@@ -475,8 +492,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/five"
+                    android:autofillHints="none"
                     android:background="@drawable/text_box_background"
-                    android:hint="Mobile Number"
+                    android:hint="@string/mobile_number"
                     android:inputType="number"
                     android:padding="12sp"
                     android:textColor="@color/white"
@@ -488,10 +506,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/five"
                     android:background="@drawable/text_box_background"
-                    android:hint="Address"
+                    android:hint="@string/address"
                     android:padding="12sp"
                     android:textColor="@color/white"
-                    android:textColorHint="@color/tertiary_color" />
+                    android:textColorHint="@color/tertiary_color"
+                    android:autofillHints="false"
+                    android:inputType="textEmailAddress" />
 
 
                 <EditText
@@ -500,11 +520,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/five"
                     android:background="@drawable/text_box_background"
-                    android:hint="john@gmail.com"
+                    android:hint="@string/john_gmail_com"
                     android:inputType="textEmailAddress"
                     android:padding="12sp"
                     android:textColor="@color/white"
-                    android:textColorHint="@color/tertiary_color" />
+                    android:textColorHint="@color/tertiary_color"
+                    android:autofillHints="false" />
 
                 <EditText
                     android:id="@+id/emailC"
@@ -512,20 +533,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/five"
                     android:background="@drawable/text_box_background"
-                    android:hint="john@gmail.com"
+                    android:hint="@string/john_gmail_com"
                     android:inputType="textEmailAddress"
                     android:padding="12sp"
                     android:textColor="@color/white"
-                    android:textColorHint="@color/tertiary_color" />
+                    android:textColorHint="@color/tertiary_color"
+                    android:autofillHints="false" />
 
 
                 <Button
                     android:id="@+id/CreateAccBtn"
-                    style="@style/CustomButtonStyle3"
+                    style="@style/CustomButtonStyle2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_box_background"
-                    android:text="Create Account"
+                    android:text="@string/create_account"
                     android:textStyle="bold" />
 
 
@@ -541,10 +563,10 @@
 
 
                 <View
-                    android:layout_width="200sp"
-                    android:layout_height="10sp"
+                    android:layout_width="@dimen/two_hundred"
+                    android:layout_height="@dimen/ten"
                     android:layout_marginBottom="20sp"
-                    android:background="@color/tertiary_color" />
+                    android:background="@color/gold_yellow" />
 
             </LinearLayout>
 

@@ -56,8 +56,8 @@
     <style name="CustomButtonStyle2" parent="Widget.AppCompat.Button">
         <!--        <item name="theme">@style/AppTheme</item>-->
         <item name="android:background">@drawable/rounded_conners_with_gradient</item>
-        <item name="backgroundTint">@color/secondary_color</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/gold_yellow</item>
+        <item name="android:textColor">@color/primary_color</item>
         <item name="android:padding">@dimen/twelve</item>
         <item name="android:layout_marginTop">@dimen/twenty</item>
         <item name="android:textAllCaps">false</item>

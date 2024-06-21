@@ -298,4 +298,16 @@
     <string name="medium_safe">Your balance is sufficient for most transactions.</string>
     <string name="less_safe">Your balance is getting low. Consider topping up soon.</string>
     <string name="not_safe">Your balance is very low. Please top up immediately.</string>
+    <string name="register">Register</string>
+    <string name="create_account">Create Account</string>
+    <string name="by_tap_sign_up_button_you_accept_n_terms_and_privacy_this_app">By tap Sign Up button you accept \n terms and privacy this app</string>
+    <string name="password">Password</string>
+    <string name="john_gmail_com">john@gmail.com</string>
+    <string name="sign_in">Sign In</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="home_language">Home Language</string>
+    <string name="address">Address</string>
 </resources>

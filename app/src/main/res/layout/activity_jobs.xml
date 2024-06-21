@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBaseline_toBottomOf="parent">
 
         <RelativeLayout
@@ -673,8 +674,6 @@
                             style="@style/CustomButtonStyle2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/text_box_background"
-                            android:backgroundTint="@color/secondary_color"
                             android:text="@string/buy"
                             android:textStyle="bold" />
 

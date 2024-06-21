@@ -186,7 +186,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             }
         });
 
-        btnHome.setColorFilter(ContextCompat.getColor(this, R.color.tertiary_color), PorterDuff.Mode.SRC_IN);
+        btnHome.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
         dash_board_screen.setVisibility(View.VISIBLE);
     }
@@ -673,7 +673,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         btnProfile.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         btnHome.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         moreItemsBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
-        icon.setColorFilter(ContextCompat.getColor(this, R.color.tertiary_color), PorterDuff.Mode.SRC_IN);
+        icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
     }
 
     private void hideKeyboard() {
