@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone"
         app:layout_constraintBaseline_toBottomOf="parent">
 
         <RelativeLayout
@@ -33,6 +32,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:paddingTop="@dimen/twenty"
+                    android:paddingLeft="@dimen/eighty"
+                    android:paddingRight="@dimen/eighty"
                     android:src="@drawable/illustration" />
 
                 <TextView

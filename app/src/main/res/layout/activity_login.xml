@@ -12,7 +12,6 @@
         android:id="@+id/login_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:orientation="vertical"
         app:layout_constraintBaseline_toBottomOf="parent">
 
@@ -36,7 +35,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/logo" />
+                    android:paddingBottom="@dimen/fifty"
+                    android:src="@drawable/icon_logo" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -393,8 +393,8 @@
         android:id="@+id/create_profile_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBaseline_toBottomOf="parent">
 
         <RelativeLayout
@@ -410,7 +410,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingLeft="20dp" android:paddingEnd="20dp">
+                android:paddingLeft="20dp"
+                android:paddingEnd="20dp">
 
                 <ImageView
                     android:layout_width="match_parent"

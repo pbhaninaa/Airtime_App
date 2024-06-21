@@ -274,8 +274,8 @@
                                 android:layout_height="80sp"
                                 android:layout_gravity="center"
                                 android:layout_marginRight="@dimen/five"
-                                android:background="@drawable/round_conners_background"
-                                android:backgroundTint="@color/secondary_color"
+                                android:layout_marginBottom="@dimen/five"
+                                android:src="@drawable/illustration"
                                 android:contentDescription="TODO"
                                 android:gravity="center" />
 

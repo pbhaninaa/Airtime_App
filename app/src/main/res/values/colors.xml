@@ -5,9 +5,14 @@
 <!--        <color name="secondary_color">#8e64c4</color>-->
 <!--        <color name="tertiary_color">#FF9370DB</color>-->
 <!--Red theme-->
-        <color name="primary_color">#FF800000</color>
-        <color name="secondary_color">#FF8B0000</color>
-        <color name="tertiary_color">#FFFF0000</color>
+<!--        <color name="primary_color">#FF800000</color>-->
+<!--        <color name="secondary_color">#FF8B0000</color>-->
+<!--        <color name="tertiary_color">#FFFF0000</color>-->
+
+    <!--Red theme-->
+        <color name="primary_color">#2d3688</color>
+        <color name="secondary_color">#a6a6a6</color>
+        <color name="tertiary_color">#ffffff</color>
 <!--pink theme-->
 <!--        <color name="primary_color">#f94687</color>-->
 <!--        <color name="secondary_color">#3f9ae0</color>-->
