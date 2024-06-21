@@ -19,6 +19,19 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+
+
+
+//import org.apache.poi.ss.usermodel.*;
+//import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Utils {
     public static final String PREF_NAME = "UserPrefs";
     public static final String EMAIL_KEY = "email";
@@ -181,4 +194,35 @@ public class Utils {
         System.out.println("Generated Basket ID: " + strBasket);
         return strBasket;
     }
+
+//    public static List<List<String>> readExcelFile(String filePath) {
+//        List<List<String>> records = new ArrayList<>();
+//        try (FileInputStream fis = new FileInputStream(new File(filePath));
+//             Workbook workbook = new XSSFWorkbook(fis)) {
+//
+//            Sheet sheet = workbook.getSheetAt(0);
+//            for (Row row : sheet) {
+//                List<String> record = new ArrayList<>();
+//                for (Cell cell : row) {
+//                    switch (cell.getCellType()) {
+//                        case STRING:
+//                            record.add(cell.getStringCellValue());
+//                            break;
+//                        case NUMERIC:
+//                            record.add(String.valueOf(cell.getNumericCellValue()));
+//                            break;
+//                        case BOOLEAN:
+//                            record.add(String.valueOf(cell.getBooleanCellValue()));
+//                            break;
+//                        default:
+//                            record.add("");
+//                    }
+//                }
+//                records.add(record);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return records;
+//    }
 }

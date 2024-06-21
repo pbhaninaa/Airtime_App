@@ -1,6 +1,8 @@
 package com.example.testingmyskills.UI;
 
 import static com.example.testingmyskills.JavaClasses.Utils.isUserLogged;
+//import static com.example.testingmyskills.JavaClasses.Utils.readExcelFile;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
@@ -9,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static  String MSISDN = "263781801175";
@@ -19,6 +23,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        String excelFilePath = "zid_pdf.xlsx";
+//        List<List<String>> records = readExcelFile(excelFilePath);
+//
+//        // Print the records
+//        for (List<String> row : records) {
+//            System.out.println(row);
+//        }
+
         initialiseViews();
         if (!isUserLogged(this)) {
             Intent intent = new Intent(MainActivity.this, Dashboard.class);
