@@ -1,5 +1,6 @@
 package com.example.testingmyskills.JavaClasses;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -58,8 +59,11 @@ public class Utils {
         View layout = inflater.inflate(R.layout.custom_toast, null);
 
         TextView text = layout.findViewById(R.id.textViewToast);
+        text.setTextColor(ContextCompat.getColor(context, R.color.white));
         layout.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.dark_green));
         text.setText(message);
+
+
 
         Toast toast = new Toast(context);
         toast.setDuration(Toast.LENGTH_SHORT);
