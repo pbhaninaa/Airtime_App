@@ -10,825 +10,976 @@
         android:layout_height="wrap_content"
         android:background="@drawable/top_coners_backgroud"
         android:gravity="center"
-        android:padding="@dimen/eight"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/eight">
 
-        <LinearLayout
-            android:id="@+id/special_chars_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:weightSum="10">
-
-            <Button
-                android:id="@+id/button_comma"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/comma"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_hash"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="#"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_exclamation"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="!"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_backslash"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="\\"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_forwardslash"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="/"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_semicolon"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text=";"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_colon"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text=":"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_question"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="?"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_ampersand"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="&amp;"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_asterisk"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="*"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-        </LinearLayout>
-        <!-- Numbers Layout -->
         <LinearLayout
             android:id="@+id/numbers_layout_In_keyboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:orientation="horizontal"
             android:visibility="gone"
-            android:weightSum="10">
-            <!-- Number Buttons (0-9) -->
-            <!-- Repeat similar buttons for 1 to 9 as done for 0 -->
-            <Button
-                android:id="@+id/button_0"
-                style="@style/keyboardKeys"
+            android:orientation="vertical">
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:gravity="center"
-                android:text="@string/_0"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                android:orientation="horizontal"
 
-            <Button
-                android:id="@+id/button_1"
-                style="@style/keyboardKeys"
+                android:weightSum="10">
+                <!-- Number Buttons (0-9) -->
+                <!-- Repeat similar buttons for 1 to 9 as done for 0 -->
+                <Button
+                    android:id="@+id/button_0"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_0"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
+                <Button
+                    android:id="@+id/button_1"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_1"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_2"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_2"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_3"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_3"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_4"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_4"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_5"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_5"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_6"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_6"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_7"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_7"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_8"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_8"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_9"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/_9"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:gravity="center"
-                android:text="@string/_1"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                android:orientation="horizontal"
+                android:weightSum="10">
 
-            <Button
-                android:id="@+id/button_2"
-                style="@style/keyboardKeys"
+                <Button
+                    android:id="@+id/button_hyphen"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/hyphen"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    android:id="@+id/button_forwardslash"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="/"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    android:id="@+id/button_colon"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text=":"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    android:id="@+id/button_semicolon"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text=";"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    android:id="@+id/button_opening_bracket"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="("
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
+
+
+                <Button
+                    android:id="@+id/button_closing_bracket"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text=")"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_ampersand"
+                    style="@style/keyboardKeys"
+
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="&amp;"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_at"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+
+                <Button
+                    android:id="@+id/button_hash"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="#"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_exclamation"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="!"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    android:id="@+id/button_question"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="?"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    android:id="@+id/button_asterisk"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="*"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/alphabets_row_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:gravity="center"
-                android:text="@string/_2"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                android:orientation="horizontal"
+                android:weightSum="10">
+                <!-- Shift Button -->
+                <ImageButton
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1.5"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/to_upper_case_icon"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:tint="@color/primary_color"
+                    tools:ignore="SpUsage" />
+                <!-- Alphabet Buttons (Z to M) -->
 
-            <Button
-                android:id="@+id/button_3"
-                style="@style/keyboardKeys"
+                <Button
+                    android:id="@+id/button_backslash"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="\\"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="|"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/_3"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="_"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-            <Button
-                android:id="@+id/button_4"
-                style="@style/keyboardKeys"
+                <Button
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="["
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/_4"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="]"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-            <Button
-                android:id="@+id/button_5"
-                style="@style/keyboardKeys"
+                <Button
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="{"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/_5"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_6"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/_6"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_7"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/_7"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_8"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/_8"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_9"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/_9"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
+                <Button
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="}"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+                <ImageButton
+                    android:id="@+id/button_alphabet_delete1"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1.5"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/back"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:tint="@color/primary_color"
+                    tools:ignore="SpUsage" />
+            </LinearLayout>
         </LinearLayout>
-        <!-- Alphabets Row 1 -->
+
+        <!-- alphabets -->
         <LinearLayout
-            android:id="@+id/alphabets_row_1"
+            android:id="@+id/special_chars_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="10">
-            <!-- Alphabet Buttons (Q to P) -->
-            <!-- Repeat similar buttons for Q to P as done for each button -->
-            <Button
-                android:id="@+id/button_q"
-                style="@style/keyboardKeys"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
+
+            android:orientation="vertical">
+            <!-- Alphabets Row 1 -->
+            <LinearLayout
+                android:id="@+id/alphabets_row_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:gravity="center"
-                android:text="@string/q"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                android:orientation="horizontal"
+                android:weightSum="10">
+                <!-- Alphabet Buttons (Q to P) -->
+                <!-- Repeat similar buttons for Q to P as done for each button -->
+                <Button
+                    android:id="@+id/button_q"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/q"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-            <Button
-                android:id="@+id/button_w"
-                style="@style/keyboardKeys"
+                <Button
+                    android:id="@+id/button_w"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/w"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
+                <Button
+                    android:id="@+id/button_e"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/e"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_r"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/r_"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_t"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/t"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_y"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/y"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_u"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/u"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_i"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/i"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_o"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/o"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_p"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/p"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+            </LinearLayout>
+            <!-- Alphabets Row 2 -->
+            <LinearLayout
+                android:id="@+id/alphabets_row_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:gravity="center"
-                android:text="@string/w"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                android:orientation="horizontal"
+                android:weightSum="10">
+                <!-- Alphabet Buttons (A to L) -->
+                <!-- Repeat similar buttons for A to L as done for each button -->
 
-            <Button
-                android:id="@+id/button_e"
-                style="@style/keyboardKeys"
+                <Button
+                    android:id="@+id/button_a"
+                    style="@style/keyboardKeys"
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/a"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_s"
+                    style="@style/keyboardKeys"
+
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/s"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_d"
+                    style="@style/keyboardKeys"
+
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/d"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_f"
+                    style="@style/keyboardKeys"
+
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/f"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_g"
+                    style="@style/keyboardKeys"
+
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/g"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_h"
+                    style="@style/keyboardKeys"
+
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/h"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_j"
+                    style="@style/keyboardKeys"
+
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/j"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_k"
+                    style="@style/keyboardKeys"
+
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/k"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+                <Button
+                    android:id="@+id/button_l"
+                    style="@style/keyboardKeys"
+
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/l"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+
+            </LinearLayout>
+            <!-- Alphabets Row 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:gravity="center"
-                android:text="@string/e"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                android:orientation="horizontal"
+                android:weightSum="10">
+                <!-- Shift Button -->
+                <ImageButton
+                    android:id="@+id/button_to_upper_case"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1.5"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/to_upper_case_icon"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:tint="@color/primary_color"
+                    tools:ignore="SpUsage" />
+                <!-- Alphabet Buttons (Z to M) -->
 
-            <Button
-                android:id="@+id/button_r"
-                style="@style/keyboardKeys"
+                <Button
+                    android:id="@+id/button_z"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/z"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/r_"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    android:id="@+id/button_x"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/x"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-            <Button
-                android:id="@+id/button_t"
-                style="@style/keyboardKeys"
+                <Button
+                    android:id="@+id/button_c"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/c"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/t"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    android:id="@+id/button_v"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/v"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-            <Button
-                android:id="@+id/button_y"
-                style="@style/keyboardKeys"
+                <Button
+                    android:id="@+id/button_b"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/b"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/y"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
+                <Button
+                    android:id="@+id/button_n"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/n"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
 
-            <Button
-                android:id="@+id/button_u"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/u"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_i"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/i"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_o"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/o"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_p"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/p"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
+                <Button
+                    android:id="@+id/button_m"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/m"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null"
+                    tools:ignore="NestedWeights,SpUsage" />
+                <!-- Delete Button -->
+                <ImageButton
+                    android:id="@+id/button_alphabet_delete"
+                    style="@style/keyboardKeys"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/keyboard_keys_height"
+                    android:layout_margin="@dimen/zero.two"
+                    android:layout_weight="1.5"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/back"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/keyboard_text_size"
+                    android:textStyle="bold"
+                    app:tint="@color/primary_color"
+                    tools:ignore="SpUsage" />
+            </LinearLayout>
         </LinearLayout>
-        <!-- Alphabets Row 2 -->
-        <LinearLayout
-            android:id="@+id/alphabets_row_2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="10">
-            <!-- Alphabet Buttons (A to L) -->
-            <!-- Repeat similar buttons for A to L as done for each button -->
 
-            <Button
-                android:id="@+id/button_a"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/a"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_s"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/s"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_d"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/d"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_f"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/f"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_g"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/g"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_h"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/h"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_j"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/j"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_k"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/k"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_l"
-                style="@style/keyboardKeys"
-
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/l"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-        </LinearLayout>
-        <!-- Alphabets Row 3 -->
-        <LinearLayout
-            android:id="@+id/alphabets_row_3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="10">
-            <!-- Shift Button -->
-            <ImageButton
-                android:id="@+id/button_to_upper_case"
-                style="@style/keyboardKeys"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1.5"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/to_upper_case_icon"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:tint="@color/primary_color"
-                tools:ignore="SpUsage" />
-            <!-- Alphabet Buttons (Z to M) -->
-
-            <Button
-                android:id="@+id/button_z"
-                style="@style/keyboardKeys"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/z"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_x"
-                style="@style/keyboardKeys"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/x"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_c"
-                style="@style/keyboardKeys"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/c"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_v"
-                style="@style/keyboardKeys"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/v"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_b"
-                style="@style/keyboardKeys"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/b"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_n"
-                style="@style/keyboardKeys"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/n"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-
-            <Button
-                android:id="@+id/button_m"
-                style="@style/keyboardKeys"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/m"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                tools:ignore="NestedWeights,SpUsage" />
-            <!-- Delete Button -->
-            <ImageButton
-                android:id="@+id/button_alphabet_delete"
-                style="@style/keyboardKeys"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
-                android:layout_margin="@dimen/zero.two"
-                android:layout_weight="1.5"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/back"
-                android:textAllCaps="false"
-                android:textSize="@dimen/keyboard_text_size"
-                android:textStyle="bold"
-                app:tint="@color/primary_color"
-                tools:ignore="SpUsage" />
-        </LinearLayout>
         <!-- Space and Special Keys Row -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -842,7 +993,7 @@
                 android:id="@+id/button_to_number_keys"
                 style="@style/keyboardKeys"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
+                android:layout_height="@dimen/keyboard_keys_height"
                 android:layout_margin="@dimen/one"
                 android:layout_weight="2"
                 android:gravity="center"
@@ -854,14 +1005,14 @@
                 tools:ignore="NestedWeights,SpUsage" />
 
             <Button
-                android:id="@+id/button_at"
+                android:id="@+id/button_comma"
                 style="@style/keyboardKeys"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
+                android:layout_height="@dimen/keyboard_keys_height"
                 android:layout_margin="@dimen/zero.two"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@"
+                android:text="@string/comma"
                 android:textAllCaps="false"
                 android:textSize="@dimen/keyboard_text_size"
                 android:textStyle="bold"
@@ -873,7 +1024,7 @@
                 style="@style/keyboardKeys"
 
                 android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
+                android:layout_height="@dimen/keyboard_keys_height"
                 android:layout_margin="@dimen/zero.two"
                 android:layout_weight="4"
                 android:gravity="center"
@@ -888,7 +1039,7 @@
                 android:id="@+id/button_full_stop"
                 style="@style/keyboardKeys"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
+                android:layout_height="@dimen/keyboard_keys_height"
                 android:layout_margin="@dimen/zero.two"
                 android:layout_weight="1"
                 android:gravity="center"
@@ -905,11 +1056,11 @@
                 style="@style/keyboardKeys"
 
                 android:layout_width="0dp"
-                android:layout_height="@dimen/sixty"
+                android:layout_height="@dimen/keyboard_keys_height"
                 android:layout_margin="@dimen/zero.two"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="Hide me"
+                android:text="@string/hide_me"
                 android:textAllCaps="false"
                 android:textSize="@dimen/keyboard_text_size"
                 android:textStyle="bold"

@@ -19,7 +19,7 @@ import com.example.testingmyskills.R;
 public class AlphaKeyboard extends LinearLayout implements View.OnClickListener {
 
     private boolean isUpperCase = false;
-    private ImageButton mButtonDelete;
+    private ImageButton mButtonDelete, mButtonDelete1;
     private ImageButton mButtonToUpperCase;
     private Button mButtonEnter;
     private Button mButtonToNumbers;
@@ -96,8 +96,9 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
 
         NumsLayout = findViewById(R.id.numbers_layout_In_keyboard);
         CharsLayout = findViewById(R.id.special_chars_layout);
-        displaNums = "nums";
+        displaNums = "ABC";
         mButtonDelete = findViewById(R.id.button_alphabet_delete);
+        mButtonDelete1 = findViewById(R.id.button_alphabet_delete1);
         mButtonToUpperCase = findViewById(R.id.button_to_upper_case);
         mButtonEnter = findViewById(R.id.button_enter);
         mButtonSpace = findViewById(R.id.button_space_bar);
@@ -157,6 +158,7 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
         mButtonAsterisk = findViewById(R.id.button_asterisk);
 
         mButtonDelete.setOnClickListener(this);
+        mButtonDelete1.setOnClickListener(this);
         mButtonSpace.setOnClickListener(this);
         mButtonAtt.setOnClickListener(this);
         mButtonDot.setOnClickListener(this);
@@ -258,7 +260,7 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
         keyValues.put(R.id.button_space_bar, " ");
         keyValues.put(R.id.button_enter, "\n");
         keyValues.put(R.id.button_full_stop, ".");
-        keyValues.put(R.id.button_comma,",");
+        keyValues.put(R.id.button_comma, ",");
 
         keyValues.put(R.id.button_at, "@");
         keyValues.put(R.id.button_hash, "#");
@@ -283,7 +285,7 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
             updateButtonCase();
 
         } else {
-            if (v.getId() == R.id.button_alphabet_delete) {
+            if (v.getId() == R.id.button_alphabet_delete || v.getId()==R.id.button_alphabet_delete1) {
                 CharSequence selectedText = inputConnection.getSelectedText(0);
                 if (TextUtils.isEmpty(selectedText)) {
                     inputConnection.deleteSurroundingText(1, 0);
@@ -303,22 +305,16 @@ public class AlphaKeyboard extends LinearLayout implements View.OnClickListener 
     }
 
     private void updateToNumbers() {
-        if (displaNums.equals("nums")) {
+        if (displaNums.equals("123")) {
             NumsLayout.setVisibility(VISIBLE);
-            mButtonToNumbers.setText("Chars");
+            mButtonToNumbers.setText(R.string.abc);
             CharsLayout.setVisibility(GONE);
-            displaNums = "chars";
-        } else if (displaNums.equals("chars")){
+            displaNums = "ABC";
+        } else if (displaNums.equals("ABC")) {
             NumsLayout.setVisibility(GONE);
             CharsLayout.setVisibility(VISIBLE);
-            mButtonToNumbers.setText("123");
-            displaNums = "";
-        }
-        else {
-            NumsLayout.setVisibility(GONE);
-            CharsLayout.setVisibility(GONE);
-            mButtonToNumbers.setText("#/;");
-            displaNums = "nums";
+            mButtonToNumbers.setText(R.string._123);
+            displaNums = "123";
         }
     }
 

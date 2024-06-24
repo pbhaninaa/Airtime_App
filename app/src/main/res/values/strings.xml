@@ -61,6 +61,8 @@
     <string name="_6">6</string>
     <string name="_3">3</string>
     <string name="comma">,</string>
+    <string name="hyphen">-</string>
+    <string name="quotes">"</string>
     <string name="addition">+</string>
     <string name="subtraction">-</string>
     <string name="multiplication">×</string>
@@ -311,4 +313,8 @@
     <string name="home_language">Home Language</string>
     <string name="address">Address</string>
     <string name="toast_message">Toast Message</string>
+    <string name="hide_me">Hide</string>
+    <string name="abc">ABC</string>
+    <string name="_123">123</string>
+    <string name="_123_">123</string>
 </resources>
