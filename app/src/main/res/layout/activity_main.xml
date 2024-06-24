@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@color/back_ground_gray"
     android:gravity="center"
     tools:context="com.example.testingmyskills.UI.MainActivity">
 
@@ -32,8 +32,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:paddingTop="@dimen/twenty"
                     android:paddingLeft="@dimen/eighty"
+                    android:paddingTop="@dimen/twenty"
                     android:paddingRight="@dimen/eighty"
                     android:src="@drawable/illustration" />
 
@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Welcome text"
-                    android:textColor="@color/white"
+                    android:textColor="@color/primary_color"
                     android:textSize="25sp"
                     android:textStyle="bold" />
 
@@ -52,7 +52,7 @@
                     android:layout_margin="15sp"
                     android:gravity="center"
                     android:text="App definition"
-                    android:textColor="@color/white"
+                    android:textColor="@color/primary_color"
                     android:textSize="18sp" />
 
                 <LinearLayout
@@ -67,7 +67,7 @@
                         android:layout_height="4dp"
                         android:layout_margin="5sp"
                         android:background="@drawable/round_conners_background"
-                        android:backgroundTint="@color/white"
+                        android:backgroundTint="@color/gold_yellow"
                         android:padding="16sp" />
 
                     <View
@@ -75,7 +75,7 @@
                         android:layout_height="4dp"
                         android:layout_margin="5sp"
                         android:background="@drawable/round_conners_background"
-                        android:backgroundTint="@color/white"
+                        android:backgroundTint="@color/gold_yellow"
                         android:padding="16sp" />
 
                     <View
@@ -83,7 +83,7 @@
                         android:layout_height="6dp"
                         android:layout_margin="5sp"
                         android:background="@drawable/round_conners_background"
-                        android:backgroundTint="@color/white"
+                        android:backgroundTint="@color/gold_yellow"
                         android:padding="16sp" />
                 </LinearLayout>
 
@@ -101,13 +101,14 @@
 
                 <Button
                     android:id="@+id/candidate_btn"
-                    style="@style/CustomButtonStyle3"
+                    style="@style/CustomButtonStyle2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/fifteen"
                     android:layout_marginTop="20sp"
                     android:layout_marginRight="@dimen/fifteen"
                     android:background="@drawable/text_box_background"
+                    android:backgroundTint="@color/gold_yellow"
                     android:text="Continue"
                     android:textStyle="bold" />
 

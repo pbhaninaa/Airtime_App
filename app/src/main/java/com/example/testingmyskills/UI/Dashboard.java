@@ -253,19 +253,19 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     private void adaptors() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.econetItems);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filter_spinner.setAdapter(adapter);
 
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.Items);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.Items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ItemTypeSpinner2.setAdapter(adapter2);
 
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.econetItems);
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ItemTypeSpinner.setAdapter(adapter3);
 
-        ArrayAdapter<String> adapter4 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MainActivity.Currencies);
+        ArrayAdapter<String> adapter4 = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.Currencies);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         SelectedCurrency.setAdapter(adapter4);
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEEEEE"
+    android:background="@color/back_ground_gray"
     tools:context="com.example.testingmyskills.UI.Dashboard"
     tools:ignore="RtlHardcoded,RtlSymmetry,SpUsage,UselessParent">
     <!--    dash_board_screen -->
@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone"
         app:layout_constraintBaseline_toBottomOf="parent">
 
         <RelativeLayout

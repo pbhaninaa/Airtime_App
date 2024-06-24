@@ -1,7 +1,6 @@
 package com.example.testingmyskills.UI;
 
 import static com.example.testingmyskills.JavaClasses.Utils.isUserLogged;
-//import static com.example.testingmyskills.JavaClasses.Utils.readExcelFile;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -11,10 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
-
-import java.util.List;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     public static  String MSISDN = "263781801175";
     private Button CandidateBtn;
     private ConstraintLayout landing_page;
@@ -23,14 +19,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        new ExcelReader(this, this).execute();
 
-//        String excelFilePath = "zid_pdf.xlsx";
-//        List<List<String>> records = readExcelFile(excelFilePath);
-//
-//        // Print the records
-//        for (List<String> row : records) {
-//            System.out.println(row);
-//        }
 
         initialiseViews();
         if (!isUserLogged(this)) {
@@ -43,6 +33,21 @@ public class MainActivity extends AppCompatActivity {
         setOnclickListeners();
     }
 
+    private void getData(){
+        // Read Excel file and get data
+//        List<String[]> excelData = ExcelReaderUtil.readExcelFile(this);
+//
+//        // Process the data
+//        for (String[] row : excelData) {
+//            for (String cell : row) {
+//                System.out.print(cell + " ");
+//            }
+//            System.out.println();
+//        }
+    }
+
+
+    //======================================================================
     private void setOnclickListeners() {
         CandidateBtn.setOnClickListener(v -> handleCompanyClick());
     }

@@ -66,8 +66,8 @@
     </style>
 
     <style name="SpinnerItemStyle">
-        <item name="android:textColorHint">#FFFFFF</item>
-        <item name="color">@color/tertiary_color</item>
+        <item name="android:textColorHint">@color/light_gray</item>
+        <item name="color">@color/primary_color</item>
     </style>
 
     <style name="CustomButtonStyle4" parent="Widget.AppCompat.Button">
