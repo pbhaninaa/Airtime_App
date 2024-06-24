@@ -997,7 +997,7 @@
                 android:layout_margin="@dimen/one"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="#/;"
+                android:text="@string/_123_"
                 android:textAllCaps="false"
                 android:textSize="@dimen/keyboard_text_size"
                 android:textStyle="bold"
