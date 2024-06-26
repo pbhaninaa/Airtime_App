@@ -20,9 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-
-
-
 //import org.apache.poi.ss.usermodel.*;
 //import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -36,6 +33,8 @@ public class Utils {
     public static final String PREF_NAME = "UserPrefs";
     public static final String EMAIL_KEY = "email";
     public static final String PASSWORD_KEY = "password";
+    private static final String REMEMBER_ME = "rememberMe";
+
     public static void hideSoftNavBar(Activity activity) {
         View decorView = activity.getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -43,11 +42,13 @@ public class Utils {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
     }
+
     public static void hideAlphaKeyboard(AlphaKeyboard myKeyboard) {
         if (myKeyboard.getParent() != null) {
             ((ViewGroup) myKeyboard.getParent()).removeView(myKeyboard);
         }
     }
+
     public static void showAlphaKeyboard(AlphaKeyboard myKeyboard, Activity activity, int gravity) {
         if (myKeyboard.getParent() == null) {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -55,6 +56,7 @@ public class Utils {
             ((ViewGroup) activity.findViewById(android.R.id.content)).addView(myKeyboard, layoutParams);
         }
     }
+
     public static void showToast(Context context, String message) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.custom_toast, null);
@@ -67,6 +69,7 @@ public class Utils {
         toast.setView(layout);
         toast.show();
     }
+
     public static void success(Context context, String message) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.custom_toast, null);
@@ -75,7 +78,6 @@ public class Utils {
         text.setTextColor(ContextCompat.getColor(context, R.color.white));
         layout.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.dark_green));
         text.setText(message);
-
 
 
         Toast toast = new Toast(context);
@@ -92,20 +94,36 @@ public class Utils {
         editor.putString(PASSWORD_KEY, password);
         editor.apply();
     }
+
+    public static void saveAutoFillPermission(Context context, boolean rememberMe) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(REMEMBER_ME, rememberMe);
+        editor.apply();
+    }
+
     // Function to get email from SharedPreferences
     public static String getEmail(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(EMAIL_KEY, "");
     }
-    public static boolean isUserLogged(Context context){
+
+    public static boolean RememberMe(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getBoolean(REMEMBER_ME, false);
+    }
+
+    public static boolean isUserLogged(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("StayLogged", Context.MODE_PRIVATE);
         return prefs.getBoolean("isUserLogged", false);
     }
+
     // Function to get password from SharedPreferences
     public static String getPassword(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(PASSWORD_KEY, "");
     }
+
     public static void logout(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -113,15 +131,16 @@ public class Utils {
         editor.apply();
 
         SharedPreferences prefs = context.getSharedPreferences("StayLogged", Context.MODE_PRIVATE);
-        SharedPreferences.Editor StayLogged= prefs.edit();
+        SharedPreferences.Editor StayLogged = prefs.edit();
         StayLogged.clear();
         StayLogged.apply();
 
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor user= preferences.edit();
+        SharedPreferences.Editor user = preferences.edit();
         user.clear();
         user.apply();
     }
+
     public static String FormatAmount(String a) {
         String amountString = a.replace(",", "");
         try {
@@ -143,7 +162,8 @@ public class Utils {
         // Check if the provided email matches the regex pattern
         return email.matches(emailPattern);
     }
-    public static void setMessage(Activity activity ,double balance,TextView Message){
+
+    public static void setMessage(Activity activity, double balance, TextView Message) {
         // Parse the balance amount to a double
 
         // Set appropriate messages based on the remaining balance
@@ -161,6 +181,7 @@ public class Utils {
 //            Message.setTextColor(ContextCompat.getColor(activity, R.color.red)); // Assuming you have a red color defined
         }
     }
+
     public static String ref() {
         String strWorkstationNum = "1"; // Example workstation number
 

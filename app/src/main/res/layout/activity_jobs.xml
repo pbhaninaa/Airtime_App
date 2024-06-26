@@ -692,9 +692,9 @@
         android:id="@+id/confirmation_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#11000000"
-        android:padding="@dimen/twenty_five"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:background="@color/back_ground_gray"
+        android:padding="@dimen/twenty_five">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -726,7 +726,7 @@
 
                 <Button
                     android:id="@+id/yes"
-                    style="@style/CustomButtonStyle5"
+                    style="@style/AcceptButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
@@ -741,7 +741,7 @@
 
                 <Button
                     android:id="@+id/no"
-                    style="@style/CustomButtonStyle5"
+                    style="@style/CancelButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"

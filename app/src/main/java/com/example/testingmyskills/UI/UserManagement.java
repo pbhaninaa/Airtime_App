@@ -2,6 +2,7 @@ package com.example.testingmyskills.UI;
 
 import static com.example.testingmyskills.JavaClasses.Utils.PASSWORD_KEY;
 import static com.example.testingmyskills.JavaClasses.Utils.PREF_NAME;
+import static com.example.testingmyskills.JavaClasses.Utils.RememberMe;
 import static com.example.testingmyskills.UI.MainActivity.MSISDN;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,10 +33,11 @@ import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
 
 import org.apache.xmlrpc.XmlRpcException;
+import org.json.JSONException;
 
 import java.util.Map;
 import java.util.Objects;
-
+//8QGGLHPVSQ3TFEX7QLTCRU2Y
 public class UserManagement extends AppCompatActivity implements AccountValidationCallback {
     private ConstraintLayout SignInLayout;
     private ConstraintLayout SignUpLayout, RegScreen;
@@ -65,13 +67,14 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             emailConfirmation;
     private Button CreateAccBtn;
     String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
-
+    boolean rememberMe;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Utils.hideSoftNavBar(UserManagement.this);
         showPassword = false;
+        rememberMe = false;
 
         initialiseViews();
         setOnclickListeners();
@@ -145,16 +148,18 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         email = findViewById(R.id.email);
         emailConfirmation = findViewById(R.id.emailC);
         RememberMeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                Utils.showToast(UserManagement.this, "Remember me checked");
-            } else {
-                Utils.showToast(UserManagement.this, "Remember me unchecked");
-            }
+            rememberMe= isChecked;
         });
     }
 
     private void screenToLoad(int screenToLoad) {
         if (screenToLoad == R.id.login_page) {
+
+            if(Utils.RememberMe(this)){
+                getEmailTextInLogin.setText(Utils.getEmail(this));
+                getPasswordTextInLogin.setText(Utils.getPassword(this));
+                RememberMeCheckBox.isChecked();
+            }
 
             Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
             getEmailTextInLogin.setShowSoftInputOnFocus(false);
@@ -296,7 +301,13 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
         ShowPasswordInLogin.setOnClickListener(v -> handleShowPassword());
         SignInBtn.setOnClickListener(v -> handleSignIn());
-        ForgotPasswordBtn.setOnClickListener(v -> handleForgotPasswordClick());
+        ForgotPasswordBtn.setOnClickListener(v -> {
+            try {
+                handleForgotPasswordClick();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        });
         SignUpBtn.setOnClickListener(v -> handleSignUp());
         SignUp.setOnClickListener(v -> handleCreateClick());
         ShowConformPasswordInRegister.setOnClickListener(v -> handleShowPassword());
@@ -313,8 +324,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         String password = pref.getString(PASSWORD_KEY, "");
         String subject = "Your Password Reset Request";
         String body = "Dear user,\n\nYour password is: " + password + "\n\nPlease keep it safe.";
-        EmailSender emailSender = new EmailSender(this, email, subject, body);
-        emailSender.execute();
+        EmailSender emailSender = new EmailSender();
+//        emailSender.execute();
     }
 
     private void hideKeyboard() {
@@ -353,6 +364,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         String password = getPasswordTextInRegister.getText().toString().trim();
         String confirmPassword = getConfirmPasswordTextInRegister.getText().toString().trim();
 
+
         // Check if any field is empty
         if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             // Show error message if any field is empty
@@ -380,6 +392,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             return;
         }
 
+
         // If all validations pass, save email and password to SharedPreferences
         Utils.saveCredentials(UserManagement.this, email, password);
         SignInLayout.setVisibility(View.VISIBLE);
@@ -396,8 +409,10 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         SignUpLayout.setVisibility(View.GONE);
     }
 
-    private void handleForgotPasswordClick() {
-        sendPasswordEmail();
+    private void handleForgotPasswordClick() throws JSONException {
+
+       EmailSender.sendEmail(this,Utils.getEmail(this),"Test Name",Utils.getPassword(this));
+
     }
 
     private void handleSignIn() {
@@ -431,13 +446,12 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 SignInLayout.setVisibility(View.GONE);
                 RegScreen.setVisibility(View.VISIBLE);
             } else {
-
                 Intent intent = new Intent(UserManagement.this, Dashboard.class);
                 startActivity(intent);
-                getEmailTextInLogin.setText("");
-                getPasswordTextInLogin.setText("");
             }
-            Utils.showToast(UserManagement.this, "Logged In");
+            Utils.saveAutoFillPermission(this,rememberMe);
+            getEmailTextInLogin.setText("");
+            getPasswordTextInLogin.setText("");
         } else {
             // If not matched, show a toast indicating incorrect credentials
             Utils.showToast(UserManagement.this, "Incorrect email or password");

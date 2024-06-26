@@ -2,70 +2,63 @@ package com.example.testingmyskills.JavaClasses;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
-import java.util.Properties;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import com.mailjet.client.ClientOptions;
+import com.mailjet.client.MailjetClient;
+import com.mailjet.client.MailjetRequest;
+import com.mailjet.client.MailjetResponse;
+import com.mailjet.client.resource.Emailv31;
 
-public class EmailSender extends AsyncTask<Void, Void, Boolean> {
-    private final String smtpHost = "smtp.gmail.com";
-    private final String smtpPort = "587";
-    private final String senderEmail = "your_email@gmail.com"; // replace with your email
-    private final String senderPassword = "your_email_password"; // replace with your email password
-    private String recipientEmail;
-    private String subject;
-    private String body;
-    private Context context;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    public EmailSender(Context context, String recipientEmail, String subject, String body) {
-        this.context = context;
-        this.recipientEmail = recipientEmail;
-        this.subject = subject;
-        this.body = body;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class EmailSender {
+    static MailjetClient client;
+    private static String API_KEY ="6c3afe2c49b9577c76173a5b89cdf8a3";
+    private static String SECRET_KEY ="d02384dbbc4ec9787de3235aaa9c2736";
+    static MailjetRequest request;
+    static MailjetResponse response;
+
+    public static void sendEmail(Context context, String email, String name, String password) throws JSONException {
+
+        // Initialize the Mailjet client with API key and secret
+        client = new MailjetClient(API_KEY, SECRET_KEY);
+        Utils.success(context, "Email");
+        // Create the email request
+        request = new MailjetRequest(Emailv31.resource)
+                .property(Emailv31.MESSAGES, new JSONArray()
+                        .put(new JSONObject()
+                                .put(Emailv31.Message.FROM, new JSONObject()
+                                        .put("Email", "kwazibhani@gmail.com")
+                                        .put("Name", "Philasande Bhani"))
+                                .put(Emailv31.Message.TO, new JSONArray()
+                                        .put(new JSONObject()
+                                                .put("Email", email)
+                                                .put("Name", name)))
+                                .put(Emailv31.Message.SUBJECT, "Requested App Password.")
+                                .put(Emailv31.Message.TEXTPART, "My first Mailjet email")
+                                .put(Emailv31.Message.HTMLPART, "<h3>Dear App user, your app password is as follows!</h3><br />Password: " + password + "\n Try not to forget it next time")));
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+            try {
+                // Send the email
+
+                response = client.post(request);
+
+                System.out.println("============================================================================");
+                System.out.println(response.getStatus());
+                System.out.println(response.getData());
+                System.out.println("============================================================================");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    @Override
-    protected Boolean doInBackground(Void... params) {
-        try {
-            Properties properties = new Properties();
-            properties.put("mail.smtp.auth", "true");
-            properties.put("mail.smtp.starttls.enable", "true");
-            properties.put("mail.smtp.host", smtpHost);
-            properties.put("mail.smtp.port", smtpPort);
-
-            Session session = Session.getInstance(properties, new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(senderEmail, senderPassword);
-                }
-            });
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(senderEmail));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-            message.setSubject(subject);
-            message.setText(body);
-
-            Transport.send(message);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    protected void onPostExecute(Boolean result) {
-        if (result) {
-            Toast.makeText(context, "Email sent successfully!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Not yet done.", Toast.LENGTH_SHORT).show();
-        }
-    }
 }

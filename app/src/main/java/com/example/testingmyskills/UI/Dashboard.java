@@ -369,6 +369,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private void handleYes() {
 //          Utils.logout(this);
         Intent intent = new Intent(this, UserManagement.class);
+        intent.putExtra("constraintLayoutId",R.id.login_page);
         startActivity(intent);
     }
 
