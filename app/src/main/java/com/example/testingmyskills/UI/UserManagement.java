@@ -355,7 +355,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             Utils.showToast(this, "Email addresses do not match");
         } else {
             APICall(phone, this);
-
         }
     }
 

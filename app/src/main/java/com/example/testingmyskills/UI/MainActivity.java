@@ -4,22 +4,32 @@ import static com.example.testingmyskills.JavaClasses.Utils.isUserLogged;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.testingmyskills.Dao.DatabaseHelper;
+import com.example.testingmyskills.JavaClasses.Bundles;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
-public class MainActivity extends AppCompatActivity{
-    public static  String MSISDN = "263781801175";
+
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
+    public static String MSISDN = "263781801175";
     private Button CandidateBtn;
     private ConstraintLayout landing_page;
+    private static final int DATABASE_ID = 1;
+    public static SQLiteDatabase db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        new ExcelReader(this, this).execute();
 
 
         initialiseViews();
@@ -33,21 +43,6 @@ public class MainActivity extends AppCompatActivity{
         setOnclickListeners();
     }
 
-    private void getData(){
-        // Read Excel file and get data
-//        List<String[]> excelData = ExcelReaderUtil.readExcelFile(this);
-//
-//        // Process the data
-//        for (String[] row : excelData) {
-//            for (String cell : row) {
-//                System.out.print(cell + " ");
-//            }
-//            System.out.println();
-//        }
-    }
-
-
-    //======================================================================
     private void setOnclickListeners() {
         CandidateBtn.setOnClickListener(v -> handleCompanyClick());
     }
@@ -77,18 +72,25 @@ public class MainActivity extends AppCompatActivity{
     public static String[] econetItems = {
             "All",
             "Airtime",
-            "Data Bundles",
-            "Voice Bundles",
-            "SMS Bundles"
+            "Data",
+            "Voice",
+            "SMS"
     };
+
+
+    public static String[] ISPs() {
+        return new String[]{"Econet", "Telnet", "Netone", "Zesa"};
+    }
+
     public static String[] Items = {
 
             "Airtime",
-            "Data Bundles",
-            "Voice Bundles",
-            "SMS Bundles"
-    };  public static String[] Currencies = {
-            "$",
+            "Data",
+            "Voice",
+            "SMS"
+    };
+    public static String[] Currencies = {
+            "USD",
             "ZID"
     };
 

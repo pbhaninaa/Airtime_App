@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.testingmyskills.R;
 
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +30,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
 public class Utils {
     public static final String PREF_NAME = "UserPrefs";
     public static final String EMAIL_KEY = "email";
@@ -215,35 +220,37 @@ public class Utils {
         System.out.println("Generated Basket ID: " + strBasket);
         return strBasket;
     }
+    public static Bundles[] readJsonFile(Context context, String filePath) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try (InputStream inputStream = context.getAssets().open(filePath)) {
+            return objectMapper.readValue(inputStream, Bundles[].class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static List<JsonNode> filterJsonDataByBundle(String filePath, String bundleKeyword) {
+        List<JsonNode> filteredData = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-//    public static List<List<String>> readExcelFile(String filePath) {
-//        List<List<String>> records = new ArrayList<>();
-//        try (FileInputStream fis = new FileInputStream(new File(filePath));
-//             Workbook workbook = new XSSFWorkbook(fis)) {
-//
-//            Sheet sheet = workbook.getSheetAt(0);
-//            for (Row row : sheet) {
-//                List<String> record = new ArrayList<>();
-//                for (Cell cell : row) {
-//                    switch (cell.getCellType()) {
-//                        case STRING:
-//                            record.add(cell.getStringCellValue());
-//                            break;
-//                        case NUMERIC:
-//                            record.add(String.valueOf(cell.getNumericCellValue()));
-//                            break;
-//                        case BOOLEAN:
-//                            record.add(String.valueOf(cell.getBooleanCellValue()));
-//                            break;
-//                        default:
-//                            record.add("");
-//                    }
-//                }
-//                records.add(record);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return records;
-//    }
+        try {
+            // Read JSON file and parse it into a JsonNode
+            JsonNode rootNode = objectMapper.readTree(new File(filePath));
+
+            // Iterate through the JSON array
+            if (rootNode.isArray()) {
+                for (JsonNode node : rootNode) {
+                    String bundle = node.get("Bundle").asText();
+                    if (bundle.contains(bundleKeyword)) {
+                        filteredData.add(node);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return filteredData;
+    }
+
 }

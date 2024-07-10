@@ -12,9 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
@@ -29,6 +33,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -37,8 +42,10 @@ import android.widget.TextView;
 import com.example.testingmyskills.Dao.XMLRPCClient;
 import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
 import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
+import com.example.testingmyskills.JavaClasses.Bundles;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 import org.apache.xmlrpc.XmlRpcException;
@@ -68,7 +75,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private ImageButton btnHome;
     private ImageButton btnNotifications;
     private ImageButton FilterButton;
-    private ImageButton btnProfile, moreItemsBtn;
+    private ImageButton btnProfile, moreItemsBtn, BackToISPs;
     private ScrollView scrollView;
     private FrameLayout LogoutBtn;
     private LinearLayout bottomNav, EconetBtn, TelnetBtn, NetoneBtn, SpecialBtn, filterSection;
@@ -79,9 +86,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     static String currencySymbol;
     private String ItemToBuy;
     public static String MSISDN;
+    private TextView selectedCategory;
+    private boolean getSelectedCategory;
+    private RecyclerView ISPRecyclerView, DataRecyclerView, jobListRecyclerView;
+    String filePath = "JSON.json";
 
-    public Dashboard() throws MalformedURLException {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +98,12 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         setContentView(R.layout.activity_jobs);
         getProfile();
         String transactionType = "account_balance_enquiry";
+        MSISDN = "263781801174";
         APICall(MSISDN, transactionType, this);
         show = true;
         initialiseViews();
+        getSelectedCategory = false;
+
 
         Utils.hideSoftNavBar(Dashboard.this);
         setupFocusListeners();
@@ -110,13 +122,17 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Retrieve the selected item
                 String selectedItem = parentView.getItemAtPosition(position).toString();
-
+                selectedCategory.setText(selectedItem);
                 if (selectedItem.equals("All")) {
+
                     RecyclerView recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(getProducts()));
                 } else {
-                    // we will call a function wil param,s
+
+                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                    recyclerView.setAdapter(new RecommendedAd(getProducts()));
                 }
             }
 
@@ -137,7 +153,10 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(getProducts()));
                 } else {
-                    // we will call a function with params
+                    Utils.showToast(Dashboard.this,selectedItem);
+                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                    recyclerView.setAdapter(new RecommendedAd(getFilteredProducts(selectedItem)));
                 }
             }
 
@@ -189,6 +208,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         btnHome.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
         dash_board_screen.setVisibility(View.VISIBLE);
+
+        DataRecyclerView.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
+        ISPRecyclerView.setVisibility(getSelectedCategory ? View.GONE : View.VISIBLE);
+
+
     }
 
     @Override
@@ -216,8 +240,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         if (status == 0) {
             Utils.showToast(this, des);
         } else if (status == 1) {
-            Utils.success(this, des);
             clearFields();
+            Utils.success(this, des);
         }
         System.out.println("Load Res: " + response);
     }
@@ -273,13 +297,14 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     private void recyclerViews() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new RecommendedAd(getProducts()));
+        DataRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        DataRecyclerView.setAdapter(new RecommendedAd(getProducts()));
 
-        RecyclerView jobListRecyclerView = findViewById(R.id.jobListRecyclerView);
         jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         jobListRecyclerView.setAdapter(new RecommendedAd(getProducts()));//
+
+        ISPRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ISPRecyclerView.setAdapter(new ISP(MainActivity.ISPs()));//
 
     }
 
@@ -309,6 +334,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         filter_spinner = findViewById(R.id.filter_spinner);
         backFromList = findViewById(R.id.back_btn_from_job_list);
         BuyScreen = findViewById(R.id.buy_screen);
+        BackToISPs = findViewById(R.id.nav_networks_btn);
         BuyTittle = findViewById(R.id.buy_tittle);
         BuyBtn = findViewById(R.id.buy);
         Phone = findViewById(R.id.phone_number);
@@ -333,6 +359,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         No = findViewById(R.id.no);
         ItemTypeSpinner2 = findViewById(R.id.item_type_spinner1);
         SelectedCurrency = findViewById(R.id.currency_type_spinner);
+        selectedCategory = findViewById(R.id.SelectedCategory);
+
+        ISPRecyclerView = findViewById(R.id.CategoryRecyclerView);
+        DataRecyclerView = findViewById(R.id.recyclerView);
+        jobListRecyclerView = findViewById(R.id.jobListRecyclerView);
     }
 
     private void setOnclickListeners() {
@@ -352,6 +383,16 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         LogoutBtn.setOnClickListener(v -> logout());
         No.setOnClickListener(v -> handleNo());
         Yes.setOnClickListener(v -> handleYes());
+        BackToISPs.setOnClickListener(v -> handleHideList());
+    }
+
+    private void handleHideList() {
+        if (ISPRecyclerView.getVisibility() == View.GONE) {
+            DataRecyclerView.setVisibility(View.GONE);
+            ISPRecyclerView.setVisibility(View.VISIBLE);
+            defaultColoring(BackToISPs);
+        }
+
     }
 
     private void logout() {
@@ -369,7 +410,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private void handleYes() {
 //          Utils.logout(this);
         Intent intent = new Intent(this, UserManagement.class);
-        intent.putExtra("constraintLayoutId",R.id.login_page);
+        intent.putExtra("constraintLayoutId", R.id.login_page);
         startActivity(intent);
     }
 
@@ -420,9 +461,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     private void getSpecials() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new RecommendedAd(getProducts()));
+        DataRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        DataRecyclerView.setAdapter(new RecommendedAd(getProducts()));
     }
 
     private void getEconetBalance(String msisdn) {
@@ -448,32 +488,10 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         }
         if (!ItemToBuy.isEmpty() || !ItemType.isEmpty()) {
             Utils.hideAlphaKeyboard(MyKeyboard);
-            String s = "You are attempting to buy" + "\n" +
-                    ItemAmount + " " +
-                    ItemType + "\n for " +
-                    phone + "\n";
-            Utils.showToast(this, s);
-
             Load(phone, "load_value", this);
-
         } else {
             Utils.showToast(this, "Select Item");
         }
-
-
-//        new Thread(() -> {
-//            try {
-//                Map<String, Object> response = api.loadValue(MainActivity.MSISDN, 10, "load airtime test XMLRPC HM 1", 840);
-//                if ((int) response.get("Status") == 1) {
-//                    runOnUiThread(() -> Utils.success(this, String.valueOf(response.get("Description"))));
-//                } else if ((int) response.get("Status") == 0) {
-//                    runOnUiThread(() -> Utils.showToast(this, String.valueOf(response.get("Description"))));
-//                }
-//            } catch (XmlRpcException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-
     }
 
     private void hideOtherLayout(int layoutToShow, ImageButton icon) {
@@ -602,55 +620,135 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
                 Type.setText(String.format("%s %s", amount, type));
                 LifeTime.setText(time);
-                Price.setText(String.format("%s%s", currencySymbol, price));
-
+                Price.setText(String.format("%s %s", currencySymbol, price));
 
             }
         }
 
     }
 
-    public static List<Map<String, Object>> getProducts() {
+    public class ISP extends RecyclerView.Adapter<ISP.ViewHolder> {
+        Context context = Dashboard.this;
+
+        private String[] ispNames;
+
+
+        public ISP(String[] ispNames) {
+            this.ispNames = ispNames;
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.isp_category_layout, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            String ispName = ispNames[position];
+
+            // Set background color based on ISP name
+            int backgroundColor1;
+            int backgroundColor2;
+
+            switch (ispName) {
+                case "Econet":
+                    backgroundColor1 = ContextCompat.getColor(context, R.color.white);
+                    backgroundColor2 = ContextCompat.getColor(context, R.color.black);
+                    holder.icon.setImageResource(R.drawable.econet_icon);
+
+                    break;
+                case "Telnet":
+                    backgroundColor1 = ContextCompat.getColor(context, R.color.white);
+                    backgroundColor2 = ContextCompat.getColor(context, R.color.white);
+                    holder.icon.setImageResource(R.drawable.telnet_icon);
+                    break;
+                case "Netone":
+                    backgroundColor1 = ContextCompat.getColor(context, R.color.white);
+                    backgroundColor2 = ContextCompat.getColor(context, R.color.white);
+                    holder.icon.setImageResource(R.drawable.netone_icon);
+                    break;
+                case "Zesa":
+                    backgroundColor1 = ContextCompat.getColor(context, R.color.white);
+                    backgroundColor2 = ContextCompat.getColor(context, R.color.black);
+                    holder.icon.setImageResource(R.drawable.zesa_icon);
+                    break;
+                default:
+                    // Set default colors or handle other cases as needed
+                    backgroundColor1 = ContextCompat.getColor(context, R.color.white);
+                    backgroundColor2 = ContextCompat.getColor(context, R.color.isp_background_color2);
+                    break;
+            }
+
+            // Set background tint color to the views
+            holder.itemView.setBackgroundTintList(ColorStateList.valueOf(backgroundColor1));
+            // You can set backgroundColor2 to another view if needed, e.g., holder.someOtherView.setBackgroundColor(backgroundColor2);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Add your desired action here
+                    ISPRecyclerView.setVisibility(View.GONE);
+                    DataRecyclerView.setVisibility(View.VISIBLE);
+                }
+            });
+
+        }
+
+
+        @Override
+        public int getItemCount() {
+            return ispNames.length;
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+
+            ImageView icon;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+
+                icon = itemView.findViewById(R.id.isp_icon);
+            }
+        }
+    }
+
+    public List<Map<String, Object>> getProducts() {
+
+        Bundles[] bundles = Utils.readJsonFile(Dashboard.this, filePath);
+
         List<Map<String, Object>> items = new ArrayList<>();
+        if (bundles != null) {
+            for (Bundles bundle : bundles) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("type", bundle.getCategory());
+                item.put("amount", bundle.getVolumeMB());
+                String l = bundle.getValidity().contains("day") ? bundle.getValidity() : bundle.getValidity() + " days";
+                item.put("lifeTime", l);
+                item.put("price", bundle.getCurrentUSDCharge());
+                items.add(item);
 
-        // Add MTN Data items
-        for (int i = 1; i <= 10; i++) {
-            Map<String, Object> item = new HashMap<>();
-            item.put("type", "MTN Data");
-            item.put("amount", i * 10 + "GB");
-            item.put("lifeTime", i * 3 + " Days");
-            item.put("price", i * 50 + 10.00);
-            items.add(item);
+            }
         }
 
-        // Add Airtime items
-        for (int i = 1; i <= 5; i++) {
-            Map<String, Object> item = new HashMap<>();
-            item.put("type", "Airtime");
-            item.put("amount", currencySymbol + i * 10);
-            item.put("lifeTime", "for a year");
-            item.put("price", i * 20 + 5.00);
-            items.add(item);
-        }
+        return items;
+    }
 
-        // Add SMS items
-        for (int i = 1; i <= 8; i++) {
-            Map<String, Object> item = new HashMap<>();
-            item.put("type", "SMS");
-            item.put("amount", i * 50);
-            item.put("lifeTime", "30 Days");
-            item.put("price", i * 5 + 2.00);
-            items.add(item);
-        }
-
-        // Add Minutes items
-        for (int i = 1; i <= 7; i++) {
-            Map<String, Object> item = new HashMap<>();
-            item.put("type", "Minutes");
-            item.put("amount", i * 100 + " Minutes");
-            item.put("lifeTime", "60 Days");
-            item.put("price", i * 30 + 15.00);
-            items.add(item);
+    public List<Map<String, Object>> getFilteredProducts( String bundleKeyword) {
+        List<JsonNode> bundles = Utils.filterJsonDataByBundle(filePath, bundleKeyword);
+        List<Map<String, Object>> items = new ArrayList<>();
+        if (bundles != null) {
+            for (JsonNode bundle : bundles) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("type", bundle.get("Category").asText());
+                item.put("amount", bundle.get("VolumeMB").asDouble());
+                String l = bundle.get("Validity").asText().contains("day") ? bundle.get("Validity").asText() : bundle.get("Validity").asText() + " days";
+                item.put("lifeTime", l);
+                item.put("price", bundle.get("CurrentUSDCharge").asDouble());
+                items.add(item);
+            }
+            System.out.println("=========================="+items+"===============================");
         }
 
         return items;
@@ -674,6 +772,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         btnProfile.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         btnHome.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         moreItemsBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        BackToISPs.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
     }
 
