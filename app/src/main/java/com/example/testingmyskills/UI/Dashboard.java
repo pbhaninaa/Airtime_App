@@ -78,7 +78,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private ImageButton FilterButton;
     private ImageButton btnProfile, moreItemsBtn, BackToISPs;
     private ScrollView scrollView;
-    private FrameLayout LogoutBtn;
+    private FrameLayout LogoutBtn, LogoutBtn1;
     private LinearLayout bottomNav, EconetBtn, TelnetBtn, NetoneBtn, SpecialBtn, filterSection;
     //    ApiCalls api = new ApiCalls();
     private boolean show;
@@ -90,7 +90,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private TextView selectedCategory;
     private boolean getSelectedCategory;
     private RecyclerView ISPRecyclerView, DataRecyclerView, jobListRecyclerView;
-    String filePath = "JSON.json";
+    private String filePath = "JSON.json";
 
 
     @Override
@@ -191,7 +191,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Retrieve the selected item (currency symbol)
                 String selectedCurrencySymbol = parentView.getItemAtPosition(position).toString();
-
                 // Update the currency symbol string resource
                 updateCurrencySymbol(selectedCurrencySymbol);
                 RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -206,11 +205,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             }
         });
 
-        btnHome.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
+        BackToISPs.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
 
         landingScreen.setVisibility(View.VISIBLE);
-
+        bottomNav.setVisibility(View.GONE);
         dash_board_screen.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
 
     }
@@ -354,6 +353,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         filterSection = findViewById(R.id.filter_section);
         scrollView = findViewById(R.id.scroll_view);
         LogoutBtn = findViewById(R.id.profile_picture_container);
+        LogoutBtn1 = findViewById(R.id.profile_picture_container1);
         ConfirmationScreen = findViewById(R.id.confirmation_screen);
         Yes = findViewById(R.id.yes);
         No = findViewById(R.id.no);
@@ -385,6 +385,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         FilterButton.setOnClickListener(v -> hideFilter());
         hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
         LogoutBtn.setOnClickListener(v -> logout());
+        LogoutBtn1.setOnClickListener(v -> logout());
         No.setOnClickListener(v -> handleNo());
         Yes.setOnClickListener(v -> handleYes());
 
@@ -462,6 +463,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         // Display the formatted text in a TextView
         TextView textView = findViewById(R.id.user_salutation);
         textView.setText(builder);
+        TextView salute = findViewById(R.id.user_salutation1);
+        salute.setText(builder);
     }
 
     private void getSpecials() {
@@ -652,7 +655,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             String ispName = ispNames[position];
-
             // Set background color based on ISP name
             int backgroundColor1;
             int backgroundColor2;
@@ -687,10 +689,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Add your desired action here
+                    // Add your desired action herem
                     landingScreen.setVisibility(View.GONE);
                     dash_board_screen.setVisibility(View.VISIBLE);
                     defaultColoring(btnHome);
+                    bottomNav.setVisibility(View.VISIBLE);
                 }
             });
 
