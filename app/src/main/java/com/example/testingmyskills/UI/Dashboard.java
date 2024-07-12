@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.MediaRouteButton;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,7 +59,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
-    private ConstraintLayout dash_board_screen;
+    private ConstraintLayout dash_board_screen, landingScreen;
     private ConstraintLayout BuyScreen;
     private ConstraintLayout ConfirmationScreen;
     private ConstraintLayout job_list_screen;
@@ -153,7 +154,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(getProducts()));
                 } else {
-                    Utils.showToast(Dashboard.this,selectedItem);
+                    Utils.showToast(Dashboard.this, selectedItem);
                     RecyclerView recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(getFilteredProducts(selectedItem)));
@@ -207,11 +208,10 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
         btnHome.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
-        dash_board_screen.setVisibility(View.VISIBLE);
 
-        DataRecyclerView.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
-        ISPRecyclerView.setVisibility(getSelectedCategory ? View.GONE : View.VISIBLE);
+        landingScreen.setVisibility(View.VISIBLE);
 
+        dash_board_screen.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
 
     }
 
@@ -364,6 +364,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ISPRecyclerView = findViewById(R.id.CategoryRecyclerView);
         DataRecyclerView = findViewById(R.id.recyclerView);
         jobListRecyclerView = findViewById(R.id.jobListRecyclerView);
+        landingScreen = findViewById(R.id.landing_page1);
+
     }
 
     private void setOnclickListeners() {
@@ -372,6 +374,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         btnHome.setOnClickListener(v -> hideOtherLayout(R.id.dash_board_screen, btnHome));
         btnProfile.setOnClickListener(v -> hideOtherLayout(R.id.create_profile_screen, btnProfile));
         btnNotifications.setOnClickListener(v -> hideOtherLayout(R.id.buy_screen, btnNotifications));
+        BackToISPs.setOnClickListener(v -> hideOtherLayout(R.id.landing_page1, BackToISPs));
+//        BackToISPs.setOnClickListener(v -> handleHideList());
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
         NetoneBtn.setOnClickListener(v -> getNetoneBalance(MSISDN));
@@ -383,15 +387,15 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         LogoutBtn.setOnClickListener(v -> logout());
         No.setOnClickListener(v -> handleNo());
         Yes.setOnClickListener(v -> handleYes());
-        BackToISPs.setOnClickListener(v -> handleHideList());
+
     }
 
     private void handleHideList() {
-        if (ISPRecyclerView.getVisibility() == View.GONE) {
-            DataRecyclerView.setVisibility(View.GONE);
-            ISPRecyclerView.setVisibility(View.VISIBLE);
-            defaultColoring(BackToISPs);
-        }
+        dash_board_screen.setVisibility(View.GONE);
+        landingScreen.setVisibility(View.VISIBLE);
+
+        defaultColoring(BackToISPs);
+
 
     }
 
@@ -495,10 +499,10 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     private void hideOtherLayout(int layoutToShow, ImageButton icon) {
-
         if (layoutToShow == R.id.buy_screen) {
             Item.setVisibility(View.GONE);
             ItemTypeSpinner2.setVisibility(View.VISIBLE);
+            landingScreen.setVisibility(View.GONE);
             Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
             Phone.setShowSoftInputOnFocus(false);
             Phone.setTextIsSelectable(true);
@@ -517,6 +521,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             dash_board_screen.setVisibility(View.GONE);
             job_list_screen.setVisibility(View.GONE);
             BuyScreen.setVisibility(View.GONE);
+            landingScreen.setVisibility(View.GONE);
             ConstraintLayout l = findViewById(layoutToShow);
             l.setVisibility(View.VISIBLE);
         }
@@ -655,29 +660,24 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             switch (ispName) {
                 case "Econet":
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
-                    backgroundColor2 = ContextCompat.getColor(context, R.color.black);
                     holder.icon.setImageResource(R.drawable.econet_icon);
 
                     break;
                 case "Telnet":
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
-                    backgroundColor2 = ContextCompat.getColor(context, R.color.white);
                     holder.icon.setImageResource(R.drawable.telnet_icon);
                     break;
                 case "Netone":
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
-                    backgroundColor2 = ContextCompat.getColor(context, R.color.white);
                     holder.icon.setImageResource(R.drawable.netone_icon);
                     break;
                 case "Zesa":
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
-                    backgroundColor2 = ContextCompat.getColor(context, R.color.black);
                     holder.icon.setImageResource(R.drawable.zesa_icon);
                     break;
                 default:
                     // Set default colors or handle other cases as needed
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
-                    backgroundColor2 = ContextCompat.getColor(context, R.color.isp_background_color2);
                     break;
             }
 
@@ -689,8 +689,9 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 @Override
                 public void onClick(View v) {
                     // Add your desired action here
-                    ISPRecyclerView.setVisibility(View.GONE);
-                    DataRecyclerView.setVisibility(View.VISIBLE);
+                    landingScreen.setVisibility(View.GONE);
+                    dash_board_screen.setVisibility(View.VISIBLE);
+                    defaultColoring(btnHome);
                 }
             });
 
@@ -735,7 +736,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         return items;
     }
 
-    public List<Map<String, Object>> getFilteredProducts( String bundleKeyword) {
+    public List<Map<String, Object>> getFilteredProducts(String bundleKeyword) {
         List<JsonNode> bundles = Utils.filterJsonDataByBundle(filePath, bundleKeyword);
         List<Map<String, Object>> items = new ArrayList<>();
         if (bundles != null) {
@@ -748,7 +749,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 item.put("price", bundle.get("CurrentUSDCharge").asDouble());
                 items.add(item);
             }
-            System.out.println("=========================="+items+"===============================");
+            System.out.println("==========================" + items + "===============================");
         }
 
         return items;
@@ -759,12 +760,14 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         bottomNav.setVisibility(View.VISIBLE);
         job_list_screen.setVisibility(View.GONE);
         dash_board_screen.setVisibility(View.VISIBLE);
+        landingScreen.setVisibility(View.GONE);
     }
 
     private void handleShowMore() {
         dash_board_screen.setVisibility(View.GONE);
         BuyScreen.setVisibility(View.GONE);
         job_list_screen.setVisibility(View.VISIBLE);
+        landingScreen.setVisibility(View.GONE);
     }
 
     private void defaultColoring(ImageButton icon) {
