@@ -404,7 +404,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/five"
+                    android:layout_marginTop="@dimen/ten"
                     android:layout_weight="2.5"
                     android:gravity="center"
                     android:orientation="horizontal">
@@ -430,10 +430,10 @@
                             android:textSize="@dimen/sixteen" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="0.5" />
+<!--                    <View-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="0dp"-->
+<!--                        android:layout_weight="0.5" />-->
 
                     <LinearLayout
                         android:id="@+id/specials"
@@ -441,6 +441,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
                         android:layout_weight="4.5"
+                        android:visibility="gone"
                         android:background="@drawable/rounded_conners_with_gradient"
                         android:orientation="vertical"
                         android:padding="@dimen/fifteen">
