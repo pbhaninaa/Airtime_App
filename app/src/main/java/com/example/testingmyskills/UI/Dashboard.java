@@ -684,7 +684,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             // Set background tint color to the views
             holder.itemView.setBackgroundTintList(ColorStateList.valueOf(backgroundColor1));
             // You can set backgroundColor2 to another view if needed, e.g., holder.someOtherView.setBackgroundColor(backgroundColor2);
-
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
