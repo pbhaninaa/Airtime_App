@@ -144,25 +144,60 @@
                 android:padding="@dimen/twenty"
                 tools:ignore="UselessParent">
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+
                     android:baselineAligned="false">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_gravity="center_vertical"
                         android:gravity="left"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        tools:ignore="RtlHardcoded">
+
+                        <FrameLayout
+                            android:id="@+id/back_to_ISPs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:background="@drawable/round_conners_background"
+                            android:padding="@dimen/eight"
+                            tools:ignore="RtlHardcoded">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/todo"
+                                android:src="@drawable/arrow_back" />
+
+                        </FrameLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_gravity="center"
                         android:orientation="horizontal"
+                        android:layout_weight="1"
                         android:paddingTop="@dimen/eight"
                         tools:ignore="RtlHardcoded">
+
 
                         <TextView
                             android:id="@+id/user_salutation"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:gravity="center"
                             android:text="@string/salutation"
                             android:textColor="@color/light_gray" />
 
@@ -173,8 +208,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
                         android:gravity="right"
+                        android:layout_weight="1"
                         android:orientation="vertical"
                         tools:ignore="RtlHardcoded">
 
@@ -192,7 +227,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:contentDescription="TODO"
+                                android:contentDescription="@string/todo"
                                 android:src="@drawable/logout" />
 
                         </FrameLayout>
@@ -430,10 +465,10 @@
                             android:textSize="@dimen/sixteen" />
                     </LinearLayout>
 
-<!--                    <View-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="0dp"-->
-<!--                        android:layout_weight="0.5" />-->
+                    <!--                    <View-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_height="0dp"-->
+                    <!--                        android:layout_weight="0.5" />-->
 
                     <LinearLayout
                         android:id="@+id/specials"
@@ -441,10 +476,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
                         android:layout_weight="4.5"
-                        android:visibility="gone"
                         android:background="@drawable/rounded_conners_with_gradient"
                         android:orientation="vertical"
-                        android:padding="@dimen/fifteen">
+                        android:padding="@dimen/fifteen"
+                        android:visibility="gone">
 
 
                         <LinearLayout

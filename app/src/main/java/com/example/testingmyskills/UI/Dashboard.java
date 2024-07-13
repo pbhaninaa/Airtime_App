@@ -78,7 +78,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private ImageButton FilterButton;
     private ImageButton btnProfile, moreItemsBtn, BackToISPs;
     private ScrollView scrollView;
-    private FrameLayout LogoutBtn, LogoutBtn1;
+    private FrameLayout LogoutBtn, LogoutBtn1, BackToISPsLayout;
     private LinearLayout bottomNav, EconetBtn, TelnetBtn, NetoneBtn, SpecialBtn, filterSection;
     //    ApiCalls api = new ApiCalls();
     private boolean show;
@@ -113,6 +113,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         recyclerViews();
         adaptors();
 
+
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
 
@@ -125,15 +126,18 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 String selectedItem = parentView.getItemAtPosition(position).toString();
                 selectedCategory.setText(selectedItem);
                 if (selectedItem.equals("All")) {
-
-                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                    RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(getProducts()));
+                } else if (selectedItem.equals("Airtime")) {
+                    RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                    recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), "Airtime")));
                 } else {
 
-                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                    RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                    recyclerView.setAdapter(new RecommendedAd(getProducts()));
+                    recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), selectedItem)));
                 }
             }
 
@@ -142,7 +146,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 // Handle no selection if needed
             }
         });
-
         ItemTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -153,11 +156,14 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     RecyclerView recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(getProducts()));
-                } else {
-                    Utils.showToast(Dashboard.this, selectedItem);
+                } else if (selectedItem.equals("Airtime")) {
                     RecyclerView recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                    recyclerView.setAdapter(new RecommendedAd(getFilteredProducts(selectedItem)));
+                    recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), "Airtime")));
+                } else {
+                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                    recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), selectedItem)));
                 }
             }
 
@@ -176,8 +182,16 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     RecyclerView recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(getProducts()));
+                } else if (a.equals("Airtime")) {
+                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                    recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), "Airtime")));
                 } else {
                     ItemToBuy = a;
+                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                    recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), a)));
+
                 }
             }
 
@@ -280,7 +294,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filter_spinner.setAdapter(adapter);
 
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.Items);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ItemTypeSpinner2.setAdapter(adapter2);
 
@@ -296,11 +310,12 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     private void recyclerViews() {
+
         DataRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         DataRecyclerView.setAdapter(new RecommendedAd(getProducts()));
 
         jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        jobListRecyclerView.setAdapter(new RecommendedAd(getProducts()));//
+        jobListRecyclerView.setAdapter(new RecommendedAd(getProducts()));
 
         ISPRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ISPRecyclerView.setAdapter(new ISP(MainActivity.ISPs()));//
@@ -365,6 +380,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         DataRecyclerView = findViewById(R.id.recyclerView);
         jobListRecyclerView = findViewById(R.id.jobListRecyclerView);
         landingScreen = findViewById(R.id.landing_page1);
+        BackToISPsLayout = findViewById(R.id.back_to_ISPs);
 
     }
 
@@ -375,7 +391,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         btnProfile.setOnClickListener(v -> hideOtherLayout(R.id.create_profile_screen, btnProfile));
         btnNotifications.setOnClickListener(v -> hideOtherLayout(R.id.buy_screen, btnNotifications));
         BackToISPs.setOnClickListener(v -> hideOtherLayout(R.id.landing_page1, BackToISPs));
-//        BackToISPs.setOnClickListener(v -> handleHideList());
+        BackToISPsLayout.setOnClickListener(v -> hideOtherLayout(R.id.landing_page1, BackToISPs));
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
         NetoneBtn.setOnClickListener(v -> getNetoneBalance(MSISDN));
@@ -391,14 +407,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     }
 
-    private void handleHideList() {
-        dash_board_screen.setVisibility(View.GONE);
-        landingScreen.setVisibility(View.VISIBLE);
-
-        defaultColoring(BackToISPs);
-
-
-    }
 
     private void logout() {
         dash_board_screen.setVisibility(View.GONE);
@@ -738,23 +746,22 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         return items;
     }
 
-    public List<Map<String, Object>> getFilteredProducts(String bundleKeyword) {
-        List<JsonNode> bundles = Utils.filterJsonDataByBundle(filePath, bundleKeyword);
-        List<Map<String, Object>> items = new ArrayList<>();
-        if (bundles != null) {
-            for (JsonNode bundle : bundles) {
-                Map<String, Object> item = new HashMap<>();
-                item.put("type", bundle.get("Category").asText());
-                item.put("amount", bundle.get("VolumeMB").asDouble());
-                String l = bundle.get("Validity").asText().contains("day") ? bundle.get("Validity").asText() : bundle.get("Validity").asText() + " days";
-                item.put("lifeTime", l);
-                item.put("price", bundle.get("CurrentUSDCharge").asDouble());
-                items.add(item);
+
+    public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
+        // Initialize a list to hold the filtered product data
+        List<Map<String, Object>> filteredProducts = new ArrayList<>();
+
+        // Iterate over each product in the input list
+        for (Map<String, Object> product : products) {
+            // Check if the product type contains the specified filterType
+            if (product.get("type") != null && product.get("type").toString().contains(filterType)) {
+                // Add the product to the filtered list
+                filteredProducts.add(product);
             }
-            System.out.println("==========================" + items + "===============================");
         }
 
-        return items;
+        // Return the filtered list of products
+        return filteredProducts;
     }
 
 

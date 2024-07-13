@@ -70,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static String[] econetItems = {
-            "All",
-            "Airtime",
-            "Data",
-            "Voice",
-            "SMS"
+            "AIRTIME",
+            "DATA",
+            "VOICE",
+            "SMS",
+            "All"
     };
 
 
@@ -82,13 +82,7 @@ public class MainActivity extends AppCompatActivity {
         return new String[]{"Econet", "Telnet", "Netone", "Zesa"};
     }
 
-    public static String[] Items = {
 
-            "Airtime",
-            "Data",
-            "Voice",
-            "SMS"
-    };
     public static String[] Currencies = {
             "USD",
             "ZID"
