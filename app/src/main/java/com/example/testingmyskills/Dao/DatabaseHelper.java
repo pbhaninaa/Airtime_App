@@ -60,7 +60,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private void writeDatabaseVersionInPreferences() {
         preferences.edit().putInt(DATABASE_NAME + databaseId, DATABASE_VERSION).apply();
     }
-
     private void installOrUpdateIfNecessary() {
         context.deleteDatabase(DATABASE_NAME);
         Log.d("Database name", DATABASE_NAME);
