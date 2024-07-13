@@ -1,443 +1,452 @@
 [
-    {
-        "Category": "SMS",
-        "MapName": "SMSDaily50SMS",
-        "PricePlanCode": "SDBU1",
-        "Bundle": "SMS Daily Bundle 50SMS",
-        "Validity": "7 days",
-        "VolumeMB": 50.0,
-        "CurrentUSDCharge": 0.15
-    },
-    {
-        "Category": "SMS",
-        "MapName": "SMSDaily130SMS",
-        "PricePlanCode": "SDBU2",
-        "Bundle": "SMS Daily Bundle 130SMS",
-        "Validity": "7 days",
-        "VolumeMB": 130.0,
-        "CurrentUSDCharge": 0.35
-    },
-    {
-        "Category": "SMS",
-        "MapName": "SMSWeekly320SMS",
-        "PricePlanCode": "SMSWBUS5",
-        "Bundle": "SMS Weekly Bundle 320SMS",
-        "Validity": "7 days",
-        "VolumeMB": 320.0,
-        "CurrentUSDCharge": 0.75
-    },
-    {
-        "Category": "SMS",
-        "MapName": "SMSBiWeekly225SMS",
-        "PricePlanCode": "SBWBU1",
-        "Bundle": "SMS BiWeekly  225SMS",
-        "Validity": "14 days",
-        "VolumeMB": 700.0,
-        "CurrentUSDCharge": 1.45
-    },
-    {
-        "Category": "SMS",
-        "MapName": "SMSMonthly550SMS",
-        "PricePlanCode": "SMBU1",
-        "Bundle": "SMS Monthly 550SMS",
-        "Validity": "30 days",
-        "VolumeMB": 1400.0,
-        "CurrentUSDCharge": 2.9
-    },
-    {
-        "Category": "DATA",
-        "MapName": "PrivateWiFi5GBUSD",
-        "PricePlanCode": "PWBUS7",
-        "Bundle": "Private WiFi 5GB ",
-        "Validity": "30 days",
-        "VolumeMB": 5120.0,
-        "CurrentUSDCharge": 9.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "PrivateWiFi10GBUSD",
-        "PricePlanCode": "PWBU10",
-        "Bundle": "Private WiFi 10GB ",
-        "Validity": " 30 days ",
-        "VolumeMB": 10240.0,
-        "CurrentUSDCharge": 13.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "PrivateWiFi14GBUSD",
-        "PricePlanCode": "PWBU14",
-        "Bundle": "Private WiFi Bundle 14GB",
-        "Validity": " 30 days ",
-        "VolumeMB": "300",
-        "CurrentUSDCharge": 20.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "PrivateWiFi20GBUSD",
-        "PricePlanCode": "PWBUS20",
-        "Bundle": "Private WiFi 20GB",
-        "Validity": " 30 days ",
-        "VolumeMB": 20480.0,
-        "CurrentUSDCharge": 26.5
-    },
-    {
-        "Category": "DATA",
-        "MapName": "PrivateWiFi30GBUSD",
-        "PricePlanCode": "PWBUS28",
-        "Bundle": "Private WiFi 30GB ",
-        "Validity": " 30 days ",
-        "VolumeMB": 30720.0,
-        "CurrentUSDCharge": 38.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMB5GVMTHLYV",
-        "PricePlanCode": "DVMU9",
-        "Bundle": "Monthly 5GB + Voice 30d 20 mins $9",
-        "Validity": "30 days",
-        "VolumeMB": "220",
-        "CurrentUSDCharge": 9.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMB14GBYOHEALTH",
-        "PricePlanCode": "DYMU20",
-        "Bundle": "$20 = Data 14GB + YoHealth 30D",
-        "Validity": "30 days",
-        "VolumeMB": "360",
-        "CurrentUSDCharge": 20.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMB30GBYOPLAY",
-        "PricePlanCode": "DYMU38",
-        "Bundle": "$38 = Data 30GB + YoPlay",
-        "Validity": "30 days",
-        "VolumeMB": "810",
-        "CurrentUSDCharge": 38.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMBWIFI14GBECOSURE",
-        "PricePlanCode": "PWMEU20",
-        "Bundle": "$20 = Data 14GB + Ecosure 30D",
-        "Validity": "30 days",
-        "VolumeMB": "500",
-        "CurrentUSDCharge": 20.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMBWIFI20GBBUDDBEATZ",
-        "PricePlanCode": "PWMBU26",
-        "Bundle": "$26.50 = Data 20GB + Buddiebeatz",
-        "Validity": "30 days",
-        "VolumeMB": "20",
-        "CurrentUSDCharge": 26.5
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMBWIFI20GBECOSURE",
-        "PricePlanCode": "PWEU26",
-        "Bundle": "$26.50 = Data 20GB + Ecosure",
-        "Validity": "30 days",
-        "VolumeMB": "250",
-        "CurrentUSDCharge": 26.5
-    },
-    {
-        "Category": "DATA",
-        "MapName": "hourly_1",
-        "PricePlanCode": "1HDBUS5",
-        "Bundle": "1 Hour bundle peak 960mb o/peak 240mb",
-        "Validity": "1 hour",
-        "VolumeMB": "260",
-        "CurrentUSDCharge": 1.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "hourly_2",
-        "PricePlanCode": "2HDBUS15",
-        "Bundle": "2 Hour bundle peak 2500mb o/peak 500mb",
-        "Validity": "2 hour",
-        "VolumeMB": "410",
-        "CurrentUSDCharge": 2.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMB2HRLY3000MBV",
-        "PricePlanCode": "DHBVU2",
-        "Bundle": "2 hour data bundle 3000mb + Voice 2 mins $2",
-        "Validity": "2 hour",
-        "VolumeMB": "720",
-        "CurrentUSDCharge": 2.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMBOVOICEDAILY30",
-        "PricePlanCode": "VDUBU2",
-        "Bundle": "$0.20 = Voice Daily USD Bundle",
-        "Validity": "1 day",
-        "VolumeMB": "60",
-        "CurrentUSDCharge": 0.2
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMBHRSMS8",
-        "PricePlanCode": "DHB30",
-        "Bundle": "$0.30 300Mb + 8 SMS",
-        "Validity": "1 hour",
-        "VolumeMB": "120",
-        "CurrentUSDCharge": 0.3
-    },
-    {
-        "Category": "DATA",
-        "MapName": "daily_1",
-        "PricePlanCode": "DDBUS1",
-        "Bundle": "Daily Data peak 240mb o/peak 60mb",
-        "Validity": "1 day",
-        "VolumeMB": 250.0,
-        "CurrentUSDCharge": 1.5
-    },
-    {
-        "Category": "DATA",
-        "MapName": "daily_2",
-        "PricePlanCode": "DDBUS2",
-        "Bundle": "Daily Data peak 520mb o/peak 130mb",
-        "Validity": "1 day",
-        "VolumeMB": 550.0,
-        "CurrentUSDCharge": 3.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMB650MBV",
-        "PricePlanCode": "DVDU3",
-        "Bundle": "Daily Data 650mb + Daily 4 mins $3",
-        "Validity": "1 day",
-        "VolumeMB": "210",
-        "CurrentUSDCharge": 3.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMBDAILY120MB15SMS",
-        "PricePlanCode": "DDBU75",
-        "Bundle": "$0.75= 120Mb +15SMS",
-        "Validity": "1 day",
-        "VolumeMB": "702",
-        "CurrentUSDCharge": 0.75
-    },
-    {
-        "Category": "DATA",
-        "MapName": "weekly_2",
-        "PricePlanCode": "DWBUS2",
-        "Bundle": "Weekly data peak 400mb o/peak 100mb",
-        "Validity": "7 days",
-        "VolumeMB": 500.0,
-        "CurrentUSDCharge": 3.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "weekly_3",
-        "PricePlanCode": "DWBUS3",
-        "Bundle": "Weekly data peak 800mb o/peak 224mb",
-        "Validity": "7days",
-        "VolumeMB": 1024.0,
-        "CurrentUSDCharge": 4.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMB1GWKLYV",
-        "PricePlanCode": "DVWU4",
-        "Bundle": "Weekly data 1GB weekly voice 8 mins $4",
-        "Validity": "7 days",
-        "VolumeMB": "396",
-        "CurrentUSDCharge": 4.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "COMBWK400MBVOICE15",
-        "PricePlanCode": "DMVW2",
-        "Bundle": "$2= 400Mb +15 Mins Voice",
-        "Validity": "7 days",
-        "VolumeMB": "300",
-        "CurrentUSDCharge": 2.0
-    },
-    {
-        "Category": "WHATSAPP_BUNDLES",
-        "MapName": "WhatsAppWeeklyUSD50C",
-        "PricePlanCode": "WW5US",
-        "Bundle": "W/App 1Wk peak 100mb o/peak 20mb",
-        "Validity": "7 days",
-        "VolumeMB": "500",
-        "CurrentUSDCharge": 1.0
-    },
-    {
-        "Category": "WHATSAPP_BUNDLES",
-        "MapName": "WhatsAppWeeklyUSD1",
-        "PricePlanCode": "WWU1",
-        "Bundle": "W/App 1Wk peak 200mb o/peak 50mb",
-        "Validity": " 7 days ",
-        "VolumeMB": 250.0,
-        "CurrentUSDCharge": 1.5
-    },
-    {
-        "Category": "WHATSAPP_BUNDLES",
-        "MapName": "WhatsAppMonthlyUSD3",
-        "PricePlanCode": "WMU3",
-        "Bundle": "W/App 1Mth peak 400mb o/peak 100mb",
-        "Validity": " 30 days ",
-        "VolumeMB": 500.0,
-        "CurrentUSDCharge": 3.0
-    },
-    {
-        "Category": "WHATSAPP_BUNDLES",
-        "MapName": "WhatsAppMonthlyUSD5",
-        "PricePlanCode": "WMU5",
-        "Bundle": "W/App 1Mth peak 1200mb o/peak 300mb",
-        "Validity": " 30 days ",
-        "VolumeMB": 1500.0,
-        "CurrentUSDCharge": 7.0
-    },
-    {
-        "Category": "WHATSAPP_BUNDLES",
-        "MapName": "COMB500MBWHAPP",
-        "PricePlanCode": "WVMU3",
-        "Bundle": "W/App 500mb + voice monthly 5 mins $3",
-        "Validity": " 30 days ",
-        "VolumeMB": "810",
-        "CurrentUSDCharge": 3.0
-    },
-    {
-        "Category": "WHATSAPP_BUNDLES",
-        "MapName": "COMB1500MBWHTSAPV",
-        "PricePlanCode": "WVMU7",
-        "Bundle": "W/App 1500mb + voice monthly 10 mins $7",
-        "Validity": " 30 days ",
-        "VolumeMB": "360",
-        "CurrentUSDCharge": 7.0
-    },
-    {
-        "Category": "WHATSAPP_US",
-        "MapName": "COMBWA70MBVOICE4",
-        "PricePlanCode": "WMVD50",
-        "Bundle": "$0.50=WhatsApp 70Mb + 4 Voice",
-        "Validity": "7 days",
-        "VolumeMB": "140",
-        "CurrentUSDCharge": 0.5
-    },
-    {
-        "Category": "VOICE",
-        "MapName": "BOJVoiceOnlyUSD50C",
-        "PricePlanCode": "BJOU5",
-        "Bundle": "Bundles of Joy Voice ",
-        "Validity": "7 days",
-        "VolumeMB": 15.0,
-        "CurrentUSDCharge": 0.6
-    },
-    {
-        "Category": "VOICE",
-        "MapName": "BOJVoiceOnlyUSD1",
-        "PricePlanCode": "BOJU1",
-        "Bundle": "Bundles of Joy Voice ",
-        "Validity": "7 days",
-        "VolumeMB": 30.0,
-        "CurrentUSDCharge": 1.2
-    },
-    {
-        "Category": "VOICE",
-        "MapName": "BOJVoiceOnlyUSD250",
-        "PricePlanCode": "BOJ25US",
-        "Bundle": "Bundles of Joy Voice ",
-        "Validity": "14 days",
-        "VolumeMB": 150.0,
-        "CurrentUSDCharge": 3.5
-    },
-    {
-        "Category": "VOICE",
-        "MapName": "BOJVoiceOnlyUSD5",
-        "PricePlanCode": "BOJU5",
-        "Bundle": "Bundles of Joy Voice ",
-        "Validity": "7 days",
-        "VolumeMB": 300.0,
-        "CurrentUSDCharge": 6.5
-    },
-    {
-        "Category": "VOICE",
-        "MapName": "BOJVoiceOnlyUSD7",
-        "PricePlanCode": "BOJ7US",
-        "Bundle": "Bundles of Joy Voice ",
-        "Validity": "20 days",
-        "VolumeMB": 450.0,
-        "CurrentUSDCharge": 9.0
-    },
-    {
-        "Category": "VOICE",
-        "MapName": "BOJVoiceOnlyUSD10",
-        "PricePlanCode": "BOJ10US",
-        "Bundle": "Bundles of Joy Voice ",
-        "Validity": "30 days",
-        "VolumeMB": 700.0,
-        "CurrentUSDCharge": 13.0
-    },
-    {
-        "Category": "VOICE",
-        "MapName": "BOJVoiceOnlyUSD1",
-        "PricePlanCode": "BOJU1",
-        "Bundle": "Bundles of Joy Voice ",
-        "Validity": "7 days",
-        "VolumeMB": "410",
-        "CurrentUSDCharge": 1.2
-    },
-    {
-        "Category": "USD VALUE",
-        "MapName": "D0gt",
-        "PricePlanCode": "ECR1",
-        "Bundle": "1 USD VALUE RECHARGE TO SPECIAL DEDICATED ACCOUNT",
-        "Validity": "120 days",
-        "VolumeMB": 1.0,
-        "CurrentUSDCharge": 0.00
-    },
-    {
-        "Category": "USD VALUE",
-        "MapName": "WhatsAppMonthlyUSD2_50",
-        "PricePlanCode": "ECR5",
-        "Bundle": "5 USD VALUE RECHARGE TO SPECIAL DEDICATED ACCOUNT",
-        "Validity": 120,
-        "VolumeMB": 5.0,
-        "CurrentUSDCharge": 0.00
-    },
-    {
-        "Category": "USD VALUE",
-        "MapName": "WhatsAppMonthlyUSD2_50",
-        "PricePlanCode": "ECR10",
-        "Bundle": "10 USD VALUE RECHARGE TO SPECIAL DEDICATED ACCOUNT",
-        "Validity": 120,
-        "VolumeMB": 10.0,
-        "CurrentUSDCharge": 0.00
-    },
-    {
-        "Category": "WHATSAPP_BUNDLES",
-        "MapName": "WhatsAppMonthlyUSD2_50",
-        "PricePlanCode": "WVM25",
-        "Bundle": "Whatsapp 400MB Peak 100MB offpeak 30 Mins Voice OnNet",
-        "Validity": "30 days",
-        "VolumeMB": "540",
-        "CurrentUSDCharge": 3.5
-    },
-    {
-        "Category": "DATA",
-        "MapName": "MonthlyData10GBVoice_13",
-        "PricePlanCode": "DVMU13",
-        "Bundle": "Data 10GB + Voice Monthly ",
-        "Validity": "10 days",
-        "VolumeMB": "230",
-        "CurrentUSDCharge": 17.0
-    },
-    {
-        "Category": "DATA",
-        "MapName": "MonthlyData20GBVoice_25",
-        "PricePlanCode": "DVMU25",
-        "Bundle": "Data 20GB + Voice Monthly ",
-        "Validity": "7 days",
-        "VolumeMB": "140",
-        "CurrentUSDCharge": 32.0
-    }
+  {
+    "Category": "SMS",
+    "MapName": "SMSDaily50SMS",
+    "PricePlanCode": "SDBU1",
+    "Bundle": "SMS Daily Bundle 50SMS",
+    "Validity": "7 days",
+    "VolumeMB": 50.0,
+    "CurrentUSDCharge": 0.15
+  },
+  {
+    "Category": "SMS",
+    "MapName": "SMSDaily130SMS",
+    "PricePlanCode": "SDBU2",
+    "Bundle": "SMS Daily Bundle 130SMS",
+    "Validity": "7 days",
+    "VolumeMB": 130.0,
+    "CurrentUSDCharge": 0.35
+  },
+  {
+    "Category": "SMS",
+    "MapName": "SMSWeekly320SMS",
+    "PricePlanCode": "SMSWBUS5",
+    "Bundle": "SMS Weekly Bundle 320SMS",
+    "Validity": "7 days",
+    "VolumeMB": 320.0,
+    "CurrentUSDCharge": 0.75
+  },
+  {
+    "Category": "SMS",
+    "MapName": "SMSBiWeekly225SMS",
+    "PricePlanCode": "SBWBU1",
+    "Bundle": "SMS BiWeekly  225SMS",
+    "Validity": "14 days",
+    "VolumeMB": 700.0,
+    "CurrentUSDCharge": 1.45
+  },
+  {
+    "Category": "SMS",
+    "MapName": "SMSMonthly550SMS",
+    "PricePlanCode": "SMBU1",
+    "Bundle": "SMS Monthly 550SMS",
+    "Validity": "30 days",
+    "VolumeMB": 1400.0,
+    "CurrentUSDCharge": 2.9
+  },
+  {
+    "Category": "DATA",
+    "MapName": "PrivateWiFi5GBUSD",
+    "PricePlanCode": "PWBUS7",
+    "Bundle": "Private WiFi 5GB ",
+    "Validity": "30 days",
+    "VolumeMB": 5120.0,
+    "CurrentUSDCharge": 9.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "PrivateWiFi10GBUSD",
+    "PricePlanCode": "PWBU10",
+    "Bundle": "Private WiFi 10GB ",
+    "Validity": " 30 days ",
+    "VolumeMB": 10240.0,
+    "CurrentUSDCharge": 13.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "PrivateWiFi14GBUSD",
+    "PricePlanCode": "PWBU14",
+    "Bundle": "Private WiFi Bundle 14GB",
+    "Validity": " 30 days ",
+    "VolumeMB": "300",
+    "CurrentUSDCharge": 20.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "PrivateWiFi20GBUSD",
+    "PricePlanCode": "PWBUS20",
+    "Bundle": "Private WiFi 20GB",
+    "Validity": " 30 days ",
+    "VolumeMB": 20480.0,
+    "CurrentUSDCharge": 26.5
+  },
+  {
+    "Category": "DATA",
+    "MapName": "PrivateWiFi30GBUSD",
+    "PricePlanCode": "PWBUS28",
+    "Bundle": "Private WiFi 30GB ",
+    "Validity": " 30 days ",
+    "VolumeMB": 30720.0,
+    "CurrentUSDCharge": 38.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMB5GVMTHLYV",
+    "PricePlanCode": "DVMU9",
+    "Bundle": "Monthly 5GB + Voice 30d 20 mins $9",
+    "Validity": "30 days",
+    "VolumeMB": "220",
+    "CurrentUSDCharge": 9.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMB14GBYOHEALTH",
+    "PricePlanCode": "DYMU20",
+    "Bundle": "$20 = Data 14GB + YoHealth 30D",
+    "Validity": "30 days",
+    "VolumeMB": "360",
+    "CurrentUSDCharge": 20.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMB30GBYOPLAY",
+    "PricePlanCode": "DYMU38",
+    "Bundle": "$38 = Data 30GB + YoPlay",
+    "Validity": "30 days",
+    "VolumeMB": "810",
+    "CurrentUSDCharge": 38.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMBWIFI14GBECOSURE",
+    "PricePlanCode": "PWMEU20",
+    "Bundle": "$20 = Data 14GB + Ecosure 30D",
+    "Validity": "30 days",
+    "VolumeMB": "500",
+    "CurrentUSDCharge": 20.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMBWIFI20GBBUDDBEATZ",
+    "PricePlanCode": "PWMBU26",
+    "Bundle": "$26.50 = Data 20GB + Buddiebeatz",
+    "Validity": "30 days",
+    "VolumeMB": "20",
+    "CurrentUSDCharge": 26.5
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMBWIFI20GBECOSURE",
+    "PricePlanCode": "PWEU26",
+    "Bundle": "$26.50 = Data 20GB + Ecosure",
+    "Validity": "30 days",
+    "VolumeMB": "250",
+    "CurrentUSDCharge": 26.5
+  },
+  {
+    "Category": "DATA",
+    "MapName": "hourly_1",
+    "PricePlanCode": "1HDBUS5",
+    "Bundle": "1 Hour bundle peak 960mb o/peak 240mb",
+    "Validity": "1 hour",
+    "VolumeMB": "260",
+    "CurrentUSDCharge": 1.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "hourly_2",
+    "PricePlanCode": "2HDBUS15",
+    "Bundle": "2 Hour bundle peak 2500mb o/peak 500mb",
+    "Validity": "2 hour",
+    "VolumeMB": "410",
+    "CurrentUSDCharge": 2.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMB2HRLY3000MBV",
+    "PricePlanCode": "DHBVU2",
+    "Bundle": "2 hour data bundle 3000mb + Voice 2 mins $2",
+    "Validity": "2 hour",
+    "VolumeMB": "720",
+    "CurrentUSDCharge": 2.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMBOVOICEDAILY30",
+    "PricePlanCode": "VDUBU2",
+    "Bundle": "$0.20 = Voice Daily USD Bundle",
+    "Validity": "1 day",
+    "VolumeMB": "60",
+    "CurrentUSDCharge": 0.2
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMBHRSMS8",
+    "PricePlanCode": "DHB30",
+    "Bundle": "$0.30 300Mb + 8 SMS",
+    "Validity": "1 hour",
+    "VolumeMB": "120",
+    "CurrentUSDCharge": 0.3
+  },
+  {
+    "Category": "DATA",
+    "MapName": "daily_1",
+    "PricePlanCode": "DDBUS1",
+    "Bundle": "Daily Data peak 240mb o/peak 60mb",
+    "Validity": "1 day",
+    "VolumeMB": 250.0,
+    "CurrentUSDCharge": 1.5
+  },
+  {
+    "Category": "DATA",
+    "MapName": "daily_2",
+    "PricePlanCode": "DDBUS2",
+    "Bundle": "Daily Data peak 520mb o/peak 130mb",
+    "Validity": "1 day",
+    "VolumeMB": 550.0,
+    "CurrentUSDCharge": 3.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMB650MBV",
+    "PricePlanCode": "DVDU3",
+    "Bundle": "Daily Data 650mb + Daily 4 mins $3",
+    "Validity": "1 day",
+    "VolumeMB": "210",
+    "CurrentUSDCharge": 3.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMBDAILY120MB15SMS",
+    "PricePlanCode": "DDBU75",
+    "Bundle": "$0.75= 120Mb +15SMS",
+    "Validity": "1 day",
+    "VolumeMB": "702",
+    "CurrentUSDCharge": 0.75
+  },
+  {
+    "Category": "DATA",
+    "MapName": "weekly_2",
+    "PricePlanCode": "DWBUS2",
+    "Bundle": "Weekly data peak 400mb o/peak 100mb",
+    "Validity": "7 days",
+    "VolumeMB": 500.0,
+    "CurrentUSDCharge": 3.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "weekly_3",
+    "PricePlanCode": "DWBUS3",
+    "Bundle": "Weekly data peak 800mb o/peak 224mb",
+    "Validity": "7days",
+    "VolumeMB": 1024.0,
+    "CurrentUSDCharge": 4.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMB1GWKLYV",
+    "PricePlanCode": "DVWU4",
+    "Bundle": "Weekly data 1GB weekly voice 8 mins $4",
+    "Validity": "7 days",
+    "VolumeMB": "396",
+    "CurrentUSDCharge": 4.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "COMBWK400MBVOICE15",
+    "PricePlanCode": "DMVW2",
+    "Bundle": "$2= 400Mb +15 Mins Voice",
+    "Validity": "7 days",
+    "VolumeMB": "300",
+    "CurrentUSDCharge": 2.0
+  },
+  {
+    "Category": "WHATSAPP_BUNDLES",
+    "MapName": "WhatsAppWeeklyUSD50C",
+    "PricePlanCode": "WW5US",
+    "Bundle": "W/App 1Wk peak 100mb o/peak 20mb",
+    "Validity": "7 days",
+    "VolumeMB": "500",
+    "CurrentUSDCharge": 1.0
+  },
+  {
+    "Category": "WHATSAPP_BUNDLES",
+    "MapName": "WhatsAppWeeklyUSD1",
+    "PricePlanCode": "WWU1",
+    "Bundle": "W/App 1Wk peak 200mb o/peak 50mb",
+    "Validity": " 7 days ",
+    "VolumeMB": 250.0,
+    "CurrentUSDCharge": 1.5
+  },
+  {
+    "Category": "WHATSAPP_BUNDLES",
+    "MapName": "WhatsAppMonthlyUSD3",
+    "PricePlanCode": "WMU3",
+    "Bundle": "W/App 1Mth peak 400mb o/peak 100mb",
+    "Validity": " 30 days ",
+    "VolumeMB": 500.0,
+    "CurrentUSDCharge": 3.0
+  },
+  {
+    "Category": "WHATSAPP_BUNDLES",
+    "MapName": "WhatsAppMonthlyUSD5",
+    "PricePlanCode": "WMU5",
+    "Bundle": "W/App 1Mth peak 1200mb o/peak 300mb",
+    "Validity": " 30 days ",
+    "VolumeMB": 1500.0,
+    "CurrentUSDCharge": 7.0
+  },
+  {
+    "Category": "WHATSAPP_BUNDLES",
+    "MapName": "COMB500MBWHAPP",
+    "PricePlanCode": "WVMU3",
+    "Bundle": "W/App 500mb + voice monthly 5 mins $3",
+    "Validity": " 30 days ",
+    "VolumeMB": "810",
+    "CurrentUSDCharge": 3.0
+  },
+  {
+    "Category": "WHATSAPP_BUNDLES",
+    "MapName": "COMB1500MBWHTSAPV",
+    "PricePlanCode": "WVMU7",
+    "Bundle": "W/App 1500mb + voice monthly 10 mins $7",
+    "Validity": " 30 days ",
+    "VolumeMB": "360",
+    "CurrentUSDCharge": 7.0
+  },
+  {
+    "Category": "WHATSAPP_US",
+    "MapName": "COMBWA70MBVOICE4",
+    "PricePlanCode": "WMVD50",
+    "Bundle": "$0.50=WhatsApp 70Mb + 4 Voice",
+    "Validity": "7 days",
+    "VolumeMB": "140",
+    "CurrentUSDCharge": 0.5
+  },
+  {
+    "Category": "VOICE",
+    "MapName": "BOJVoiceOnlyUSD50C",
+    "PricePlanCode": "BJOU5",
+    "Bundle": "Bundles of Joy Voice ",
+    "Validity": "7 days",
+    "VolumeMB": 15.0,
+    "CurrentUSDCharge": 0.6
+  },
+  {
+    "Category": "VOICE",
+    "MapName": "BOJVoiceOnlyUSD1",
+    "PricePlanCode": "BOJU1",
+    "Bundle": "Bundles of Joy Voice ",
+    "Validity": "7 days",
+    "VolumeMB": 30.0,
+    "CurrentUSDCharge": 1.2
+  },
+  {
+    "Category": "VOICE",
+    "MapName": "BOJVoiceOnlyUSD250",
+    "PricePlanCode": "BOJ25US",
+    "Bundle": "Bundles of Joy Voice ",
+    "Validity": "14 days",
+    "VolumeMB": 150.0,
+    "CurrentUSDCharge": 3.5
+  },
+  {
+    "Category": "VOICE",
+    "MapName": "BOJVoiceOnlyUSD5",
+    "PricePlanCode": "BOJU5",
+    "Bundle": "Bundles of Joy Voice ",
+    "Validity": "7 days",
+    "VolumeMB": 300.0,
+    "CurrentUSDCharge": 6.5
+  },
+  {
+    "Category": "VOICE",
+    "MapName": "BOJVoiceOnlyUSD7",
+    "PricePlanCode": "BOJ7US",
+    "Bundle": "Bundles of Joy Voice ",
+    "Validity": "20 days",
+    "VolumeMB": 450.0,
+    "CurrentUSDCharge": 9.0
+  },
+  {
+    "Category": "VOICE",
+    "MapName": "BOJVoiceOnlyUSD10",
+    "PricePlanCode": "BOJ10US",
+    "Bundle": "Bundles of Joy Voice ",
+    "Validity": "30 days",
+    "VolumeMB": 700.0,
+    "CurrentUSDCharge": 13.0
+  },
+  {
+    "Category": "VOICE",
+    "MapName": "BOJVoiceOnlyUSD1",
+    "PricePlanCode": "BOJU1",
+    "Bundle": "Bundles of Joy Voice ",
+    "Validity": "7 days",
+    "VolumeMB": "410",
+    "CurrentUSDCharge": 1.2
+  },
+  {
+    "Category": "USD VALUE",
+    "MapName": "D0gt",
+    "PricePlanCode": "ECR1",
+    "Bundle": "1 USD VALUE RECHARGE TO SPECIAL DEDICATED ACCOUNT",
+    "Validity": "120 days",
+    "VolumeMB": 1.0,
+    "CurrentUSDCharge": 0.00
+  },
+  {
+    "Category": "USD VALUE",
+    "MapName": "WhatsAppMonthlyUSD2_50",
+    "PricePlanCode": "ECR5",
+    "Bundle": "5 USD VALUE RECHARGE TO SPECIAL DEDICATED ACCOUNT",
+    "Validity": 120,
+    "VolumeMB": 5.0,
+    "CurrentUSDCharge": 0.00
+  },
+  {
+    "Category": "USD VALUE",
+    "MapName": "WhatsAppMonthlyUSD2_50",
+    "PricePlanCode": "ECR10",
+    "Bundle": "10 USD VALUE RECHARGE TO SPECIAL DEDICATED ACCOUNT",
+    "Validity": 120,
+    "VolumeMB": 10.0,
+    "CurrentUSDCharge": 0.00
+  },
+  {
+    "Category": "WHATSAPP_BUNDLES",
+    "MapName": "WhatsAppMonthlyUSD2_50",
+    "PricePlanCode": "WVM25",
+    "Bundle": "Whatsapp 400MB Peak 100MB offpeak 30 Mins Voice OnNet",
+    "Validity": "30 days",
+    "VolumeMB": "540",
+    "CurrentUSDCharge": 3.5
+  },
+  {
+    "Category": "DATA",
+    "MapName": "MonthlyData10GBVoice_13",
+    "PricePlanCode": "DVMU13",
+    "Bundle": "Data 10GB + Voice Monthly ",
+    "Validity": "10 days",
+    "VolumeMB": "230",
+    "CurrentUSDCharge": 17.0
+  },
+  {
+    "Category": "DATA",
+    "MapName": "MonthlyData20GBVoice_25",
+    "PricePlanCode": "DVMU25",
+    "Bundle": "Data 20GB + Voice Monthly ",
+    "Validity": "7 days",
+    "VolumeMB": "140",
+    "CurrentUSDCharge": 32.0
+  },
+  {
+    "Category": "Airtime",
+    "MapName": "30 Airtime",
+    "PricePlanCode": "AirtimeSB",
+    "Bundle": "Airtime Yearly",
+    "Validity": "365 days",
+    "VolumeMB": 140.0,
+    "CurrentUSDCharge": 140.0
+  }
 ]

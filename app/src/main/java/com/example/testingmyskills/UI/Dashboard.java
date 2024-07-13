@@ -91,6 +91,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private boolean getSelectedCategory;
     private RecyclerView ISPRecyclerView, DataRecyclerView, jobListRecyclerView;
     private String filePath = "JSON.json";
+    private int numItems;
 
 
     @Override
@@ -105,7 +106,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         initialiseViews();
         getSelectedCategory = false;
 
-
         Utils.hideSoftNavBar(Dashboard.this);
         setupFocusListeners();
         setOnclickListeners();
@@ -117,8 +117,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
 
-        String n = String.valueOf(getProducts().size());
-        number_of_posts.setText(String.format("%s%s", n, getString(R.string.items_found)));
+
         filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -129,16 +128,20 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(getProducts()));
+                    numItems = getProducts().size();
                 } else if (selectedItem.equals("Airtime")) {
                     RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), "Airtime")));
+                    numItems= filterProductsByType(getProducts(), "Airtime").size();
                 } else {
 
                     RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), selectedItem)));
+                    numItems= filterProductsByType(getProducts(), selectedItem).size();
                 }
+                number_of_posts.setText(String.format("%s%s", numItems, getString(R.string.items_found)));
             }
 
             @Override
@@ -754,7 +757,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         // Iterate over each product in the input list
         for (Map<String, Object> product : products) {
             // Check if the product type contains the specified filterType
-            if (product.get("type") != null && product.get("type").toString().contains(filterType)) {
+            if (product.get("type") != null && product.get("type").toString().toLowerCase().contains(filterType.toLowerCase())) {
                 // Add the product to the filtered list
                 filteredProducts.add(product);
             }
