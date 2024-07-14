@@ -59,8 +59,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     private ImageButton ShowConformPasswordInRegister;
     private Button SignUp;
     private Spinner languagesSpinner;
-    private AlphaKeyboard alphaKeyboard;
-    private Button hideKeyboardBtn;
+//    private AlphaKeyboard alphaKeyboard;
+//    private Button hideKeyboardBtn;
     private EditText Firstname,
             Lastname,
             phoneNumber,
@@ -91,8 +91,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, values);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languagesSpinner.setAdapter(adapter);
-        setupFocusListeners();
-
+//        setupFocusListeners();
 
     }
 
@@ -124,8 +123,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     }
 
     private void initialiseViews() {
-        alphaKeyboard = new AlphaKeyboard(this);
-        hideKeyboardBtn = alphaKeyboard.findViewById(R.id.button_enter);
+//        alphaKeyboard = new AlphaKeyboard(this);
+//        hideKeyboardBtn = alphaKeyboard.findViewById(R.id.button_enter);
         SignInLayout = findViewById(R.id.login_page);
         getEmailTextInLogin = findViewById(R.id.email_in_login_page);
         getPasswordTextInLogin = findViewById(R.id.password_in_login_page);
@@ -167,22 +166,22 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 RememberMeCheckBox.isChecked();
             }
 
-            Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            getEmailTextInLogin.setShowSoftInputOnFocus(false);
-            getEmailTextInLogin.setTextIsSelectable(true);
-            InputConnection ic = getEmailTextInLogin.onCreateInputConnection(new EditorInfo());
-            alphaKeyboard.setInputConnection(ic);
+//            Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            getEmailTextInLogin.setShowSoftInputOnFocus(false);
+//            getEmailTextInLogin.setTextIsSelectable(true);
+//            InputConnection ic = getEmailTextInLogin.onCreateInputConnection(new EditorInfo());
+//            alphaKeyboard.setInputConnection(ic);
 
 
             SignInLayout.setVisibility(View.VISIBLE);
             SignUpLayout.setVisibility(View.GONE);
             RegScreen.setVisibility(View.GONE);
         } else if (screenToLoad == R.id.sign_up_page) {
-            Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            getEmailTextInRegister.setShowSoftInputOnFocus(false);
-            getEmailTextInRegister.setTextIsSelectable(true);
-            InputConnection ic = getEmailTextInRegister.onCreateInputConnection(new EditorInfo());
-            alphaKeyboard.setInputConnection(ic);
+//            Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            getEmailTextInRegister.setShowSoftInputOnFocus(false);
+//            getEmailTextInRegister.setTextIsSelectable(true);
+//            InputConnection ic = getEmailTextInRegister.onCreateInputConnection(new EditorInfo());
+//            alphaKeyboard.setInputConnection(ic);
 
             SignInLayout.setVisibility(View.GONE);
             RegScreen.setVisibility(View.GONE);
@@ -223,85 +222,85 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         }
     }
 
-    private void setupFocusListeners() {
-        getPasswordTextInLogin.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(getPasswordTextInLogin.onCreateInputConnection(new EditorInfo()));
-                getPasswordTextInLogin.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        getEmailTextInLogin.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(getEmailTextInLogin.onCreateInputConnection(new EditorInfo()));
-                getEmailTextInLogin.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        getPasswordTextInRegister.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(getPasswordTextInRegister.onCreateInputConnection(new EditorInfo()));
-                getPasswordTextInRegister.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        getEmailTextInRegister.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(getEmailTextInRegister.onCreateInputConnection(new EditorInfo()));
-                getEmailTextInRegister.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        getConfirmPasswordTextInRegister.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(getConfirmPasswordTextInRegister.onCreateInputConnection(new EditorInfo()));
-                getConfirmPasswordTextInRegister.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        Firstname.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(Firstname.onCreateInputConnection(new EditorInfo()));
-                Firstname.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        Lastname.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(Lastname.onCreateInputConnection(new EditorInfo()));
-                Lastname.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        address.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(address.onCreateInputConnection(new EditorInfo()));
-                address.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        email.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(email.onCreateInputConnection(new EditorInfo()));
-                email.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        emailConfirmation.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(emailConfirmation.onCreateInputConnection(new EditorInfo()));
-                emailConfirmation.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        phoneNumber.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                alphaKeyboard.setInputConnection(phoneNumber.onCreateInputConnection(new EditorInfo()));
-                phoneNumber.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-    }
+//    private void setupFocusListeners() {
+//        getPasswordTextInLogin.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(getPasswordTextInLogin.onCreateInputConnection(new EditorInfo()));
+//                getPasswordTextInLogin.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        getEmailTextInLogin.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(getEmailTextInLogin.onCreateInputConnection(new EditorInfo()));
+//                getEmailTextInLogin.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        getPasswordTextInRegister.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(getPasswordTextInRegister.onCreateInputConnection(new EditorInfo()));
+//                getPasswordTextInRegister.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        getEmailTextInRegister.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(getEmailTextInRegister.onCreateInputConnection(new EditorInfo()));
+//                getEmailTextInRegister.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        getConfirmPasswordTextInRegister.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(getConfirmPasswordTextInRegister.onCreateInputConnection(new EditorInfo()));
+//                getConfirmPasswordTextInRegister.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        Firstname.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(Firstname.onCreateInputConnection(new EditorInfo()));
+//                Firstname.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        Lastname.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(Lastname.onCreateInputConnection(new EditorInfo()));
+//                Lastname.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        address.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(address.onCreateInputConnection(new EditorInfo()));
+//                address.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        email.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(email.onCreateInputConnection(new EditorInfo()));
+//                email.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        emailConfirmation.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(emailConfirmation.onCreateInputConnection(new EditorInfo()));
+//                emailConfirmation.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        phoneNumber.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                alphaKeyboard.setInputConnection(phoneNumber.onCreateInputConnection(new EditorInfo()));
+//                phoneNumber.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//    }
 
     private void setOnclickListeners() {
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
@@ -319,7 +318,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         ShowConformPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         CreateAccBtn.setOnClickListener(v -> handleAccCreation());
-        hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
+//        hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
         backButton.setOnClickListener(v -> handleBack());
 
     }
@@ -341,9 +340,9 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //        emailSender.execute();
     }
 
-    private void hideKeyboard() {
-        Utils.hideAlphaKeyboard(alphaKeyboard);
-    }
+//    private void hideKeyboard() {
+//        Utils.hideAlphaKeyboard(alphaKeyboard);
+//    }
 
     private void handleAccCreation() {
         // Get the values from the input fields

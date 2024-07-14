@@ -82,8 +82,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private LinearLayout bottomNav, EconetBtn, TelnetBtn, NetoneBtn, SpecialBtn, filterSection;
     //    ApiCalls api = new ApiCalls();
     private boolean show;
-    private AlphaKeyboard MyKeyboard;
-    private Button hideKeyboardBtn;
+//    private AlphaKeyboard MyKeyboard;
+//    private Button hideKeyboardBtn;
     static String currencySymbol;
     private String ItemToBuy;
     public static String MSISDN;
@@ -107,7 +107,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         getSelectedCategory = false;
 
         Utils.hideSoftNavBar(Dashboard.this);
-        setupFocusListeners();
+//        setupFocusListeners();
         setOnclickListeners();
 
         recyclerViews();
@@ -346,8 +346,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     private void initialiseViews() {
 
-        MyKeyboard = new AlphaKeyboard(this);
-        hideKeyboardBtn = MyKeyboard.findViewById(R.id.button_enter);
+//        MyKeyboard = new AlphaKeyboard(this);
+//        hideKeyboardBtn = MyKeyboard.findViewById(R.id.button_enter);
         dash_board_screen = findViewById(R.id.dash_board_screen);
         moreBtn = findViewById(R.id.show_more_posts);
         btnHome = findViewById(R.id.nav_dash_board_btn);
@@ -410,7 +410,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         EconetBtn.setOnClickListener(v -> getEconetBalance(MSISDN));
         SpecialBtn.setOnClickListener(v -> getSpecials());
         FilterButton.setOnClickListener(v -> hideFilter());
-        hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
+//        hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
         LogoutBtn.setOnClickListener(v -> logout());
         LogoutBtn1.setOnClickListener(v -> logout());
         No.setOnClickListener(v -> handleNo());
@@ -513,7 +513,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             return;
         }
         if (!ItemToBuy.isEmpty() || !ItemType.isEmpty()) {
-            Utils.hideAlphaKeyboard(MyKeyboard);
+//            Utils.hideAlphaKeyboard(MyKeyboard);
             Load(phone, "load_value", this);
         } else {
             Utils.showToast(this, "Select Item");
@@ -525,11 +525,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             Item.setVisibility(View.GONE);
             ItemTypeSpinner2.setVisibility(View.VISIBLE);
             landingScreen.setVisibility(View.GONE);
-            Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
-            Phone.setShowSoftInputOnFocus(false);
-            Phone.setTextIsSelectable(true);
-            InputConnection ic = Phone.onCreateInputConnection(new EditorInfo());
-            MyKeyboard.setInputConnection(ic);
+//            Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
+//            Phone.setShowSoftInputOnFocus(false);
+//            Phone.setTextIsSelectable(true);
+//            InputConnection ic = Phone.onCreateInputConnection(new EditorInfo());
+//            MyKeyboard.setInputConnection(ic);
         }
 
         if (layoutToShow == R.id.create_profile_screen) {
@@ -549,37 +549,37 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         }
     }
 
-    private void setupFocusListeners() {
-        Phone.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                MyKeyboard.setInputConnection(Phone.onCreateInputConnection(new EditorInfo()));
-                Phone.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-
-        ItemPrice.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                MyKeyboard.setInputConnection(ItemPrice.onCreateInputConnection(new EditorInfo()));
-                ItemPrice.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        Amount.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                MyKeyboard.setInputConnection(Amount.onCreateInputConnection(new EditorInfo()));
-                Amount.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-        Item.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                MyKeyboard.setInputConnection(Item.onCreateInputConnection(new EditorInfo()));
-                Item.setShowSoftInputOnFocus(false);
-                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
-            }
-        });
-    }
+//    private void setupFocusListeners() {
+//        Phone.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                MyKeyboard.setInputConnection(Phone.onCreateInputConnection(new EditorInfo()));
+//                Phone.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//
+//        ItemPrice.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                MyKeyboard.setInputConnection(ItemPrice.onCreateInputConnection(new EditorInfo()));
+//                ItemPrice.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        Amount.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                MyKeyboard.setInputConnection(Amount.onCreateInputConnection(new EditorInfo()));
+//                Amount.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//        Item.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                MyKeyboard.setInputConnection(Item.onCreateInputConnection(new EditorInfo()));
+//                Item.setShowSoftInputOnFocus(false);
+//                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
+//            }
+//        });
+//    }
 
     public class RecommendedAd extends RecyclerView.Adapter<RecommendedAd.ViewHolder> {
 
@@ -799,9 +799,9 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
     }
 
-    private void hideKeyboard() {
-        Utils.hideAlphaKeyboard(MyKeyboard);
-    }
+//    private void hideKeyboard() {
+//        Utils.hideAlphaKeyboard(MyKeyboard);
+//    }
 
     private void clearFields() {
         Phone.setText("");
