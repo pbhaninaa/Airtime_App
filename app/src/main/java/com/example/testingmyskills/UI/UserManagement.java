@@ -59,7 +59,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     private ImageButton ShowConformPasswordInRegister;
     private Button SignUp;
     private Spinner languagesSpinner;
-//    private AlphaKeyboard alphaKeyboard;
+    //    private AlphaKeyboard alphaKeyboard;
 //    private Button hideKeyboardBtn;
     private EditText Firstname,
             Lastname,
@@ -71,6 +71,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
     boolean rememberMe;
     private FrameLayout backButton;
+    private boolean gotData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         Utils.hideSoftNavBar(UserManagement.this);
         showPassword = false;
         rememberMe = false;
-
+        gotData = false;
         initialiseViews();
         setOnclickListeners();
 
@@ -99,9 +100,11 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         int status = (int) response.get("Status");
         String des = Objects.requireNonNull(response.get("Description")).toString();
         if (status == 0) {
+            gotData = true;
             Utils.showToast(this, des);
         } else if (status == 1) {
             saveAccount();
+            gotData = true;
         }
         System.out.println("Account Validation Res: " + response);
     }
@@ -207,18 +210,18 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         CreateAccBtn.setText("Update Profile");
 
         // Populate Spinner
-        String savedLanguage = prefs.getString("language", "");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, values);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        languagesSpinner.setAdapter(adapter);
-        if (!savedLanguage.isEmpty()) {
-            int position = adapter.getPosition(savedLanguage);
-            if (position != -1) {
-                languagesSpinner.setSelection(position);
-            } else {
-                // Handle case where savedLanguage is not found in the Spinner's data
-            }
-        }
+//        String savedLanguage = prefs.getString("language", "");
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, values);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        languagesSpinner.setAdapter(adapter);
+//        if (!savedLanguage.isEmpty()) {
+//            int position = adapter.getPosition(savedLanguage);
+//            if (position != -1) {
+//                languagesSpinner.setSelection(position);
+//            } else {
+//                // Handle case where savedLanguage is not found in the Spinner's data
+//            }
+//        }
     }
 
 //    private void setupFocusListeners() {
@@ -354,18 +357,20 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         String emailC = emailConfirmation.getText().toString().trim();
 
         // Check if all fields have values
-        if (language.isEmpty() || name.isEmpty() || surname.isEmpty() || phone.isEmpty() ||
-                addressLine.isEmpty() || emailAddress.isEmpty() || emailC.isEmpty()) {
+        if (name.isEmpty() || surname.isEmpty() || phone.isEmpty() ||
+                addressLine.isEmpty() || emailAddress.isEmpty()) {
             // Show an error message to the user
             Utils.showToast(this, "Please fill all the fields");
         } else if (!Utils.isValidEmail(emailAddress)) {
             // Show an error message if email is not valid
             Utils.showToast(this, "Invalid email address format");
-        } else if (!emailAddress.equals(emailC)) {
-            // Show an error message if email and confirmation do not match
-            Utils.showToast(this, "Email addresses do not match");
+//        } else if (!emailAddress.equals(emailC)) {
+//            // Show an error message if email and confirmation do not match
+//            Utils.showToast(this, "Email addresses do not match");
         } else {
             APICall(phone, this);
+            if (!gotData)
+                Utils.showToast(this, "Sever is Offline try again later");
         }
     }
 

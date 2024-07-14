@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/six"
     android:layout_marginTop="10sp"
     android:layout_weight="2"
     android:background="@drawable/isp_backgrounds"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingTop="10sp"
-    android:paddingBottom="10sp">
+    android:padding="10sp">
+
 
     <ImageView
         android:id="@+id/isp_icon"
         android:layout_width="0dp"
         android:layout_height="60sp"
-        android:layout_weight="1"
-        android:layout_gravity="center"
+        android:layout_gravity="left"
+        android:layout_weight="0.3"
         android:backgroundTint="@android:color/transparent"
-        android:contentDescription="@string/todo" />
+        android:contentDescription="@string/todo"
+        tools:ignore="RtlHardcoded" />
 
-
-<!--    <ImageView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="25sp"-->
-<!--        android:contentDescription="@string/todo"-->
-<!--        android:src="@drawable/forward_arrow"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="15sp"-->
-<!--        app:tint="@color/black" />-->
+    <TextView
+        android:id="@+id/isp_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/fifteen"
+        android:textSize="@dimen/eighteen"
+        android:textStyle="bold"
+        android:textColor="@color/primary_color"
+        tools:ignore="RtlHardcoded,SpUsage" />
 
 </LinearLayout>

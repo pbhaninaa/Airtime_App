@@ -82,7 +82,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private LinearLayout bottomNav, EconetBtn, TelnetBtn, NetoneBtn, SpecialBtn, filterSection;
     //    ApiCalls api = new ApiCalls();
     private boolean show;
-//    private AlphaKeyboard MyKeyboard;
+    //    private AlphaKeyboard MyKeyboard;
 //    private Button hideKeyboardBtn;
     static String currencySymbol;
     private String ItemToBuy;
@@ -234,7 +234,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             bottomNav.setVisibility(View.GONE);
             dash_board_screen.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
         }
-
 
 
     }
@@ -676,8 +675,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             String ispName = ispNames[position];
             // Set background color based on ISP name
             int backgroundColor1;
-            int backgroundColor2;
-
             switch (ispName) {
                 case "Econet":
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
@@ -701,7 +698,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
                     break;
             }
-
             // Set background tint color to the views
             holder.itemView.setBackgroundTintList(ColorStateList.valueOf(backgroundColor1));
             // You can set backgroundColor2 to another view if needed, e.g., holder.someOtherView.setBackgroundColor(backgroundColor2);
@@ -727,11 +723,14 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         public class ViewHolder extends RecyclerView.ViewHolder {
 
             ImageView icon;
+            TextView name;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
                 icon = itemView.findViewById(R.id.isp_icon);
+                name = findViewById(R.id.isp_name);
+
             }
         }
     }

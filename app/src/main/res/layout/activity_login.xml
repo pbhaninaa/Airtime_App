@@ -467,6 +467,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="clip_horizontal"
+                    android:visibility="gone"
                     android:layout_marginTop="@dimen/five"
                     android:orientation="horizontal">
 
@@ -541,6 +542,7 @@
                     android:background="@drawable/white_box_with_shadow"
                     android:hint="@string/john_gmail_com"
                     android:inputType="textEmailAddress"
+                    android:visibility="gone"
                     android:padding="12sp"
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/light_gray" />
