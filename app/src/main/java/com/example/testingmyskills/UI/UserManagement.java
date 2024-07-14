@@ -92,7 +92,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         languagesSpinner.setAdapter(adapter);
 //        setupFocusListeners();
-
     }
 
     @Override
