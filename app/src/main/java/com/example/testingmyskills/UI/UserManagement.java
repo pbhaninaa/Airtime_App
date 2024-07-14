@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ import org.json.JSONException;
 
 import java.util.Map;
 import java.util.Objects;
+
 //8QGGLHPVSQ3TFEX7QLTCRU2Y
 public class UserManagement extends AppCompatActivity implements AccountValidationCallback {
     private ConstraintLayout SignInLayout;
@@ -68,6 +70,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     private Button CreateAccBtn;
     String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
     boolean rememberMe;
+    private FrameLayout backButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,15 +151,17 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         address = findViewById(R.id.address);
         email = findViewById(R.id.email);
         emailConfirmation = findViewById(R.id.emailC);
+        backButton = findViewById(R.id.back);
         RememberMeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            rememberMe= isChecked;
+            rememberMe = isChecked;
+
         });
     }
 
     private void screenToLoad(int screenToLoad) {
         if (screenToLoad == R.id.login_page) {
 
-            if(Utils.RememberMe(this)){
+            if (Utils.RememberMe(this)) {
                 getEmailTextInLogin.setText(Utils.getEmail(this));
                 getPasswordTextInLogin.setText(Utils.getPassword(this));
                 RememberMeCheckBox.isChecked();
@@ -314,7 +320,14 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         CreateAccBtn.setOnClickListener(v -> handleAccCreation());
         hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
+        backButton.setOnClickListener(v -> handleBack());
 
+    }
+
+    private void handleBack() {
+        Intent i = new Intent(this, Dashboard.class);
+        i.putExtra("constraintLayoutId", R.id.dash_board_screen);
+        startActivity(i);
     }
 
     private void sendPasswordEmail() {
@@ -410,7 +423,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
     private void handleForgotPasswordClick() throws JSONException {
 
-       EmailSender.sendEmail(this,Utils.getEmail(this),"Test Name",Utils.getPassword(this));
+        EmailSender.sendEmail(this, Utils.getEmail(this), "Test Name", Utils.getPassword(this));
 
     }
 
@@ -448,7 +461,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 Intent intent = new Intent(UserManagement.this, Dashboard.class);
                 startActivity(intent);
             }
-            Utils.saveAutoFillPermission(this,rememberMe);
+            Utils.saveAutoFillPermission(this, rememberMe);
             getEmailTextInLogin.setText("");
             getPasswordTextInLogin.setText("");
         } else {

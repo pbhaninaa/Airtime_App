@@ -133,13 +133,13 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), "Airtime")));
-                    numItems= filterProductsByType(getProducts(), "Airtime").size();
+                    numItems = filterProductsByType(getProducts(), "Airtime").size();
                 } else {
 
                     RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), selectedItem)));
-                    numItems= filterProductsByType(getProducts(), selectedItem).size();
+                    numItems = filterProductsByType(getProducts(), selectedItem).size();
                 }
                 number_of_posts.setText(String.format("%s%s", numItems, getString(R.string.items_found)));
             }
@@ -224,10 +224,18 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
         BackToISPs.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
+        // Load screen based on the constraintLayoutId received from Intent
+        int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.landing_page1);
+        ConstraintLayout layout = findViewById(constraintLayoutId);
+        if (constraintLayoutId == R.id.dash_board_screen) {
+            dash_board_screen.setVisibility(View.VISIBLE);
+        } else {
+            layout.setVisibility(View.VISIBLE);
+            bottomNav.setVisibility(View.GONE);
+            dash_board_screen.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
+        }
 
-        landingScreen.setVisibility(View.VISIBLE);
-        bottomNav.setVisibility(View.GONE);
-        dash_board_screen.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
+
 
     }
 
@@ -512,7 +520,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         }
     }
 
-    private void hideOtherLayout(int layoutToShow, ImageButton icon) {
+    public void hideOtherLayout(int layoutToShow, ImageButton icon) {
         if (layoutToShow == R.id.buy_screen) {
             Item.setVisibility(View.GONE);
             ItemTypeSpinner2.setVisibility(View.VISIBLE);

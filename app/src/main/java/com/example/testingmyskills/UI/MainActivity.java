@@ -70,11 +70,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static String[] econetItems = {
-            "AIRTIME",
-            "DATA",
-            "VOICE",
-            "SMS",
-            "All"
+            "Data",
+            "Voice",
+            "SMS"
     };
 
 
