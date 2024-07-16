@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static String[] ISPs() {
-        return new String[]{"Econet", "Telnet", "Netone", "Zesa"};
+        return new String[]{"Econet", "Telecel", "Netone", "Electricity"};
     }
 
 

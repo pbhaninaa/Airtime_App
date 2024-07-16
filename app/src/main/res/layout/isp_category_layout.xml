@@ -19,7 +19,9 @@
         android:layout_height="60sp"
         android:layout_gravity="left"
         android:layout_weight="0.3"
-        android:backgroundTint="@android:color/transparent"
+        android:backgroundTint="@color/back_ground_gray"
+        android:background="@drawable/isp_backgrounds"
+        android:padding="@dimen/six"
         android:contentDescription="@string/todo"
         tools:ignore="RtlHardcoded" />
 
@@ -27,11 +29,20 @@
         android:id="@+id/isp_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="@dimen/fifteen"
-        android:textSize="@dimen/eighteen"
-        android:textStyle="bold"
+        android:layout_weight="0.8"
         android:textColor="@color/primary_color"
+        android:textSize="@dimen/fifteen"
+        android:layout_marginStart="@dimen/thirty"
         tools:ignore="RtlHardcoded,SpUsage" />
+<!--    <ImageView-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="60sp"-->
+<!--        android:layout_gravity="left"-->
+<!--        android:layout_weight="0.3"-->
+<!--        android:src="@drawable/forward_arrow"-->
+<!--        android:padding="@dimen/six"-->
+<!--        android:contentDescription="@string/todo"-->
+<!--        tools:ignore="RtlHardcoded"-->
+<!--        app:tint="@color/back_ground_gray" />-->
 
 </LinearLayout>

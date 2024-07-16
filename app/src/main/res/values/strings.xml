@@ -317,4 +317,5 @@
     <string name="abc">ABC</string>
     <string name="_123">123</string>
     <string name="_123_">123</string>
+    <string name="providers">Providers</string>
 </resources>

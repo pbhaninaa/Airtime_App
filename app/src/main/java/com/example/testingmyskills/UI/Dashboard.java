@@ -93,7 +93,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private String filePath = "JSON.json";
     private int numItems;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -328,7 +327,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         jobListRecyclerView.setAdapter(new RecommendedAd(getProducts()));
 
         ISPRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ISPRecyclerView.setAdapter(new ISP(MainActivity.ISPs()));//
+        ISPRecyclerView.setAdapter(new ISP(this, MainActivity.ISPs()));//
 
     }
 
@@ -414,9 +413,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         LogoutBtn1.setOnClickListener(v -> logout());
         No.setOnClickListener(v -> handleNo());
         Yes.setOnClickListener(v -> handleYes());
-
     }
-
 
     private void logout() {
         dash_board_screen.setVisibility(View.GONE);
@@ -426,6 +423,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     private void handleNo() {
         dash_board_screen.setVisibility(View.VISIBLE);
+        landingScreen.setVisibility(View.GONE);
         bottomNav.setVisibility(View.VISIBLE);
         ConfirmationScreen.setVisibility(View.GONE);
     }
@@ -654,12 +652,12 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     public class ISP extends RecyclerView.Adapter<ISP.ViewHolder> {
-        Context context = Dashboard.this;
+        Context context;
 
         private String[] ispNames;
 
-
-        public ISP(String[] ispNames) {
+        public ISP(Context context, String[] ispNames) {
+            this.context = context;
             this.ispNames = ispNames;
         }
 
@@ -673,23 +671,25 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             String ispName = ispNames[position];
-            // Set background color based on ISP name
+            // Set the ISP name to the TextView
+            holder.name.setText(ispName);
+
+            // Set background color and icon based on ISP name
             int backgroundColor1;
             switch (ispName) {
                 case "Econet":
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
                     holder.icon.setImageResource(R.drawable.econet_icon);
-
                     break;
-                case "Telnet":
+                case "Telecel":
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
                     holder.icon.setImageResource(R.drawable.telnet_icon);
                     break;
                 case "Netone":
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
-                    holder.icon.setImageResource(R.drawable.netone_icon);
+                    holder.icon.setImageResource(R.drawable.netone_icon_one);
                     break;
-                case "Zesa":
+                case "Electricity":
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
                     holder.icon.setImageResource(R.drawable.zesa_icon);
                     break;
@@ -698,22 +698,22 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     backgroundColor1 = ContextCompat.getColor(context, R.color.white);
                     break;
             }
+
             // Set background tint color to the views
             holder.itemView.setBackgroundTintList(ColorStateList.valueOf(backgroundColor1));
-            // You can set backgroundColor2 to another view if needed, e.g., holder.someOtherView.setBackgroundColor(backgroundColor2);
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Add your desired action herem
+                    // Add your desired action here
+                    // Example: show the dashboard screen and hide the landing screen
                     landingScreen.setVisibility(View.GONE);
                     dash_board_screen.setVisibility(View.VISIBLE);
                     defaultColoring(btnHome);
                     bottomNav.setVisibility(View.VISIBLE);
                 }
             });
-
         }
-
 
         @Override
         public int getItemCount() {
@@ -727,13 +727,12 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
             public ViewHolder(View itemView) {
                 super(itemView);
-
                 icon = itemView.findViewById(R.id.isp_icon);
-                name = findViewById(R.id.isp_name);
-
+                name = itemView.findViewById(R.id.isp_name);
             }
         }
     }
+
 
     public List<Map<String, Object>> getProducts() {
 
