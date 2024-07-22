@@ -59,10 +59,19 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
+    private ConstraintLayout AppFrame;
+    private LinearLayout Header, Navbar, ItemsLayout, ISPsLayout, BuyLayout;
+    private FrameLayout LogoutButton;
+    private TextView salutationText, HeaderTitle, AvailableBalance, StatusMessage, SelectedItem, MoreBtn;
+    private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn;
+    private RecyclerView ISPsRecyclerView, ItemRecyclerView;
+    private Spinner ItemFilterSpinner, ItemToBuySpinner;
+
+    //================================================================================================================================
     private ConstraintLayout dash_board_screen, landingScreen;
     private ConstraintLayout BuyScreen;
     private ConstraintLayout ConfirmationScreen;
-    private ConstraintLayout job_list_screen;
+    private LinearLayout job_list_screen;
     private EditText Phone, Item, Amount, ItemPrice;
     private ImageButton backFromList;
     private Button BuyBtn, Yes, No;
@@ -123,23 +132,13 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 // Retrieve the selected item
                 String selectedItem = parentView.getItemAtPosition(position).toString();
                 selectedCategory.setText(selectedItem);
-                if (selectedItem.equals("All")) {
-                    RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                    recyclerView.setAdapter(new RecommendedAd(getProducts()));
-                    numItems = getProducts().size();
-                } else if (selectedItem.equals("Airtime")) {
-                    RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                    recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), "Airtime")));
-                    numItems = filterProductsByType(getProducts(), "Airtime").size();
-                } else {
 
-                    RecyclerView recyclerView = findViewById(R.id.jobListRecyclerView);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                    recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), selectedItem)));
-                    numItems = filterProductsByType(getProducts(), selectedItem).size();
-                }
+
+                RecyclerView recyclerView = findViewById(R.id.MoreItemsRecyclerView);
+                recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), selectedItem)));
+                numItems = filterProductsByType(getProducts(), selectedItem).size();
+
                 number_of_posts.setText(String.format("%s%s", numItems, getString(R.string.items_found)));
             }
 
@@ -148,25 +147,16 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 // Handle no selection if needed
             }
         });
-        ItemTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Retrieve the selected item
                 String selectedItem = parentView.getItemAtPosition(position).toString();
+                List<Map<String, Object>> array = filterProductsByType(getProducts(), selectedItem);
+                SelectedItem.setText(selectedItem + " is selected");
+                ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                ItemRecyclerView.setAdapter(new RecommendedAd(array));
 
-                if (selectedItem.equals("All")) {
-                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                    recyclerView.setAdapter(new RecommendedAd(getProducts()));
-                } else if (selectedItem.equals("Airtime")) {
-                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                    recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), "Airtime")));
-                } else {
-                    RecyclerView recyclerView = findViewById(R.id.recyclerView);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                    recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), selectedItem)));
-                }
             }
 
             @Override
@@ -224,16 +214,18 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         BackToISPs.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
         // Load screen based on the constraintLayoutId received from Intent
-        int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.landing_page1);
-        ConstraintLayout layout = findViewById(constraintLayoutId);
-        if (constraintLayoutId == R.id.dash_board_screen) {
-            dash_board_screen.setVisibility(View.VISIBLE);
-        } else {
-            layout.setVisibility(View.VISIBLE);
-            bottomNav.setVisibility(View.GONE);
-            dash_board_screen.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
-        }
-
+//        int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.landing_page1);
+//        ConstraintLayout layout = findViewById(constraintLayoutId);
+//        if (constraintLayoutId == R.id.dash_board_screen) {
+//            dash_board_screen.setVisibility(View.VISIBLE);
+//        } else {
+//            layout.setVisibility(View.VISIBLE);
+//            bottomNav.setVisibility(View.GONE);
+//            dash_board_screen.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
+//        }
+//=======================================================================================================================
+        AppFrame.setVisibility(View.VISIBLE);
+        ISPsLayout.setVisibility(View.VISIBLE);
 
     }
 
@@ -314,8 +306,14 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ArrayAdapter<String> adapter4 = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.Currencies);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         SelectedCurrency.setAdapter(adapter4);
+//============================================new==========================================
+        ArrayAdapter<String> ItemsAdaptor = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ItemFilterSpinner.setAdapter(ItemsAdaptor);
 
-
+        ArrayAdapter<String> ItemToBuyAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ItemToBuySpinner.setAdapter(ItemToBuyAdapter);
     }
 
     private void recyclerViews() {
@@ -329,17 +327,13 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ISPRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ISPRecyclerView.setAdapter(new ISP(this, MainActivity.ISPs()));//
 
-    }
+        //==============================new========================================
+        ISPsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ISPsRecyclerView.setAdapter(new ISP(this, MainActivity.ISPs()));
 
-    private void updateCurrencySymbol(String newCurrencySymbol) {
-        // Update the currency symbol string resource
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("currency_symbol", newCurrencySymbol);
-        editor.apply();
 
-        // Notify any parts of your app that need to react to this change
-        // For example, update UI elements or perform calculations using the new symbol
+        ItemRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ItemRecyclerView.setAdapter(new RecommendedAd(getProducts()));
     }
 
     private void initialiseViews() {
@@ -387,10 +381,52 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
         ISPRecyclerView = findViewById(R.id.CategoryRecyclerView);
         DataRecyclerView = findViewById(R.id.recyclerView);
-        jobListRecyclerView = findViewById(R.id.jobListRecyclerView);
+        jobListRecyclerView = findViewById(R.id.MoreItemsRecyclerView);
         landingScreen = findViewById(R.id.landing_page1);
         BackToISPsLayout = findViewById(R.id.back_to_ISPs);
+        //===============================================================
 
+        AppFrame = findViewById(R.id.app_frame);
+        Header = findViewById(R.id.balance_display_layout);
+        LogoutButton = findViewById(R.id.logout_button);
+        salutationText = findViewById(R.id.salutation_text);
+        HeaderTitle = findViewById(R.id.balances_text);
+        AvailableBalance = findViewById(R.id.available_balance);
+        StatusMessage = findViewById(R.id.status_message);
+
+        NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
+        NavBuyBtn = findViewById(R.id.nav_buy_btn1);
+        NavProfileBtn = findViewById(R.id.nav_profile_btn1);
+        NavIPSBtn = findViewById(R.id.nav_networks_btn1);
+        NavMoreBtn = findViewById(R.id.more1);
+
+        ISPsLayout = findViewById(R.id.ISP_display_layout);
+        BuyLayout = findViewById(R.id.Buying_layout);
+        ItemsLayout = findViewById(R.id.Items_display_layout);
+
+
+        ISPsRecyclerView = findViewById(R.id.isp_list_recycler_view);
+        ItemRecyclerView = findViewById(R.id.Items_recycler_view);
+        ItemFilterSpinner = findViewById(R.id.items_spinner);
+        // Undone yet
+        MoreBtn = findViewById(R.id.More_Items);
+        SelectedItem = findViewById(R.id.SelectedItem);
+
+        ItemToBuySpinner = findViewById(R.id.item_to_buy_spinner);
+
+        Navbar = findViewById(R.id.navbar);
+
+    }
+
+    private void updateCurrencySymbol(String newCurrencySymbol) {
+        // Update the currency symbol string resource
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("currency_symbol", newCurrencySymbol);
+        editor.apply();
+
+        // Notify any parts of your app that need to react to this change
+        // For example, update UI elements or perform calculations using the new symbol
     }
 
     private void setOnclickListeners() {
@@ -413,9 +449,26 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         LogoutBtn1.setOnClickListener(v -> logout());
         No.setOnClickListener(v -> handleNo());
         Yes.setOnClickListener(v -> handleYes());
+        //===================================new===============================
+        LogoutButton.setOnClickListener(v -> logout());
+        NavHomeBtn.setOnClickListener(v -> hideLayouts(ItemsLayout));
+        NavIPSBtn.setOnClickListener(v -> hideLayouts(ISPsLayout));
+        NavMoreBtn.setOnClickListener(v -> handleShowMore());
+        NavBuyBtn.setOnClickListener(v -> hideLayouts(BuyLayout));
+        MoreBtn.setOnClickListener(v -> handleShowMore());
+
+    }
+
+    private void hideLayouts(LinearLayout layoutToDisplay) {
+        ISPsLayout.setVisibility(View.GONE);
+        BuyLayout.setVisibility(View.GONE);
+        ItemsLayout.setVisibility(View.GONE);
+        ItemsLayout.setVisibility(View.GONE);
+        layoutToDisplay.setVisibility(View.VISIBLE);
     }
 
     private void logout() {
+        AppFrame.setVisibility(View.GONE);
         dash_board_screen.setVisibility(View.GONE);
         ConfirmationScreen.setVisibility(View.VISIBLE);
         bottomNav.setVisibility(View.GONE);
@@ -625,13 +678,20 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    hideOtherLayout(R.id.buy_screen, btnNotifications);
+//                    hideOtherLayout(R.id.buy_screen, btnNotifications);
                     BuyTittle.setText(String.format("%s\n that last for %s", Type.getText().toString(), time));
                     Item.setText(type);
                     Amount.setText(amount);
                     ItemPrice.setText(String.format("%s%s", currencySymbol, price));
-                    ItemTypeSpinner2.setVisibility(View.GONE);
-                    Item.setVisibility(View.VISIBLE);
+                    if (job_list_screen.getVisibility() == View.VISIBLE) {
+                        job_list_screen.setVisibility(View.GONE);
+                        AppFrame.setVisibility(View.VISIBLE);
+                        Navbar.setVisibility(View.VISIBLE);
+                    }
+
+                    hideLayouts(BuyLayout);
+//                    ItemTypeSpinner2.setVisibility(View.GONE);
+//                    Item.setVisibility(View.VISIBLE);
 
                 }
             }
@@ -707,10 +767,10 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 public void onClick(View v) {
                     // Add your desired action here
                     // Example: show the dashboard screen and hide the landing screen
-                    landingScreen.setVisibility(View.GONE);
-                    dash_board_screen.setVisibility(View.VISIBLE);
-                    defaultColoring(btnHome);
-                    bottomNav.setVisibility(View.VISIBLE);
+                    ISPsLayout.setVisibility(View.GONE);
+                    ItemsLayout.setVisibility(View.VISIBLE);
+//                    defaultColoring(btnHome);
+//                    bottomNav.setVisibility(View.VISIBLE);
                 }
             });
         }
@@ -775,17 +835,17 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
 
     private void handleBackFromList() {
-        bottomNav.setVisibility(View.VISIBLE);
+        Navbar.setVisibility(View.VISIBLE);
         job_list_screen.setVisibility(View.GONE);
-        dash_board_screen.setVisibility(View.VISIBLE);
-        landingScreen.setVisibility(View.GONE);
+        AppFrame.setVisibility(View.VISIBLE);
+//        dash_board_screen.setVisibility(View.VISIBLE);
+//        landingScreen.setVisibility(View.GONE);
     }
 
     private void handleShowMore() {
-        dash_board_screen.setVisibility(View.GONE);
-        BuyScreen.setVisibility(View.GONE);
+        Navbar.setVisibility(View.GONE);
+        AppFrame.setVisibility(View.GONE);
         job_list_screen.setVisibility(View.VISIBLE);
-        landingScreen.setVisibility(View.GONE);
     }
 
     private void defaultColoring(ImageButton icon) {
