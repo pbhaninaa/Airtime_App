@@ -103,7 +103,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             gotData = true;
             Utils.showToast(this, des);
         } else if (status == 1) {
-            saveAccount();
+//            saveAccount();
             gotData = true;
         }
         System.out.println("Account Validation Res: " + response);
@@ -368,9 +368,10 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //            // Show an error message if email and confirmation do not match
 //            Utils.showToast(this, "Email addresses do not match");
         } else {
-            APICall(phone, this);
-            if (!gotData)
-                Utils.showToast(this, "Sever is Offline try again later");
+            saveAccount();
+//            APICall(phone, this);
+//            if (!gotData)
+//                Utils.showToast(this, "Sever is Offline try again later");
         }
     }
 

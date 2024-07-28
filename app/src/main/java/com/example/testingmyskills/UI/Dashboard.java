@@ -62,7 +62,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private ConstraintLayout AppFrame;
     private LinearLayout Header, Navbar, ItemsLayout, ISPsLayout, BuyLayout;
     private FrameLayout LogoutButton;
-    private TextView salutationText, HeaderTitle, AvailableBalance, StatusMessage, SelectedItem, MoreBtn;
+    private TextView salutationText, HeaderTitle, SelectedIsp, AvailableBalance, StatusMessage, SelectedItem, MoreBtn;
     private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn;
     private RecyclerView ISPsRecyclerView, ItemRecyclerView;
     private Spinner ItemFilterSpinner, ItemToBuySpinner;
@@ -113,11 +113,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         show = true;
         initialiseViews();
         getSelectedCategory = false;
-
         Utils.hideSoftNavBar(Dashboard.this);
-//        setupFocusListeners();
         setOnclickListeners();
-
         recyclerViews();
         adaptors();
 
@@ -126,6 +123,43 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
 
 
+        spinners();
+        BackToISPs.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
+//        setupFocusListeners();
+        // Load screen based on the constraintLayoutId received from Intent
+//        int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.landing_page1);
+//        ConstraintLayout layout = findViewById(constraintLayoutId);
+//        if (constraintLayoutId == R.id.dash_board_screen) {
+//            dash_board_screen.setVisibility(View.VISIBLE);
+//        } else {
+//            layout.setVisibility(View.VISIBLE);
+//            bottomNav.setVisibility(View.GONE);
+//            dash_board_screen.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
+//        }
+//=======================================================================================================================
+        AppFrame.setVisibility(View.VISIBLE);
+        ISPsLayout.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void onBalanceReceived(Map<String, Object> response) {
+        try {
+            String amount = Objects.requireNonNull(response.get("Amount")).toString();
+            String Balance = amount.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(amount)));
+
+            AccountBalance.setText(Balance);
+
+            double balance = Double.parseDouble(amount);
+
+            Utils.setMessage(this, balance, Message);
+        } catch (Exception e) {
+            System.out.println("Error occurred: " + e.getMessage());
+        }
+        System.out.println("Dash Res: " + response);
+    }
+
+    public void spinners() {
         filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -211,39 +245,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             }
         });
 
-        BackToISPs.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
-        // Load screen based on the constraintLayoutId received from Intent
-//        int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.landing_page1);
-//        ConstraintLayout layout = findViewById(constraintLayoutId);
-//        if (constraintLayoutId == R.id.dash_board_screen) {
-//            dash_board_screen.setVisibility(View.VISIBLE);
-//        } else {
-//            layout.setVisibility(View.VISIBLE);
-//            bottomNav.setVisibility(View.GONE);
-//            dash_board_screen.setVisibility(getSelectedCategory ? View.VISIBLE : View.GONE);
-//        }
-//=======================================================================================================================
-        AppFrame.setVisibility(View.VISIBLE);
-        ISPsLayout.setVisibility(View.VISIBLE);
-
-    }
-
-    @Override
-    public void onBalanceReceived(Map<String, Object> response) {
-        try {
-            String amount = Objects.requireNonNull(response.get("Amount")).toString();
-            String Balance = amount.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(amount)));
-
-            AccountBalance.setText(Balance);
-
-            double balance = Double.parseDouble(amount);
-
-            Utils.setMessage(this, balance, Message);
-        } catch (Exception e) {
-            System.out.println("Error occurred: " + e.getMessage());
-        }
-        System.out.println("Dash Res: " + response);
     }
 
     @Override
@@ -325,11 +327,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         jobListRecyclerView.setAdapter(new RecommendedAd(getProducts()));
 
         ISPRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ISPRecyclerView.setAdapter(new ISP(this, MainActivity.ISPs()));//
+        ISPRecyclerView.setAdapter(new ISP(this, MainActivity.ISPs));//
 
         //==============================new========================================
         ISPsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ISPsRecyclerView.setAdapter(new ISP(this, MainActivity.ISPs()));
+        ISPsRecyclerView.setAdapter(new ISP(this, MainActivity.ISPs));
 
 
         ItemRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -415,6 +417,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ItemToBuySpinner = findViewById(R.id.item_to_buy_spinner);
 
         Navbar = findViewById(R.id.navbar);
+        SelectedIsp = findViewById(R.id.selected_network_text);
 
     }
 
@@ -456,15 +459,21 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         NavMoreBtn.setOnClickListener(v -> handleShowMore());
         NavBuyBtn.setOnClickListener(v -> hideLayouts(BuyLayout));
         MoreBtn.setOnClickListener(v -> handleShowMore());
+        NavProfileBtn.setOnClickListener(v->showProfile());
 
     }
 
     private void hideLayouts(LinearLayout layoutToDisplay) {
+        if (SelectedIsp.getText().toString().isEmpty()) {
+            Utils.showToast(this, "Select an ISP");
+            return;
+        }
         ISPsLayout.setVisibility(View.GONE);
         BuyLayout.setVisibility(View.GONE);
         ItemsLayout.setVisibility(View.GONE);
         ItemsLayout.setVisibility(View.GONE);
         layoutToDisplay.setVisibility(View.VISIBLE);
+
     }
 
     private void logout() {
@@ -569,7 +578,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             Utils.showToast(this, "Select Item");
         }
     }
-
+public void showProfile(){
+    Intent intent = new Intent(this, UserManagement.class);
+    intent.putExtra("constraintLayoutId", R.id.create_profile_screen);
+    startActivity(intent);
+}
     public void hideOtherLayout(int layoutToShow, ImageButton icon) {
         if (layoutToShow == R.id.buy_screen) {
             Item.setVisibility(View.GONE);
@@ -767,6 +780,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 public void onClick(View v) {
                     // Add your desired action here
                     // Example: show the dashboard screen and hide the landing screen
+                    SelectedIsp.setText(ispName);
                     ISPsLayout.setVisibility(View.GONE);
                     ItemsLayout.setVisibility(View.VISIBLE);
 //                    defaultColoring(btnHome);

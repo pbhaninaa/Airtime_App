@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         initialiseViews();
-        if (!isUserLogged(this)) {
+        if (isUserLogged(this)) {
             Intent intent = new Intent(MainActivity.this, Dashboard.class);
             startActivity(intent);
         } else {
@@ -76,9 +76,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    public static String[] ISPs() {
-        return new String[]{"Econet", "Telecel", "Netone", "Electricity"};
-    }
+    public static String[] ISPs ={"Econet", "Telecel", "Netone", "Electricity"};
+
 
 
     public static String[] Currencies = {
