@@ -41,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Welcome text"
+                    android:text="Qupos"
                     android:textColor="@color/primary_color"
                     android:textSize="25sp"
                     android:textStyle="bold" />
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="15sp"
                     android:gravity="center"
-                    android:text="App definition"
+                    android:text="Airtime"
                     android:textColor="@color/primary_color"
                     android:textSize="18sp" />
 

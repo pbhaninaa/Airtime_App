@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.testingmyskills.R;
 
 import java.io.InputStream;
@@ -274,5 +277,17 @@ public class Utils {
 
         return filteredData;
     }
-
+    public static boolean isTokenExpired(String token) {
+        try {
+            // Decode the token
+            DecodedJWT jwt = JWT.decode(token);
+            // Get the expiration time
+            Date expiresAt = jwt.getExpiresAt();
+            // Check if the token is expired
+            return expiresAt.before(new Date());
+        } catch (JWTDecodeException exception) {
+            // Invalid token
+            return true;
+        }
+    }
 }

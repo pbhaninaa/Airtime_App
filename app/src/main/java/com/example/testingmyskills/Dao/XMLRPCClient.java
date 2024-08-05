@@ -8,6 +8,9 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -115,15 +118,16 @@ public class XMLRPCClient {
             throw new XmlRpcException("Unexpected response type from server: " + response.getClass().getName());
         }
     }
+//====================================================================
 
-    private static final String BASE_URL = "https://dev-api.wepayafrica.com/api/v1/";
+    private static final String BASE_URL = "https://your.api.endpoint/";
 
-    // Register User
+    // User Registration
     public static void registerUserAsync(String name, String phoneNumber, String email, String password, ResponseCallback callback) {
         new RegisterUserTask(name, phoneNumber, email, password, callback).execute();
     }
 
-    private static class RegisterUserTask extends AsyncTask<Void, Void, Integer> {
+    private static class RegisterUserTask extends AsyncTask<Void, Void, String> {
         private String name;
         private String phoneNumber;
         private String email;
@@ -140,7 +144,7 @@ public class XMLRPCClient {
         }
 
         @Override
-        protected Integer doInBackground(Void... voids) {
+        protected String doInBackground(Void... voids) {
             try {
                 URL url = new URL(BASE_URL + "register");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -156,8 +160,22 @@ public class XMLRPCClient {
                     os.write(input, 0, input.length);
                 }
 
+                InputStream inputStream;
                 int code = conn.getResponseCode();
-                return code;
+                if (code == 200) { // success
+                    inputStream = conn.getInputStream();
+                } else {
+                    inputStream = conn.getErrorStream();
+                }
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = reader.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+
+                return response.toString();
             } catch (Exception e) {
                 this.exception = e;
                 return null;
@@ -165,13 +183,11 @@ public class XMLRPCClient {
         }
 
         @Override
-        protected void onPostExecute(Integer code) {
+        protected void onPostExecute(String response) {
             if (callback != null) {
                 if (exception == null) {
-                    System.out.println("RegisterUserTask onSuccess: Response Code = " + code);
-                    callback.onSuccess(code);
+                    callback.onSuccess(response);
                 } else {
-                    System.out.println("RegisterUserTask onError: Exception = " + exception.getMessage());
                     callback.onError(exception);
                 }
             }
@@ -183,7 +199,7 @@ public class XMLRPCClient {
         new LoginUserTask(email, password, callback).execute();
     }
 
-    private static class LoginUserTask extends AsyncTask<Void, Void, Integer> {
+    private static class LoginUserTask extends AsyncTask<Void, Void, String> {
         private String email;
         private String password;
         private ResponseCallback callback;
@@ -196,7 +212,7 @@ public class XMLRPCClient {
         }
 
         @Override
-        protected Integer doInBackground(Void... voids) {
+        protected String doInBackground(Void... voids) {
             try {
                 URL url = new URL(BASE_URL + "login");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -212,8 +228,22 @@ public class XMLRPCClient {
                     os.write(input, 0, input.length);
                 }
 
+                InputStream inputStream;
                 int code = conn.getResponseCode();
-                return code;
+                if (code == 200) { // success
+                    inputStream = conn.getInputStream();
+                } else {
+                    inputStream = conn.getErrorStream();
+                }
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = reader.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+
+                return response.toString();
             } catch (Exception e) {
                 this.exception = e;
                 return null;
@@ -221,10 +251,10 @@ public class XMLRPCClient {
         }
 
         @Override
-        protected void onPostExecute(Integer code) {
+        protected void onPostExecute(String response) {
             if (callback != null) {
                 if (exception == null) {
-                    callback.onSuccess(code);
+                    callback.onSuccess(response);
                 } else {
                     callback.onError(exception);
                 }
@@ -237,7 +267,7 @@ public class XMLRPCClient {
         new RefreshTokenTask(token, callback).execute();
     }
 
-    private static class RefreshTokenTask extends AsyncTask<Void, Void, Integer> {
+    private static class RefreshTokenTask extends AsyncTask<Void, Void, String> {
         private String token;
         private ResponseCallback callback;
         private Exception exception;
@@ -248,7 +278,7 @@ public class XMLRPCClient {
         }
 
         @Override
-        protected Integer doInBackground(Void... voids) {
+        protected String doInBackground(Void... voids) {
             try {
                 URL url = new URL(BASE_URL + "refresh");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -258,8 +288,22 @@ public class XMLRPCClient {
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
 
+                InputStream inputStream;
                 int code = conn.getResponseCode();
-                return code;
+                if (code == 200) { // success
+                    inputStream = conn.getInputStream();
+                } else {
+                    inputStream = conn.getErrorStream();
+                }
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = reader.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+
+                return response.toString();
             } catch (Exception e) {
                 this.exception = e;
                 return null;
@@ -267,10 +311,10 @@ public class XMLRPCClient {
         }
 
         @Override
-        protected void onPostExecute(Integer code) {
+        protected void onPostExecute(String response) {
             if (callback != null) {
                 if (exception == null) {
-                    callback.onSuccess(code);
+                    callback.onSuccess(response);
                 } else {
                     callback.onError(exception);
                 }
@@ -283,7 +327,7 @@ public class XMLRPCClient {
         new LogoutTask(token, callback).execute();
     }
 
-    private static class LogoutTask extends AsyncTask<Void, Void, Integer> {
+    private static class LogoutTask extends AsyncTask<Void, Void, String> {
         private String token;
         private ResponseCallback callback;
         private Exception exception;
@@ -294,7 +338,7 @@ public class XMLRPCClient {
         }
 
         @Override
-        protected Integer doInBackground(Void... voids) {
+        protected String doInBackground(Void... voids) {
             try {
                 URL url = new URL(BASE_URL + "logout");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -304,8 +348,22 @@ public class XMLRPCClient {
                 conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
 
+                InputStream inputStream;
                 int code = conn.getResponseCode();
-                return code;
+                if (code == 200) { // success
+                    inputStream = conn.getInputStream();
+                } else {
+                    inputStream = conn.getErrorStream();
+                }
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = reader.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+
+                return response.toString();
             } catch (Exception e) {
                 this.exception = e;
                 return null;
@@ -313,10 +371,10 @@ public class XMLRPCClient {
         }
 
         @Override
-        protected void onPostExecute(Integer code) {
+        protected void onPostExecute(String response) {
             if (callback != null) {
                 if (exception == null) {
-                    callback.onSuccess(code);
+                    callback.onSuccess(response);
                 } else {
                     callback.onError(exception);
                 }
@@ -325,8 +383,7 @@ public class XMLRPCClient {
     }
 
     public interface ResponseCallback {
-        void onSuccess(int responseCode);
-
+        void onSuccess(String response);
         void onError(Exception e);
     }
 }

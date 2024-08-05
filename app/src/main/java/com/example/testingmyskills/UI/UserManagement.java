@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.UserManager;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
@@ -35,6 +36,7 @@ import com.example.testingmyskills.JavaClasses.Utils;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 import java.util.Objects;
@@ -200,7 +202,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     }
 
     private void setOnclickListeners() {
-        RegisterBtn.setOnClickListener(v -> handleRegisterClick());
+//        RegisterBtn.setOnClickListener(v -> handleRegisterClick());
         ShowPasswordInLogin.setOnClickListener(v -> handleShowPassword());
         SignInBtn.setOnClickListener(v -> handleSignIn());
         ForgotPasswordBtn.setOnClickListener(v -> {
@@ -210,7 +212,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 throw new RuntimeException(e);
             }
         });
-        SignUpBtn.setOnClickListener(v -> handleSignUp());
+//        SignUpBtn.setOnClickListener(v -> handleSignUp());
         SignUp.setOnClickListener(v -> handleCreateClick());
         ShowConformPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
@@ -221,7 +223,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 throw new RuntimeException(e);
             }
         });
-//        hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
         backButton.setOnClickListener(v -> handleBack());
 
     }
@@ -243,12 +244,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //        emailSender.execute();
     }
 
-//    private void hideKeyboard() {
-//        Utils.hideAlphaKeyboard(alphaKeyboard);
-//    }
-
     private void handleAccCreation() throws Exception {
-        // Get the values from the input fields
         String language = languagesSpinner.getSelectedItem().toString().trim();
         String name = Firstname.getText().toString().trim();
         String surname = Lastname.getText().toString().trim();
@@ -257,51 +253,48 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         String emailAddress = email.getText().toString().trim();
         String emailC = emailConfirmation.getText().toString().trim();
         String pass = password.getText().toString().trim();
-
-        // Check if all fields have values
         if (name.isEmpty() || surname.isEmpty() || phone.isEmpty() ||
                 addressLine.isEmpty() || emailAddress.isEmpty() || pass.isEmpty()) {
-            // Show an error message to the user
             Utils.showToast(this, "Please fill all the fields");
         } else if (!Utils.isValidEmail(emailAddress)) {
-            // Show an error message if email is not valid
             Utils.showToast(this, "Invalid email address format");
-//        } else if (!emailAddress.equals(emailC)) {
-//            // Show an error message if email and confirmation do not match
-//            Utils.showToast(this, "Email addresses do not match");
         } else {
-            XMLRPCClient.registerUserAsync(name + " " + surname, phone, emailAddress, pass, new XMLRPCClient.ResponseCallback() {
-                @Override
-                public void onSuccess(int responseCode) {
-//                    System.out.println("Register =Response Code: " + responseCode);
-//                    Intent intent = new Intent(UserManagement.this, Dashboard.class);
-//                    startActivity(intent);
-                    RegScreen.setVisibility(View.GONE);
-                    SignInLayout.setVisibility(View.VISIBLE);
-                    saveAccount();
-                    if (responseCode == 201) {
-                        Utils.saveCredentials(UserManagement.this, emailAddress, pass);
-                        RegScreen.setVisibility(View.GONE);
-                        SignInLayout.setVisibility(View.VISIBLE);
-                    }
-//                    else {
-//                        Utils.showToast(UserManagement.this,getMessage);
+            RegScreen.setVisibility(View.GONE);
+            SignInLayout.setVisibility(View.VISIBLE);
+            getEmailTextInLogin.setText(emailAddress);
+            getPasswordTextInLogin.setText(pass);
+//            XMLRPCClient.registerUserAsync(name, phone, emailAddress, pass, new XMLRPCClient.ResponseCallback() {
+//                @Override
+//                public void onSuccess(String response) {
+//                    // Handle the success response here
+//                    try {
+//                        JSONObject jsonResponse = new JSONObject(response);
+//                        int responseCode = jsonResponse.getInt("responseCode");
+//                        if (responseCode == 200) {
+//                            // Registration was successful
+//                            Utils.showToast(UserManagement.this, "Registration Successful");
+//                            RegScreen.setVisibility(View.GONE);
+//                            SignInLayout.setVisibility(View.VISIBLE);
+//                            getEmailTextInLogin.setText(emailAddress);
+//                            getPasswordTextInLogin.setText(pass);
+//                        } else {
+//                            // Handle other response codes
+//                            String message = jsonResponse.getString("message");
+//                            Utils.showToast(UserManagement.this, message);
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        Utils.showToast(UserManagement.this, "Failed to parse response");
 //                    }
-
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Utils.showToast(UserManagement.this, e.getMessage());
-                    e.printStackTrace();
-                }
-            });
-//            Intent intent = new Intent(this, Dashboard.class);
-//            startActivity(intent);
-//            saveAccount();
-//            APICall(phone, this);
-//            if (!gotData)
-//                Utils.showToast(this, "Sever is Offline try again later");
+//                }
+//
+//                @Override
+//                public void onError(Exception e) {
+//                    // Handle the error response here
+//                    Utils.showToast(UserManagement.this, e.getMessage());
+//                    e.printStackTrace();
+//                }
+//            });
         }
     }
 
@@ -356,7 +349,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     }
 
     private void handleForgotPasswordClick() throws JSONException {
-
         EmailSender.sendEmail(this, Utils.getEmail(this), "Test Name", Utils.getPassword(this));
 
     }
@@ -375,34 +367,44 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             getPasswordTextInLogin.setError("Password is required");
             return;
         }
-
-        // Retrieve stored email and password from SharedPreferences
-        String storedEmail = Utils.getEmail(UserManagement.this);
-        String storedPassword = Utils.getPassword(UserManagement.this);
-
-
-        XMLRPCClient.userLoginAsync(email, password, new XMLRPCClient.ResponseCallback() {
-            @Override
-            public void onSuccess(int responseCode) {
-                System.out.println("Login Response Code: " + responseCode);
-                if (responseCode == 200) {
-                    Intent intent = new Intent(UserManagement.this, Dashboard.class);
-                    startActivity(intent);
-                }
-//                else {
-//                   Utils.showToast(UserManagement.this,);
+        Intent intent = new Intent(UserManagement.this, Dashboard.class);
+        startActivity(intent);
+//        XMLRPCClient.userLoginAsync(email, password, new XMLRPCClient.ResponseCallback() {
+//            @Override
+//            public void onSuccess(String response) {
+//                // Handle the success response here
+//                try {
+//                    JSONObject jsonResponse = new JSONObject(response);
+//                    int responseCode = jsonResponse.getInt("responseCode");
+//                    if (responseCode > 200 && responseCode < 300) {
+//                        // Login was successful
+//                        String token = jsonResponse.getJSONObject("authorization").getString("access_token");
+//                        if (!Utils.isTokenExpired(token)) {
+//                            Utils.showToast(UserManagement.this, "Login Successful");
+//                            // Navigate to another activity or perform other actions
+//                            Intent intent = new Intent(UserManagement.this, Dashboard.class);
+//                            startActivity(intent);
+//                        } else {
+//                            Utils.showToast(UserManagement.this, "The token has expired");
+//                        }
+//                    } else {
+//                        // Handle other response codes
+//                        String message = jsonResponse.getString("message");
+//                        Utils.showToast(UserManagement.this, message);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                    Utils.showToast(UserManagement.this, "Failed to parse response");
 //                }
-                Utils.saveAutoFillPermission(UserManagement.this, rememberMe);
-                getEmailTextInLogin.setText("");
-                getPasswordTextInLogin.setText("");
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Utils.showToast(UserManagement.this, e.getMessage());
-                e.printStackTrace();
-            }
-        });
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                // Handle the error response here
+//                Utils.showToast(UserManagement.this, e.getMessage());
+//                e.printStackTrace();
+//            }
+//        });
 
 
     }

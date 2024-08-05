@@ -61,8 +61,8 @@ import java.util.Objects;
 public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
     private ConstraintLayout AppFrame;
     private LinearLayout Header, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, ZesaIsp;
-    private FrameLayout LogoutButton;
-    private TextView salutationText, HeaderTitle, SelectedIsp, AvailableBalance, StatusMessage, SelectedItem, MoreBtn, ItemToBuyText;
+    private FrameLayout LogoutButton,BackToHome;
+    private TextView salutationText, HeaderTitle, SelectedIsp, AvailableBalance, StatusMessage, SelectedItem, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone;
     private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn;
     private RecyclerView ItemRecyclerView;
@@ -298,6 +298,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         NetoneIsp = findViewById(R.id.netoneISP);
         ZesaIsp = findViewById(R.id.zesaISP);
         Phone = findViewById(R.id.mobile_number);
+        BackToHome=findViewById(R.id.back_to_home);
+
+        SelectedItemType = findViewById(R.id.item_type1);
+        SelectedItemPrice = findViewById(R.id.item_price1);
+        SelectedItemLifeTime = findViewById(R.id.item_life_time1);
 
     }
 
@@ -331,6 +336,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         NetoneIsp.setOnClickListener(v -> setISP("NetOne"));
         ZesaIsp.setOnClickListener(v -> setISP("Electricity"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
+        BackToHome.setOnClickListener(v -> hideLayouts(ItemsLayout, NavHomeBtn));
 
     }
 
@@ -426,13 +432,13 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     private void handleTransaction() {
         String phone = Phone.getText().toString().trim();
-        
+
         if (phone.isEmpty()) {
             return;
         }
 
-            Utils.showToast(this, phone);
-            Load(phone, "load_value", this);
+        Utils.showToast(this, phone);
+        Load(phone, "load_value", this);
 
     }
 
@@ -549,9 +555,9 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 //                    hideOtherLayout(R.id.buy_screen, btnNotifications);
 //                    BuyTittle.setText(String.format("%s\n that last for %s", Type.getText().toString(), time));
                     ItemToBuyText.setText(String.format("%s\n that last for %s", Type.getText().toString(), time));
-//                    Item.setText(type);
-//                    Amount.setText(amount);
-//                    ItemPrice.setText(String.format("%s%s", currencySymbol, price));
+                    SelectedItemType.setText(amount);
+                    SelectedItemLifeTime.setText(time);
+                    SelectedItemPrice.setText(String.format("%s%s", currencySymbol, price));
                     if (job_list_screen.getVisibility() == View.VISIBLE) {
                         job_list_screen.setVisibility(View.GONE);
                         AppFrame.setVisibility(View.VISIBLE);
