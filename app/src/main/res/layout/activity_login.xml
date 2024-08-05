@@ -379,7 +379,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone"
         app:layout_constraintBaseline_toBottomOf="parent">
 
 
@@ -520,6 +519,7 @@
                     android:textColorHint="@color/light_gray" />
 
 
+
                 <EditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
@@ -529,6 +529,18 @@
                     android:background="@drawable/white_box_with_shadow"
                     android:hint="@string/john_gmail_com"
                     android:inputType="textEmailAddress"
+                    android:padding="12sp"
+                    android:textColor="@color/primary_color"
+                    android:textColorHint="@color/light_gray" />
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/five"
+                    android:autofillHints="false"
+                    android:background="@drawable/white_box_with_shadow"
+                    android:hint="@string/password"
+                    android:inputType="text"
                     android:padding="12sp"
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/light_gray" />

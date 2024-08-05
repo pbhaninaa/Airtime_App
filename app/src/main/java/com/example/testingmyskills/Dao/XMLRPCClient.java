@@ -1,11 +1,15 @@
 package com.example.testingmyskills.Dao;
 
+import android.os.AsyncTask;
+
 import com.example.testingmyskills.JavaClasses.Utils;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,9 +44,9 @@ public class XMLRPCClient {
         struct.put("Reference", Utils.ref());
 
         Object[] params = new Object[]{USERNAME, PASSWORD, struct};
-        System.out.println("params: "+transactionType+ Arrays.toString(params));
+        System.out.println("params: " + transactionType + Arrays.toString(params));
         Object response = client.execute(transactionType, params);
-
+        System.out.println("res:" + response);
         if (response instanceof Map) {
             @SuppressWarnings("unchecked")
             Map<String, Object> responseMap = (Map<String, Object>) response;
@@ -65,7 +69,7 @@ public class XMLRPCClient {
         }
     }
 
-    public static Map<String, Object> loadValue(String msisdn, String transactionType,int currency,int amount) throws Exception {
+    public static Map<String, Object> loadValue(String msisdn, String transactionType, int currency, int amount) throws Exception {
         // Create an XML-RPC client configuration
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         config.setServerURL(new URL(SERVER_URL));
@@ -112,5 +116,218 @@ public class XMLRPCClient {
         }
     }
 
+    private static final String BASE_URL = "https://dev-api.wepayafrica.com/api/v1/";
+
+    // Register User
+    public static void registerUserAsync(String name, String phoneNumber, String email, String password, ResponseCallback callback) {
+        new RegisterUserTask(name, phoneNumber, email, password, callback).execute();
+    }
+
+    private static class RegisterUserTask extends AsyncTask<Void, Void, Integer> {
+        private String name;
+        private String phoneNumber;
+        private String email;
+        private String password;
+        private ResponseCallback callback;
+        private Exception exception;
+
+        public RegisterUserTask(String name, String phoneNumber, String email, String password, ResponseCallback callback) {
+            this.name = name;
+            this.phoneNumber = phoneNumber;
+            this.email = email;
+            this.password = password;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            try {
+                URL url = new URL(BASE_URL + "register");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+
+                String jsonInputString = String.format("{\"name\": \"%s\", \"phone_number\": \"%s\", \"email\": \"%s\", \"password\": \"%s\"}", name, phoneNumber, email, password);
+
+                try (OutputStream os = conn.getOutputStream()) {
+                    byte[] input = jsonInputString.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                int code = conn.getResponseCode();
+                return code;
+            } catch (Exception e) {
+                this.exception = e;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer code) {
+            if (callback != null) {
+                if (exception == null) {
+                    System.out.println("RegisterUserTask onSuccess: Response Code = " + code);
+                    callback.onSuccess(code);
+                } else {
+                    System.out.println("RegisterUserTask onError: Exception = " + exception.getMessage());
+                    callback.onError(exception);
+                }
+            }
+        }
+    }
+
+    // User Login
+    public static void userLoginAsync(String email, String password, ResponseCallback callback) {
+        new LoginUserTask(email, password, callback).execute();
+    }
+
+    private static class LoginUserTask extends AsyncTask<Void, Void, Integer> {
+        private String email;
+        private String password;
+        private ResponseCallback callback;
+        private Exception exception;
+
+        public LoginUserTask(String email, String password, ResponseCallback callback) {
+            this.email = email;
+            this.password = password;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            try {
+                URL url = new URL(BASE_URL + "login");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+
+                String jsonInputString = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
+
+                try (OutputStream os = conn.getOutputStream()) {
+                    byte[] input = jsonInputString.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                int code = conn.getResponseCode();
+                return code;
+            } catch (Exception e) {
+                this.exception = e;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer code) {
+            if (callback != null) {
+                if (exception == null) {
+                    callback.onSuccess(code);
+                } else {
+                    callback.onError(exception);
+                }
+            }
+        }
+    }
+
+    // Refresh User Token
+    public static void refreshTokenAsync(String token, ResponseCallback callback) {
+        new RefreshTokenTask(token, callback).execute();
+    }
+
+    private static class RefreshTokenTask extends AsyncTask<Void, Void, Integer> {
+        private String token;
+        private ResponseCallback callback;
+        private Exception exception;
+
+        public RefreshTokenTask(String token, ResponseCallback callback) {
+            this.token = token;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            try {
+                URL url = new URL(BASE_URL + "refresh");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Authorization", "Bearer " + token);
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+
+                int code = conn.getResponseCode();
+                return code;
+            } catch (Exception e) {
+                this.exception = e;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer code) {
+            if (callback != null) {
+                if (exception == null) {
+                    callback.onSuccess(code);
+                } else {
+                    callback.onError(exception);
+                }
+            }
+        }
+    }
+
+    // Invalidate Token (Logout)
+    public static void logoutAsync(String token, ResponseCallback callback) {
+        new LogoutTask(token, callback).execute();
+    }
+
+    private static class LogoutTask extends AsyncTask<Void, Void, Integer> {
+        private String token;
+        private ResponseCallback callback;
+        private Exception exception;
+
+        public LogoutTask(String token, ResponseCallback callback) {
+            this.token = token;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            try {
+                URL url = new URL(BASE_URL + "logout");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Authorization", "Bearer " + token);
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+
+                int code = conn.getResponseCode();
+                return code;
+            } catch (Exception e) {
+                this.exception = e;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer code) {
+            if (callback != null) {
+                if (exception == null) {
+                    callback.onSuccess(code);
+                } else {
+                    callback.onError(exception);
+                }
+            }
+        }
+    }
+
+    public interface ResponseCallback {
+        void onSuccess(int responseCode);
+
+        void onError(Exception e);
+    }
 }
 

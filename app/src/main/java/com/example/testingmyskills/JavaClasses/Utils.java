@@ -32,8 +32,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.IOException;
+
 public class Utils {
     public static final String PREF_NAME = "UserPrefs";
     public static final String EMAIL_KEY = "email";
@@ -123,10 +125,28 @@ public class Utils {
         return prefs.getBoolean("isUserLogged", false);
     }
 
+    public static boolean isUserRegistered(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("StayLogged", Context.MODE_PRIVATE);
+        return prefs.getBoolean("isUserRegistered", false);
+    }
+
     // Function to get password from SharedPreferences
     public static String getPassword(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return prefs.getString(PASSWORD_KEY, "");
+    }
+
+    // Function to get password from SharedPreferences
+    public static String getString(Context context, String Pref_name, String Pref_Key) {
+        SharedPreferences prefs = context.getSharedPreferences(Pref_name, Context.MODE_PRIVATE);
+        return prefs.getString(Pref_Key, "");
+    }
+
+    public static void saveString(Context context, String Pref_name, String Pref_Key, String Value) {
+        SharedPreferences prefs = context.getSharedPreferences(Pref_name, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(Pref_Key, Value);
+        editor.apply();
     }
 
     public static void logout(Context context) {
@@ -220,6 +240,7 @@ public class Utils {
         System.out.println("Generated Basket ID: " + strBasket);
         return strBasket;
     }
+
     public static Bundles[] readJsonFile(Context context, String filePath) {
         ObjectMapper objectMapper = new ObjectMapper();
         try (InputStream inputStream = context.getAssets().open(filePath)) {
@@ -229,6 +250,7 @@ public class Utils {
             return null;
         }
     }
+
     public static List<JsonNode> filterJsonDataByBundle(String filePath, String bundleKeyword) {
         List<JsonNode> filteredData = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();

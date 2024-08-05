@@ -41,6 +41,8 @@ import java.util.Objects;
 
 //8QGGLHPVSQ3TFEX7QLTCRU2Y
 public class UserManagement extends AppCompatActivity implements AccountValidationCallback {
+
+
     private ConstraintLayout SignInLayout;
     private ConstraintLayout SignUpLayout, RegScreen;
     private TextView RegisterBtn;
@@ -59,9 +61,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     private ImageButton ShowConformPasswordInRegister;
     private Button SignUp;
     private Spinner languagesSpinner;
-    //    private AlphaKeyboard alphaKeyboard;
-//    private Button hideKeyboardBtn;
-    private EditText Firstname,
+    private EditText password,
+            Firstname,
             Lastname,
             phoneNumber,
             address,
@@ -72,6 +73,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     boolean rememberMe;
     private FrameLayout backButton;
     private boolean gotData;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +127,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     }
 
     private void initialiseViews() {
-//        alphaKeyboard = new AlphaKeyboard(this);
-//        hideKeyboardBtn = alphaKeyboard.findViewById(R.id.button_enter);
         SignInLayout = findViewById(R.id.login_page);
         getEmailTextInLogin = findViewById(R.id.email_in_login_page);
         getPasswordTextInLogin = findViewById(R.id.password_in_login_page);
@@ -153,6 +153,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         email = findViewById(R.id.email);
         emailConfirmation = findViewById(R.id.emailC);
         backButton = findViewById(R.id.back);
+        password = findViewById(R.id.password);
         RememberMeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             rememberMe = isChecked;
 
@@ -168,23 +169,10 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 RememberMeCheckBox.isChecked();
             }
 
-//            Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            getEmailTextInLogin.setShowSoftInputOnFocus(false);
-//            getEmailTextInLogin.setTextIsSelectable(true);
-//            InputConnection ic = getEmailTextInLogin.onCreateInputConnection(new EditorInfo());
-//            alphaKeyboard.setInputConnection(ic);
-
-
             SignInLayout.setVisibility(View.VISIBLE);
             SignUpLayout.setVisibility(View.GONE);
             RegScreen.setVisibility(View.GONE);
         } else if (screenToLoad == R.id.sign_up_page) {
-//            Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            getEmailTextInRegister.setShowSoftInputOnFocus(false);
-//            getEmailTextInRegister.setTextIsSelectable(true);
-//            InputConnection ic = getEmailTextInRegister.onCreateInputConnection(new EditorInfo());
-//            alphaKeyboard.setInputConnection(ic);
-
             SignInLayout.setVisibility(View.GONE);
             RegScreen.setVisibility(View.GONE);
             SignUpLayout.setVisibility(View.VISIBLE);
@@ -209,100 +197,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         emailConfirmation.setText(prefs.getString("emailAddress", ""));
         CreateAccBtn.setText("Update Profile");
 
-        // Populate Spinner
-//        String savedLanguage = prefs.getString("language", "");
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, values);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        languagesSpinner.setAdapter(adapter);
-//        if (!savedLanguage.isEmpty()) {
-//            int position = adapter.getPosition(savedLanguage);
-//            if (position != -1) {
-//                languagesSpinner.setSelection(position);
-//            } else {
-//                // Handle case where savedLanguage is not found in the Spinner's data
-//            }
-//        }
     }
-
-//    private void setupFocusListeners() {
-//        getPasswordTextInLogin.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(getPasswordTextInLogin.onCreateInputConnection(new EditorInfo()));
-//                getPasswordTextInLogin.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        getEmailTextInLogin.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(getEmailTextInLogin.onCreateInputConnection(new EditorInfo()));
-//                getEmailTextInLogin.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        getPasswordTextInRegister.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(getPasswordTextInRegister.onCreateInputConnection(new EditorInfo()));
-//                getPasswordTextInRegister.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        getEmailTextInRegister.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(getEmailTextInRegister.onCreateInputConnection(new EditorInfo()));
-//                getEmailTextInRegister.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        getConfirmPasswordTextInRegister.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(getConfirmPasswordTextInRegister.onCreateInputConnection(new EditorInfo()));
-//                getConfirmPasswordTextInRegister.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        Firstname.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(Firstname.onCreateInputConnection(new EditorInfo()));
-//                Firstname.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        Lastname.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(Lastname.onCreateInputConnection(new EditorInfo()));
-//                Lastname.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        address.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(address.onCreateInputConnection(new EditorInfo()));
-//                address.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        email.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(email.onCreateInputConnection(new EditorInfo()));
-//                email.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        emailConfirmation.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(emailConfirmation.onCreateInputConnection(new EditorInfo()));
-//                emailConfirmation.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        phoneNumber.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                alphaKeyboard.setInputConnection(phoneNumber.onCreateInputConnection(new EditorInfo()));
-//                phoneNumber.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(alphaKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//    }
 
     private void setOnclickListeners() {
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
@@ -319,7 +214,13 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         SignUp.setOnClickListener(v -> handleCreateClick());
         ShowConformPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
-        CreateAccBtn.setOnClickListener(v -> handleAccCreation());
+        CreateAccBtn.setOnClickListener(v -> {
+            try {
+                handleAccCreation();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 //        hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
         backButton.setOnClickListener(v -> handleBack());
 
@@ -327,7 +228,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
     private void handleBack() {
         Intent i = new Intent(this, Dashboard.class);
-        i.putExtra("constraintLayoutId", R.id.dash_board_screen);
+        i.putExtra("constraintLayoutId", R.id.app_frame);
         startActivity(i);
     }
 
@@ -346,7 +247,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //        Utils.hideAlphaKeyboard(alphaKeyboard);
 //    }
 
-    private void handleAccCreation() {
+    private void handleAccCreation() throws Exception {
         // Get the values from the input fields
         String language = languagesSpinner.getSelectedItem().toString().trim();
         String name = Firstname.getText().toString().trim();
@@ -355,10 +256,11 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         String addressLine = address.getText().toString().trim();
         String emailAddress = email.getText().toString().trim();
         String emailC = emailConfirmation.getText().toString().trim();
+        String pass = password.getText().toString().trim();
 
         // Check if all fields have values
         if (name.isEmpty() || surname.isEmpty() || phone.isEmpty() ||
-                addressLine.isEmpty() || emailAddress.isEmpty()) {
+                addressLine.isEmpty() || emailAddress.isEmpty() || pass.isEmpty()) {
             // Show an error message to the user
             Utils.showToast(this, "Please fill all the fields");
         } else if (!Utils.isValidEmail(emailAddress)) {
@@ -368,7 +270,35 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //            // Show an error message if email and confirmation do not match
 //            Utils.showToast(this, "Email addresses do not match");
         } else {
-            saveAccount();
+            XMLRPCClient.registerUserAsync(name + " " + surname, phone, emailAddress, pass, new XMLRPCClient.ResponseCallback() {
+                @Override
+                public void onSuccess(int responseCode) {
+//                    System.out.println("Register =Response Code: " + responseCode);
+//                    Intent intent = new Intent(UserManagement.this, Dashboard.class);
+//                    startActivity(intent);
+                    RegScreen.setVisibility(View.GONE);
+                    SignInLayout.setVisibility(View.VISIBLE);
+                    saveAccount();
+                    if (responseCode == 201) {
+                        Utils.saveCredentials(UserManagement.this, emailAddress, pass);
+                        RegScreen.setVisibility(View.GONE);
+                        SignInLayout.setVisibility(View.VISIBLE);
+                    }
+//                    else {
+//                        Utils.showToast(UserManagement.this,getMessage);
+//                    }
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Utils.showToast(UserManagement.this, e.getMessage());
+                    e.printStackTrace();
+                }
+            });
+//            Intent intent = new Intent(this, Dashboard.class);
+//            startActivity(intent);
+//            saveAccount();
 //            APICall(phone, this);
 //            if (!gotData)
 //                Utils.showToast(this, "Sever is Offline try again later");
@@ -450,28 +380,31 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         String storedEmail = Utils.getEmail(UserManagement.this);
         String storedPassword = Utils.getPassword(UserManagement.this);
 
-        // Check if entered email and password match the stored credentials
-        if (storedEmail.equals(email) && storedPassword.equals(password)) {
 
-            SharedPreferences sharedPreferences = getSharedPreferences("StayLogged", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isUserLogged", true);
-            editor.apply();
-
-            if (isProfileEmpty()) {
-                SignInLayout.setVisibility(View.GONE);
-                RegScreen.setVisibility(View.VISIBLE);
-            } else {
-                Intent intent = new Intent(UserManagement.this, Dashboard.class);
-                startActivity(intent);
+        XMLRPCClient.userLoginAsync(email, password, new XMLRPCClient.ResponseCallback() {
+            @Override
+            public void onSuccess(int responseCode) {
+                System.out.println("Login Response Code: " + responseCode);
+                if (responseCode == 200) {
+                    Intent intent = new Intent(UserManagement.this, Dashboard.class);
+                    startActivity(intent);
+                }
+//                else {
+//                   Utils.showToast(UserManagement.this,);
+//                }
+                Utils.saveAutoFillPermission(UserManagement.this, rememberMe);
+                getEmailTextInLogin.setText("");
+                getPasswordTextInLogin.setText("");
             }
-            Utils.saveAutoFillPermission(this, rememberMe);
-            getEmailTextInLogin.setText("");
-            getPasswordTextInLogin.setText("");
-        } else {
-            // If not matched, show a toast indicating incorrect credentials
-            Utils.showToast(UserManagement.this, "Incorrect email or password");
-        }
+
+            @Override
+            public void onError(Exception e) {
+                Utils.showToast(UserManagement.this, e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
+
     }
 
     private void handleShowPassword() {
@@ -524,6 +457,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         String addressLine = address.getText().toString().trim();
         String emailAddress = email.getText().toString().trim();
 
+
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("language", language);
@@ -533,8 +467,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         editor.putString("addressLine", addressLine);
         editor.putString("emailAddress", emailAddress);
         editor.apply();
-        Intent intent = new Intent(this, Dashboard.class);
-        startActivity(intent);
+
+
     }
 
 }

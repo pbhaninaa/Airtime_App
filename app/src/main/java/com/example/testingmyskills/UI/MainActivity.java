@@ -1,6 +1,7 @@
 package com.example.testingmyskills.UI;
 
 import static com.example.testingmyskills.JavaClasses.Utils.isUserLogged;
+import static  com.example.testingmyskills.JavaClasses.Utils.isUserRegistered;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -48,16 +49,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleCompanyClick() {
-        if (isUserLogged(this)) {
-            Intent intent = new Intent(MainActivity.this, Dashboard.class);
-            startActivity(intent);
+        if (isUserRegistered(this)) {
+            if (isUserLogged(this)) {
+                Intent intent = new Intent(MainActivity.this, Dashboard.class);
+                startActivity(intent);
+            } else {
+
+                Intent intent = new Intent(MainActivity.this, UserManagement.class);
+                intent.putExtra("constraintLayoutId", R.id.login_page);
+                startActivity(intent);
+            }
         } else {
             Intent intent = new Intent(MainActivity.this, UserManagement.class);
-            intent.putExtra("constraintLayoutId", R.id.login_page);
+            intent.putExtra("constraintLayoutId", R.id.create_profile_screen);
             startActivity(intent);
         }
 
     }
+
 
     private void initialiseViews() {
         CandidateBtn = findViewById(R.id.candidate_btn);
@@ -76,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    public static String[] ISPs ={"Econet", "Telecel", "Netone", "Electricity"};
-
+    public static String[] ISPs = {"Econet", "Telecel", "Netone", "Electricity"};
 
 
     public static String[] Currencies = {
