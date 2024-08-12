@@ -39,14 +39,17 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.testingmyskills.Dao.XMLRPCClient;
 import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
 import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
 import com.example.testingmyskills.JavaClasses.Bundles;
+import com.example.testingmyskills.JavaClasses.Country;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mailjet.client.resource.User;
 
 
 import org.apache.xmlrpc.XmlRpcException;
@@ -61,12 +64,13 @@ import java.util.Objects;
 public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
     private ConstraintLayout AppFrame;
     private LinearLayout Header, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, ZesaIsp;
-    private FrameLayout LogoutButton,BackToHome;
+    private FrameLayout LogoutButton, BackToHome;
     private TextView salutationText, HeaderTitle, SelectedIsp, AvailableBalance, StatusMessage, SelectedItem, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone;
     private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn;
     private RecyclerView ItemRecyclerView;
     private Spinner ItemFilterSpinner, ItemToBuySpinner;
+    private Spinner CountryCode;
 
     //================================================================================================================================
 
@@ -118,7 +122,39 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
 //=======================================================================================================================
         AppFrame.setVisibility(View.VISIBLE);
+        BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? View.GONE : View.VISIBLE);
         ISPsLayout.setVisibility(View.VISIBLE);
+        getAccount();
+
+        ArrayAdapter<Country> ada = new ArrayAdapter<>(this, R.layout.spinner_item, UserManagement.getCountryList());
+        ada.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        CountryCode.setAdapter(ada);
+
+
+        CountryCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Country selectedCountry = (Country) parent.getItemAtPosition(position);
+                String flagName = selectedCountry.getCountryFlag();
+                String countryName = selectedCountry.getCountryName();
+
+                // Get the resource ID of the drawable dynamically
+                int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
+                // Set the ImageView with the corresponding flag
+                if (flagResourceId != 0) {  // Check if the resource was found
+                    ImageView CountryFlag = findViewById(R.id.country_flag);
+                    CountryFlag.setImageResource(flagResourceId);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Flag not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
 
     }
 
@@ -298,11 +334,13 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         NetoneIsp = findViewById(R.id.netoneISP);
         ZesaIsp = findViewById(R.id.zesaISP);
         Phone = findViewById(R.id.mobile_number);
-        BackToHome=findViewById(R.id.back_to_home);
+        BackToHome = findViewById(R.id.back_to_home);
 
         SelectedItemType = findViewById(R.id.item_type1);
         SelectedItemPrice = findViewById(R.id.item_price1);
         SelectedItemLifeTime = findViewById(R.id.item_life_time1);
+
+        CountryCode = findViewById(R.id.country_code);
 
     }
 
@@ -341,6 +379,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     public void setISP(String ISPName) {
+        Utils.showToast(this, ISPName);
+        BackToHome.setVisibility(View.VISIBLE);
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
         defaultColoring(NavHomeBtn);
         SelectedIsp.setText(ISPName);
@@ -364,6 +404,18 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ItemsLayout.setVisibility(View.GONE);
         ItemsLayout.setVisibility(View.GONE);
         layoutToDisplay.setVisibility(View.VISIBLE);
+
+    }
+
+    private void getAccount() {
+        SharedPreferences sharedPreferences = getSharedPreferences("LoggedUser", MODE_PRIVATE);
+
+        String name = sharedPreferences.getString("name", null);
+        String phone = sharedPreferences.getString("phone", null);
+        String emailAddress = sharedPreferences.getString("emailAddress", null);
+        String updated = sharedPreferences.getString("updated", null);
+        String formatedSalutation = "<b>Hello " + name + "</b> \n Last updated" + updated;
+        salutationText.setText(name);
 
     }
 

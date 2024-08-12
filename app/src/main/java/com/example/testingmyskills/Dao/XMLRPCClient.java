@@ -120,7 +120,8 @@ public class XMLRPCClient {
     }
 //====================================================================
 
-    private static final String BASE_URL = "https://your.api.endpoint/";
+    private static final String BASE_URL = "https://dev-api.wepayafrica.com/api/v1/";
+//    https://dev-api.wepayafrica.com/api/v1/
 
     // User Registration
     public static void registerUserAsync(String name, String phoneNumber, String email, String password, ResponseCallback callback) {

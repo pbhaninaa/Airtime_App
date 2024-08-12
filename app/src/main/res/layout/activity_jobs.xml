@@ -278,13 +278,6 @@
                                             android:layout_height="80sp"
                                             android:src="@drawable/econet_png" />
 
-                                        <!--                                        <TextView-->
-                                        <!--                                            android:layout_width="wrap_content"-->
-                                        <!--                                            android:layout_height="wrap_content"-->
-                                        <!--                                            android:gravity="center"-->
-                                        <!--                                            android:text="@string/econet"-->
-                                        <!--                                            android:textColor="@color/primary_color"-->
-                                        <!--                                            android:textSize="18sp" />-->
 
 
                                     </LinearLayout>
@@ -492,6 +485,7 @@
                     android:id="@+id/Buying_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:visibility="gone"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -587,18 +581,45 @@
                                 android:visibility="gone" />
                         </LinearLayout>
 
-
-                        <EditText
-                            android:id="@+id/mobile_number"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/ten"
-                            android:autofillHints="none"
-                            android:background="@drawable/rounded_with_white_background"
-                            android:hint="@string/mobile_number"
-                            android:inputType="phone"
-                            android:padding="@dimen/twelve"
-                            android:textColor="@color/primary_color" />
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="@dimen/five"
+                            android:background="@drawable/edit_text_background"
+                            android:orientation="horizontal"
+                            android:paddingStart="10sp">
+
+                            <ImageView
+                                android:id="@+id/country_flag"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="8dp"
+                                android:src="@drawable/za" />
+
+                            <Spinner
+                                android:id="@+id/country_code"
+                                android:layout_width="120sp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="8dp"
+                                android:hint="+27"
+                                android:textSize="18sp" />
+
+                            <EditText
+                                android:id="@+id/mobile_number"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/five"
+                                android:autofillHints="none"
+                                android:background="@null"
+                                android:hint="@string/mobile_number"
+                                android:inputType="number"
+                                android:textColor="@color/primary_color"
+                                android:textColorHint="@color/light_gray" />
+
+                        </LinearLayout>
 
                         <EditText
                             android:id="@+id/Itme_price"
