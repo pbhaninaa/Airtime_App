@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import okhttp3.internal.Util;
+
 //8QGGLHPVSQ3TFEX7QLTCRU2Y
 public class UserManagement extends AppCompatActivity implements AccountValidationCallback {
 
@@ -111,12 +113,13 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         CountryCode.setAdapter(ada);
 
         CountryCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                hideBottomNav();
                 Country selectedCountry = (Country) parent.getItemAtPosition(position);
                 String flagName = selectedCountry.getCountryFlag();
                 String countryName = selectedCountry.getCountryName();
-
                 // Get the resource ID of the drawable dynamically
                 int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
                 // Set the ImageView with the corresponding flag
@@ -125,8 +128,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 } else {
                     Toast.makeText(getApplicationContext(), "Flag not found", Toast.LENGTH_SHORT).show();
                 }
-                // Display the flag name in a toast (optional)
-                Toast.makeText(getApplicationContext(), "Selected Country Flag: " + countryName, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -134,6 +135,15 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 // Do nothing
             }
         });
+    }
+
+    private void hideBottomNav() {
+        // Hide the bottom navigation bar
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
     @Override
@@ -149,6 +159,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         }
         System.out.println("Account Validation Res: " + response);
     }
+
     private void APICall(String number, AccountValidationCallback callback) {
         new Thread(() -> {
             try {
@@ -163,6 +174,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             }
         }).start();
     }
+
     private void initialiseViews() {
         SignInLayout = findViewById(R.id.login_page);
         getEmailTextInLogin = findViewById(R.id.email_in_login_page);
@@ -197,6 +209,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         CountryCode = findViewById(R.id.country_code);
         CountryFlag = findViewById(R.id.country_flag);
     }
+
     private void screenToLoad(int screenToLoad) {
         if (Utils.RememberMe(this)) {
             getEmailTextInLogin.setText(Utils.getEmail(this));
@@ -210,6 +223,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
 
     }
+
     private void setOnclickListeners() {
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
         ShowPasswordInLogin.setOnClickListener(v -> handleShowPassword());
@@ -221,7 +235,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //                throw new RuntimeException(e);
 //            }
 //        });
-//        SignUpBtn.setOnClickListener(v -> handleSignUp());
+        SignUpBtn.setOnClickListener(v -> handleBack());
 //        SignUp.setOnClickListener(v -> handleCreateClick());
         ShowConformPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
@@ -235,15 +249,18 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         backButton.setOnClickListener(v -> handleBack());
 
     }
+
     private void handleRegisterClick() {
         RegScreen.setVisibility(View.VISIBLE);
         SignInLayout.setVisibility(View.GONE);
 
     }
+
     private void handleBack() {
         RegScreen.setVisibility(View.GONE);
         SignInLayout.setVisibility(View.VISIBLE);
     }
+
     private void handleAccCreation() throws Exception {
         String name = Firstname.getText().toString().trim();
         String surname = Lastname.getText().toString().trim();
@@ -295,6 +312,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //            });
         }
     }
+
     private void handleSignIn() {
         String email = getEmailTextInLogin.getText().toString().trim();
         String password = getPasswordTextInLogin.getText().toString().trim();
@@ -356,6 +374,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
 
     }
+
     private void handleShowPassword() {
         showPassword = !showPassword; // Invert the value
 
@@ -379,6 +398,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
         }
     }
+
     public static List<Country> getCountryList() {
         List<Country> countryList = new ArrayList<>();
 
