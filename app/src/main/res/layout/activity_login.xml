@@ -129,7 +129,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/eighty"
+                    android:layout_marginTop="@dimen/forty"
                     android:orientation="horizontal">
 
                     <TextView
@@ -162,23 +162,24 @@
                     android:id="@+id/email_in_login_page"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/five"
                     android:autofillHints="none"
                     android:background="@drawable/edit_text_background"
-                    android:hint="@string/john_gmail_com"
-                    android:inputType="textEmailAddress"
-                    android:padding="@dimen/eighteen"
+                    android:hint="@string/e_mail_address"
+                    android:inputType="text"
+                    android:padding="12sp"
                     android:textColor="@color/primary_color"
-                    android:textColorHint="@color/light_gray" />
+                    android:textColorHint="@color/light_gray"  />
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20sp"
+                    android:layout_marginTop="@dimen/five"
                     android:layout_weight="3"
                     android:background="@drawable/edit_text_background"
                     android:orientation="horizontal"
-                    android:padding="5sp">
+                    android:padding="1sp">
 
                     <EditText
                         android:id="@+id/password_in_login_page"
@@ -469,10 +470,9 @@
         android:visibility="gone"
         app:layout_constraintBaseline_toBottomOf="parent">
 
-
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintBaseline_toBottomOf="parent"
             tools:layout_editor_absoluteX="0dp"
@@ -480,12 +480,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingStart="@dimen/twenty"
-                android:paddingEnd="@dimen/twenty"
-                android:paddingBottom="@dimen/hundred_one">
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -517,7 +515,6 @@
 
 
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -620,7 +617,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/forty"
                     android:orientation="horizontal">
-
+                    <TextView
+                        android:id="@+id/sign_up_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/ten"
+                        android:text="@string/sign_in"
+                        android:textColor="@color/light_gray"
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -633,15 +638,7 @@
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/sign_up_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/ten"
-                        android:text="@string/sign_in"
-                        android:textColor="@color/light_gray"
-                        android:textSize="25sp"
-                        android:textStyle="bold" />
+
 
 
                 </LinearLayout>
@@ -726,10 +723,26 @@
                     android:paddingStart="10sp">
 
                     <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/mz" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:hint="+266"
+                        android:textColorHint="@color/primary_color"
+                        android:textSize="18sp" />
+                    <ImageView
                         android:id="@+id/country_flag"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
+                        android:visibility="gone"
                         android:layout_marginEnd="8dp"
                         android:src="@drawable/za" />
 
@@ -739,6 +752,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="8dp"
+                        android:visibility="gone"
                         android:hint="+27"
                         android:textSize="18sp" />
 
@@ -746,13 +760,14 @@
                         android:id="@+id/mNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/five"
-                        android:autofillHints="none"
-                        android:background="@null"
-                        android:hint="@string/mobile_number"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="start"
+                        android:layout_marginEnd="8dp"
                         android:inputType="number"
                         android:textColor="@color/primary_color"
-                        android:textColorHint="@color/light_gray" />
+                        android:background="@null"
+                        android:hint="123456789"
+                        android:textSize="18sp"  />
 
                 </LinearLayout>
 

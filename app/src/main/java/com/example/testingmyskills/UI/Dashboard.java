@@ -117,20 +117,19 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
-
         spinners();
+
 
 //=======================================================================================================================
         AppFrame.setVisibility(View.VISIBLE);
         BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? View.GONE : View.VISIBLE);
         ISPsLayout.setVisibility(View.VISIBLE);
+        NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
         getAccount();
 
         ArrayAdapter<Country> ada = new ArrayAdapter<>(this, R.layout.spinner_item, UserManagement.getCountryList());
         ada.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         CountryCode.setAdapter(ada);
-
-
         CountryCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -364,8 +363,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         Yes.setOnClickListener(v -> handleYes());
         //===================================new===============================
         LogoutButton.setOnClickListener(v -> logout());
-        NavHomeBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavHomeBtn));
-        NavIPSBtn.setOnClickListener(v -> hideLayouts(ISPsLayout, NavIPSBtn));
+        NavHomeBtn.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
+        NavIPSBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavIPSBtn));
         NavMoreBtn.setOnClickListener(v -> handleShowMore());
         NavBuyBtn.setOnClickListener(v -> hideLayouts(BuyLayout, NavBuyBtn));
         MoreBtn.setOnClickListener(v -> handleShowMore());
@@ -374,14 +373,13 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         NetoneIsp.setOnClickListener(v -> setISP("NetOne"));
         ZesaIsp.setOnClickListener(v -> setISP("Electricity"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
-        BackToHome.setOnClickListener(v -> hideLayouts(ItemsLayout, NavHomeBtn));
+        BackToHome.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
 
     }
 
     public void setISP(String ISPName) {
-        Utils.showToast(this, ISPName);
         BackToHome.setVisibility(View.VISIBLE);
-        NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
+        NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
         defaultColoring(NavHomeBtn);
         SelectedIsp.setText(ISPName);
         String transactionType = "account_balance_enquiry";
@@ -394,11 +392,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
         defaultColoring(imageButton);
         if (SelectedIsp.getText().toString().isEmpty()) {
-            Utils.showToast(this, "Select an ISP");
             return;
         }
-        imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
+        imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
+        BackToHome.setVisibility(View.VISIBLE);
         ISPsLayout.setVisibility(View.GONE);
         BuyLayout.setVisibility(View.GONE);
         ItemsLayout.setVisibility(View.GONE);
@@ -680,6 +678,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
 
     private void handleBackFromList() {
+        BackToHome.setVisibility(View.GONE);
         Navbar.setVisibility(View.VISIBLE);
         job_list_screen.setVisibility(View.GONE);
         AppFrame.setVisibility(View.VISIBLE);
@@ -688,6 +687,9 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     private void handleShowMore() {
+        if (SelectedIsp.getText().toString().isEmpty()) {
+            return;
+        }
         Navbar.setVisibility(View.GONE);
         AppFrame.setVisibility(View.GONE);
         job_list_screen.setVisibility(View.VISIBLE);

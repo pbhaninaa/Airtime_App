@@ -237,8 +237,8 @@
                     android:id="@+id/ISP_display_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <ScrollView
                         android:layout_width="match_parent"
@@ -279,7 +279,6 @@
                                             android:src="@drawable/econet_png" />
 
 
-
                                     </LinearLayout>
 
                                     <View
@@ -313,9 +312,11 @@
                                     </LinearLayout>
                                 </LinearLayout>
                             </LinearLayout>
+
                             <View
                                 android:layout_width="match_parent"
-                                android:layout_height="7sp"/>
+                                android:layout_height="7sp" />
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -398,7 +399,6 @@
 
                             </LinearLayout>
                         </LinearLayout>
-
 
 
                     </ScrollView>
@@ -502,14 +502,12 @@
                             android:orientation="vertical"
                             tools:ignore="NestedWeights">
 
-                            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                xmlns:app="http://schemas.android.com/apk/res-auto"
-                                xmlns:tools="http://schemas.android.com/tools"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:background="@drawable/rounded_with_white_background"
                                 android:gravity="center_vertical"
                                 android:orientation="vertical"
-                                android:background="@drawable/rounded_with_white_background"
                                 android:padding="10sp">
 
                                 <LinearLayout
@@ -517,8 +515,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="3"
                                     android:orientation="horizontal">
-
-
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
@@ -543,6 +539,7 @@
                                             android:textColor="@color/light_gray" />
 
                                     </LinearLayout>
+
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
@@ -551,6 +548,7 @@
                                         android:gravity="right"
                                         android:orientation="vertical"
                                         android:paddingStart="20sp">
+
                                         <TextView
                                             android:id="@+id/item_price1"
                                             android:layout_width="wrap_content"
@@ -570,8 +568,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
-                                android:visibility="gone"
-                                android:textColor="@color/white" />
+                                android:textColor="@color/white"
+                                android:visibility="gone" />
+
                             <Spinner
                                 android:id="@+id/item_to_buy"
                                 android:layout_width="match_parent"
@@ -591,12 +590,30 @@
                             android:paddingStart="10sp">
 
                             <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="8dp"
+                                android:src="@drawable/mz" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="8dp"
+                                android:gravity="center"
+                                android:hint="+266"
+                                android:textColorHint="@color/primary_color"
+                                android:textSize="18sp" />
+
+                            <ImageView
                                 android:id="@+id/country_flag"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="8dp"
-                                android:src="@drawable/za" />
+                                android:src="@drawable/za"
+                                android:visibility="gone" />
 
                             <Spinner
                                 android:id="@+id/country_code"
@@ -605,19 +622,21 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="8dp"
                                 android:hint="+27"
-                                android:textSize="18sp" />
+                                android:textSize="18sp"
+                                android:visibility="gone" />
 
                             <EditText
                                 android:id="@+id/mobile_number"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/five"
-                                android:autofillHints="none"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="8dp"
                                 android:background="@null"
-                                android:hint="@string/mobile_number"
+                                android:gravity="start"
+                                android:hint="123456789"
                                 android:inputType="number"
                                 android:textColor="@color/primary_color"
-                                android:textColorHint="@color/light_gray" />
+                                android:textSize="18sp" />
 
                         </LinearLayout>
 
@@ -889,7 +908,29 @@
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
+                <ImageButton
+                    android:id="@+id/nav_networks_btn1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:src="@drawable/network"
+                    app:tint="@color/primary_color" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Items"
+                    android:textColor="@color/primary_color"
+                    android:textStyle="bold" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -938,29 +979,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/nav_networks_btn1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@android:color/transparent"
-                    android:src="@drawable/network"
-                    app:tint="@color/primary_color" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ISPs"
-                    android:textColor="@color/primary_color"
-                    android:textStyle="bold" />
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
