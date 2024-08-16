@@ -727,14 +727,15 @@
                         android:layout_height="40dp"
                         android:layout_gravity="center"
                         android:layout_marginEnd="8dp"
-                        android:src="@drawable/mz" />
+                        android:src="@drawable/zw" />
+
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
-                        android:gravity="center"
                         android:layout_marginEnd="8dp"
-                        android:hint="+266"
+                        android:gravity="center"
+                        android:hint="+263"
                         android:textColorHint="@color/primary_color"
                         android:textSize="18sp" />
                     <ImageView
