@@ -373,10 +373,14 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ZesaIsp.setOnClickListener(v -> setISP("Electricity"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
         BackToHome.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
-
     }
 
     public void setISP(String ISPName) {
+        if (!ISPName.equals("Econet")) {
+            Utils.showToast(this, "Not yet available");
+            return;
+        }
+
         BackToHome.setVisibility(View.VISIBLE);
         NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
         defaultColoring(NavHomeBtn);
