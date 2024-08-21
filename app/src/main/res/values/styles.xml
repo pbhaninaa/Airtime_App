@@ -67,6 +67,12 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="SpinnerItemStyle2" parent="Widget.AppCompat.Spinner">
+        <item name="android:popupBackground">@color/white</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="SpinnerItemStyle">
         <item name="android:textColorHint">@color/light_gray</item>
         <item name="color">@color/primary_color</item>
@@ -88,7 +94,7 @@
 
     <style name="CancelButton" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/white_box_with_shadow</item>
-                <item name="color">@color/primary_color</item>
+        <item name="color">@color/primary_color</item>
         <item name="backgroundTint">@color/indian_red</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">20sp</item>

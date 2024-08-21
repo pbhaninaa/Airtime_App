@@ -104,12 +104,12 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, values);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         languagesSpinner.setAdapter(adapter);
 
 
         ArrayAdapter<Country> ada = new ArrayAdapter<>(this, R.layout.spinner_item, getCountryList());
-        ada.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ada.setDropDownViewResource(R.layout.spinner_item);
         CountryCode.setAdapter(ada);
 
         CountryCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -272,7 +272,12 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             Utils.showToast(this, "Please fill all the fields");
         } else if (!Utils.isValidEmail(emailAddress)) {
             Utils.showToast(this, "Invalid email address format");
+            email.requestFocus();
+        } else if (phone.length() != 9) {
+            Utils.showToast(this, "Incorrect mobile number");
+            phoneNumber.requestFocus();
         } else {
+
             RegScreen.setVisibility(View.GONE);
             SignInLayout.setVisibility(View.VISIBLE);
             getEmailTextInLogin.setText(emailAddress);

@@ -262,16 +262,15 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     private void adaptors() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         filter_spinner.setAdapter(adapter);
-
 //============================================new==========================================
         ArrayAdapter<String> ItemsAdaptor = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         ItemFilterSpinner.setAdapter(ItemsAdaptor);
 
         ArrayAdapter<String> ItemToBuyAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         ItemToBuySpinner.setAdapter(ItemToBuyAdapter);
     }
 
