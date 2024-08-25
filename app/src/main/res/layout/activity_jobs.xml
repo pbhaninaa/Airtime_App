@@ -237,7 +237,6 @@
                     android:id="@+id/ISP_display_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
                     android:orientation="vertical">
 
                     <ScrollView
@@ -363,36 +362,23 @@
                                         android:layout_width="0dp"
                                         android:layout_height="match_parent"
                                         android:layout_weight="2"
-                                        android:background="@drawable/rounded_with_white_background"
+                                        android:background="@android:color/transparent"
                                         android:gravity="center"
-                                        android:visibility="gone"
                                         android:orientation="vertical"
                                         android:padding="10sp">
 
                                         <ImageView
                                             android:layout_width="100sp"
                                             android:layout_height="80sp"
+                                            android:visibility="gone"
                                             android:src="@drawable/electricity_png" />
 
-                                        <!--                                        <TextView-->
-                                        <!--                                            android:layout_width="wrap_content"-->
-                                        <!--                                            android:layout_height="wrap_content"-->
-                                        <!--                                            android:gravity="center"-->
-                                        <!--                                            android:text="Electricity"-->
-                                        <!--                                            android:textColor="@color/primary_color"-->
-                                        <!--                                            android:textSize="18sp" />-->
 
 
                                     </LinearLayout>
 
 
                                 </LinearLayout>
-                                <!--                            <androidx.recyclerview.widget.RecyclerView-->
-                                <!--                                android:id="@+id/isp_list_recycler_view"-->
-                                <!--                                android:layout_width="match_parent"-->
-                                <!--                                android:layout_height="match_parent"-->
-                                <!--                                android:clipToPadding="false"-->
-                                <!--                                android:scrollbars="vertical" />-->
 
                             </LinearLayout>
                         </LinearLayout>
@@ -924,7 +910,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Items"
+                    android:text="Catalog"
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -933,6 +919,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:gravity="center"
                 android:orientation="vertical">
 

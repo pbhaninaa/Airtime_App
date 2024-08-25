@@ -49,21 +49,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleCompanyClick() {
-        if (isUserRegistered(this)) {
-            if (isUserLogged(this)) {
-                Intent intent = new Intent(MainActivity.this, Dashboard.class);
-                startActivity(intent);
-            } else {
+//        if (isUserRegistered(this)) {
+//            if (isUserLogged(this)) {
+//                Intent intent = new Intent(MainActivity.this, Dashboard.class);
+//                startActivity(intent);
+//            } else {
 
                 Intent intent = new Intent(MainActivity.this, UserManagement.class);
                 intent.putExtra("constraintLayoutId", R.id.login_page);
                 startActivity(intent);
-            }
-        } else {
-            Intent intent = new Intent(MainActivity.this, UserManagement.class);
-            intent.putExtra("constraintLayoutId", R.id.create_profile_screen);
-            startActivity(intent);
-        }
+//            }
+//        } else {
+//            Intent intent = new Intent(MainActivity.this, UserManagement.class);
+//            intent.putExtra("constraintLayoutId", R.id.create_profile_screen);
+//            startActivity(intent);
+//        }
 
     }
 

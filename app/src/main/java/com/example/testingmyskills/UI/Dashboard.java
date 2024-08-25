@@ -164,7 +164,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             String Balance = amount.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(amount)));
 
 
-            AvailableBalance.setText(Balance);
+//            AvailableBalance.setText(Balance);
             double balance = Double.parseDouble(amount);
 
             Utils.setMessage(this, balance, StatusMessage);
@@ -370,7 +370,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         NavProfileBtn.setOnClickListener(v -> showProfile());
         EconetIsp.setOnClickListener(v -> setISP("Econet"));
         NetoneIsp.setOnClickListener(v -> setISP("NetOne"));
-        ZesaIsp.setOnClickListener(v -> setISP("Electricity"));
+//        ZesaIsp.setOnClickListener(v -> setISP("Electricity"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
         BackToHome.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
     }
@@ -409,14 +409,23 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     private void getAccount() {
-        SharedPreferences sharedPreferences = getSharedPreferences("LoggedUser", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
 
-        String name = sharedPreferences.getString("name", null);
-        String phone = sharedPreferences.getString("phone", null);
-        String emailAddress = sharedPreferences.getString("emailAddress", null);
-        String updated = sharedPreferences.getString("updated", null);
-        String formatedSalutation = "<b>Hello " + name + "</b> \n Last updated" + updated;
-        salutationText.setText(name);
+        String name = sharedPreferences.getString("name", "");
+        String surname = sharedPreferences.getString("surname", "");
+        String phone = sharedPreferences.getString("phone", "");
+        String emailAddress = sharedPreferences.getString("emailAddress", "");
+        String balance = sharedPreferences.getString("balance", "");
+        String updated = sharedPreferences.getString("time", "");
+
+        String formatedSalutation = "Hello " + name + " " + surname + " \n Last updated " + updated;
+        String Balance = balance.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(balance)));
+
+
+        salutationText.setText(formatedSalutation);
+
+        AvailableBalance.setText(Balance);
+
 
     }
 
@@ -432,6 +441,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     private void handleYes() {
 //          Utils.logout(this);
+
         Intent intent = new Intent(this, UserManagement.class);
         intent.putExtra("constraintLayoutId", R.id.login_page);
         startActivity(intent);

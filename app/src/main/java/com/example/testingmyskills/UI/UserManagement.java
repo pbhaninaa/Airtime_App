@@ -1,10 +1,5 @@
 package com.example.testingmyskills.UI;
 
-import static com.example.testingmyskills.JavaClasses.Utils.PASSWORD_KEY;
-import static com.example.testingmyskills.JavaClasses.Utils.PREF_NAME;
-import static com.example.testingmyskills.JavaClasses.Utils.RememberMe;
-import static com.example.testingmyskills.UI.MainActivity.MSISDN;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -12,14 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.UserManager;
 import android.text.InputType;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -44,10 +33,15 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import okhttp3.internal.Util;
 
@@ -160,20 +154,20 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         System.out.println("Account Validation Res: " + response);
     }
 
-    private void APICall(String number, AccountValidationCallback callback) {
-        new Thread(() -> {
-            try {
-                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(number, "validate_msisdn");
-                runOnUiThread(() -> {
-                    callback.validateUser(response);
-                });
-            } catch (XmlRpcException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-    }
+//    private void APICall(String number, AccountValidationCallback callback) {
+//        new Thread(() -> {
+//            try {
+//                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(number, "validate_msisdn");
+//                runOnUiThread(() -> {
+//                    callback.validateUser(response);
+//                });
+//            } catch (XmlRpcException e) {
+//                e.printStackTrace();
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+//        }).start();
+//    }
 
     private void initialiseViews() {
         SignInLayout = findViewById(R.id.login_page);
@@ -211,18 +205,22 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     }
 
     private void screenToLoad(int screenToLoad) {
-        if (Utils.RememberMe(this)) {
-            getEmailTextInLogin.setText(Utils.getEmail(this));
-            getPasswordTextInLogin.setText(Utils.getPassword(this));
-            RememberMeCheckBox.isChecked();
-        }
+        if (screenToLoad == R.id.create_profile_screen)
+            getProfile();
 
-        SignInLayout.setVisibility(View.VISIBLE);
+
+        if (Utils.RememberMe(this)) {
+            getEmailTextInLogin.setText(Utils.getString(this,"profile","email"));
+            RememberMeCheckBox.setChecked(true); // Ensure the checkbox is checked
+        }
+        SignInLayout.setVisibility(View.GONE);
         SignUpLayout.setVisibility(View.GONE);
         RegScreen.setVisibility(View.GONE);
 
-
+        ConstraintLayout layout = findViewById(screenToLoad);
+        layout.setVisibility(View.VISIBLE);
     }
+
 
     private void setOnclickListeners() {
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
@@ -282,17 +280,22 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             SignInLayout.setVisibility(View.VISIBLE);
             getEmailTextInLogin.setText(emailAddress);
             getPasswordTextInLogin.setText(pass);
-            Utils.saveString(this, "LoggedUser", "IsUserLogged", "Yes");
+
+            // Utils.saveString(this, "LoggedUser", "IsUserLogged", "Yes");
+
+
 //            XMLRPCClient.registerUserAsync(name, phone, emailAddress, pass, new XMLRPCClient.ResponseCallback() {
 //                @Override
 //                public void onSuccess(String response) {
 //                    // Handle the success response here
 //                    try {
+//                        System.out.println("==============================response1==========================");
+//                        System.out.println(response);
 //                        JSONObject jsonResponse = new JSONObject(response);
-//                        int responseCode = jsonResponse.getInt("responseCode");
-//                        if (responseCode == 200) {
+//                        // Check if the access_token is present in the response
+//                        if (jsonResponse.has("authorization")) {
+//                            String token = jsonResponse.getJSONObject("authorization").getString("access_token");
 //                            // Registration was successful
-//                            Utils.showToast(UserManagement.this, "Registration Successful");
 //                            RegScreen.setVisibility(View.GONE);
 //                            SignInLayout.setVisibility(View.VISIBLE);
 //                            getEmailTextInLogin.setText(emailAddress);
@@ -304,7 +307,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //                        }
 //                    } catch (JSONException e) {
 //                        e.printStackTrace();
-//                        Utils.showToast(UserManagement.this, "Failed to parse response");
+//                        Utils.showToast(UserManagement.this, "Failed to parse response1");
 //                    }
 //                }
 //
@@ -332,53 +335,88 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             getPasswordTextInLogin.setError("Password is required");
             return;
         }
-        Intent intent = new Intent(UserManagement.this, Dashboard.class);
-        startActivity(intent);
-//        XMLRPCClient.userLoginAsync(email, password, new XMLRPCClient.ResponseCallback() {
-//            @Override
-//            public void onSuccess(String response) {
-//                // Handle the success response here
-//                try {
-//                    JSONObject jsonResponse = new JSONObject(response);
-//                    int responseCode = jsonResponse.getInt("responseCode");
-//                    if (responseCode > 200 && responseCode < 300) {
-//                        System.out.println("============================Phila===============================");
-//                        System.out.println(jsonResponse);
-//                        String token = jsonResponse.getJSONObject("authorization").getString("access_token");
-//                        String name = jsonResponse.getJSONObject("user").getString("name");
-//                        String updated = jsonResponse.getJSONObject("user").getString("updated_at");
-//                        String email = jsonResponse.getJSONObject("user").getString("email");
-//                        String phone = jsonResponse.getJSONObject("user").getString("phone_number");
-//                        saveAccount(name, phone, email, updated);
-//                        if (!Utils.isTokenExpired(token)) {
-//                            Utils.showToast(UserManagement.this, "Login Successful");
-//                            // Navigate to another activity or perform other actions
-//                            Intent intent = new Intent(UserManagement.this, Dashboard.class);
-//                            startActivity(intent);
-//                        } else {
-//                            Utils.showToast(UserManagement.this, "The token has expired");
-//                        }
-//                    } else {
-//                        // Handle other response codes
-//                        String message = jsonResponse.getString("message");
-//                        Utils.showToast(UserManagement.this, message);
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                    Utils.showToast(UserManagement.this, "Failed to parse response");
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                // Handle the error response here
-//                Utils.showToast(UserManagement.this, e.getMessage());
-//                e.printStackTrace();
-//            }
-//        });
+        XMLRPCClient.userLoginAsync(email, password, new XMLRPCClient.ResponseCallback() {
+            @Override
+            public void onSuccess(String response) {
+                try {
+                    // Parse the JSON response
+                    JSONObject jsonResponse = new JSONObject(response);
+                    // Check if the access_token is present in the response
+                    if (jsonResponse.has("authorization")) {
+                        String token = jsonResponse.getJSONObject("authorization").getString("access_token");
+
+                        // Extract user details
+                        JSONObject userObject = jsonResponse.getJSONObject("user");
+                        String fullName = userObject.getString("name");
+                        String updatedAt = userObject.getString("updated_at");
+                        String email = userObject.getString("email");
+                        String phone = userObject.getString("phone_number");
+                        String balance = userObject.getString("balance");
+
+                        // Split full name into first name and surname
+                        String[] nameParts = fullName.split(" ");
+                        String firstName = nameParts.length > 0 ? nameParts[0] : "";
+                        String surname = nameParts.length > 1 ? nameParts[1] : "";
+
+                        // Convert the timestamp to a readable format
+                        String formattedDate = formatTimestamp(updatedAt);
+
+                        // Show the user details in a toast
+                        String userDetails = "First Name: " + firstName +
+                                "\nSurname: " + surname +
+                                "\nUpdated At: " + formattedDate +
+                                "\nEmail: " + email +
+                                "\nPhone: " + phone;
+                        Utils.showToast(UserManagement.this, userDetails);
+                        System.out.println(userDetails);
+
+                        if (!Utils.isTokenExpired(token)) {
+                            Utils.showToast(UserManagement.this, "Login Successful");
+                            saveAccount(firstName, surname, phone, email, balance,formattedDate);
+                            // Navigate to the Dashboard
+                            Intent intent = new Intent(UserManagement.this, Dashboard.class);
+                            startActivity(intent);
+                        } else {
+                            Utils.showToast(UserManagement.this, "The token has expired");
+                        }
+                    } else {
+                        // Handle case where authorization token is missing
+                        Utils.showToast(UserManagement.this, "Authorization failed. Token missing.");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Utils.showToast(UserManagement.this, "Failed to parse response");
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Handle the error response
+                Utils.showToast(UserManagement.this, e.getMessage());
+                e.printStackTrace();
+            }
+        });
 
 
     }
+
+    // Method to format the timestamp
+    private String formatTimestamp(String timestamp) {
+        try {
+            // Parse the original timestamp with the correct format
+            SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault());
+            originalFormat.setTimeZone(TimeZone.getTimeZone("UTC")); // Set timezone to UTC since the input is in UTC
+            Date date = originalFormat.parse(timestamp);
+
+            // Convert to desired format
+            SimpleDateFormat desiredFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            return desiredFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "Invalid date";
+        }
+    }
+
 
     private void handleShowPassword() {
         showPassword = !showPassword; // Invert the value
@@ -405,6 +443,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     }
 
     public static List<Country> getCountryList() {
+
         List<Country> countryList = new ArrayList<>();
 
         countryList.add(new Country("+27", "South Africa", "za"));
@@ -521,33 +560,37 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
         return countryList;
     }
-//    private void getProfile() {
-//        SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
-//        // Populate EditText fields
-//        Firstname.setText(prefs.getString("name", ""));
-//        Lastname.setText(prefs.getString("surname", ""));
-//        phoneNumber.setText(prefs.getString("phone", ""));
-//        email.setText(prefs.getString("emailAddress", ""));
-//        emailConfirmation.setText(prefs.getString("emailAddress", ""));
-//        CreateAccBtn.setText("Update Profile");
-//
-//    }
+
+    public void getProfile() {
+        SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        // Populate EditText fields
+        Firstname.setText(prefs.getString("name", ""));
+        Lastname.setText(prefs.getString("surname", ""));
+        phoneNumber.setText(prefs.getString("phone", ""));
+        email.setText(prefs.getString("emailAddress", ""));
+
+        emailConfirmation.setText(prefs.getString("emailAddress", ""));
+        CreateAccBtn.setText("Update Profile");
+
+    }
+
     //    private void handleForgotPasswordClick() throws JSONException {
 //        EmailSender.sendEmail(this, Utils.getEmail(this), "Test Name", Utils.getPassword(this));
 //
 //    }
-    //    private void saveAccount(String name, String phone, String emailAddress, String time) {
-//        SharedPreferences sharedPreferences = getSharedPreferences("LoggedUser", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putString("name", name);
-//        editor.putString("updated", time);
-//        editor.putString("phone", phone);
-//        editor.putString("emailAddress", emailAddress);
-//        editor.putString("IsUserLogged", emailAddress);
-//        editor.apply();
-//
-//
-//    }
+    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance,String time) {
+        SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("name", name);
+        editor.putString("surname", surname);
+        editor.putString("phone", phone);
+        editor.putString("time", time);
+        editor.putString("emailAddress", emailAddress);
+        editor.putString("balance", balance);
+        editor.apply();
+
+
+    }
 
 
 //    private void sendPasswordEmail() {

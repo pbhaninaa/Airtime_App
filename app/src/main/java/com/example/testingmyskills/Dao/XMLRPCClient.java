@@ -155,6 +155,7 @@ public class XMLRPCClient {
                 conn.setDoOutput(true);
 
                 String jsonInputString = String.format("{\"name\": \"%s\", \"phone_number\": \"%s\", \"email\": \"%s\", \"password\": \"%s\"}", name, phoneNumber, email, password);
+                System.out.println(jsonInputString);
 
                 try (OutputStream os = conn.getOutputStream()) {
                     byte[] input = jsonInputString.getBytes("utf-8");
@@ -169,19 +170,61 @@ public class XMLRPCClient {
                     inputStream = conn.getErrorStream();
                 }
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
-                StringBuilder response = new StringBuilder();
-                String responseLine;
-                while ((responseLine = reader.readLine()) != null) {
-                    response.append(responseLine.trim());
+                if (inputStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+                    StringBuilder response = new StringBuilder();
+                    String responseLine;
+                    while ((responseLine = reader.readLine()) != null) {
+                        response.append(responseLine.trim());
+                    }
+                    return response.toString();
+                } else {
+                    return "No response received from the server.";
                 }
 
-                return response.toString();
             } catch (Exception e) {
                 this.exception = e;
                 return null;
             }
         }
+
+//        protected String doInBackground(Void... voids) {
+//            try {
+//                URL url = new URL(BASE_URL + "register");
+//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//                conn.setRequestMethod("POST");
+//                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+//                conn.setRequestProperty("Accept", "application/json");
+//                conn.setDoOutput(true);
+//
+//                String jsonInputString = String.format("{\"name\": \"%s\", \"phone_number\": \"%s\", \"email\": \"%s\", \"password\": \"%s\"}", name, phoneNumber, email, password);
+//                System.out.println(jsonInputString);
+//                try (OutputStream os = conn.getOutputStream()) {
+//                    byte[] input = jsonInputString.getBytes("utf-8");
+//                    os.write(input, 0, input.length);
+//                }
+//
+//                InputStream inputStream;
+//                int code = conn.getResponseCode();
+//                if (code == 200) { // success
+//                    inputStream = conn.getInputStream();
+//                } else {
+//                    inputStream = conn.getErrorStream();
+//                }
+//
+//                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+//                StringBuilder response = new StringBuilder();
+//                String responseLine;
+//                while ((responseLine = reader.readLine()) != null) {
+//                    response.append(responseLine.trim());
+//                }
+//
+//                return response.toString();
+//            } catch (Exception e) {
+//                this.exception = e;
+//                return null;
+//            }
+//        }
 
         @Override
         protected void onPostExecute(String response) {
@@ -385,6 +428,7 @@ public class XMLRPCClient {
 
     public interface ResponseCallback {
         void onSuccess(String response);
+
         void onError(Exception e);
     }
 }
