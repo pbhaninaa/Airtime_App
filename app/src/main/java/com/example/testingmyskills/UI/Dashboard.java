@@ -97,6 +97,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private RecyclerView jobListRecyclerView;
     private String filePath = "JSON.json";
     private int numItems;
+    double amount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +162,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     public void onBalanceReceived(Map<String, Object> response) {
         try {
             String amount = Objects.requireNonNull(response.get("Amount")).toString();
+            amount = amount;
             String Balance = amount.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(amount)));
 
 
@@ -495,14 +497,25 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     private void handleTransaction() {
         String phone = Phone.getText().toString().trim();
+        String itemToBuy = SelectedItemType.getText().toString().trim();
+        String price = SelectedItemPrice.getText().toString().trim().replace(currencySymbol, "");
+        String lifeTime = SelectedItemLifeTime.getText().toString().trim();
 
         if (phone.isEmpty()) {
             return;
         }
 
-        Utils.showToast(this, phone);
-        Load(phone, "load_value", this);
+        if (Double.parseDouble(price) > amount) {
+            Utils.showToast(this, "Insufficient Funds");
+            return;
+        }
 
+        // Create a descriptive toast message
+        String toast = String.format("Phone: %s\nItem: %s\nPrice: %s\nLifeTime: %s\nBalance: %s",
+                phone, itemToBuy, price, lifeTime, String.valueOf(amount));
+        Utils.showToast(this, toast);
+
+        Load(phone, "load_value", this);
     }
 
     public void showProfile() {
@@ -512,15 +525,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     public void hideOtherLayout(int layoutToShow, ImageButton icon) {
-//        if (layoutToShow == R.id.buy_screen) {
-//            Item.setVisibility(View.GONE);
-//            ItemTypeSpinner2.setVisibility(View.VISIBLE);
-////            Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
-////            Phone.setShowSoftInputOnFocus(false);
-////            Phone.setTextIsSelectable(true);
-////            InputConnection ic = Phone.onCreateInputConnection(new EditorInfo());
-////            MyKeyboard.setInputConnection(ic);
-//        }
 
         if (layoutToShow == R.id.create_profile_screen) {
             Intent intent = new Intent(this, UserManagement.class);
@@ -536,37 +540,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         }
     }
 
-//    private void setupFocusListeners() {
-//        Phone.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                MyKeyboard.setInputConnection(Phone.onCreateInputConnection(new EditorInfo()));
-//                Phone.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//
-//        ItemPrice.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                MyKeyboard.setInputConnection(ItemPrice.onCreateInputConnection(new EditorInfo()));
-//                ItemPrice.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        Amount.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                MyKeyboard.setInputConnection(Amount.onCreateInputConnection(new EditorInfo()));
-//                Amount.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//        Item.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                MyKeyboard.setInputConnection(Item.onCreateInputConnection(new EditorInfo()));
-//                Item.setShowSoftInputOnFocus(false);
-//                Utils.showAlphaKeyboard(MyKeyboard, this, Gravity.BOTTOM);
-//            }
-//        });
-//    }
 
     public class RecommendedAd extends RecyclerView.Adapter<RecommendedAd.ViewHolder> {
 
@@ -621,6 +594,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     SelectedItemType.setText(amount);
                     SelectedItemLifeTime.setText(time);
                     SelectedItemPrice.setText(String.format("%s%s", currencySymbol, price));
+
                     if (job_list_screen.getVisibility() == View.VISIBLE) {
                         job_list_screen.setVisibility(View.GONE);
                         AppFrame.setVisibility(View.VISIBLE);

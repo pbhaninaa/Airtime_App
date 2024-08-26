@@ -1,6 +1,7 @@
 package com.example.testingmyskills.Dao;
 
 import android.os.AsyncTask;
+import android.os.Build;
 
 import com.example.testingmyskills.JavaClasses.Utils;
 
@@ -155,20 +156,25 @@ public class XMLRPCClient {
                 conn.setDoOutput(true);
 
                 String jsonInputString = String.format("{\"name\": \"%s\", \"phone_number\": \"%s\", \"email\": \"%s\", \"password\": \"%s\"}", name, phoneNumber, email, password);
-                System.out.println(jsonInputString);
+                System.out.println("Request JSON: " + jsonInputString);
+
+                // Printing connection details
+                System.out.println("Request Method: " + conn.getRequestMethod());
+                System.out.println("Request URL: " + conn.getURL().toString());
+                System.out.println("Request Properties: ");
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                    conn.getRequestProperties().forEach((key, value) -> System.out.println(key + ": " + value));
+//                }
 
                 try (OutputStream os = conn.getOutputStream()) {
                     byte[] input = jsonInputString.getBytes("utf-8");
                     os.write(input, 0, input.length);
                 }
 
-                InputStream inputStream;
-                int code = conn.getResponseCode();
-                if (code == 200) { // success
-                    inputStream = conn.getInputStream();
-                } else {
-                    inputStream = conn.getErrorStream();
-                }
+                int responseCode = conn.getResponseCode();
+                System.out.println("Response Code: " + responseCode);
+
+                InputStream inputStream = (responseCode >= 200 && responseCode < 300) ? conn.getInputStream() : conn.getErrorStream();
 
                 if (inputStream != null) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
@@ -177,54 +183,19 @@ public class XMLRPCClient {
                     while ((responseLine = reader.readLine()) != null) {
                         response.append(responseLine.trim());
                     }
-                    return response.toString();
+                    System.out.println("Response: " + response.toString());
+                    return (responseCode >= 200 && responseCode < 300) ? "1" : response.toString();
                 } else {
                     return "No response received from the server.";
                 }
 
             } catch (Exception e) {
+                e.printStackTrace();
                 this.exception = e;
                 return null;
             }
         }
 
-//        protected String doInBackground(Void... voids) {
-//            try {
-//                URL url = new URL(BASE_URL + "register");
-//                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//                conn.setRequestMethod("POST");
-//                conn.setRequestProperty("Content-Type", "application/json; utf-8");
-//                conn.setRequestProperty("Accept", "application/json");
-//                conn.setDoOutput(true);
-//
-//                String jsonInputString = String.format("{\"name\": \"%s\", \"phone_number\": \"%s\", \"email\": \"%s\", \"password\": \"%s\"}", name, phoneNumber, email, password);
-//                System.out.println(jsonInputString);
-//                try (OutputStream os = conn.getOutputStream()) {
-//                    byte[] input = jsonInputString.getBytes("utf-8");
-//                    os.write(input, 0, input.length);
-//                }
-//
-//                InputStream inputStream;
-//                int code = conn.getResponseCode();
-//                if (code == 200) { // success
-//                    inputStream = conn.getInputStream();
-//                } else {
-//                    inputStream = conn.getErrorStream();
-//                }
-//
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
-//                StringBuilder response = new StringBuilder();
-//                String responseLine;
-//                while ((responseLine = reader.readLine()) != null) {
-//                    response.append(responseLine.trim());
-//                }
-//
-//                return response.toString();
-//            } catch (Exception e) {
-//                this.exception = e;
-//                return null;
-//            }
-//        }
 
         @Override
         protected void onPostExecute(String response) {

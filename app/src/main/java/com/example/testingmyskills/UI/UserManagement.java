@@ -210,7 +210,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
 
         if (Utils.RememberMe(this)) {
-            getEmailTextInLogin.setText(Utils.getString(this,"profile","email"));
+            getEmailTextInLogin.setText(Utils.getString(this, "profile", "email"));
             RememberMeCheckBox.setChecked(true); // Ensure the checkbox is checked
         }
         SignInLayout.setVisibility(View.GONE);
@@ -276,48 +276,41 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             phoneNumber.requestFocus();
         } else {
 
-            RegScreen.setVisibility(View.GONE);
-            SignInLayout.setVisibility(View.VISIBLE);
-            getEmailTextInLogin.setText(emailAddress);
-            getPasswordTextInLogin.setText(pass);
+//            RegScreen.setVisibility(View.GONE);
+//            SignInLayout.setVisibility(View.VISIBLE);
+//            getEmailTextInLogin.setText(emailAddress);
+//            getPasswordTextInLogin.setText(pass);
 
             // Utils.saveString(this, "LoggedUser", "IsUserLogged", "Yes");
 
 
-//            XMLRPCClient.registerUserAsync(name, phone, emailAddress, pass, new XMLRPCClient.ResponseCallback() {
-//                @Override
-//                public void onSuccess(String response) {
-//                    // Handle the success response here
-//                    try {
-//                        System.out.println("==============================response1==========================");
-//                        System.out.println(response);
-//                        JSONObject jsonResponse = new JSONObject(response);
-//                        // Check if the access_token is present in the response
-//                        if (jsonResponse.has("authorization")) {
-//                            String token = jsonResponse.getJSONObject("authorization").getString("access_token");
-//                            // Registration was successful
-//                            RegScreen.setVisibility(View.GONE);
-//                            SignInLayout.setVisibility(View.VISIBLE);
-//                            getEmailTextInLogin.setText(emailAddress);
-//                            getPasswordTextInLogin.setText(pass);
-//                        } else {
-//                            // Handle other response codes
-//                            String message = jsonResponse.getString("message");
-//                            Utils.showToast(UserManagement.this, message);
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        Utils.showToast(UserManagement.this, "Failed to parse response1");
-//                    }
-//                }
-//
-//                @Override
-//                public void onError(Exception e) {
-//                    // Handle the error response here
-//                    Utils.showToast(UserManagement.this, e.getMessage());
-//                    e.printStackTrace();
-//                }
-//            });
+            XMLRPCClient.registerUserAsync(name, phone, emailAddress, pass, new XMLRPCClient.ResponseCallback() {
+                @Override
+                public void onSuccess(String response) {
+                    System.out.println("====================Response:========================");
+                    System.out.println(response);
+
+                    if (response.equals("1")) {
+                        // Registration was successful
+                        RegScreen.setVisibility(View.GONE);
+                        SignInLayout.setVisibility(View.VISIBLE);
+                        getEmailTextInLogin.setText(emailAddress);
+                        getPasswordTextInLogin.setText(pass);
+                    } else {
+                        // Handle other response codes
+                        System.out.println("========================Error============================");
+                        Utils.showToast(UserManagement.this, response);
+                    }
+                }
+
+
+                @Override
+                public void onError(Exception e) {
+                    // Handle the error response here
+                    Utils.showToast(UserManagement.this, e.getMessage());
+                    e.printStackTrace();
+                }
+            });
         }
     }
 
@@ -372,7 +365,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
                         if (!Utils.isTokenExpired(token)) {
                             Utils.showToast(UserManagement.this, "Login Successful");
-                            saveAccount(firstName, surname, phone, email, balance,formattedDate);
+                            saveAccount(firstName, surname, phone, email, balance, formattedDate);
                             // Navigate to the Dashboard
                             Intent intent = new Intent(UserManagement.this, Dashboard.class);
                             startActivity(intent);
@@ -578,7 +571,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //        EmailSender.sendEmail(this, Utils.getEmail(this), "Test Name", Utils.getPassword(this));
 //
 //    }
-    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance,String time) {
+    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time) {
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("name", name);
