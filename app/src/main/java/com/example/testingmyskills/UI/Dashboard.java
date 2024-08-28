@@ -169,7 +169,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 //            AvailableBalance.setText(Balance);
             double balance = Double.parseDouble(amount);
 
-            Utils.setMessage(this, balance, StatusMessage);
+//            Utils.setMessage(this, balance, StatusMessage);
         } catch (Exception e) {
             System.out.println("Error occurred: " + e.getMessage());
         }
@@ -420,11 +420,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         String balance = sharedPreferences.getString("balance", "");
         String updated = sharedPreferences.getString("time", "");
 
-        String formatedSalutation = "Hello " + name + " " + surname + " \n Last updated " + updated;
+        String formatedSalutation = "Hello " + name + " " + surname + "  Last updated " + updated;
         String Balance = balance.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(balance)));
 
 
-        salutationText.setText(formatedSalutation);
+        StatusMessage.setText(formatedSalutation);
 
         AvailableBalance.setText(Balance);
 
@@ -492,6 +492,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
         TextView salute = findViewById(R.id.salutation_text);
         salute.setText(builder);
+
     }
 
 
@@ -505,17 +506,19 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             return;
         }
 
-        if (Double.parseDouble(price) > amount) {
+        if (Double.parseDouble(price) < amount) {
+            // Create a descriptive toast message
+            String toast = String.format("Phone: %s\nItem: %s\nPrice: %s\nLifeTime: %s\nBalance: %s",
+                    phone, itemToBuy, price, lifeTime, String.valueOf(amount));
+            Utils.showToast(this, toast);
+
+            Load(phone, "load_value", this);
+
+        } else {
             Utils.showToast(this, "Insufficient Funds");
-            return;
         }
 
-        // Create a descriptive toast message
-        String toast = String.format("Phone: %s\nItem: %s\nPrice: %s\nLifeTime: %s\nBalance: %s",
-                phone, itemToBuy, price, lifeTime, String.valueOf(amount));
-        Utils.showToast(this, toast);
 
-        Load(phone, "load_value", this);
     }
 
     public void showProfile() {

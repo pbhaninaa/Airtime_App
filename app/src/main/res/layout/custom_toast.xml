@@ -13,10 +13,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/fifteen"
+        android:layout_marginEnd="@dimen/fifteen"
         android:gravity="bottom"
         android:text="@string/toast_message"
         android:textColor="@color/primary_color"
-        android:textSize="@dimen/ten"
+        android:textSize="@dimen/fifteen"
         tools:ignore="SpUsage" />
 
 </LinearLayout>

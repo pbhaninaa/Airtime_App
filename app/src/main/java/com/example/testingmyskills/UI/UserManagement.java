@@ -1,5 +1,7 @@
 package com.example.testingmyskills.UI;
 
+import static android.view.View.GONE;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -196,26 +198,30 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         emailConfirmation = findViewById(R.id.emailC);
         backButton = findViewById(R.id.back);
         password = findViewById(R.id.password);
+
         RememberMeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             rememberMe = isChecked;
 
+
         });
+
         CountryCode = findViewById(R.id.country_code);
         CountryFlag = findViewById(R.id.country_flag);
     }
 
     private void screenToLoad(int screenToLoad) {
+        if (Utils.RememberMe(this)) {
+            getEmailTextInLogin.setText(Utils.getString(this, "savedCredentials", "email"));
+            getPasswordTextInLogin.setText(Utils.getString(this, "savedCredentials", "password"));
+            RememberMeCheckBox.setChecked(Utils.RememberMe(this)); // Ensure the checkbox is checked
+        }
         if (screenToLoad == R.id.create_profile_screen)
             getProfile();
 
 
-        if (Utils.RememberMe(this)) {
-            getEmailTextInLogin.setText(Utils.getString(this, "profile", "email"));
-            RememberMeCheckBox.setChecked(true); // Ensure the checkbox is checked
-        }
-        SignInLayout.setVisibility(View.GONE);
-        SignUpLayout.setVisibility(View.GONE);
-        RegScreen.setVisibility(View.GONE);
+        SignInLayout.setVisibility(GONE);
+        SignUpLayout.setVisibility(GONE);
+        RegScreen.setVisibility(GONE);
 
         ConstraintLayout layout = findViewById(screenToLoad);
         layout.setVisibility(View.VISIBLE);
@@ -250,12 +256,12 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
     private void handleRegisterClick() {
         RegScreen.setVisibility(View.VISIBLE);
-        SignInLayout.setVisibility(View.GONE);
+        SignInLayout.setVisibility(GONE);
 
     }
 
     private void handleBack() {
-        RegScreen.setVisibility(View.GONE);
+        RegScreen.setVisibility(GONE);
         SignInLayout.setVisibility(View.VISIBLE);
     }
 
@@ -292,7 +298,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
                     if (response.equals("1")) {
                         // Registration was successful
-                        RegScreen.setVisibility(View.GONE);
+                        RegScreen.setVisibility(GONE);
                         SignInLayout.setVisibility(View.VISIBLE);
                         getEmailTextInLogin.setText(emailAddress);
                         getPasswordTextInLogin.setText(pass);
@@ -342,7 +348,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         JSONObject userObject = jsonResponse.getJSONObject("user");
                         String fullName = userObject.getString("name");
                         String updatedAt = userObject.getString("updated_at");
-                        String email = userObject.getString("email");
+                        String email1 = userObject.getString("email");
                         String phone = userObject.getString("phone_number");
                         String balance = userObject.getString("balance");
 
@@ -358,11 +364,13 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         String userDetails = "First Name: " + firstName +
                                 "\nSurname: " + surname +
                                 "\nUpdated At: " + formattedDate +
-                                "\nEmail: " + email +
+                                "\nEmail: " + email1 +
                                 "\nPhone: " + phone;
                         Utils.showToast(UserManagement.this, userDetails);
                         System.out.println(userDetails);
-
+                        Utils.saveAutoFillPermission(UserManagement.this, rememberMe);
+                        Utils.saveString(UserManagement.this, "savedCredentials", "email", email);
+                        Utils.saveString(UserManagement.this, "savedCredentials", "password", password);
                         if (!Utils.isTokenExpired(token)) {
                             Utils.showToast(UserManagement.this, "Login Successful");
                             saveAccount(firstName, surname, phone, email, balance, formattedDate);
@@ -561,6 +569,10 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         Lastname.setText(prefs.getString("surname", ""));
         phoneNumber.setText(prefs.getString("phone", ""));
         email.setText(prefs.getString("emailAddress", ""));
+        phoneNumber.setShowSoftInputOnFocus(false);
+
+        phoneNumber.setEnabled(false);
+        password.setVisibility(GONE);
 
         emailConfirmation.setText(prefs.getString("emailAddress", ""));
         CreateAccBtn.setText("Update Profile");
