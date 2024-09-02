@@ -85,9 +85,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:visibility="gone"
                                 android:text="@string/salutation"
-                                android:textColor="@color/light_gray" />
+                                android:textColor="@color/light_gray"
+                                android:visibility="gone" />
 
 
                         </LinearLayout>
@@ -357,7 +357,6 @@
                                     </LinearLayout>
 
 
-
                                     <LinearLayout
                                         android:id="@+id/zesaISP"
                                         android:layout_width="0dp"
@@ -371,9 +370,8 @@
                                         <ImageView
                                             android:layout_width="100sp"
                                             android:layout_height="80sp"
-                                            android:visibility="gone"
-                                            android:src="@drawable/electricity_png" />
-
+                                            android:src="@drawable/electricity_png"
+                                            android:visibility="gone" />
 
 
                                     </LinearLayout>
@@ -469,8 +467,8 @@
                     android:id="@+id/Buying_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -646,6 +644,64 @@
                             android:textStyle="bold" />
 
                     </LinearLayout>
+
+                </LinearLayout>
+                <!--   Buying_layout this is where you will be capturing the values of an item you are buying -->
+                <LinearLayout
+                    android:id="@+id/Load_balance_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/sixteen"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/loading_ref"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/five"
+                        android:autofillHints="none"
+                        android:background="@drawable/edit_text_background"
+                        android:hint="Reference"
+                        android:inputType="text"
+                        android:padding="12sp"
+                        android:textColor="@color/primary_color"
+                        android:textColorHint="@color/light_gray" />
+
+                    <EditText
+                        android:id="@+id/loading_notes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/five"
+                        android:autofillHints="none"
+                        android:background="@drawable/edit_text_background"
+                        android:hint="Notes"
+                        android:inputType="text"
+                        android:padding="12sp"
+                        android:textColor="@color/primary_color"
+                        android:textColorHint="@color/light_gray" />
+
+                    <EditText
+                        android:id="@+id/loading_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/five"
+                        android:autofillHints="none"
+                        android:background="@drawable/edit_text_background"
+                        android:hint="Amount "
+                        android:inputType="number"
+                        android:padding="12sp"
+                        android:textColor="@color/primary_color"
+                        android:textColorHint="@color/light_gray" />
+
+                    <Button
+                        android:id="@+id/btn_load_balance"
+                        style="@style/CustomButtonStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/load"
+                        android:textStyle="bold" />
+
 
                 </LinearLayout>
 
@@ -892,6 +948,7 @@
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -915,14 +972,15 @@
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:visibility="gone"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageButton
                     android:id="@+id/nav_buy_btn1"
@@ -936,6 +994,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Buy"
+                    android:textColor="@color/primary_color"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/nav_load_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:src="@drawable/shop"
+                    app:tint="@color/primary_color" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Balance"
+                    android:gravity="center"
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -963,7 +1045,6 @@
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
-
 
 
             <LinearLayout

@@ -286,6 +286,7 @@
     <string name="_100gb">100GB</string>
     <string name="price">Price</string>
     <string name="buy">Buy</string>
+    <string name="load">Load Balance</string>
     <string name="econet">Econet</string>
     <string name="telnet">Telnet</string>
     <string name="netone">Netone</string>

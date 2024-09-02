@@ -73,6 +73,52 @@ public class XMLRPCClient {
         }
     }
 
+    public static Map<String, Object> LoadBalanceEnquiry(int id, String ref, String note, String amount) throws Exception {
+//        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+//        config.setServerURL(new URL(SERVER_URL));
+//        config.setBasicUserName(USERNAME);
+//        config.setBasicPassword(PASSWORD);
+//        config.setEnabledForExtensions(true);
+//        config.setConnectionTimeout(60 * 1000);
+//        config.setReplyTimeout(60 * 1000);
+//
+//        XmlRpcClient client = new XmlRpcClient();
+//        client.setConfig(config);
+//
+//        Map<String, Object> struct = new HashMap<>();
+//        struct.put("USERID", id);
+//        struct.put("REFERENCE", ref);
+//        struct.put("AMOUNT", Double.parseDouble(amount));
+//        struct.put("NOTES", note);
+//        struct.put("PAYMENTDATE", Utils.ref());
+//
+//        Object[] params = new Object[]{USERNAME, PASSWORD, struct};
+//        System.out.println("params: " + transactionType + Arrays.toString(params));
+//        Object response = client.execute(transactionType, params);
+//
+//        System.out.println("res:" + response);
+//        if (response instanceof Map) {
+//            @SuppressWarnings("unchecked")
+//            Map<String, Object> responseMap = (Map<String, Object>) response;
+//
+//            return responseMap;
+//        } else if (response instanceof Object[]) {
+//            Object[] responseArray = (Object[]) response;
+//
+//            if (responseArray.length > 0 && responseArray[0] instanceof Map) {
+//                @SuppressWarnings("unchecked")
+//                Map<String, Object> responseMap = (Map<String, Object>) responseArray[0];
+//
+//                return responseMap;
+//            } else {
+//                throw new XmlRpcException("Invalid response structure from server");
+//            }
+//        } else {
+//            throw new XmlRpcException("Unexpected response type from server: " + response.getClass().getName());
+//        }
+        return null;
+    }
+
     public static Map<String, Object> loadValue(String msisdn, String transactionType, int currency, int amount) throws Exception {
         // Create an XML-RPC client configuration
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();

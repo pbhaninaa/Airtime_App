@@ -166,7 +166,7 @@
                     android:autofillHints="none"
                     android:background="@drawable/edit_text_background"
                     android:hint="@string/e_mail_address"
-                    android:inputType="text"
+                    android:inputType="textEmailAddress"
                     android:padding="12sp"
                     android:textColor="@color/primary_color"
                     android:textColorHint="@color/light_gray"  />

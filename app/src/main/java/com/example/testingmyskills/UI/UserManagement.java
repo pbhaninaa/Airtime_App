@@ -366,13 +366,13 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                                 "\nUpdated At: " + formattedDate +
                                 "\nEmail: " + email1 +
                                 "\nPhone: " + phone;
-                        Utils.showToast(UserManagement.this, userDetails);
+//                        Utils.showToast(UserManagement.this, userDetails);
                         System.out.println(userDetails);
                         Utils.saveAutoFillPermission(UserManagement.this, rememberMe);
                         Utils.saveString(UserManagement.this, "savedCredentials", "email", email);
                         Utils.saveString(UserManagement.this, "savedCredentials", "password", password);
                         if (!Utils.isTokenExpired(token)) {
-                            Utils.showToast(UserManagement.this, "Login Successful");
+//                            Utils.showToast(UserManagement.this, "Login Successful");
                             saveAccount(firstName, surname, phone, email, balance, formattedDate);
                             // Navigate to the Dashboard
                             Intent intent = new Intent(UserManagement.this, Dashboard.class);
@@ -572,7 +572,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         phoneNumber.setShowSoftInputOnFocus(false);
 
         phoneNumber.setEnabled(false);
-        password.setVisibility(GONE);
+//        password.setVisibility(GONE);
 
         emailConfirmation.setText(prefs.getString("emailAddress", ""));
         CreateAccBtn.setText("Update Profile");

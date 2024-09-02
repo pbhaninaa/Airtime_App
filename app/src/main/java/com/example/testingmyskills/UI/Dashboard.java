@@ -63,14 +63,15 @@ import java.util.Objects;
 
 public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
     private ConstraintLayout AppFrame;
-    private LinearLayout Header, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, ZesaIsp;
+    private LinearLayout Header, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, ZesaIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private TextView salutationText, HeaderTitle, SelectedIsp, AvailableBalance, StatusMessage, SelectedItem, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
-    private EditText Phone;
-    private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn;
+    private EditText Phone, AmountTLoad, LoadingRef, LoadingNote;
+    private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn,NavLaodBalanceBtn;
     private RecyclerView ItemRecyclerView;
     private Spinner ItemFilterSpinner, ItemToBuySpinner;
     private Spinner CountryCode;
+
 
     //================================================================================================================================
 
@@ -78,7 +79,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private ConstraintLayout ConfirmationScreen;
     private LinearLayout job_list_screen;
     private ImageButton backFromList;
-    private Button BuyBtn, Yes, No;
+    private Button BuyBtn, Yes, No, LoadBalance;
     private TextView number_of_posts;
     private Spinner filter_spinner;
 
@@ -232,6 +233,20 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         System.out.println("Load Res: " + response);
     }
 
+    @Override
+    public void onLoadBalance(Map<String, Object> response) {
+
+        int status = (int) response.get("Status");
+        String des = Objects.requireNonNull(response.get("Description")).toString();
+        if (status == 0) {
+            Utils.showToast(this, des);
+        } else if (status == 1) {
+            clearFields();
+            Utils.success(this, des);
+        }
+        System.out.println("Load Balance Res: " + response);
+    }
+
     private void APICall(String number, String transactionType, BalanceResponseCallback callback) {
         new Thread(() -> {
             try {
@@ -253,6 +268,21 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(number, transactionType);
                 runOnUiThread(() -> {
                     callback.onLoadValues(response);
+                });
+            } catch (XmlRpcException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
+
+    private void LoadBalance(int UserId, String ref, String note, String amount, BalanceResponseCallback callback) {
+        new Thread(() -> {
+            try {
+                Map<String, Object> response = XMLRPCClient.LoadBalanceEnquiry(UserId, ref, note, amount);
+                runOnUiThread(() -> {
+                    callback.onLoadBalance(response);
                 });
             } catch (XmlRpcException e) {
                 e.printStackTrace();
@@ -306,6 +336,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         AvailableBalance = findViewById(R.id.available_balance);
         StatusMessage = findViewById(R.id.status_message);
         NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
+        NavLaodBalanceBtn=findViewById(R.id.nav_load_btn);
         NavBuyBtn = findViewById(R.id.nav_buy_btn1);
         NavProfileBtn = findViewById(R.id.nav_profile_btn1);
         NavIPSBtn = findViewById(R.id.nav_networks_btn1);
@@ -339,8 +370,13 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         SelectedItemType = findViewById(R.id.item_type1);
         SelectedItemPrice = findViewById(R.id.item_price1);
         SelectedItemLifeTime = findViewById(R.id.item_life_time1);
-
         CountryCode = findViewById(R.id.country_code);
+
+        LoadBalanceLayout = findViewById(R.id.Load_balance_layout);
+        LoadBalance = findViewById(R.id.btn_load_balance);
+        LoadingNote = findViewById(R.id.loading_notes);
+        LoadingRef = findViewById(R.id.loading_ref);
+        AmountTLoad = findViewById(R.id.loading_amount);
 
     }
 
@@ -365,6 +401,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         //===================================new===============================
         LogoutButton.setOnClickListener(v -> logout());
         NavHomeBtn.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
+        NavLaodBalanceBtn.setOnClickListener(v->hideLayouts(LoadBalanceLayout,NavLaodBalanceBtn));
         NavIPSBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavIPSBtn));
         NavMoreBtn.setOnClickListener(v -> handleShowMore());
         NavBuyBtn.setOnClickListener(v -> hideLayouts(BuyLayout, NavBuyBtn));
@@ -375,7 +412,37 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 //        ZesaIsp.setOnClickListener(v -> setISP("Electricity"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
         BackToHome.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
+        LoadBalance.setOnClickListener(v -> handleLoadBalance());
     }
+
+    private void handleLoadBalance() {
+        // Retrieve and trim the input values
+        String amount = AmountTLoad.getText().toString().trim();
+        String notes = LoadingNote.getText().toString().trim();
+        String ref = LoadingRef.getText().toString().trim();
+
+        // Check if the amount field is empty
+        if (amount.isEmpty()) {
+            AmountTLoad.setError("Amount is required");
+            return;
+        }
+
+        // Check if the notes field is empty
+        if (notes.isEmpty()) {
+            LoadingNote.setError("Notes are required");
+            return;
+        }
+
+        // Check if the reference field is empty
+        if (ref.isEmpty()) {
+            LoadingRef.setError("Reference is required");
+            return;
+        }
+
+        // Proceed with the logic if all fields are filled
+//        LoadBalance(124, "ref", "note", "1254.23", this);
+    }
+
 
     public void setISP(String ISPName) {
         if (!ISPName.equals("Econet")) {
@@ -384,6 +451,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         }
 
         BackToHome.setVisibility(View.VISIBLE);
+
         NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
         defaultColoring(NavHomeBtn);
         SelectedIsp.setText(ISPName);
@@ -405,7 +473,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ISPsLayout.setVisibility(View.GONE);
         BuyLayout.setVisibility(View.GONE);
         ItemsLayout.setVisibility(View.GONE);
-        ItemsLayout.setVisibility(View.GONE);
+        LoadBalanceLayout.setVisibility(View.GONE);
         layoutToDisplay.setVisibility(View.VISIBLE);
 
     }
