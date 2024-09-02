@@ -449,7 +449,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             Utils.showToast(this, "Not yet available");
             return;
         }
-
         BackToHome.setVisibility(View.VISIBLE);
 
         NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
