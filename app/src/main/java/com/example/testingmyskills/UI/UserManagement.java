@@ -351,6 +351,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         String email1 = userObject.getString("email");
                         String phone = userObject.getString("phone_number");
                         String balance = userObject.getString("balance");
+                        int id = userObject.getInt("id");
 
                         // Split full name into first name and surname
                         String[] nameParts = fullName.split(" ");
@@ -365,15 +366,17 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                                 "\nSurname: " + surname +
                                 "\nUpdated At: " + formattedDate +
                                 "\nEmail: " + email1 +
-                                "\nPhone: " + phone;
+                                "\nPhone: " + phone +
+                                "\nUser ID: " + id;
 //                        Utils.showToast(UserManagement.this, userDetails);
                         System.out.println(userDetails);
                         Utils.saveAutoFillPermission(UserManagement.this, rememberMe);
                         Utils.saveString(UserManagement.this, "savedCredentials", "email", email);
                         Utils.saveString(UserManagement.this, "savedCredentials", "password", password);
+//                        Utils.saveString();
                         if (!Utils.isTokenExpired(token)) {
 //                            Utils.showToast(UserManagement.this, "Login Successful");
-                            saveAccount(firstName, surname, phone, email, balance, formattedDate);
+                            saveAccount(firstName, surname, phone, email, balance, formattedDate, id);
                             // Navigate to the Dashboard
                             Intent intent = new Intent(UserManagement.this, Dashboard.class);
                             startActivity(intent);
@@ -583,7 +586,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //        EmailSender.sendEmail(this, Utils.getEmail(this), "Test Name", Utils.getPassword(this));
 //
 //    }
-    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time) {
+    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time, int id) {
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("name", name);
@@ -592,6 +595,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         editor.putString("time", time);
         editor.putString("emailAddress", emailAddress);
         editor.putString("balance", balance);
+        editor.putString("id", String.valueOf(id));  // Convert the integer to a string
+
         editor.apply();
 
 

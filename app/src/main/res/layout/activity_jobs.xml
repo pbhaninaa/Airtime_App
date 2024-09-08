@@ -656,18 +656,17 @@
                     android:visibility="gone">
 
                     <EditText
-                        android:id="@+id/loading_ref"
+                        android:id="@+id/loading_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/five"
                         android:autofillHints="none"
                         android:background="@drawable/edit_text_background"
-                        android:hint="Reference"
-                        android:inputType="text"
+                        android:hint="Amount "
+                        android:inputType="number"
                         android:padding="12sp"
                         android:textColor="@color/primary_color"
                         android:textColorHint="@color/light_gray" />
-
                     <EditText
                         android:id="@+id/loading_notes"
                         android:layout_width="match_parent"
@@ -677,19 +676,6 @@
                         android:background="@drawable/edit_text_background"
                         android:hint="Notes"
                         android:inputType="text"
-                        android:padding="12sp"
-                        android:textColor="@color/primary_color"
-                        android:textColorHint="@color/light_gray" />
-
-                    <EditText
-                        android:id="@+id/loading_amount"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/five"
-                        android:autofillHints="none"
-                        android:background="@drawable/edit_text_background"
-                        android:hint="Amount "
-                        android:inputType="number"
                         android:padding="12sp"
                         android:textColor="@color/primary_color"
                         android:textColorHint="@color/light_gray" />
@@ -1016,7 +1002,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add Balance"
+                    android:text="Add"
                     android:gravity="center"
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />

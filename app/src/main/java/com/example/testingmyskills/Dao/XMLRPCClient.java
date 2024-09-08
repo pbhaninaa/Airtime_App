@@ -448,5 +448,84 @@ public class XMLRPCClient {
 
         void onError(Exception e);
     }
+    // Add Manual Payment
+    public static void addManualPaymentAsync(int userId, String reference, double amount, String notes, String paymentDate, ResponseCallback callback) {
+        new AddManualPaymentTask(userId, reference, amount, notes, paymentDate, callback).execute();
+    }
+
+    private static class AddManualPaymentTask extends AsyncTask<Void, Void, String> {
+        private int userId;
+        private String reference;
+        private double amount;
+        private String notes;
+        private String paymentDate;
+        private ResponseCallback callback;
+        private Exception exception;
+
+        public AddManualPaymentTask(int userId, String reference, double amount, String notes, String paymentDate, ResponseCallback callback) {
+            this.userId = userId;
+            this.reference = reference;
+            this.amount = amount;
+            this.notes = notes;
+            this.paymentDate = paymentDate;
+            this.callback = callback;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                URL url = new URL(BASE_URL + "manual-payments/test-options/add");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; utf-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+
+                String jsonInputString = String.format("{\"user_id\": %d, \"reference\": \"%s\", \"amount\": %.2f, \"notes\": \"%s\", \"payment_date\": \"%s\"}",
+                        userId, reference, amount, notes, paymentDate);
+                System.out.println("Request JSON: " + jsonInputString);
+
+                try (OutputStream os = conn.getOutputStream()) {
+                    byte[] input = jsonInputString.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                int responseCode = conn.getResponseCode();
+                System.out.println("Response Code: " + responseCode);
+
+                InputStream inputStream = (responseCode >= 200 && responseCode < 300) ? conn.getInputStream() : conn.getErrorStream();
+
+                if (inputStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+                    StringBuilder response = new StringBuilder();
+                    String responseLine;
+                    while ((responseLine = reader.readLine()) != null) {
+                        response.append(responseLine.trim());
+                    }
+                    System.out.println("Response: " + response.toString());
+                    return  response.toString();
+                } else {
+                    return "No response received from the server.";
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                this.exception = e;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            if (callback != null) {
+                if (exception == null) {
+                    callback.onSuccess(response);
+                } else {
+                    callback.onError(exception);
+                }
+            }
+        }
+    }
+
 }
 

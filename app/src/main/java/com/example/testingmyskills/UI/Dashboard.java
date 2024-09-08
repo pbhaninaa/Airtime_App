@@ -17,6 +17,7 @@ import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
@@ -53,13 +54,21 @@ import com.mailjet.client.resource.User;
 
 
 import org.apache.xmlrpc.XmlRpcException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
     private ConstraintLayout AppFrame;
@@ -67,7 +76,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private FrameLayout LogoutButton, BackToHome;
     private TextView salutationText, HeaderTitle, SelectedIsp, AvailableBalance, StatusMessage, SelectedItem, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, LoadingRef, LoadingNote;
-    private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn,NavLaodBalanceBtn;
+    private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn;
     private RecyclerView ItemRecyclerView;
     private Spinner ItemFilterSpinner, ItemToBuySpinner;
     private Spinner CountryCode;
@@ -295,15 +304,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private void adaptors() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
         adapter.setDropDownViewResource(R.layout.spinner_item);
-        filter_spinner.setAdapter(adapter);
-//============================================new==========================================
-        ArrayAdapter<String> ItemsAdaptor = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        ItemFilterSpinner.setAdapter(ItemsAdaptor);
 
-        ArrayAdapter<String> ItemToBuyAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        ItemToBuySpinner.setAdapter(ItemToBuyAdapter);
+
+        filter_spinner.setAdapter(adapter);
+        ItemFilterSpinner.setAdapter(adapter);
+        ItemToBuySpinner.setAdapter(adapter);
     }
 
     private void recyclerViews() {
@@ -336,7 +341,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         AvailableBalance = findViewById(R.id.available_balance);
         StatusMessage = findViewById(R.id.status_message);
         NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
-        NavLaodBalanceBtn=findViewById(R.id.nav_load_btn);
+        NavLaodBalanceBtn = findViewById(R.id.nav_load_btn);
         NavBuyBtn = findViewById(R.id.nav_buy_btn1);
         NavProfileBtn = findViewById(R.id.nav_profile_btn1);
         NavIPSBtn = findViewById(R.id.nav_networks_btn1);
@@ -375,7 +380,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         LoadBalanceLayout = findViewById(R.id.Load_balance_layout);
         LoadBalance = findViewById(R.id.btn_load_balance);
         LoadingNote = findViewById(R.id.loading_notes);
-        LoadingRef = findViewById(R.id.loading_ref);
         AmountTLoad = findViewById(R.id.loading_amount);
 
     }
@@ -401,7 +405,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         //===================================new===============================
         LogoutButton.setOnClickListener(v -> logout());
         NavHomeBtn.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
-        NavLaodBalanceBtn.setOnClickListener(v->hideLayouts(LoadBalanceLayout,NavLaodBalanceBtn));
+        NavLaodBalanceBtn.setOnClickListener(v -> hideLayouts(LoadBalanceLayout, NavLaodBalanceBtn));
         NavIPSBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavIPSBtn));
         NavMoreBtn.setOnClickListener(v -> handleShowMore());
         NavBuyBtn.setOnClickListener(v -> hideLayouts(BuyLayout, NavBuyBtn));
@@ -415,11 +419,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         LoadBalance.setOnClickListener(v -> handleLoadBalance());
     }
 
+
     private void handleLoadBalance() {
         // Retrieve and trim the input values
         String amount = AmountTLoad.getText().toString().trim();
         String notes = LoadingNote.getText().toString().trim();
-        String ref = LoadingRef.getText().toString().trim();
 
         // Check if the amount field is empty
         if (amount.isEmpty()) {
@@ -433,16 +437,53 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             return;
         }
 
-        // Check if the reference field is empty
-        if (ref.isEmpty()) {
-            LoadingRef.setError("Reference is required");
-            return;
-        }
+        String loggedUserId = Utils.getString(this, "profile", "id");
 
+        // Get the current date and time in the required format
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        String currentTime = sdf.format(new Date());
+        String UID = Utils.ref().replace("QU", "PAY");
         // Proceed with the logic if all fields are filled
-//        LoadBalance(124, "ref", "note", "1254.23", this);
-    }
+        XMLRPCClient.addManualPaymentAsync(
+                Integer.parseInt(loggedUserId),
+                UID,
+                Double.parseDouble(amount),
+                notes,
+                currentTime,
+                new XMLRPCClient.ResponseCallback() {
+                    @Override
+                    public void onSuccess(String response) {
+                        try {
+                            AmountTLoad.setText("");
+                            LoadingNote.setText("");
+                            // Parse the JSON response
+                            JSONObject jsonResponse = new JSONObject(response);
+                            System.out.println("Response " + response);
 
+                            if (response.contains("success")) {
+                                Utils.showToast(Dashboard.this, "Successfully loaded");
+                                Intent iu = new Intent(Dashboard.this, Dashboard.class);
+                                startActivity(iu);
+                            } else {
+                                Utils.showToast(Dashboard.this, "Error ");
+
+                            }
+                            // Check if the access_token is present in the response
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Utils.showToast(Dashboard.this, "Failed to parse response");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        // Handle the error response
+                        Utils.showToast(Dashboard.this, e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+    }
 
     public void setISP(String ISPName) {
         if (!ISPName.equals("Econet")) {
