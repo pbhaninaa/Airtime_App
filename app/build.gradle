@@ -59,6 +59,7 @@ dependencies {
     implementation 'com.sun.mail:android-activation:1.6.7'
     implementation 'com.mailjet:mailjet-client:5.2.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+//    implementation 'com.github.faranjit:currency-edittext:1.0.1'
     implementation 'com.auth0:java-jwt:3.18.2'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 

@@ -47,6 +47,7 @@ import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
 import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
 import com.example.testingmyskills.JavaClasses.Bundles;
 import com.example.testingmyskills.JavaClasses.Country;
+import com.example.testingmyskills.JavaClasses.PaymentProcessor;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -421,6 +422,16 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
 
     private void handleLoadBalance() {
+        // Example usage
+//        new Thread(() -> {
+//            PaymentProcessor processor = new PaymentProcessor();
+//            String response = processor.createOrder("1000", "YOUR_API_KEY_HERE");
+//            runOnUiThread(() -> {
+//                // Handle the response (e.g., show it in a TextView)
+//
+//            });
+//        }).start();
+
         // Retrieve and trim the input values
         String amount = AmountTLoad.getText().toString().trim();
         String notes = LoadingNote.getText().toString().trim();
@@ -468,7 +479,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                                 Utils.showToast(Dashboard.this, "Error ");
 
                             }
-                            // Check if the access_token is present in the response
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -478,7 +488,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
                     @Override
                     public void onError(Exception e) {
-                        // Handle the error response
                         Utils.showToast(Dashboard.this, e.getMessage());
                         e.printStackTrace();
                     }

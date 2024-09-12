@@ -621,7 +621,7 @@
                                 android:textSize="18sp" />
 
                         </LinearLayout>
-
+<!--                        <faranjit.currency.edittext.CurrencyEditText-->
                         <EditText
                             android:id="@+id/Itme_price"
                             android:layout_width="match_parent"
@@ -630,6 +630,7 @@
                             android:autofillHints="none"
                             android:background="@drawable/rounded_with_white_background"
                             android:hint="@string/price"
+                            android:text="0.00"
                             android:inputType="number"
                             android:padding="@dimen/twelve"
                             android:textColor="@color/primary_color"
