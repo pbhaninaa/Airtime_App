@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,23 +64,28 @@ public class Utils {
             ((ViewGroup) myKeyboard.getParent()).removeView(myKeyboard);
         }
     }
+
     public static void shakeView(View view, Context context) {
         Animation shake = AnimationUtils.loadAnimation(context, R.anim.shake);
         view.startAnimation(shake);
     }
+
     public static void triggerHapticFeedback(Context context) {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
         if (vibrator != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // Vibration effect for Android O and above
-                vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
+                Log.d("HapticFeedback", "Vibrating with VibrationEffect");
+                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)); // Increase time for testing
             } else {
-                // Vibration for pre-Android O
-                vibrator.vibrate(100); // Vibrate for 100 milliseconds
+                Log.d("HapticFeedback", "Vibrating with pre-O vibration");
+                vibrator.vibrate(500); // Increase time for testing
             }
+        } else {
+            Log.d("HapticFeedback", "Vibrator is null");
         }
     }
+
     public static void showAlphaKeyboard(AlphaKeyboard myKeyboard, Activity activity, int gravity) {
         if (myKeyboard.getParent() == null) {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -298,6 +304,7 @@ public class Utils {
 
         return filteredData;
     }
+
     public static boolean isTokenExpired(String token) {
         try {
             // Decode the token

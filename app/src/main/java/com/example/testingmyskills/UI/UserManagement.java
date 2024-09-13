@@ -49,39 +49,17 @@ import okhttp3.internal.Util;
 
 //8QGGLHPVSQ3TFEX7QLTCRU2Y
 public class UserManagement extends AppCompatActivity implements AccountValidationCallback {
-
-
-    private ConstraintLayout SignInLayout;
-    private ConstraintLayout SignUpLayout, RegScreen;
-    private TextView RegisterBtn;
-    private EditText getEmailTextInLogin;
-    private EditText getPasswordTextInLogin;
-    private ImageButton ShowPasswordInLogin;
-    private Button SignInBtn;
-    private CheckBox RememberMeCheckBox;
-    private TextView ForgotPasswordBtn;
-    private boolean showPassword;
-    private TextView SignUpBtn;
-    private EditText getEmailTextInRegister;
-    private EditText getPasswordTextInRegister;
-    private EditText getConfirmPasswordTextInRegister;
-    private ImageButton ShowPasswordInRegister;
-    private ImageButton ShowConformPasswordInRegister;
-    private Button SignUp;
+      private ConstraintLayout SignUpLayout, RegScreen,SignInLayout;
+    private EditText getEmailTextInLogin, password, getPasswordTextInLogin, Firstname, Lastname, phoneNumber, email, emailConfirmation, getPasswordTextInRegister, getConfirmPasswordTextInRegister, getEmailTextInRegister;
+    private ImageButton ShowConformPasswordInRegister, ShowPasswordInRegister, ShowPasswordInLogin;
+    private TextView ForgotPasswordBtn, SignUpBtn, RegisterBtn;
+    private boolean showPassword, rememberMe, gotData;
+    private Button SignUp, SignInBtn, CreateAccBtn;
     private Spinner languagesSpinner, CountryCode;
+    private CheckBox RememberMeCheckBox;
     private ImageView CountryFlag;
-    private EditText password,
-            Firstname,
-            Lastname,
-            phoneNumber,
-            email,
-            emailConfirmation;
-    private Button CreateAccBtn;
-    String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
-    boolean rememberMe;
     private FrameLayout backButton;
-    private boolean gotData;
-
+    String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,11 +76,9 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.login_page);
         screenToLoad(constraintLayoutId);
 
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, values);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         languagesSpinner.setAdapter(adapter);
-
 
         ArrayAdapter<Country> ada = new ArrayAdapter<>(this, R.layout.spinner_item, getCountryList());
         ada.setDropDownViewResource(R.layout.spinner_item);
@@ -150,26 +126,10 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             gotData = true;
             Utils.showToast(this, des);
         } else if (status == 1) {
-//            saveAccount();
             gotData = true;
         }
         System.out.println("Account Validation Res: " + response);
     }
-
-//    private void APICall(String number, AccountValidationCallback callback) {
-//        new Thread(() -> {
-//            try {
-//                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(number, "validate_msisdn");
-//                runOnUiThread(() -> {
-//                    callback.validateUser(response);
-//                });
-//            } catch (XmlRpcException e) {
-//                e.printStackTrace();
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        }).start();
-//    }
 
     private void initialiseViews() {
         SignInLayout = findViewById(R.id.login_page);
@@ -201,8 +161,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
         RememberMeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             rememberMe = isChecked;
-
-
         });
 
         CountryCode = findViewById(R.id.country_code);
@@ -218,15 +176,12 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         if (screenToLoad == R.id.create_profile_screen)
             getProfile();
 
-
         SignInLayout.setVisibility(GONE);
         SignUpLayout.setVisibility(GONE);
         RegScreen.setVisibility(GONE);
-
         ConstraintLayout layout = findViewById(screenToLoad);
         layout.setVisibility(View.VISIBLE);
     }
-
 
     private void setOnclickListeners() {
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
@@ -246,22 +201,18 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         CreateAccBtn.setOnClickListener(v -> {
             try {
                 Utils.triggerHapticFeedback(this);
-
                 handleAccCreation();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
         backButton.setOnClickListener(v -> handleBack());
-
     }
 
     private void handleRegisterClick() {
         Utils.triggerHapticFeedback(this);
-
         RegScreen.setVisibility(View.VISIBLE);
         SignInLayout.setVisibility(GONE);
-
     }
 
     private void handleBack() {
@@ -287,15 +238,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             Utils.showToast(this, "Incorrect mobile number");
             phoneNumber.requestFocus();
         } else {
-
-//            RegScreen.setVisibility(View.GONE);
-//            SignInLayout.setVisibility(View.VISIBLE);
-//            getEmailTextInLogin.setText(emailAddress);
-//            getPasswordTextInLogin.setText(pass);
-
-            // Utils.saveString(this, "LoggedUser", "IsUserLogged", "Yes");
-
-
             XMLRPCClient.registerUserAsync(name, phone, emailAddress, pass, new XMLRPCClient.ResponseCallback() {
                 @Override
                 public void onSuccess(String response) {
@@ -312,7 +254,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                     }
                 }
 
-
                 @Override
                 public void onError(Exception e) {
                     // Handle the error response here
@@ -325,16 +266,13 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
     private void handleSignIn() {
         Utils.triggerHapticFeedback(this);
-
         String email = getEmailTextInLogin.getText().toString().trim();
         String password = getPasswordTextInLogin.getText().toString().trim();
-
         // Check if email or password is empty
         if (email.isEmpty()) {
             getEmailTextInLogin.setError("Email is required");
             return;
         }
-
         if (password.isEmpty()) {
             getPasswordTextInLogin.setError("Password is required");
             return;
@@ -366,15 +304,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         // Convert the timestamp to a readable format
                         String formattedDate = formatTimestamp(updatedAt);
 
-                        // Show the user details in a toast
-                        String userDetails = "First Name: " + firstName +
-                                "\nSurname: " + surname +
-                                "\nUpdated At: " + formattedDate +
-                                "\nEmail: " + email1 +
-                                "\nPhone: " + phone +
-                                "\nUser ID: " + id;
-//                        Utils.showToast(UserManagement.this, userDetails);
-                        System.out.println(userDetails);
                         Utils.saveAutoFillPermission(UserManagement.this, rememberMe);
                         Utils.saveString(UserManagement.this, "savedCredentials", "email", email);
                         Utils.saveString(UserManagement.this, "savedCredentials", "password", password);
@@ -390,10 +319,9 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         }
                     } else {
                         // Handle case where authorization token is missing
-
                         JSONObject error = jsonResponse.getJSONObject("error");
                         Utils.showToast(UserManagement.this, error.getString("message"));
-                        Utils.shakeView(SignInBtn,UserManagement.this);
+                        Utils.shakeView(SignInBtn, UserManagement.this);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -408,11 +336,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 e.printStackTrace();
             }
         });
-
-
     }
 
-    // Method to format the timestamp
     private String formatTimestamp(String timestamp) {
         try {
             // Parse the original timestamp with the correct format
@@ -429,12 +354,9 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         }
     }
 
-
     private void handleShowPassword() {
         Utils.triggerHapticFeedback(this);
-
-        showPassword = !showPassword; // Invert the value
-
+        showPassword = !showPassword;
         if (showPassword) {
             // Show password
             getPasswordTextInLogin.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
@@ -457,9 +379,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     }
 
     public static List<Country> getCountryList() {
-
         List<Country> countryList = new ArrayList<>();
-
         countryList.add(new Country("+27", "South Africa", "za"));
         countryList.add(new Country("+93", "Afghanistan", "af"));
         countryList.add(new Country("+355", "Albania", "al"));
@@ -583,19 +503,13 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         phoneNumber.setText(prefs.getString("phone", ""));
         email.setText(prefs.getString("emailAddress", ""));
         phoneNumber.setShowSoftInputOnFocus(false);
-
         phoneNumber.setEnabled(false);
 //        password.setVisibility(GONE);
-
         emailConfirmation.setText(prefs.getString("emailAddress", ""));
         CreateAccBtn.setText("Update Profile");
 
     }
 
-    //    private void handleForgotPasswordClick() throws JSONException {
-//        EmailSender.sendEmail(this, Utils.getEmail(this), "Test Name", Utils.getPassword(this));
-//
-//    }
     private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time, int id) {
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -612,15 +526,4 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
     }
 
-
-//    private void sendPasswordEmail() {
-//        SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
-//        String email = prefs.getString("emailAddress", "");
-//        SharedPreferences pref = this.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-//        String password = pref.getString(PASSWORD_KEY, "");
-//        String subject = "Your Password Reset Request";
-//        String body = "Dear user,\n\nYour password is: " + password + "\n\nPlease keep it safe.";
-//        EmailSender emailSender = new EmailSender();
-////        emailSender.execute();
-//    }
 }

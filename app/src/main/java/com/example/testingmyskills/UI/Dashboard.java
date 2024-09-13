@@ -81,11 +81,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private RecyclerView ItemRecyclerView;
     private Spinner ItemFilterSpinner, ItemToBuySpinner;
     private Spinner CountryCode;
-
-
-    //================================================================================================================================
-
-
     private ConstraintLayout ConfirmationScreen;
     private LinearLayout job_list_screen;
     private ImageButton backFromList;
@@ -391,10 +386,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("currency_symbol", newCurrencySymbol);
         editor.apply();
-
-        // Notify any parts of your app that need to react to this change
-        // For example, update UI elements or perform calculations using the new symbol
-    }
+ }
 
     private void setOnclickListeners() {
         backFromList.setOnClickListener(v -> handleBackFromList());
