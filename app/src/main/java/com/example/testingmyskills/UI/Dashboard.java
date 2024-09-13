@@ -121,7 +121,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         recyclerViews();
         adaptors();
 
-
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
         spinners();
