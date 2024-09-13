@@ -245,6 +245,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         CreateAccBtn.setOnClickListener(v -> {
             try {
+                Utils.triggerHapticFeedback(this);
+
                 handleAccCreation();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -255,12 +257,16 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     }
 
     private void handleRegisterClick() {
+        Utils.triggerHapticFeedback(this);
+
         RegScreen.setVisibility(View.VISIBLE);
         SignInLayout.setVisibility(GONE);
 
     }
 
     private void handleBack() {
+        Utils.triggerHapticFeedback(this);
+
         RegScreen.setVisibility(GONE);
         SignInLayout.setVisibility(View.VISIBLE);
     }
@@ -293,8 +299,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             XMLRPCClient.registerUserAsync(name, phone, emailAddress, pass, new XMLRPCClient.ResponseCallback() {
                 @Override
                 public void onSuccess(String response) {
-                    System.out.println("====================Response:========================");
-                    System.out.println(response);
 
                     if (response.equals("1")) {
                         // Registration was successful
@@ -304,7 +308,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         getPasswordTextInLogin.setText(pass);
                     } else {
                         // Handle other response codes
-                        System.out.println("========================Error============================");
                         Utils.showToast(UserManagement.this, response);
                     }
                 }
@@ -321,6 +324,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     }
 
     private void handleSignIn() {
+        Utils.triggerHapticFeedback(this);
+
         String email = getEmailTextInLogin.getText().toString().trim();
         String password = getPasswordTextInLogin.getText().toString().trim();
 
@@ -385,7 +390,10 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         }
                     } else {
                         // Handle case where authorization token is missing
-                        Utils.showToast(UserManagement.this, "Authorization failed. Token missing.");
+
+                        JSONObject error = jsonResponse.getJSONObject("error");
+                        Utils.showToast(UserManagement.this, error.getString("message"));
+                        Utils.shakeView(SignInBtn,UserManagement.this);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -423,6 +431,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
 
     private void handleShowPassword() {
+        Utils.triggerHapticFeedback(this);
+
         showPassword = !showPassword; // Invert the value
 
         if (showPassword) {

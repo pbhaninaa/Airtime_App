@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 //                Intent intent = new Intent(MainActivity.this, Dashboard.class);
 //                startActivity(intent);
 //            } else {
-
+Utils.triggerHapticFeedback(this);
                 Intent intent = new Intent(MainActivity.this, UserManagement.class);
                 intent.putExtra("constraintLayoutId", R.id.login_page);
                 startActivity(intent);
