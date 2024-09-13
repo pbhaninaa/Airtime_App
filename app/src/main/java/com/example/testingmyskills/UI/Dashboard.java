@@ -386,7 +386,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("currency_symbol", newCurrencySymbol);
         editor.apply();
- }
+    }
 
     private void setOnclickListeners() {
         backFromList.setOnClickListener(v -> handleBackFromList());
@@ -551,11 +551,38 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     private void handleYes() {
-//          Utils.logout(this);
-
         Intent intent = new Intent(this, UserManagement.class);
         intent.putExtra("constraintLayoutId", R.id.login_page);
         startActivity(intent);
+        String token = Utils.getString(this, "LoggedUser", "token");
+
+//        XMLRPCClient.logoutAsync(token, new XMLRPCClient.ResponseCallback() {
+//            @Override
+//            public void onSuccess(String response) {
+//                try {
+//                    // Parse the JSON response
+//                    JSONObject jsonResponse = new JSONObject(response);
+//                    // Check if the access_token is present in the response
+//                    if (jsonResponse.has("authorization")) {
+//                        String token = jsonResponse.getJSONObject("authorization").getString("access_token");
+//                        Intent intent = new Intent(this, UserManagement.class);
+//                        intent.putExtra("constraintLayoutId", R.id.login_page);
+//                        startActivity(intent);
+//                    } else {
+//                        // Handle case where authorization token is missing
+//                        JSONObject error = jsonResponse.getJSONObject("error");
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                // Handle the error response
+//                e.printStackTrace();
+//            }
+//        });
     }
 
     private void hideFilter() {

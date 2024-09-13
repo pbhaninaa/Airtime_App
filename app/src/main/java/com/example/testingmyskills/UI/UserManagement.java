@@ -49,7 +49,7 @@ import okhttp3.internal.Util;
 
 //8QGGLHPVSQ3TFEX7QLTCRU2Y
 public class UserManagement extends AppCompatActivity implements AccountValidationCallback {
-      private ConstraintLayout SignUpLayout, RegScreen,SignInLayout;
+    private ConstraintLayout SignUpLayout, RegScreen, SignInLayout;
     private EditText getEmailTextInLogin, password, getPasswordTextInLogin, Firstname, Lastname, phoneNumber, email, emailConfirmation, getPasswordTextInRegister, getConfirmPasswordTextInRegister, getEmailTextInRegister;
     private ImageButton ShowConformPasswordInRegister, ShowPasswordInRegister, ShowPasswordInLogin;
     private TextView ForgotPasswordBtn, SignUpBtn, RegisterBtn;
@@ -309,6 +309,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         Utils.saveString(UserManagement.this, "savedCredentials", "password", password);
 //                        Utils.saveString();
                         if (!Utils.isTokenExpired(token)) {
+                            Utils.saveString(UserManagement.this,"LoggedUser","token",token);
 //                            Utils.showToast(UserManagement.this, "Login Successful");
                             saveAccount(firstName, surname, phone, email, balance, formattedDate, id);
                             // Navigate to the Dashboard
@@ -337,6 +338,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             }
         });
     }
+
 
     private String formatTimestamp(String timestamp) {
         try {
