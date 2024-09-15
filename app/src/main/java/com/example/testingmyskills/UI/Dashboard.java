@@ -1,14 +1,21 @@
 package com.example.testingmyskills.UI;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.List;
+
+import com.example.testingmyskills.BuildConfig;
+
 import static com.example.testingmyskills.UI.MainActivity.MSISDN;
 
 import androidx.annotation.NonNull;
@@ -446,10 +453,9 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         }
 
 
-
         new Thread(() -> {
             PaymentProcessor processor = new PaymentProcessor();
-            String response = processor.createOrder("1000", "sk_test_dea075a7DLboMlz54fc40f18d415");
+            String response = processor.createOrder(AmountTLoad.getText().toString(), getResources().getString(R.string.api_key));
 
             runOnUiThread(() -> {
                 try {
@@ -544,6 +550,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         }
         return null;
     }
+
     public void setISP(String ISPName) {
         if (!ISPName.equals("Econet")) {
             Utils.showToast(this, "Not yet available");

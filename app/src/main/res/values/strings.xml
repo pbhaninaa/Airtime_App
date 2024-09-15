@@ -1,5 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
     <string name="app_name">Qupos </string>
+    <string name="api_key">sk_test_dea075a7DLboMlz54fc40f18d415</string>
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
