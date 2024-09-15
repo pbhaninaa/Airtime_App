@@ -88,6 +88,8 @@ import java.util.concurrent.Executors;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import okhttp3.internal.Util;
+
 
 public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
     private ConstraintLayout AppFrame;
@@ -534,6 +536,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             } else {
+                Utils.showToast(this, "Download a browser");
                 System.out.println("No application can handle this URL.");
             }
         }
@@ -568,11 +571,12 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
-        defaultColoring(imageButton);
+
         if (SelectedIsp.getText().toString().isEmpty()) {
+            Utils.showToast(this, "Select Network");
             return;
         }
-
+        defaultColoring(imageButton);
         imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
         BackToHome.setVisibility(View.VISIBLE);
         ISPsLayout.setVisibility(View.GONE);
@@ -878,6 +882,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     private void handleShowMore() {
         if (SelectedIsp.getText().toString().isEmpty()) {
+            Utils.showToast(this, "Select Network");
             return;
         }
         Navbar.setVisibility(View.GONE);
@@ -889,7 +894,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         NavBuyBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
-
+        NavLaodBalanceBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
     }
 

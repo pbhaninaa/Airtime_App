@@ -647,8 +647,8 @@
                     </LinearLayout>
 
                 </LinearLayout>
-                <!--   Buying_layout this is where you will be capturing the values of an item you are buying -->
-                <LinearLayout
+
+                  <LinearLayout
                     android:id="@+id/Load_balance_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

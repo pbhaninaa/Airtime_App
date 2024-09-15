@@ -92,7 +92,7 @@
     <color name="cellc_color">#FF4CAF50</color> <!-- Green color for Cell C -->
     <color name="econet_color">#FF2196F3</color> <!-- Blue color for Econet -->
 
-<color name="wheat">#FFD35A</color>
+    <color name="wheat">#FFD35A</color>
     <color name="back_ground_gray">#EEEEEE</color>
     <color name="light_gold">#ffe8cc</color>
     <color name="black_overlay">#11000000</color>

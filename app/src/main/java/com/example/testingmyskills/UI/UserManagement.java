@@ -322,7 +322,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         // Handle case where authorization token is missing
                         JSONObject error = jsonResponse.getJSONObject("error");
                         Utils.showToast(UserManagement.this, error.getString("message"));
-                        Utils.shakeView(SignInBtn, UserManagement.this);
+//                        Utils.shakeView(SignInBtn, UserManagement.this);
+                        Utils.shakeView(RegisterBtn, UserManagement.this);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
