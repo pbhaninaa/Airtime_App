@@ -14,7 +14,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import com.example.testingmyskills.BuildConfig;
 
 import static com.example.testingmyskills.UI.MainActivity.MSISDN;
 
