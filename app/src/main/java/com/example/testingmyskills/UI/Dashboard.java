@@ -1,5 +1,14 @@
 package com.example.testingmyskills.UI;
-
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.browser.customtabs.CustomTabsIntent;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.List;
 import static com.example.testingmyskills.UI.MainActivity.MSISDN;
 
 import androidx.annotation.NonNull;
@@ -67,9 +76,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
     private ConstraintLayout AppFrame;
@@ -104,6 +116,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private String filePath = "JSON.json";
     private int numItems;
     double amount = 0;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -414,14 +427,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     private void handleLoadBalance() {
         // Example usage
-//        new Thread(() -> {
-//            PaymentProcessor processor = new PaymentProcessor();
-//            String response = processor.createOrder("1000", "YOUR_API_KEY_HERE");
-//            runOnUiThread(() -> {
-//                // Handle the response (e.g., show it in a TextView)
-//
-//            });
-//        }).start();
+
 
         // Retrieve and trim the input values
         String amount = AmountTLoad.getText().toString().trim();
@@ -439,52 +445,105 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             return;
         }
 
-        String loggedUserId = Utils.getString(this, "profile", "id");
 
-        // Get the current date and time in the required format
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-        String currentTime = sdf.format(new Date());
-        String UID = Utils.ref().replace("QU", "PAY");
-        // Proceed with the logic if all fields are filled
-        XMLRPCClient.addManualPaymentAsync(
-                Integer.parseInt(loggedUserId),
-                UID,
-                Double.parseDouble(amount),
-                notes,
-                currentTime,
-                new XMLRPCClient.ResponseCallback() {
-                    @Override
-                    public void onSuccess(String response) {
-                        try {
-                            AmountTLoad.setText("");
-                            LoadingNote.setText("");
-                            // Parse the JSON response
-                            JSONObject jsonResponse = new JSONObject(response);
-                            System.out.println("Response " + response);
 
-                            if (response.contains("success")) {
-                                Utils.showToast(Dashboard.this, "Successfully loaded");
-                                Intent iu = new Intent(Dashboard.this, Dashboard.class);
-                                startActivity(iu);
-                            } else {
-                                Utils.showToast(Dashboard.this, "Error ");
+        new Thread(() -> {
+            PaymentProcessor processor = new PaymentProcessor();
+            String response = processor.createOrder("1000", "sk_test_dea075a7DLboMlz54fc40f18d415");
 
-                            }
+            runOnUiThread(() -> {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String redirectUrl = jsonResponse.optString("redirectUrl");
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Utils.showToast(Dashboard.this, "Failed to parse response");
-                        }
+                    if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                        openUrlWithFallback(redirectUrl);
+                    } else {
+                        System.out.println("Redirect URL is not available.");
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    System.out.println("Failed to parse JSON response.");
+                }
+            });
+        }).start();
 
-                    @Override
-                    public void onError(Exception e) {
-                        Utils.showToast(Dashboard.this, e.getMessage());
-                        e.printStackTrace();
-                    }
-                });
+
+//        String loggedUserId = Utils.getString(this, "profile", "id");
+//
+//        // Get the current date and time in the required format
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+//        String currentTime = sdf.format(new Date());
+//        String UID = Utils.ref().replace("QU", "PAY");
+//        // Proceed with the logic if all fields are filled
+//        XMLRPCClient.addManualPaymentAsync(
+//                Integer.parseInt(loggedUserId),
+//                UID,
+//                Double.parseDouble(amount),
+//                notes,
+//                currentTime,
+//                new XMLRPCClient.ResponseCallback() {
+//                    @Override
+//                    public void onSuccess(String response) {
+//                        try {
+//                            AmountTLoad.setText("");
+//                            LoadingNote.setText("");
+//                            // Parse the JSON response
+//                            JSONObject jsonResponse = new JSONObject(response);
+//                            System.out.println("Response " + response);
+//
+//                            if (response.contains("success")) {
+//                                Utils.showToast(Dashboard.this, "Successfully loaded");
+//                                Intent iu = new Intent(Dashboard.this, Dashboard.class);
+//                                startActivity(iu);
+//                            } else {
+//                                Utils.showToast(Dashboard.this, "Error ");
+//
+//                            }
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                            Utils.showToast(Dashboard.this, "Failed to parse response");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//                        Utils.showToast(Dashboard.this, e.getMessage());
+//                        e.printStackTrace();
+//                    }
+//                });
     }
 
+    private void openUrlWithFallback(String url) {
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        CustomTabsIntent customTabsIntent = builder.build();
+        String packageName = getPackageNameForCustomTabs();
+
+        if (packageName != null) {
+            customTabsIntent.intent.setPackage(packageName);
+            customTabsIntent.launchUrl(this, Uri.parse(url));
+        } else {
+            // Fallback to a regular browser intent
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+            } else {
+                System.out.println("No application can handle this URL.");
+            }
+        }
+    }
+
+    private String getPackageNameForCustomTabs() {
+        PackageManager pm = getPackageManager();
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://example.com"));
+        for (ResolveInfo resolveInfo : pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)) {
+            if (resolveInfo.activityInfo != null && resolveInfo.activityInfo.packageName != null) {
+                return resolveInfo.activityInfo.packageName;
+            }
+        }
+        return null;
+    }
     public void setISP(String ISPName) {
         if (!ISPName.equals("Econet")) {
             Utils.showToast(this, "Not yet available");

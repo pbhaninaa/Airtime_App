@@ -675,7 +675,7 @@
                         android:layout_marginTop="@dimen/five"
                         android:autofillHints="none"
                         android:background="@drawable/edit_text_background"
-                        android:hint="Notes"
+                        android:hint="Notesaq"
                         android:inputType="text"
                         android:padding="12sp"
                         android:textColor="@color/primary_color"
