@@ -76,10 +76,10 @@ public class Utils {
         if (vibrator != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Log.d("HapticFeedback", "Vibrating with VibrationEffect");
-                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)); // Increase time for testing
+                vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)); // Increase time for testing
             } else {
                 Log.d("HapticFeedback", "Vibrating with pre-O vibration");
-                vibrator.vibrate(500); // Increase time for testing
+                vibrator.vibrate(100); // Increase time for testing
             }
         } else {
             Log.d("HapticFeedback", "Vibrator is null");

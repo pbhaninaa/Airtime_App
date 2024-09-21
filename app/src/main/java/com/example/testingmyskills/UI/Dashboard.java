@@ -15,35 +15,26 @@ import org.json.JSONObject;
 import java.util.List;
 
 
-import static com.example.testingmyskills.UI.MainActivity.MSISDN;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.MediaRouteButton;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -59,42 +50,29 @@ import android.widget.Toast;
 
 import com.example.testingmyskills.Dao.XMLRPCClient;
 import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
-import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
+import com.example.testingmyskills.JavaClasses.MyJavaScriptInterface;
 import com.example.testingmyskills.JavaClasses.Bundles;
 import com.example.testingmyskills.JavaClasses.Country;
 import com.example.testingmyskills.JavaClasses.PaymentProcessor;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.mailjet.client.resource.User;
 
 
 import org.apache.xmlrpc.XmlRpcException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
 
-import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import okhttp3.internal.Util;
-
 
 public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
     private ConstraintLayout AppFrame;
-    private LinearLayout Header, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, ZesaIsp, LoadBalanceLayout;
+    private LinearLayout WebScree, Header, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, ZesaIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
+    private WebView Web;
     private TextView salutationText, HeaderTitle, SelectedIsp, AvailableBalance, StatusMessage, SelectedItem, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, LoadingRef, LoadingNote;
     private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn;
@@ -142,6 +120,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         recyclerViews();
         adaptors();
 
+
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
         spinners();
@@ -183,6 +162,209 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
 
     }
+
+
+    private void initialiseViews() {
+
+        WebScree = findViewById(R.id.web);
+        Web = findViewById(R.id.web_view);
+
+        job_list_screen = findViewById(R.id.Job_list_screen);
+        number_of_posts = findViewById(R.id.number_of_posts);
+        filter_spinner = findViewById(R.id.filter_spinner);
+        backFromList = findViewById(R.id.back_btn_from_job_list);
+        BuyBtn = findViewById(R.id.btn_buy);
+        FilterButton = findViewById(R.id.filter_button);
+        filterSection = findViewById(R.id.filter_section);
+        scrollView = findViewById(R.id.scroll_view);
+        ConfirmationScreen = findViewById(R.id.confirmation_screen);
+        Yes = findViewById(R.id.yes);
+        No = findViewById(R.id.no);
+        jobListRecyclerView = findViewById(R.id.MoreItemsRecyclerView);
+        AppFrame = findViewById(R.id.app_frame);
+        Header = findViewById(R.id.balance_display_layout);
+        LogoutButton = findViewById(R.id.logout_button);
+        salutationText = findViewById(R.id.salutation_text);
+        HeaderTitle = findViewById(R.id.balances_text);
+        AvailableBalance = findViewById(R.id.available_balance);
+        StatusMessage = findViewById(R.id.status_message);
+        NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
+        NavLaodBalanceBtn = findViewById(R.id.nav_load_btn);
+        NavBuyBtn = findViewById(R.id.nav_buy_btn1);
+        NavProfileBtn = findViewById(R.id.nav_profile_btn1);
+        NavIPSBtn = findViewById(R.id.nav_networks_btn1);
+        NavMoreBtn = findViewById(R.id.more1);
+
+        ISPsLayout = findViewById(R.id.ISP_display_layout);
+        BuyLayout = findViewById(R.id.Buying_layout);
+        ItemsLayout = findViewById(R.id.Items_display_layout);
+
+
+//        ISPsRecyclerView = findViewById(R.id.isp_list_recycler_view);
+        ItemRecyclerView = findViewById(R.id.Items_recycler_view);
+        ItemFilterSpinner = findViewById(R.id.items_spinner);
+        // Undone yet
+        MoreBtn = findViewById(R.id.More_Items);
+        SelectedItem = findViewById(R.id.SelectedItem);
+
+        ItemToBuySpinner = findViewById(R.id.item_to_buy);
+        ItemToBuyText = findViewById(R.id.item_to_buy_text);
+
+        Navbar = findViewById(R.id.navbar);
+        SelectedIsp = findViewById(R.id.selected_network_text);
+
+        EconetIsp = findViewById(R.id.econetISP);
+        TelecelIsp = findViewById(R.id.telecelISP);
+        NetoneIsp = findViewById(R.id.netoneISP);
+        ZesaIsp = findViewById(R.id.zesaISP);
+        Phone = findViewById(R.id.mobile_number);
+        BackToHome = findViewById(R.id.back_to_home);
+
+        SelectedItemType = findViewById(R.id.item_type1);
+        SelectedItemPrice = findViewById(R.id.item_price1);
+        SelectedItemLifeTime = findViewById(R.id.item_life_time1);
+        CountryCode = findViewById(R.id.country_code);
+
+        LoadBalanceLayout = findViewById(R.id.Load_balance_layout);
+        LoadBalance = findViewById(R.id.btn_load_balance);
+        LoadingNote = findViewById(R.id.loading_notes);
+        AmountTLoad = findViewById(R.id.loading_amount);
+
+    }
+
+
+    private void handleLoadBalance() {
+        // Retrieve and trim the input values
+        String amount = AmountTLoad.getText().toString().trim();
+        String notes = LoadingNote.getText().toString().trim();
+
+        // Check if the amount field is empty
+        if (amount.isEmpty()) {
+            AmountTLoad.setError("Amount is required");
+            return;
+        }
+
+        // Check if the notes field is empty
+        if (notes.isEmpty()) {
+            LoadingNote.setError("Notes are required");
+            return;
+        }
+
+        // Configure the WebView to display content inside the app
+        Web.getSettings().setJavaScriptEnabled(true);  // Enable JavaScript
+        Web.getSettings().setDomStorageEnabled(true);  // Enable DOM storage
+        Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);  // Enable caching
+
+        // Add the JavaScript interface to the WebView
+        Web.addJavascriptInterface(new MyJavaScriptInterface(this), "Android");
+
+        // Set WebViewClient to prevent redirects outside the app
+        Web.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+
+                AmountTLoad.setText("");
+                LoadingNote.setText("");
+
+                // Check if the URL contains payment result information
+                if (url.contains("payment-success")) {
+                    // Extract payment success information from the URL
+                    String transactionId = Uri.parse(url).getQueryParameter("transactionId");
+                      return true; // Prevent further loading
+                } else if (url.contains("payment-failure")) {
+                    // Handle payment failure
+                     return true;
+                }
+
+                view.loadUrl(url); // Continue loading other URLs in the WebView
+                return false;
+            }
+        });
+
+        // Show the WebView layout and hide other layouts
+        hideLayouts(WebScree, NavBuyBtn);
+        Navbar.setVisibility(View.GONE);
+
+        // Start a background thread to fetch the payment URL
+        new Thread(() -> {
+            PaymentProcessor processor = new PaymentProcessor();
+            String response = processor.createOrder(AmountTLoad.getText().toString(), getResources().getString(R.string.api_key));
+AmountTLoad.setText("");
+LoadingNote.setText("");
+            runOnUiThread(() -> {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String redirectUrl = jsonResponse.optString("redirectUrl");
+
+                    if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                        // Load the payment page into the WebView instead of opening a new browser
+                        Web.loadUrl(redirectUrl);
+                    } else {
+                        System.out.println("Redirect URL is not available.");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    System.out.println("Failed to parse JSON response.");
+                }
+            });
+        }).start();
+//         Manual Load
+        //        String loggedUserId = Utils.getString(this, "profile", "id");
+//
+//        // Get the current date and time in the required format
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+//        String currentTime = sdf.format(new Date());
+//        String UID = Utils.ref().replace("QU", "PAY");
+//        // Proceed with the logic if all fields are filled
+//        XMLRPCClient.addManualPaymentAsync(
+//                Integer.parseInt(loggedUserId),
+//                UID,
+//                Double.parseDouble(amount),
+//                notes,
+//                currentTime,
+//                new XMLRPCClient.ResponseCallback() {
+//                    @Override
+//                    public void onSuccess(String response) {
+//                        try {
+//                            AmountTLoad.setText("");
+//                            LoadingNote.setText("");
+//                            // Parse the JSON response
+//                            JSONObject jsonResponse = new JSONObject(response);
+//                            System.out.println("Response " + response);
+//
+//                            if (response.contains("success")) {
+//                                Utils.showToast(Dashboard.this, "Successfully loaded");
+//                                Intent iu = new Intent(Dashboard.this, Dashboard.class);
+//                                startActivity(iu);
+//                            } else {
+//                                Utils.showToast(Dashboard.this, "Error ");
+//
+//                            }
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                            Utils.showToast(Dashboard.this, "Failed to parse response");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//                        Utils.showToast(Dashboard.this, e.getMessage());
+//                        e.printStackTrace();
+//                    }
+//                });
+
+    }
+
+    // Method to process the payment result
+
+
+    public void closePaymentView(View view) {
+        Navbar.setVisibility(View.VISIBLE);
+        hideLayouts(LoadBalanceLayout, NavBuyBtn);
+    }
+
 
     @Override
     public void onBalanceReceived(Map<String, Object> response) {
@@ -245,6 +427,15 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     @Override
+    public void onBackPressed() {
+        if (Web.canGoBack()) {
+            Web.goBack();  // Go back in WebView's history
+        } else {
+            super.onBackPressed();  // Default behavior
+        }
+    }
+
+    @Override
     public void onLoadValues(Map<String, Object> response) {
 
         int status = (int) response.get("Status");
@@ -270,6 +461,24 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             Utils.success(this, des);
         }
         System.out.println("Load Balance Res: " + response);
+    }
+
+    private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
+
+        if (SelectedIsp.getText().toString().isEmpty()) {
+            Utils.showToast(this, "Select Network");
+            return;
+        }
+        defaultColoring(imageButton);
+        imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
+        BackToHome.setVisibility(View.VISIBLE);
+        ISPsLayout.setVisibility(View.GONE);
+        BuyLayout.setVisibility(View.GONE);
+        ItemsLayout.setVisibility(View.GONE);
+        LoadBalanceLayout.setVisibility(View.GONE);
+        WebScree.setVisibility(View.GONE);
+        layoutToDisplay.setVisibility(View.VISIBLE);
+
     }
 
     private void APICall(String number, String transactionType, BalanceResponseCallback callback) {
@@ -335,69 +544,24 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ItemRecyclerView.setAdapter(new RecommendedAd(getProducts()));
     }
 
-    private void initialiseViews() {
+    private void openUrlWithFallback(String url) {
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        CustomTabsIntent customTabsIntent = builder.build();
+        String packageName = getPackageNameForCustomTabs();
 
-        job_list_screen = findViewById(R.id.Job_list_screen);
-        number_of_posts = findViewById(R.id.number_of_posts);
-        filter_spinner = findViewById(R.id.filter_spinner);
-        backFromList = findViewById(R.id.back_btn_from_job_list);
-        BuyBtn = findViewById(R.id.btn_buy);
-        FilterButton = findViewById(R.id.filter_button);
-        filterSection = findViewById(R.id.filter_section);
-        scrollView = findViewById(R.id.scroll_view);
-        ConfirmationScreen = findViewById(R.id.confirmation_screen);
-        Yes = findViewById(R.id.yes);
-        No = findViewById(R.id.no);
-        jobListRecyclerView = findViewById(R.id.MoreItemsRecyclerView);
-        AppFrame = findViewById(R.id.app_frame);
-        Header = findViewById(R.id.balance_display_layout);
-        LogoutButton = findViewById(R.id.logout_button);
-        salutationText = findViewById(R.id.salutation_text);
-        HeaderTitle = findViewById(R.id.balances_text);
-        AvailableBalance = findViewById(R.id.available_balance);
-        StatusMessage = findViewById(R.id.status_message);
-        NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
-        NavLaodBalanceBtn = findViewById(R.id.nav_load_btn);
-        NavBuyBtn = findViewById(R.id.nav_buy_btn1);
-        NavProfileBtn = findViewById(R.id.nav_profile_btn1);
-        NavIPSBtn = findViewById(R.id.nav_networks_btn1);
-        NavMoreBtn = findViewById(R.id.more1);
-
-        ISPsLayout = findViewById(R.id.ISP_display_layout);
-        BuyLayout = findViewById(R.id.Buying_layout);
-        ItemsLayout = findViewById(R.id.Items_display_layout);
-
-
-//        ISPsRecyclerView = findViewById(R.id.isp_list_recycler_view);
-        ItemRecyclerView = findViewById(R.id.Items_recycler_view);
-        ItemFilterSpinner = findViewById(R.id.items_spinner);
-        // Undone yet
-        MoreBtn = findViewById(R.id.More_Items);
-        SelectedItem = findViewById(R.id.SelectedItem);
-
-        ItemToBuySpinner = findViewById(R.id.item_to_buy);
-        ItemToBuyText = findViewById(R.id.item_to_buy_text);
-
-        Navbar = findViewById(R.id.navbar);
-        SelectedIsp = findViewById(R.id.selected_network_text);
-
-        EconetIsp = findViewById(R.id.econetISP);
-        TelecelIsp = findViewById(R.id.telecelISP);
-        NetoneIsp = findViewById(R.id.netoneISP);
-        ZesaIsp = findViewById(R.id.zesaISP);
-        Phone = findViewById(R.id.mobile_number);
-        BackToHome = findViewById(R.id.back_to_home);
-
-        SelectedItemType = findViewById(R.id.item_type1);
-        SelectedItemPrice = findViewById(R.id.item_price1);
-        SelectedItemLifeTime = findViewById(R.id.item_life_time1);
-        CountryCode = findViewById(R.id.country_code);
-
-        LoadBalanceLayout = findViewById(R.id.Load_balance_layout);
-        LoadBalance = findViewById(R.id.btn_load_balance);
-        LoadingNote = findViewById(R.id.loading_notes);
-        AmountTLoad = findViewById(R.id.loading_amount);
-
+        if (packageName != null) {
+            customTabsIntent.intent.setPackage(packageName);
+            customTabsIntent.launchUrl(this, Uri.parse(url));
+        } else {
+            // Fallback to a regular browser intent
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+            } else {
+                Utils.showToast(this, "Download a browser");
+                System.out.println("No application can handle this URL.");
+            }
+        }
     }
 
     private void updateCurrencySymbol(String newCurrencySymbol) {
@@ -432,116 +596,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         LoadBalance.setOnClickListener(v -> handleLoadBalance());
     }
 
-
-    private void handleLoadBalance() {
-        // Example usage
-
-
-        // Retrieve and trim the input values
-        String amount = AmountTLoad.getText().toString().trim();
-        String notes = LoadingNote.getText().toString().trim();
-
-        // Check if the amount field is empty
-        if (amount.isEmpty()) {
-            AmountTLoad.setError("Amount is required");
-            return;
-        }
-
-        // Check if the notes field is empty
-        if (notes.isEmpty()) {
-            LoadingNote.setError("Notes are required");
-            return;
-        }
-
-
-        new Thread(() -> {
-            PaymentProcessor processor = new PaymentProcessor();
-            String response = processor.createOrder(AmountTLoad.getText().toString(), getResources().getString(R.string.api_key));
-
-            runOnUiThread(() -> {
-                try {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    String redirectUrl = jsonResponse.optString("redirectUrl");
-
-                    if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                        openUrlWithFallback(redirectUrl);
-                    } else {
-                        System.out.println("Redirect URL is not available.");
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    System.out.println("Failed to parse JSON response.");
-                }
-            });
-        }).start();
-
-
-//        String loggedUserId = Utils.getString(this, "profile", "id");
-//
-//        // Get the current date and time in the required format
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-//        String currentTime = sdf.format(new Date());
-//        String UID = Utils.ref().replace("QU", "PAY");
-//        // Proceed with the logic if all fields are filled
-//        XMLRPCClient.addManualPaymentAsync(
-//                Integer.parseInt(loggedUserId),
-//                UID,
-//                Double.parseDouble(amount),
-//                notes,
-//                currentTime,
-//                new XMLRPCClient.ResponseCallback() {
-//                    @Override
-//                    public void onSuccess(String response) {
-//                        try {
-//                            AmountTLoad.setText("");
-//                            LoadingNote.setText("");
-//                            // Parse the JSON response
-//                            JSONObject jsonResponse = new JSONObject(response);
-//                            System.out.println("Response " + response);
-//
-//                            if (response.contains("success")) {
-//                                Utils.showToast(Dashboard.this, "Successfully loaded");
-//                                Intent iu = new Intent(Dashboard.this, Dashboard.class);
-//                                startActivity(iu);
-//                            } else {
-//                                Utils.showToast(Dashboard.this, "Error ");
-//
-//                            }
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                            Utils.showToast(Dashboard.this, "Failed to parse response");
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//                        Utils.showToast(Dashboard.this, e.getMessage());
-//                        e.printStackTrace();
-//                    }
-//                });
-    }
-
-    private void openUrlWithFallback(String url) {
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        CustomTabsIntent customTabsIntent = builder.build();
-        String packageName = getPackageNameForCustomTabs();
-
-        if (packageName != null) {
-            customTabsIntent.intent.setPackage(packageName);
-            customTabsIntent.launchUrl(this, Uri.parse(url));
-        } else {
-            // Fallback to a regular browser intent
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(intent);
-            } else {
-                Utils.showToast(this, "Download a browser");
-                System.out.println("No application can handle this URL.");
-            }
-        }
-    }
-
     private String getPackageNameForCustomTabs() {
         PackageManager pm = getPackageManager();
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://example.com"));
@@ -570,22 +624,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ItemsLayout.setVisibility(View.VISIBLE);
     }
 
-    private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
-
-        if (SelectedIsp.getText().toString().isEmpty()) {
-            Utils.showToast(this, "Select Network");
-            return;
-        }
-        defaultColoring(imageButton);
-        imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
-        BackToHome.setVisibility(View.VISIBLE);
-        ISPsLayout.setVisibility(View.GONE);
-        BuyLayout.setVisibility(View.GONE);
-        ItemsLayout.setVisibility(View.GONE);
-        LoadBalanceLayout.setVisibility(View.GONE);
-        layoutToDisplay.setVisibility(View.VISIBLE);
-
-    }
 
     private void getAccount() {
         SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE);

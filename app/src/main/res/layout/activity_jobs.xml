@@ -385,6 +385,32 @@
 
                     </ScrollView>
                 </LinearLayout>
+                <!--   ISP_display_layout this shows the ISPs -->
+                <LinearLayout
+                    android:id="@+id/web"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:backgroundTint="@color/back_ground_gray"
+                    android:background="@drawable/rounded_with_white_background"
+                    android:orientation="vertical">
+
+                    <WebView
+                        android:id="@+id/web_view"
+                        android:layout_width="match_parent"
+                        android:backgroundTint="@color/white"
+                        android:layout_height="300sp"
+                        android:background="@drawable/rounded_with_white_background" />
+
+                    <Button
+                        style="@style/CustomButtonStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="closePaymentView"
+                        android:text="Close"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
                 <!--   Items_display_layout this shows List of Items after ASP Selection -->
                 <LinearLayout
                     android:id="@+id/Items_display_layout"
@@ -621,7 +647,7 @@
                                 android:textSize="18sp" />
 
                         </LinearLayout>
-<!--                        <faranjit.currency.edittext.CurrencyEditText-->
+                        <!--                        <faranjit.currency.edittext.CurrencyEditText-->
                         <EditText
                             android:id="@+id/Itme_price"
                             android:layout_width="match_parent"
@@ -630,9 +656,9 @@
                             android:autofillHints="none"
                             android:background="@drawable/rounded_with_white_background"
                             android:hint="@string/price"
-                            android:text="0.00"
                             android:inputType="number"
                             android:padding="@dimen/twelve"
+                            android:text="0.00"
                             android:textColor="@color/primary_color"
                             android:visibility="gone" />
 
@@ -648,7 +674,7 @@
 
                 </LinearLayout>
 
-                  <LinearLayout
+                <LinearLayout
                     android:id="@+id/Load_balance_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -668,6 +694,7 @@
                         android:padding="12sp"
                         android:textColor="@color/primary_color"
                         android:textColorHint="@color/light_gray" />
+
                     <EditText
                         android:id="@+id/loading_notes"
                         android:layout_width="match_parent"
@@ -984,6 +1011,7 @@
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -1003,8 +1031,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add"
                     android:gravity="center"
+                    android:text="Add"
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
