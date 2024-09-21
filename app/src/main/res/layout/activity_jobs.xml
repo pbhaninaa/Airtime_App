@@ -385,22 +385,22 @@
 
                     </ScrollView>
                 </LinearLayout>
-                <!--   ISP_display_layout this shows the ISPs -->
+                <!--   Web -->
                 <LinearLayout
                     android:id="@+id/web"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:backgroundTint="@color/back_ground_gray"
                     android:background="@drawable/rounded_with_white_background"
-                    android:orientation="vertical">
+                    android:backgroundTint="@color/back_ground_gray"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <WebView
                         android:id="@+id/web_view"
                         android:layout_width="match_parent"
-                        android:backgroundTint="@color/white"
                         android:layout_height="300sp"
-                        android:background="@drawable/rounded_with_white_background" />
+                        android:background="@drawable/rounded_with_white_background"
+                        android:backgroundTint="@color/white" />
 
                     <Button
                         style="@style/CustomButtonStyle2"
@@ -410,7 +410,6 @@
                         android:text="Close"
                         android:textStyle="bold" />
                 </LinearLayout>
-
                 <!--   Items_display_layout this shows List of Items after ASP Selection -->
                 <LinearLayout
                     android:id="@+id/Items_display_layout"
@@ -641,7 +640,7 @@
                                 android:layout_marginEnd="8dp"
                                 android:background="@null"
                                 android:gravity="start"
-                                android:hint="123456789"
+                                android:hint="0123456789"
                                 android:inputType="number"
                                 android:textColor="@color/primary_color"
                                 android:textSize="18sp" />
@@ -673,27 +672,48 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
+                <!--                Load_balance_layout-->
                 <LinearLayout
                     android:id="@+id/Load_balance_layout"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/sixteen"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/loading_amount"
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/five"
-                        android:autofillHints="none"
                         android:background="@drawable/edit_text_background"
-                        android:hint="Amount "
-                        android:inputType="number"
-                        android:padding="12sp"
-                        android:textColor="@color/primary_color"
-                        android:textColorHint="@color/light_gray" />
+                        android:orientation="horizontal"
+                        android:padding="@dimen/twelve">
+
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:background="@null"-->
+<!--                            android:hint="Amount"-->
+<!--                            android:inputType="numberDecimal"-->
+<!--                            android:text="ZIG"-->
+<!--                            android:textColor="@color/light_gray"-->
+<!--                            android:textSize="@dimen/eighteen"-->
+<!--                            android:textStyle="bold" />-->
+
+                        <EditText
+                            android:id="@+id/loading_amount"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:hint="Amount"
+                            android:inputType="numberDecimal"
+
+                            android:text="0.00"
+                            android:textColor="@color/primary_color"
+                            android:textColorHint="@color/light_gray"
+                            android:textSize="@dimen/eighteen" />
+                    </LinearLayout>
+
 
                     <EditText
                         android:id="@+id/loading_notes"
@@ -702,7 +722,7 @@
                         android:layout_marginTop="@dimen/five"
                         android:autofillHints="none"
                         android:background="@drawable/edit_text_background"
-                        android:hint="Notesaq"
+                        android:hint="Notes"
                         android:inputType="text"
                         android:padding="12sp"
                         android:textColor="@color/primary_color"

@@ -19,7 +19,7 @@ public class PaymentProcessor {
 
             // Create JSON object for the POST data
             JSONObject postData = new JSONObject();
-            postData.put("amount", amount);
+            postData.put("amount", amount.replace(".",""));
             postData.put("currency", "ZAR");
 
             // Open connection

@@ -50,6 +50,7 @@ import android.widget.Toast;
 
 import com.example.testingmyskills.Dao.XMLRPCClient;
 import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
+import com.example.testingmyskills.JavaClasses.CurrencyTextWatcher;
 import com.example.testingmyskills.JavaClasses.MyJavaScriptInterface;
 import com.example.testingmyskills.JavaClasses.Bundles;
 import com.example.testingmyskills.JavaClasses.Country;
@@ -159,6 +160,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 // Do nothing
             }
         });
+        AmountTLoad.addTextChangedListener(new CurrencyTextWatcher(AmountTLoad));
 
 
     }
@@ -233,83 +235,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
 
-    private void handleLoadBalance() {
-        // Retrieve and trim the input values
-        String amount = AmountTLoad.getText().toString().trim();
-        String notes = LoadingNote.getText().toString().trim();
-
-        // Check if the amount field is empty
-        if (amount.isEmpty()) {
-            AmountTLoad.setError("Amount is required");
-            return;
-        }
-
-        // Check if the notes field is empty
-        if (notes.isEmpty()) {
-            LoadingNote.setError("Notes are required");
-            return;
-        }
-
-        // Configure the WebView to display content inside the app
-        Web.getSettings().setJavaScriptEnabled(true);  // Enable JavaScript
-        Web.getSettings().setDomStorageEnabled(true);  // Enable DOM storage
-        Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);  // Enable caching
-
-        // Add the JavaScript interface to the WebView
-        Web.addJavascriptInterface(new MyJavaScriptInterface(this), "Android");
-
-        // Set WebViewClient to prevent redirects outside the app
-        Web.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
-
-                AmountTLoad.setText("");
-                LoadingNote.setText("");
-
-                // Check if the URL contains payment result information
-                if (url.contains("payment-success")) {
-                    // Extract payment success information from the URL
-                    String transactionId = Uri.parse(url).getQueryParameter("transactionId");
-                      return true; // Prevent further loading
-                } else if (url.contains("payment-failure")) {
-                    // Handle payment failure
-                     return true;
-                }
-
-                view.loadUrl(url); // Continue loading other URLs in the WebView
-                return false;
-            }
-        });
-
-        // Show the WebView layout and hide other layouts
-        hideLayouts(WebScree, NavBuyBtn);
-        Navbar.setVisibility(View.GONE);
-
-        // Start a background thread to fetch the payment URL
-        new Thread(() -> {
-            PaymentProcessor processor = new PaymentProcessor();
-            String response = processor.createOrder(AmountTLoad.getText().toString(), getResources().getString(R.string.api_key));
-AmountTLoad.setText("");
-LoadingNote.setText("");
-            runOnUiThread(() -> {
-                try {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    String redirectUrl = jsonResponse.optString("redirectUrl");
-
-                    if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                        // Load the payment page into the WebView instead of opening a new browser
-                        Web.loadUrl(redirectUrl);
-                    } else {
-                        System.out.println("Redirect URL is not available.");
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    System.out.println("Failed to parse JSON response.");
-                }
-            });
-        }).start();
-//         Manual Load
+   //         Manual Load
         //        String loggedUserId = Utils.getString(this, "profile", "id");
 //
 //        // Get the current date and time in the required format
@@ -355,7 +281,104 @@ LoadingNote.setText("");
 //                    }
 //                });
 
+    private void handleLoadBalance() {
+        // Retrieve and trim the input values
+        String amount = AmountTLoad.getText().toString().trim();
+        String notes = LoadingNote.getText().toString().trim();
+
+// Remove currency code (e.g., "Z$") and commas
+        amount = amount.replaceAll("[^\\d.]", ""); // Keeps digits and decimal points
+        notes = notes.replaceAll("[^\\dA-Za-z\\s]", ""); // Keeps letters and spaces (modify as needed)
+
+// Now, amount contains only numbers and decimal point
+// And notes contains only letters and spaces
+
+
+        // Check if the amount field is empty
+        if (amount.isEmpty()||amount.equalsIgnoreCase("0.00")) {
+            AmountTLoad.setError("Amount is required");
+            return;
+        }
+
+        // Check if the notes field is empty
+        if (notes.isEmpty()) {
+            LoadingNote.setError("Notes are required");
+            return;
+        }
+
+        // Configure the WebView to display content inside the app
+        Web.getSettings().setJavaScriptEnabled(true);  // Enable JavaScript
+        Web.getSettings().setDomStorageEnabled(true);  // Enable DOM storage
+        Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);  // Enable caching
+
+        // Add the JavaScript interface to the WebView
+        Web.addJavascriptInterface(new MyJavaScriptInterface(this), "Android");
+
+        // Set WebViewClient to prevent redirects outside the app
+        Web.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+
+                AmountTLoad.setText("");
+                LoadingNote.setText("");
+
+                // Check if the URL contains payment result information
+                if (url.contains("payment-success")) {
+                    // Extract payment success information from the URL
+                    String transactionId = Uri.parse(url).getQueryParameter("transactionId");
+                    handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
+                    return true; // Prevent further loading
+                } else if (url.contains("payment-failure")) {
+                    // Handle payment failure
+                    handlePaymentResult("{\"status\": \"failure\"}");
+                    return true;
+                }
+
+                view.loadUrl(url); // Continue loading other URLs in the WebView
+                return false;
+            }
+        });
+
+        // Show the WebView layout and hide other layouts
+        hideLayouts(WebScree, NavBuyBtn);
+        Navbar.setVisibility(View.GONE);
+
+        // Start a background thread to fetch the payment URL
+        String finalAmount = amount;
+        new Thread(() -> {
+            PaymentProcessor processor = new PaymentProcessor();
+            String response = processor.createOrder(finalAmount, getResources().getString(R.string.api_key));
+
+            runOnUiThread(() -> {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String redirectUrl = jsonResponse.optString("redirectUrl");
+
+                    if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                        // Load the payment page into the WebView instead of opening a new browser
+                        Web.loadUrl(redirectUrl);
+                    } else {
+                        System.out.println("Redirect URL is not available.");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    System.out.println("Failed to parse JSON response.");
+                }
+            });
+        }).start();
     }
+
+    // Method to process the payment result
+    private void handlePaymentResult(String result) {
+        runOnUiThread(() -> {
+            // Parse and handle the payment result here
+            Utils.showToast(this, result);  // Show toast on the UI thread
+            System.out.println("Payment Result: " + result);
+            // Update UI or perform other actions based on the result
+        });
+    }
+
 
     // Method to process the payment result
 
