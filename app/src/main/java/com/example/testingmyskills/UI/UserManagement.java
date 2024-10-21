@@ -199,7 +199,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             }
         });
     }
-
     private void handleRegisterClick() {
         Utils.triggerHapticFeedback(this);
         RegScreen.setVisibility(View.VISIBLE);
