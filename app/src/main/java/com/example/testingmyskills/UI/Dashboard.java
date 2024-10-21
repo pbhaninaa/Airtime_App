@@ -58,7 +58,6 @@ import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
 import com.example.testingmyskills.JavaClasses.ApiService;
 import com.example.testingmyskills.JavaClasses.CurrencyTextWatcher;
 import com.example.testingmyskills.JavaClasses.MyJavaScriptInterface;
-import com.example.testingmyskills.JavaClasses.Bundles;
 import com.example.testingmyskills.JavaClasses.Country;
 import com.example.testingmyskills.JavaClasses.PaymentProcessor;
 import com.example.testingmyskills.R;
@@ -128,7 +127,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
         spinners();
-      AppFrame.setVisibility(View.VISIBLE);
+        AppFrame.setVisibility(View.VISIBLE);
         BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? View.GONE : View.VISIBLE);
         ISPsLayout.setVisibility(View.VISIBLE);
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
@@ -144,8 +143,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 String flagName = selectedCountry.getCountryFlag();
                 String countryName = selectedCountry.getCountryName();
 
-                 int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
-                 if (flagResourceId != 0) {  // Check if the resource was found
+                int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
+                if (flagResourceId != 0) {  // Check if the resource was found
                     ImageView CountryFlag = findViewById(R.id.country_flag);
                     CountryFlag.setImageResource(flagResourceId);
                 } else {
@@ -162,6 +161,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
 
     }
+
     private void initialiseViews() {
 
         WebScree = findViewById(R.id.web);
@@ -295,6 +295,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             });
         }).start();
     }
+
     private void handlePaymentResult(String result) {
         runOnUiThread(() -> {
             // Parse and handle the payment result here
@@ -302,10 +303,12 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             // Update UI or perform other actions based on the result
         });
     }
+
     public void closePaymentView(View view) {
         Navbar.setVisibility(View.VISIBLE);
         hideLayouts(LoadBalanceLayout, NavBuyBtn);
     }
+
     @Override
     public void onBalanceReceived(Map<String, Object> response) {
         try {
@@ -676,7 +679,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                                                         .show();
 
                                             } else {
-                                                 Utils.showToast(Dashboard.this, "Error: " + description);
+                                                Utils.showToast(Dashboard.this, "Error: " + description);
                                             }
 
                                         } catch (JSONException e) {
@@ -697,7 +700,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
                         } catch (IOException e) {
                             e.printStackTrace();
-                              runOnUiThread(new Runnable() {
+                            runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Utils.showToast(Dashboard.this, "Error: " + e.getMessage());
@@ -770,7 +773,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                  ItemToBuyText.setText(String.format("%s\n that last for %s", Type.getText().toString(), time));
+                    ItemToBuyText.setText(String.format("%s\n that last for %s", Type.getText().toString(), time));
                     SelectedItemType.setText(itemDescription);
                     SelectedItemLifeTime.setText(time);
                     SelectedItemPrice.setText(String.format("%s%s", currencySymbol, price));
@@ -805,7 +808,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
 
     public List<Map<String, Object>> getProducts() {
-     List<Map<String, Object>> items = new ArrayList<>();
+        List<Map<String, Object>> items = new ArrayList<>();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -848,17 +851,18 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 }
             }
         }).start();
- return items;
+        return items;
     }
 
 
     public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
-         List<Map<String, Object>> filteredProducts = new ArrayList<>();
-  for (Map<String, Object> product : products) {
-             if (product.get("type") != null && product.get("type").toString().toLowerCase().contains(filterType.toLowerCase())) {
-                 filteredProducts.add(product);
+        List<Map<String, Object>> filteredProducts = new ArrayList<>();
+        for (Map<String, Object> product : products) {
+            if (product.get("type") != null && product.get("type").toString().toLowerCase().contains(filterType.toLowerCase())) {
+                filteredProducts.add(product);
             }
-        } return filteredProducts;
+        }
+        return filteredProducts;
     }
 
 

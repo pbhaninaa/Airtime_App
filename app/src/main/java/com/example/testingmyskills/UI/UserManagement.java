@@ -23,32 +23,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.testingmyskills.Dao.XMLRPCClient;
 import com.example.testingmyskills.Interfaces.AccountValidationCallback;
-import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
 import com.example.testingmyskills.JavaClasses.ApiService;
 import com.example.testingmyskills.JavaClasses.Country;
-import com.example.testingmyskills.JavaClasses.EmailSender;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
-
-import org.apache.xmlrpc.XmlRpcException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TimeZone;
-
-import okhttp3.internal.Util;
+import java.util.*;
 
 //8QGGLHPVSQ3TFEX7QLTCRU2Y
 public class UserManagement extends AppCompatActivity implements AccountValidationCallback {

@@ -59,11 +59,7 @@ public class Utils {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
-    public static void hideAlphaKeyboard(AlphaKeyboard myKeyboard) {
-        if (myKeyboard.getParent() != null) {
-            ((ViewGroup) myKeyboard.getParent()).removeView(myKeyboard);
-        }
-    }
+
 
     public static void shakeView(View view, Context context) {
         Animation shake = AnimationUtils.loadAnimation(context, R.anim.shake);
@@ -86,13 +82,7 @@ public class Utils {
         }
     }
 
-    public static void showAlphaKeyboard(AlphaKeyboard myKeyboard, Activity activity, int gravity) {
-        if (myKeyboard.getParent() == null) {
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.gravity = gravity;
-            ((ViewGroup) activity.findViewById(android.R.id.content)).addView(myKeyboard, layoutParams);
-        }
-    }
+
 
     public static void showToast(Context context, String message) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -272,51 +262,8 @@ double balance = Double.parseDouble(bal);
         return strBasket;
     }
 
-    public static Bundles[] readJsonFile(Context context, String filePath) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try (InputStream inputStream = context.getAssets().open(filePath)) {
-            return objectMapper.readValue(inputStream, Bundles[].class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
-    public static List<JsonNode> filterJsonDataByBundle(String filePath, String bundleKeyword) {
-        List<JsonNode> filteredData = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
 
-        try {
-            // Read JSON file and parse it into a JsonNode
-            JsonNode rootNode = objectMapper.readTree(new File(filePath));
 
-            // Iterate through the JSON array
-            if (rootNode.isArray()) {
-                for (JsonNode node : rootNode) {
-                    String bundle = node.get("Bundle").asText();
-                    if (bundle.contains(bundleKeyword)) {
-                        filteredData.add(node);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        return filteredData;
-    }
-
-    public static boolean isTokenExpired(String token) {
-        try {
-            // Decode the token
-            DecodedJWT jwt = JWT.decode(token);
-            // Get the expiration time
-            Date expiresAt = jwt.getExpiresAt();
-            // Check if the token is expired
-            return expiresAt.before(new Date());
-        } catch (JWTDecodeException exception) {
-            // Invalid token
-            return true;
-        }
-    }
 }

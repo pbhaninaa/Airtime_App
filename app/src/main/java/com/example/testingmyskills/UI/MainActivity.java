@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private Button CandidateBtn;
     private ConstraintLayout landing_page;
     public static SQLiteDatabase db;
-
-    // Handler to post back results to the main thread
     private Handler mainHandler = new Handler(Looper.getMainLooper());
 
     @Override
