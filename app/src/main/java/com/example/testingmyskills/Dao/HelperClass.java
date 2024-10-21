@@ -1,31 +1,19 @@
 package com.example.testingmyskills.Dao;
 
-import static com.example.testingmyskills.UI.MainActivity.db;
+import org.json.JSONObject;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import com.example.testingmyskills.JavaClasses.Bundles;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class HelperClass {
+//public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_ID = 1;
+    /*private static final int DATABASE_ID = 1;
     private final Context context;
     private final int databaseId;
     private final SharedPreferences preferences;
@@ -40,7 +28,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_VALIDITY = "Validity";
     public static final String COLUMN_VOLUME_MB = "VolumeMB";
     public static final String COLUMN_CURRENT_USD_CHARGE = "CurrentUSDCharge";
-
 
 
     public DatabaseHelper(Context context, int databaseId) {
@@ -60,6 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private void writeDatabaseVersionInPreferences() {
         preferences.edit().putInt(DATABASE_NAME + databaseId, DATABASE_VERSION).apply();
     }
+
     private void installOrUpdateIfNecessary() {
         context.deleteDatabase(DATABASE_NAME);
         Log.d("Database name", DATABASE_NAME);
@@ -126,11 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-
-    //=========================================== User Manipulation ======================================================
-
-
-    public static boolean saveUser(String Name, String Surname,
+     public static boolean saveUser(String Name, String Surname,
                                    String Email, String Password, String Phone) {
 
         ContentValues values = new ContentValues();
@@ -149,7 +133,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return newRowId != -1;
     }
-
     public static List<String[]> getAllUsers(SQLiteDatabase db, String specific) {
         List<String[]> allData = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM Cashier", null);
@@ -186,7 +169,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return allData;
     }
-
     public static List<String[]> getSpecificUsers(SQLiteDatabase db, String specific) {
         List<String[]> allData = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM Cashier WHERE EmpPermission=" + specific, null);
@@ -223,7 +205,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return allData;
     }
-
     public static List<String[]> getSpecificUser(SQLiteDatabase db, int id) {
         List<String[]> allData = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM Cashier WHERE EmpId=" + id, null);
@@ -260,12 +241,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return allData;
     }
-
-    //============================================Data Manipulation =========================================================
-
-
-
-
     public static void insertDataFromArray(Bundles[] dataItems) {
         for (Bundles item : dataItems) {
             ContentValues values = new ContentValues();
@@ -290,8 +265,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.insert(TABLE_NAME, null, values);
         }
     }
-
-
     public List<String[]> getAllData() {
         List<String[]> allData = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -325,9 +298,104 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return allData;
     }
+*/
+
+    public static JSONObject sendPostRequest(String urlString, String jsonInputString) throws Exception {
+// Parse jsonInputString to extract TransactionType
+        JSONObject jsonObject = new JSONObject(jsonInputString);
+        String transactionType = jsonObject.getString("TransactionType");
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json");  // Set content type to application/json
+        conn.setRequestProperty("Accept", "application/json");        // Ensure the server returns JSON
+        conn.setDoOutput(true);
+
+        // Send JSON data
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        // Get the response code
+        int responseCode = conn.getResponseCode();
+        System.out.println("Response Code: " + responseCode);
+//
+//        if (responseCode == HttpURLConnection.HTTP_OK) {
+//            // Success, read the response
+//            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+//                StringBuilder response = new StringBuilder();
+//                System.out.println(br);
+//                String responseLine;
+//                while ((responseLine = br.readLine()) != null) {
+//                    response.append(responseLine.trim());
+//                }
+//                System.out.println("Transaction Type:" + transactionType);
+//                System.out.println("Request Response: " + response.toString());
+//
+//                return response.length() > 0 ? response.toString() : "Empty response from server.";
+//            }
+//        } else {
+//            // Handle non-200 responses, read error stream if available
+//            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {
+//                StringBuilder errorResponse = new StringBuilder();
+//                String errorLine;
+//                while ((errorLine = br.readLine()) != null) {
+//                    errorResponse.append(errorLine.trim());
+//                }
+//                System.out.println("Error Response: " + errorResponse.toString());
+//                return "Error: " + errorResponse.toString();
+//            } catch (Exception e) {
+//                return "Error: Unable to read error response. Response Code " + responseCode;
+//            }
+//        }
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            // Success, read the response
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = br.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
 
 
+                // Construct JSON response
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("responseCode", responseCode);
+                jsonResponse.put("response", response.length() > 0 ? response.toString() : "Empty response from server.");
 
+                System.out.println("Transaction Type: " + transactionType);
+                System.out.println("Request Response: " + jsonResponse);
+                return jsonResponse;  // Return JSON as a string
+            }
+        } else {
+            // Handle non-200 responses, read error stream if available
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {
+                StringBuilder errorResponse = new StringBuilder();
+                String errorLine;
+                while ((errorLine = br.readLine()) != null) {
+                    errorResponse.append(errorLine.trim());
+                }
+                System.out.println("Error Response: " + errorResponse.toString());
+
+                // Construct JSON error response
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("responseCode", responseCode);
+                jsonResponse.put("error", errorResponse.toString());
+
+                return jsonResponse;  // Return JSON as a string
+            } catch (Exception e) {
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("responseCode", responseCode);
+                jsonResponse.put("error", "Unable to read error response.");
+
+                return jsonResponse;  // Return JSON as a string
+            }
+        }
+
+
+    }
 
 }
  

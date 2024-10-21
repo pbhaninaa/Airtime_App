@@ -167,7 +167,8 @@ public class XMLRPCClient {
     }
 //====================================================================
 
-    private static final String BASE_URL = "https://dev-api.wepayafrica.com/api/v1/";
+    private static final String BASE_URL = "http://102.219.85.66:8080/api/";
+//    private static final String BASE_URL = "https://dev-api.wepayafrica.com/api/v1/";
 //    https://dev-api.wepayafrica.com/api/v1/
 
     // User Registration
@@ -193,6 +194,58 @@ public class XMLRPCClient {
 
         @Override
         protected String doInBackground(Void... voids) {
+            try {
+                // Setup URL connection
+                URL url = new URL(BASE_URL + "register");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");  // Set content type to application/json
+                conn.setRequestProperty("Accept", "application/json");        // Ensure the server returns JSON
+                conn.setDoOutput(true);                                       // Allow output for POST request
+
+                // Prepare JSON input
+                String jsonInputString = String.format(
+                        "{\"name\": \"%s\", \"phone_number\": \"%s\", \"email\": \"%s\", \"password\": \"%s\"}",
+                        name, phoneNumber, email, password
+                );
+                System.out.println("Request JSON: " + jsonInputString);
+
+                // Write JSON to output stream
+                try (OutputStream os = conn.getOutputStream()) {
+                    byte[] input = jsonInputString.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                // Get response code
+                int responseCode = conn.getResponseCode();
+                System.out.println("Response Code: " + responseCode);
+
+                // Read response
+                InputStream inputStream = (responseCode >= 200 && responseCode < 300) ? conn.getInputStream() : conn.getErrorStream();
+                if (inputStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+                    StringBuilder response = new StringBuilder();
+                    String responseLine;
+                    while ((responseLine = reader.readLine()) != null) {
+                        response.append(responseLine.trim());
+                    }
+                    System.out.println("Response: " + response.toString());
+
+                    // Return success or error response
+                    return (responseCode >= 200 && responseCode < 300) ? "1" : response.toString();
+                } else {
+                    System.out.println("No response received from the server.");
+                    return "No response received from the server.";
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                this.exception = e;
+                return null;
+            }
+        }
+
+     /*   protected String doInBackground(Void... voids) {
             try {
                 URL url = new URL(BASE_URL + "register");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -240,7 +293,7 @@ public class XMLRPCClient {
                 this.exception = e;
                 return null;
             }
-        }
+        }*/
 
 
         @Override
@@ -443,11 +496,6 @@ public class XMLRPCClient {
         }
     }
 
-    public interface ResponseCallback {
-        void onSuccess(String response);
-
-        void onError(Exception e);
-    }
     // Add Manual Payment
     public static void addManualPaymentAsync(int userId, String reference, double amount, String notes, String paymentDate, ResponseCallback callback) {
         new AddManualPaymentTask(userId, reference, amount, notes, paymentDate, callback).execute();
@@ -526,6 +574,10 @@ public class XMLRPCClient {
             }
         }
     }
+    public interface ResponseCallback {
+        void onSuccess(String response);
 
+        void onError(Exception e);
+    }
 }
 

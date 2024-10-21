@@ -26,15 +26,18 @@ import android.widget.Toast;
 import com.example.testingmyskills.Dao.XMLRPCClient;
 import com.example.testingmyskills.Interfaces.AccountValidationCallback;
 import com.example.testingmyskills.JavaClasses.AlphaKeyboard;
+import com.example.testingmyskills.JavaClasses.ApiService;
 import com.example.testingmyskills.JavaClasses.Country;
 import com.example.testingmyskills.JavaClasses.EmailSender;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
 
 import org.apache.xmlrpc.XmlRpcException;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -186,7 +189,19 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
     private void setOnclickListeners() {
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
         ShowPasswordInLogin.setOnClickListener(v -> handleShowPassword());
-        SignInBtn.setOnClickListener(v -> handleSignIn());
+        SignUpBtn.setOnClickListener(v -> handleBack());
+        ShowConformPasswordInRegister.setOnClickListener(v -> handleShowPassword());
+        ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
+        backButton.setOnClickListener(v -> handleBack());
+
+
+        SignInBtn.setOnClickListener(v -> {
+            try {
+                handleSignIn();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 //        ForgotPasswordBtn.setOnClickListener(v -> {
 //            try {
 ////                handleForgotPasswordClick();
@@ -194,10 +209,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //                throw new RuntimeException(e);
 //            }
 //        });
-        SignUpBtn.setOnClickListener(v -> handleBack());
 //        SignUp.setOnClickListener(v -> handleCreateClick());
-        ShowConformPasswordInRegister.setOnClickListener(v -> handleShowPassword());
-        ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         CreateAccBtn.setOnClickListener(v -> {
             try {
                 Utils.triggerHapticFeedback(this);
@@ -206,7 +218,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 throw new RuntimeException(e);
             }
         });
-        backButton.setOnClickListener(v -> handleBack());
     }
 
     private void handleRegisterClick() {
@@ -217,7 +228,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
     private void handleBack() {
         Utils.triggerHapticFeedback(this);
-
         RegScreen.setVisibility(GONE);
         SignInLayout.setVisibility(View.VISIBLE);
     }
@@ -238,16 +248,22 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             Utils.showToast(this, "Incorrect mobile number");
             phoneNumber.requestFocus();
         } else {
-            XMLRPCClient.registerUserAsync(name, phone, emailAddress, pass, new XMLRPCClient.ResponseCallback() {
+            JSONObject res = ApiService.register(name + " " + surname, pass, phone, emailAddress);
+            if (res.get("responseCode").toString().equals("200")) {
+                // Registration was successful
+                RegScreen.setVisibility(GONE);
+                SignInLayout.setVisibility(View.VISIBLE);
+                getEmailTextInLogin.setText(emailAddress);
+                getPasswordTextInLogin.setText(pass);
+            } else {
+                Utils.showToast(UserManagement.this, res.toString());
+            }
+           /* XMLRPCClient.registerUserAsync(name, phone, emailAddress, pass, new XMLRPCClient.ResponseCallback() {
                 @Override
                 public void onSuccess(String response) {
 
                     if (response.equals("1")) {
-                        // Registration was successful
-                        RegScreen.setVisibility(GONE);
-                        SignInLayout.setVisibility(View.VISIBLE);
-                        getEmailTextInLogin.setText(emailAddress);
-                        getPasswordTextInLogin.setText(pass);
+
                     } else {
                         // Handle other response codes
                         Utils.showToast(UserManagement.this, response);
@@ -260,24 +276,114 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                     Utils.showToast(UserManagement.this, e.getMessage());
                     e.printStackTrace();
                 }
-            });
+            });*/
         }
     }
 
-    private void handleSignIn() {
+    private void handleSignIn() throws Exception {
         Utils.triggerHapticFeedback(this);
-        String email = getEmailTextInLogin.getText().toString().trim();
+        String AgentID = getEmailTextInLogin.getText().toString().trim();
         String password = getPasswordTextInLogin.getText().toString().trim();
-        // Check if email or password is empty
-        if (email.isEmpty()) {
-            getEmailTextInLogin.setError("Email is required");
+
+        if (AgentID.isEmpty()) {
+            getEmailTextInLogin.setError("AgentID is required");
             return;
         }
+
         if (password.isEmpty()) {
             getPasswordTextInLogin.setError("Password is required");
             return;
         }
-        XMLRPCClient.userLoginAsync(email, password, new XMLRPCClient.ResponseCallback() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject res = ApiService.login(password, AgentID);
+
+                    if (res.getInt("responseCode") == 200) {
+                        // To handle success and UI updates on the main thread
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Utils.success(UserManagement.this, "Success");
+
+                                    // Extract the string inside the "response" field and parse it as a new JSONObject
+                                    String responseString = res.getString("response");
+                                    System.out.println(responseString);
+                                    JSONObject responseJson = new JSONObject(responseString);
+
+                                    // Now extract "methodResponse" and navigate through the JSON structure
+                                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                    JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                                    JSONObject userObject = paramsList.getJSONObject(0);
+
+                                    // Extract user details
+                                    String agentID = userObject.getString("agentID");
+                                    String agentName = userObject.getString("agentName");
+                                    String balance = userObject.getString("balance");
+                                    String agentEmail = userObject.getString("agentEmail");
+                                    String status = userObject.getString("status");
+                                    String statusCode = userObject.getString("statusCode");
+                                    String lastConnect = userObject.getString("lastConnect");
+
+
+                                    // Split agent name into first name and surname
+                                    String[] nameParts = agentName.split(" ");
+                                    String firstName = nameParts.length > 0 ? nameParts[0] : "";
+                                    String surname = nameParts.length > 1 ? nameParts[1] : "";
+
+                                    // Convert the timestamp to a readable format
+//                                    String formattedDate = formatTimestamp(lastConnect);
+
+                                    // Save necessary credentials
+                                    Utils.saveAutoFillPermission(UserManagement.this, rememberMe);
+                                    Utils.saveString(UserManagement.this, "savedCredentials", "email", agentName);
+                                    Utils.saveString(UserManagement.this, "savedCredentials", "password", password);
+
+                                    // Save user account details
+                                    saveAccount(firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode));
+
+                                    // Navigate to the Dashboard
+                                    Intent intent = new Intent(UserManagement.this, Dashboard.class);
+                                    startActivity(intent);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Utils.showToast(UserManagement.this, "Error parsing response data: " + e.getMessage());
+                                }
+                            }
+                        });
+
+                    } else {
+                        // Handle error response on UI thread
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showToast(UserManagement.this, res.toString());
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // Handle IOException on UI thread
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showToast(UserManagement.this, "Error: " + e.getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+
+    }
+
+ /* XMLRPCClient.userLoginAsync(email, password, new XMLRPCClient.ResponseCallback() {
             @Override
             public void onSuccess(String response) {
                 try {
@@ -309,7 +415,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         Utils.saveString(UserManagement.this, "savedCredentials", "password", password);
 //                        Utils.saveString();
                         if (!Utils.isTokenExpired(token)) {
-                            Utils.saveString(UserManagement.this,"LoggedUser","token",token);
+                            Utils.saveString(UserManagement.this, "LoggedUser", "token", token);
 //                            Utils.showToast(UserManagement.this, "Login Successful");
                             saveAccount(firstName, surname, phone, email, balance, formattedDate, id);
                             // Navigate to the Dashboard
@@ -325,6 +431,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 //                        Utils.shakeView(SignInBtn, UserManagement.this);
                         Utils.shakeView(RegisterBtn, UserManagement.this);
                     }
+//                    System.out.println(jsonResponse);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Utils.showToast(UserManagement.this, "Failed to parse response");
@@ -337,9 +444,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 Utils.showToast(UserManagement.this, e.getMessage());
                 e.printStackTrace();
             }
-        });
-    }
-
+        });*/
 
     private String formatTimestamp(String timestamp) {
         try {

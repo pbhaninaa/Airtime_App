@@ -381,8 +381,6 @@
 
                             </LinearLayout>
                         </LinearLayout>
-
-
                     </ScrollView>
                 </LinearLayout>
                 <!--   Web -->
@@ -430,6 +428,7 @@
                             android:id="@+id/items_spinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
                             android:gravity="start"
                             android:textColor="@color/black"
                             android:textSize="@dimen/sixteen" />
@@ -561,6 +560,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_weight="2"
+
                                             android:padding="5sp"
                                             android:textColor="@color/black"
                                             android:textSize="15sp" />
@@ -582,6 +582,8 @@
                                 android:id="@+id/item_to_buy"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:backgroundTint="@android:color/transparent"
+
                                 android:hint="@string/data"
                                 android:textColor="@color/primary_color"
                                 android:visibility="gone" />
@@ -628,6 +630,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="8dp"
+                                android:backgroundTint="@android:color/transparent"
+
                                 android:hint="+27"
                                 android:textSize="18sp"
                                 android:visibility="gone" />
@@ -676,10 +680,10 @@
                 <LinearLayout
                     android:id="@+id/Load_balance_layout"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/sixteen"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
 
                     <LinearLayout
@@ -689,16 +693,16 @@
                         android:orientation="horizontal"
                         android:padding="@dimen/twelve">
 
-<!--                        <TextView-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:background="@null"-->
-<!--                            android:hint="Amount"-->
-<!--                            android:inputType="numberDecimal"-->
-<!--                            android:text="ZIG"-->
-<!--                            android:textColor="@color/light_gray"-->
-<!--                            android:textSize="@dimen/eighteen"-->
-<!--                            android:textStyle="bold" />-->
+                        <!--                        <TextView-->
+                        <!--                            android:layout_width="wrap_content"-->
+                        <!--                            android:layout_height="match_parent"-->
+                        <!--                            android:background="@null"-->
+                        <!--                            android:hint="Amount"-->
+                        <!--                            android:inputType="numberDecimal"-->
+                        <!--                            android:text="ZIG"-->
+                        <!--                            android:textColor="@color/light_gray"-->
+                        <!--                            android:textSize="@dimen/eighteen"-->
+                        <!--                            android:textStyle="bold" />-->
 
                         <EditText
                             android:id="@+id/loading_amount"
@@ -841,6 +845,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8sp"
+                        android:backgroundTint="@android:color/transparent"
                         android:textColor="@color/black"
                         android:textSize="@dimen/eight"
                         android:textStyle="bold"

@@ -178,7 +178,7 @@
     <string name="space" />
     <string name="full_stop">.</string>
     <string name="enter_e_mail_address">Enter e-mail address</string>
-    <string name="e_mail_address">E-mail address</string>
+    <string name="e_mail_address">Agent ID</string>
     <string name="by_providing_your_e_mail_address_you_agree_that_it_may_be_shared_with_merchant_and_bank">By providing your e-mail address, you agree that it may be shared with merchant and bank.</string>
     <string name="enter_mobile_phone_no">Enter mobile phone no.</string>
     <string name="phone_number_demo">+27 00 000 0000</string>

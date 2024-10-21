@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+
+    <!-- Allow cleartext traffic for 10.0.2.2 (localhost for emulator) -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">10.0.2.2</domain>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">example.com</domain>
+    </domain-config>
+
+    <!-- Allow cleartext traffic for 102.219.85.66 -->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">102.219.85.66</domain>
         <trust-anchors>
@@ -9,3 +19,15 @@
     </domain-config>
 
 </network-security-config>
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<network-security-config>-->
+<!--    <domain-config cleartextTrafficPermitted="true">-->
+<!--        <domain includeSubdomains="true">102.219.85.66</domain>-->
+<!--        <trust-anchors>-->
+<!--            <certificates src="system" />-->
+<!--            <certificates src="user" />-->
+<!--        </trust-anchors>-->
+<!--    </domain-config>-->
+
+<!--</network-security-config>-->
