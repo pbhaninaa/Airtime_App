@@ -33,8 +33,8 @@ public class ApiService {
     }
 
     // Balance Enquiry Endpoint
-    public static JSONObject balanceEnquiry(String network, String agentID, String agentName, String agentPassword) throws Exception {
-        String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Balance Enquiry\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\"}";
+    public static JSONObject balanceEnquiry(String network, String agentID) throws Exception {
+        String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Balance Enquiry\", \"AgentID\":\"" + agentID + "\"}";
         return HelperClass.sendPostRequest(BASE_URL + "balance-enquiry", jsonInputString);
     }
 

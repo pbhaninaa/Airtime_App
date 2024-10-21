@@ -1,6 +1,7 @@
 package com.example.testingmyskills.UI;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -96,10 +97,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private ImageButton FilterButton;
     private ScrollView scrollView;
     private LinearLayout filterSection;
-    //    ApiCalls api = new ApiCalls();
     private boolean show;
-    //    private AlphaKeyboard MyKeyboard;
-//    private Button hideKeyboardBtn;
     static String currencySymbol, ItemCode;
     private String ItemToBuy;
     public static String MSISDN;
@@ -130,14 +128,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
         spinners();
-
-
-//=======================================================================================================================
-        AppFrame.setVisibility(View.VISIBLE);
+      AppFrame.setVisibility(View.VISIBLE);
         BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? View.GONE : View.VISIBLE);
         ISPsLayout.setVisibility(View.VISIBLE);
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
-        getAccount();
+        getAccount("");
 
         ArrayAdapter<Country> ada = new ArrayAdapter<>(this, R.layout.spinner_item, UserManagement.getCountryList());
         ada.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -149,10 +144,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 String flagName = selectedCountry.getCountryFlag();
                 String countryName = selectedCountry.getCountryName();
 
-                // Get the resource ID of the drawable dynamically
-                int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
-                // Set the ImageView with the corresponding flag
-                if (flagResourceId != 0) {  // Check if the resource was found
+                 int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
+                 if (flagResourceId != 0) {  // Check if the resource was found
                     ImageView CountryFlag = findViewById(R.id.country_flag);
                     CountryFlag.setImageResource(flagResourceId);
                 } else {
@@ -169,8 +162,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
 
     }
-
-
     private void initialiseViews() {
 
         WebScree = findViewById(R.id.web);
@@ -209,7 +200,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 //        ISPsRecyclerView = findViewById(R.id.isp_list_recycler_view);
         ItemRecyclerView = findViewById(R.id.Items_recycler_view);
         ItemFilterSpinner = findViewById(R.id.items_spinner);
-        // Undone yet
         MoreBtn = findViewById(R.id.More_Items);
         SelectedItem = findViewById(R.id.SelectedItem);
 
@@ -238,88 +228,24 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     }
 
-
-    //         Manual Load
-    //        String loggedUserId = Utils.getString(this, "profile", "id");
-//
-//        // Get the current date and time in the required format
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-//        String currentTime = sdf.format(new Date());
-//        String UID = Utils.ref().replace("QU", "PAY");
-//        // Proceed with the logic if all fields are filled
-//        XMLRPCClient.addManualPaymentAsync(
-//                Integer.parseInt(loggedUserId),
-//                UID,
-//                Double.parseDouble(amount),
-//                notes,
-//                currentTime,
-//                new XMLRPCClient.ResponseCallback() {
-//                    @Override
-//                    public void onSuccess(String response) {
-//                        try {
-//                            AmountTLoad.setText("");
-//                            LoadingNote.setText("");
-//                            // Parse the JSON response
-//                            JSONObject jsonResponse = new JSONObject(response);
-//                            System.out.println("Response " + response);
-//
-//                            if (response.contains("success")) {
-//                                Utils.showToast(Dashboard.this, "Successfully loaded");
-//                                Intent iu = new Intent(Dashboard.this, Dashboard.class);
-//                                startActivity(iu);
-//                            } else {
-//                                Utils.showToast(Dashboard.this, "Error ");
-//
-//                            }
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                            Utils.showToast(Dashboard.this, "Failed to parse response");
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//                        Utils.showToast(Dashboard.this, e.getMessage());
-//                        e.printStackTrace();
-//                    }
-//                });
-
     private void handleLoadBalance() {
-        // Retrieve and trim the input values
         String amount = AmountTLoad.getText().toString().trim();
         String notes = LoadingNote.getText().toString().trim();
+        amount = amount.replaceAll("[^\\d.]", "");
+        notes = notes.replaceAll("[^\\dA-Za-z\\s]", "");
 
-// Remove currency code (e.g., "Z$") and commas
-        amount = amount.replaceAll("[^\\d.]", ""); // Keeps digits and decimal points
-        notes = notes.replaceAll("[^\\dA-Za-z\\s]", ""); // Keeps letters and spaces (modify as needed)
-
-// Now, amount contains only numbers and decimal point
-// And notes contains only letters and spaces
-
-
-        // Check if the amount field is empty
         if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
             AmountTLoad.setError("Amount is required");
             return;
         }
-
-        // Check if the notes field is empty
         if (notes.isEmpty()) {
             LoadingNote.setError("Notes are required");
             return;
         }
-//        Phila
-
-        // Configure the WebView to display content inside the app
-        Web.getSettings().setJavaScriptEnabled(true);  // Enable JavaScript
-        Web.getSettings().setDomStorageEnabled(true);  // Enable DOM storage
-        Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);  // Enable caching
-
-        // Add the JavaScript interface to the WebView
+        Web.getSettings().setJavaScriptEnabled(true);
+        Web.getSettings().setDomStorageEnabled(true);
+        Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         Web.addJavascriptInterface(new MyJavaScriptInterface(this), "Android");
-
-        // Set WebViewClient to prevent redirects outside the app
         Web.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -344,12 +270,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 return false;
             }
         });
-
-        // Show the WebView layout and hide other layouts
         hideLayouts(WebScree, NavBuyBtn);
         Navbar.setVisibility(View.GONE);
-
-        // Start a background thread to fetch the payment URL
         String finalAmount = amount;
         new Thread(() -> {
             PaymentProcessor processor = new PaymentProcessor();
@@ -373,39 +295,24 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             });
         }).start();
     }
-
-    // Method to process the payment result
     private void handlePaymentResult(String result) {
         runOnUiThread(() -> {
             // Parse and handle the payment result here
-            Utils.showToast(this, result);  // Show toast on the UI thread
-            System.out.println("Payment Result: " + result);
+            Utils.showToast(this, result);
             // Update UI or perform other actions based on the result
         });
     }
-
-
-    // Method to process the payment result
-
-
     public void closePaymentView(View view) {
         Navbar.setVisibility(View.VISIBLE);
         hideLayouts(LoadBalanceLayout, NavBuyBtn);
     }
-
-
     @Override
     public void onBalanceReceived(Map<String, Object> response) {
         try {
             String amount = Objects.requireNonNull(response.get("Amount")).toString();
             amount = amount;
             String Balance = amount.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(amount)));
-
-
-//            AvailableBalance.setText(Balance);
             double balance = Double.parseDouble(amount);
-
-//            Utils.setMessage(this, balance, StatusMessage);
         } catch (Exception e) {
             System.out.println("Error occurred: " + e.getMessage());
         }
@@ -524,36 +431,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         }).start();
     }
 
-    private void Load(String number, String transactionType, BalanceResponseCallback callback) {
-        new Thread(() -> {
-            try {
-                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(number, transactionType);
-                runOnUiThread(() -> {
-                    callback.onLoadValues(response);
-                });
-            } catch (XmlRpcException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-    }
-
-    private void LoadBalance(int UserId, String ref, String note, String amount, BalanceResponseCallback callback) {
-        new Thread(() -> {
-            try {
-                Map<String, Object> response = XMLRPCClient.LoadBalanceEnquiry(UserId, ref, note, amount);
-                runOnUiThread(() -> {
-                    callback.onLoadBalance(response);
-                });
-            } catch (XmlRpcException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-    }
-
     private void adaptors() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
         adapter.setDropDownViewResource(R.layout.spinner_item);
@@ -572,42 +449,12 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ItemRecyclerView.setAdapter(new RecommendedAd(getProducts()));
     }
 
-    private void openUrlWithFallback(String url) {
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        CustomTabsIntent customTabsIntent = builder.build();
-        String packageName = getPackageNameForCustomTabs();
-
-        if (packageName != null) {
-            customTabsIntent.intent.setPackage(packageName);
-            customTabsIntent.launchUrl(this, Uri.parse(url));
-        } else {
-            // Fallback to a regular browser intent
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(intent);
-            } else {
-                Utils.showToast(this, "Download a browser");
-                System.out.println("No application can handle this URL.");
-            }
-        }
-    }
-
-    private void updateCurrencySymbol(String newCurrencySymbol) {
-        // Update the currency symbol string resource
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("currency_symbol", newCurrencySymbol);
-        editor.apply();
-    }
-
     private void setOnclickListeners() {
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
         FilterButton.setOnClickListener(v -> hideFilter());
-//        hideKeyboardBtn.setOnClickListener(v -> hideKeyboard());
         No.setOnClickListener(v -> handleNo());
         Yes.setOnClickListener(v -> handleYes());
-        //===================================new===============================
         LogoutButton.setOnClickListener(v -> logout());
         NavHomeBtn.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
         NavLaodBalanceBtn.setOnClickListener(v -> hideLayouts(LoadBalanceLayout, NavLaodBalanceBtn));
@@ -618,60 +465,91 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         NavProfileBtn.setOnClickListener(v -> showProfile());
         EconetIsp.setOnClickListener(v -> setISP("Econet"));
         NetoneIsp.setOnClickListener(v -> setISP("NetOne"));
-//        ZesaIsp.setOnClickListener(v -> setISP("Electricity"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
         BackToHome.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
         LoadBalance.setOnClickListener(v -> handleLoadBalance());
     }
 
-    private String getPackageNameForCustomTabs() {
-        PackageManager pm = getPackageManager();
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://example.com"));
-        for (ResolveInfo resolveInfo : pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)) {
-            if (resolveInfo.activityInfo != null && resolveInfo.activityInfo.packageName != null) {
-                return resolveInfo.activityInfo.packageName;
-            }
-        }
-        return null;
-    }
 
-    public void setISP(String ISPName) {
-        if (!ISPName.equals("Econet")) {
+    public void setISP(String ISP) {
+
+        if (!ISP.equals("Econet")) {
             Utils.showToast(this, "Not yet available");
             return;
         }
-        BackToHome.setVisibility(View.VISIBLE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject res = ApiService.balanceEnquiry(ISP, Utils.getString(Dashboard.this, "profile", "phone"));
+                    if (res.getInt("responseCode") == 200) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    String responseString = res.getString("response");
+                                    System.out.println(responseString);
+                                    JSONObject responseJson = new JSONObject(responseString);
+                                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                    JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                                    JSONObject userObject = paramsList.getJSONObject(0);
+                                    String balance = userObject.getString("cumulativeBalance");
+                                    getAccount(balance);
+                                    SelectedIsp.setText(ISP);
+                                    hideLayouts(ItemsLayout, NavIPSBtn);
+                                    BackToHome.setVisibility(View.VISIBLE);
+                                    ISPsLayout.setVisibility(View.GONE);
+                                    ItemsLayout.setVisibility(View.VISIBLE);
 
-        NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
-        defaultColoring(NavHomeBtn);
-        SelectedIsp.setText(ISPName);
-        String transactionType = "account_balance_enquiry";
-        MSISDN = "263781801174";
-        APICall(MSISDN, transactionType, this);
-        ISPsLayout.setVisibility(View.GONE);
-        ItemsLayout.setVisibility(View.VISIBLE);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Utils.showToast(Dashboard.this, "Error parsing response data: " + e.getMessage());
+                                }
+                            }
+                        });
+
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Utils.showToast(Dashboard.this, res.getString("response"));
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showToast(Dashboard.this, "An Error Occurred");
+                        }
+                    });
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+
+
     }
 
 
-    private void getAccount() {
+    private void getAccount(String bal) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
-
         String name = sharedPreferences.getString("name", "");
         String surname = sharedPreferences.getString("surname", "");
         String phone = sharedPreferences.getString("phone", "");
-        String emailAddress = sharedPreferences.getString("emailAddress", "");
         String balance = sharedPreferences.getString("balance", "");
         String updated = sharedPreferences.getString("time", "");
-
         String formatedSalutation = "Hello " + name + " " + surname + " " + phone + "  Last updated " + updated;
-        String Balance = balance.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(balance)));
-
-
+        String Balance = balance.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(bal.isEmpty() ? balance : bal)));
         StatusMessage.setText(formatedSalutation);
-
         AvailableBalance.setText(Balance);
-
-
     }
 
     private void logout() {
@@ -688,35 +566,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         Intent intent = new Intent(this, UserManagement.class);
         intent.putExtra("constraintLayoutId", R.id.login_page);
         startActivity(intent);
-        String token = Utils.getString(this, "LoggedUser", "token");
 
-//        XMLRPCClient.logoutAsync(token, new XMLRPCClient.ResponseCallback() {
-//            @Override
-//            public void onSuccess(String response) {
-//                try {
-//                    // Parse the JSON response
-//                    JSONObject jsonResponse = new JSONObject(response);
-//                    // Check if the access_token is present in the response
-//                    if (jsonResponse.has("authorization")) {
-//                        String token = jsonResponse.getJSONObject("authorization").getString("access_token");
-//                        Intent intent = new Intent(this, UserManagement.class);
-//                        intent.putExtra("constraintLayoutId", R.id.login_page);
-//                        startActivity(intent);
-//                    } else {
-//                        // Handle case where authorization token is missing
-//                        JSONObject error = jsonResponse.getJSONObject("error");
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                // Handle the error response
-//                e.printStackTrace();
-//            }
-//        });
     }
 
     private void hideFilter() {
@@ -735,31 +585,21 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     }
 
     private void getProfile() {
-
         SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
-        // Populate EditText fields
         String name = prefs.getString("name", "");
         String phoneNumber = name + "(" + prefs.getString("phone", "") + ")";
-
         String salutation = "Hello " + phoneNumber;
         String updateTime = "last updated a minute ago";
         MSISDN = prefs.getString("phone", "");
-
-        // Create a SpannableStringBuilder to apply different colors
         SpannableStringBuilder builder = new SpannableStringBuilder();
-
-        // Append the main text "Hello, 0782141216" with black color
         builder.append(salutation);
         int start = 0;
         int end = salutation.length();
         builder.setSpan(new ForegroundColorSpan(Color.BLACK), start, end, 0);
-
-        // Append the small text "last updated a minute ago" with gray color
         builder.append("\n").append(updateTime);
-        start = end + 1; // Start just after the salutation text
+        start = end + 1;
         end = builder.length();
         builder.setSpan(new ForegroundColorSpan(Color.GRAY), start, end, 0);
-
         TextView salute = findViewById(R.id.salutation_text);
         salute.setText(builder);
 
@@ -769,12 +609,9 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private void handleTransaction() {
         String phone = Phone.getText().toString().trim();
         String price = SelectedItemPrice.getText().toString().trim().replace(currencySymbol, "");
-
         if (phone.isEmpty()) {
             return;
         }
-
-        // Clean the AvailableBalance string to remove non-numeric characters
         String balanceStr = AvailableBalance.getText().toString()
                 .replace(currencySymbol, "")  // Remove the currency symbol
                 .replace(",", "")             // Remove commas
@@ -787,9 +624,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             double balanceValue = Double.parseDouble(balanceStr);
 
             if (priceValue < balanceValue) {
-
-
-                // Start the transaction in a separate thread
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -798,8 +632,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                             String name = sharedPreferences.getString("name", "");
                             String surname = sharedPreferences.getString("surname", "");
                             String agentId = sharedPreferences.getString("phone", "");
-
-//                            JSONObject res = ApiService.loadValue("Econet", "27649045091", "Lewis", "ruffgunz", "263781801175", "50", "VALUE", "VALUE");
                             JSONObject res = ApiService.loadBundle(
                                     SelectedIsp.getText().toString(),             // ISP Name
                                     agentId,                                      // Agent ID
@@ -812,23 +644,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                                     ItemCode,                                     // Item code
                                     SelectedItemType.getText().toString()         // Item type
                             );
-                            // Format the request parameters into a readable string
-                            String params = String.format("ISP Name: %s\nAgent ID: %s\nFull Name: %s\nUser Identifier: %s\nPhone: %s\nPrice: %s\nItem Code: %s\nItem Type: %s",
-                                    SelectedIsp.getText().toString(),             // ISP Name
-                                    agentId,                                      // Agent ID
-                                    name + " " + surname,                         // Full Name
-                                    "ruffgunz",                                   // User identifier or password
-                                    "263" + (phone.startsWith("0") ? phone.substring(1) : phone), // Phone number formatted with "263"
-                                    SelectedItemPrice.getText().toString()
-                                            .replace(currencySymbol, "")              // Remove currency symbol
-                                            .replace(".", ""),                        // Remove decimal points
-                                    ItemCode,                                     // Item code
-                                    SelectedItemType.getText().toString()         // Item type
-                            );
-                            System.out.println(params);
 
-                            // Handle the response as needed
-                            System.out.println("Load Bundle Response: " + res.toString());
 
                             if (res.getInt("responseCode") == 200) {
                                 // Handle success and UI updates on the main thread
@@ -836,21 +652,14 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                                     @Override
                                     public void run() {
                                         try {
-                                            // Extract the response string and parse it into a JSON object
                                             String responseString = res.getString("response");
                                             JSONObject responseJson = new JSONObject(responseString); // Parse the response string
-
-                                            // Now extract the methodResponse and paramsList
                                             JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
                                             JSONArray paramsList = methodResponse.getJSONArray("paramsList");
                                             JSONObject responseDetails = paramsList.getJSONObject(0);
-
-                                            // Get the StatusCode and Description
                                             String Serial = responseDetails.getString("providerSerial");
                                             String description = responseDetails.getString("providerStatus");
                                             String balance = responseDetails.getString("cumulativeBalance");
-                                            AvailableBalance.setText(Utils.FormatAmount(balance));
-
                                             if (!Serial.isEmpty()) {
 
                                                 new AlertDialog.Builder(Dashboard.this)
@@ -861,13 +670,13 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                                                             public void onClick(DialogInterface dialog, int which) {
                                                                 // Call your method here when OK is clicked
                                                                 hideLayouts(ItemsLayout, NavIPSBtn);
+                                                                getAccount(balance);
                                                             }
                                                         }) // Dismiss the alert when OK is clicked
                                                         .show();
 
                                             } else {
-                                                // Failure: Show the error description in a toast
-                                                Utils.showToast(Dashboard.this, "Error: " + description);
+                                                 Utils.showToast(Dashboard.this, "Error: " + description);
                                             }
 
                                         } catch (JSONException e) {
@@ -877,7 +686,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                                     }
                                 });
                             } else {
-                                // Handle error response on UI thread
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -889,8 +697,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
                         } catch (IOException e) {
                             e.printStackTrace();
-                            // Handle IOException on UI thread
-                            runOnUiThread(new Runnable() {
+                              runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Utils.showToast(Dashboard.this, "Error: " + e.getMessage());
@@ -917,23 +724,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         intent.putExtra("constraintLayoutId", R.id.create_profile_screen);
         startActivity(intent);
     }
-
-    public void hideOtherLayout(int layoutToShow, ImageButton icon) {
-
-        if (layoutToShow == R.id.create_profile_screen) {
-            Intent intent = new Intent(this, UserManagement.class);
-            intent.putExtra("constraintLayoutId", layoutToShow);
-            startActivity(intent);
-
-        } else {
-            defaultColoring(icon);
-            clearFields();
-            job_list_screen.setVisibility(View.GONE);
-            ConstraintLayout l = findViewById(layoutToShow);
-            l.setVisibility(View.VISIBLE);
-        }
-    }
-
 
     public class RecommendedAd extends RecyclerView.Adapter<RecommendedAd.ViewHolder> {
 
@@ -973,8 +763,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 Type = itemView.findViewById(R.id.ite_type);
                 LifeTime = itemView.findViewById(R.id.item_life_time);
                 Price = itemView.findViewById(R.id.item_price);
-
-                // Set click listener
                 itemView.setOnClickListener(this);
             }
 
@@ -982,9 +770,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-//                    hideOtherLayout(R.id.buy_screen, btnNotifications);
-//                    BuyTittle.setText(String.format("%s\n that last for %s", Type.getText().toString(), time));
-                    ItemToBuyText.setText(String.format("%s\n that last for %s", Type.getText().toString(), time));
+                  ItemToBuyText.setText(String.format("%s\n that last for %s", Type.getText().toString(), time));
                     SelectedItemType.setText(itemDescription);
                     SelectedItemLifeTime.setText(time);
                     SelectedItemPrice.setText(String.format("%s%s", currencySymbol, price));
@@ -997,9 +783,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                     }
 
                     hideLayouts(BuyLayout, NavBuyBtn);
-//                    ItemTypeSpinner2.setVisibility(View.GONE);
-//                    Item.setVisibility(View.VISIBLE);
-
                 }
             }
 
@@ -1022,37 +805,24 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
 
     public List<Map<String, Object>> getProducts() {
-
-        Bundles[] bundles = Utils.readJsonFile(Dashboard.this, filePath);
-
-        List<Map<String, Object>> items = new ArrayList<>();
+     List<Map<String, Object>> items = new ArrayList<>();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     JSONObject catalogRequestResponse = ApiService.catalogRequest();
-                    System.out.println("API Response: " + catalogRequestResponse.toString());
-
-                    // Check if the main response contains "response" key
                     if (catalogRequestResponse.has("response")) {
-                        // Parse the nested response JSON string
                         String nestedResponseString = catalogRequestResponse.getString("response");
                         JSONObject nestedResponse = new JSONObject(nestedResponseString);
-
-                        // Now check for "methodResponse" in the nested JSON
                         if (nestedResponse.has("methodResponse")) {
                             JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
-
                             for (int i = 0; i < paramsList.length(); i++) {
                                 JSONObject product = paramsList.getJSONObject(i);
                                 Map<String, Object> item = new HashMap<>();
-
                                 item.put("type", product.getString("productCategory"));
                                 item.put("amount", product.getString("amount"));
                                 item.put("lifeTime", product.getString("validity"));
                                 item.put("price", product.getString("costPrice"));
-
-                                // Additional product details
                                 item.put("num", product.getString("num"));
                                 item.put("productID", product.getString("productID"));
                                 item.put("productDescription", product.getString("productDescription"));
@@ -1061,13 +831,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                                 item.put("costPrice", product.getString("costPrice"));
                                 item.put("entryDate", product.getString("entryDate"));
                                 item.put("providerSplit", product.getString("providerSplit"));
-
-
                                 items.add(item);
-
-
-                                System.out.println("Product At : " + (i + 1) + "\n" + product);
-                                System.out.println("Product Description : " + product.get("productDescription"));
                             }
                         } else {
                             System.out.println("Error: methodResponse not found in nested response.");
@@ -1084,40 +848,17 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
                 }
             }
         }).start();
-
-
-//        if (bundles != null) {
-//            for (Bundles bundle : bundles) {
-//                Map<String, Object> item = new HashMap<>();
-//                item.put("type", bundle.getCategory());
-//                item.put("amount", bundle.getBundle());
-//                String l = bundle.getValidity().contains("day") ? bundle.getValidity() : bundle.getValidity() + " days";
-//                item.put("lifeTime", l);
-//                item.put("price", bundle.getCurrentUSDCharge());
-//                items.add(item);
-//
-//            }
-//        }
-
-        return items;
+ return items;
     }
 
 
     public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
-        // Initialize a list to hold the filtered product data
-        List<Map<String, Object>> filteredProducts = new ArrayList<>();
-
-        // Iterate over each product in the input list
-        for (Map<String, Object> product : products) {
-            // Check if the product type contains the specified filterType
-            if (product.get("type") != null && product.get("type").toString().toLowerCase().contains(filterType.toLowerCase())) {
-                // Add the product to the filtered list
-                filteredProducts.add(product);
+         List<Map<String, Object>> filteredProducts = new ArrayList<>();
+  for (Map<String, Object> product : products) {
+             if (product.get("type") != null && product.get("type").toString().toLowerCase().contains(filterType.toLowerCase())) {
+                 filteredProducts.add(product);
             }
-        }
-
-        // Return the filtered list of products
-        return filteredProducts;
+        } return filteredProducts;
     }
 
 
@@ -1126,8 +867,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         Navbar.setVisibility(View.VISIBLE);
         job_list_screen.setVisibility(View.GONE);
         AppFrame.setVisibility(View.VISIBLE);
-//        dash_board_screen.setVisibility(View.VISIBLE);
-//        landingScreen.setVisibility(View.GONE);
     }
 
     private void handleShowMore() {
@@ -1148,15 +887,8 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
     }
 
-//    private void hideKeyboard() {
-//        Utils.hideAlphaKeyboard(MyKeyboard);
-//    }
-
     private void clearFields() {
         Phone.setText("");
-//        Item.setText("");
-//        Amount.setText("");
-//        ItemPrice.setText("");
     }
 
 }

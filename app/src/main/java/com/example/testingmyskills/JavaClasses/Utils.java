@@ -218,22 +218,23 @@ public class Utils {
         return email.matches(emailPattern);
     }
 
-    public static void setMessage(Activity activity, double balance, TextView Message) {
+    public static void setMessage(Activity activity, String bal, TextView Message) {
         // Parse the balance amount to a double
+double balance = Double.parseDouble(bal);
 
         // Set appropriate messages based on the remaining balance
         if (balance > 3000) {
-            Message.setText(R.string.safe);
-//            Message.setTextColor(ContextCompat.getColor(activity, R.color.lime)); // Assuming you have a green color defined
+//            Message.setText(R.string.safe);
+            Message.setTextColor(ContextCompat.getColor(activity, R.color.lime)); // Assuming you have a green color defined
         } else if (balance > 1000) {
             Message.setText(R.string.medium_safe);
-//            Message.setTextColor(ContextCompat.getColor(activity, R.color.gold)); // Assuming you have a yellow color defined
+            Message.setTextColor(ContextCompat.getColor(activity, R.color.gold)); // Assuming you have a yellow color defined
         } else if (balance > 500) {
             Message.setText(R.string.less_safe);
-//            Message.setTextColor(ContextCompat.getColor(activity, R.color.orange)); // Assuming you have an orange color defined
+            Message.setTextColor(ContextCompat.getColor(activity, R.color.orange)); // Assuming you have an orange color defined
         } else {
             Message.setText(R.string.not_safe);
-//            Message.setTextColor(ContextCompat.getColor(activity, R.color.red)); // Assuming you have a red color defined
+            Message.setTextColor(ContextCompat.getColor(activity, R.color.red)); // Assuming you have a red color defined
         }
     }
 

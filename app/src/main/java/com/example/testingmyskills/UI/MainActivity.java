@@ -49,61 +49,7 @@ public class MainActivity extends AppCompatActivity {
         Utils.hideSoftNavBar(MainActivity.this);
         setOnclickListeners();
 
-        // Perform network tasks in a background thread
-        /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // Call API methods
 
-// Working
-//                    postResultToMainThread("Login Response: " + loginResponse);
-
-
-//Working
-//                    postResultToMainThread("Registration Response: " + registrationResponse);
-
-//Working
-//                    JSONObject catalogRequestResponse = ApiService.catalogRequest();
-//                    postResultToMainThread("Catalog Request Response: " + catalogRequestResponse);
-
-// Working
-//                    JSONObject validateMsisdnResponse = ApiService.validateMsisdn("Econet","263781801175","263781801175","Lewis","ruffgunz");
-//                    postResultToMainThread("Validate MSISDN Response: " + validateMsisdnResponse);
-//
-
-//    Working
-//                    JSONObject balanceEnquiryResponse = ApiService.balanceEnquiry("Econet","27649045091","Lewis","ruffgunz");
-//                    postResultToMainThread("Balance Enquiry Response: " + balanceEnquiryResponse);
-
-// Not yet working (Back end issue)
-//                    JSONObject depositFundsResponse = ApiService.depositFunds("27649045091","Lewis","ruffgunz","lewistiyago26@gmail.com","50","840");
-//                    postResultToMainThread("Deposit Funds Response: " + depositFundsResponse);
-//{
-
-//Working
-//                    JSONObject loadValueResponse = ApiService.loadValue("Econet","27649045091","Lewis","ruffgunz","263781801175","50","VALUE","VALUE");
-//                    postResultToMainThread("Load Value Response: " + loadValueResponse);
-
-
-// Working
-//                    JSONObject loadBundleResponse = ApiService.loadBundle("Econet", "27649045091", "Lewis", "ruffgunz", "263781801175", "650", "BOJU5", "$6.50 = BOJ OffNet 50Min OnNet 250Min O/Peak 200Min");
-//                    postResultToMainThread("Load Bundle Response: " + loadBundleResponse);
-
-
-
-//                    Working
-                    JSONObject statementResponse = ApiService.statement("27649045091", "Lewis", "ruffgunz", "lewistiyago26@gmail.com");
-//                    postResultToMainThread("Statement Response: " + statementResponse);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    postResultToMainThread("Error: " + e.getMessage());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();*/
     }
 
     // Method to post results to the main UI thread
