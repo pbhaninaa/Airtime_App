@@ -16,7 +16,7 @@ public class ApiService {
 
     // Registration Endpoint
     public static JSONObject register(String agentName, String agentPassword, String agentID, String email) throws Exception {
-        String jsonInputString = "{\"TransactionType\":\"Registration\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentID\":\"" + agentID + "\", \"Email\":\"" + email + "\"}";
+        String jsonInputString = "{\"TransactionType\":\"Registration\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentID\":\"" + agentID + "\", \"AgentEmail\":\"" + email + "\"}";
         return HelperClass.sendPostRequest(BASE_URL + "register", jsonInputString);
     }
 
@@ -55,11 +55,22 @@ public class ApiService {
         String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Load Bundle\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"CustomerID\":\"" + customerID + "\", \"RechargeAmount\":\"" + rechargeAmount + "\", \"ProductID\":\"" + productID + "\", \"ProductDescription\":\"" + productDescription + "\"}";
         return HelperClass.sendPostRequest(BASE_URL + "load-bundle", jsonInputString);
     }
+    public static JSONObject transactionStatusEnquiry(String network, String agentID, String customerID, String referenceID) throws Exception {
+        // Construct the JSON input string with the parameters
+        String jsonInputString = "{\"Network\":\"" + network + "\", " +
+                "\"TransactionType\":\"Transaction Status Enquiry\", " +
+                "\"AgentID\":\"" + agentID + "\", " +
+                "\"CustomerID\":\"" + customerID + "\", " +
+                "\"ReferenceID\":\"" + referenceID + "\"}";
+
+        // Send a POST request and return the response
+        return HelperClass.sendPostRequest(BASE_URL + "transaction-status-enquiry", jsonInputString);
+    }
 
 
     // Statement Endpoint (matching the Postman request)
-    public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail) throws Exception {
-        String jsonInputString = "{\"TransactionType\":\"Statement\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentEmail\":\"" + agentEmail + "\"}";
+    public static JSONObject statement() throws Exception {
+        String jsonInputString = "{\"TransactionType\":\"Statement\", \"AgentID\":\"" + "27649045091" + "\", \"AgentName\":\"" + "Lewis" + "\", \"AgentPassword\":\"" + "ruffguns" + "\", \"AgentEmail\":\"" + "lewistiyago26@gmail.com" + "\"}";
         return HelperClass.sendPostRequest(BASE_URL, jsonInputString); // Using BASE_URL without appending further paths
     }
 

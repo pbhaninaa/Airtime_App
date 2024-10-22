@@ -23,27 +23,27 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.testingmyskills.Interfaces.AccountValidationCallback;
 import com.example.testingmyskills.JavaClasses.ApiService;
 import com.example.testingmyskills.JavaClasses.Country;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
+
 import org.json.*;
 
 import java.io.IOException;
 import java.util.*;
 
 //8QGGLHPVSQ3TFEX7QLTCRU2Y
-public class UserManagement extends AppCompatActivity implements AccountValidationCallback {
+public class UserManagement extends AppCompatActivity {
     private ConstraintLayout SignUpLayout, RegScreen, SignInLayout;
     private EditText getEmailTextInLogin, password, getPasswordTextInLogin, Firstname, Lastname, phoneNumber, email, emailConfirmation, getPasswordTextInRegister, getConfirmPasswordTextInRegister, getEmailTextInRegister;
     private ImageButton ShowConformPasswordInRegister, ShowPasswordInRegister, ShowPasswordInLogin;
     private TextView ForgotPasswordBtn, SignUpBtn, RegisterBtn;
     private boolean showPassword, rememberMe, gotData;
     private Button SignUp, SignInBtn, CreateAccBtn;
-    private Spinner languagesSpinner, CountryCode;
+    private Spinner languagesSpinner, CountryCode, LoginCountryCode;
     private CheckBox RememberMeCheckBox;
-    private ImageView CountryFlag;
+    private ImageView CountryFlag, LoginCountryFlag;
     private FrameLayout backButton;
     String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
 
@@ -76,7 +76,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 hideBottomNav();
                 Country selectedCountry = (Country) parent.getItemAtPosition(position);
                 String flagName = selectedCountry.getCountryFlag();
-                String countryName = selectedCountry.getCountryName();
                 // Get the resource ID of the drawable dynamically
                 int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
                 // Set the ImageView with the corresponding flag
@@ -92,6 +91,37 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                 // Do nothing
             }
         });
+
+
+        ArrayAdapter<Country> adapt = new ArrayAdapter<>(this, R.layout.spinner_item, getCountryList());
+        ada.setDropDownViewResource(R.layout.spinner_item);
+        LoginCountryCode.setAdapter(adapt);
+
+        LoginCountryCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                hideBottomNav();
+                Country selectedCountry = (Country) parent.getItemAtPosition(position);
+                String flagName = selectedCountry.getCountryFlag();
+                // Get the resource ID of the drawable dynamically
+                int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
+                // Set the ImageView with the corresponding flag
+                if (flagResourceId != 0) {  // Check if the resource was found
+                    LoginCountryFlag.setImageResource(flagResourceId);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Flag not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+        RememberMeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            rememberMe = isChecked;
+        });
     }
 
     private void hideBottomNav() {
@@ -103,18 +133,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
-    @Override
-    public void validateUser(Map<String, Object> response) {
-        int status = (int) response.get("Status");
-        String des = Objects.requireNonNull(response.get("Description")).toString();
-        if (status == 0) {
-            gotData = true;
-            Utils.showToast(this, des);
-        } else if (status == 1) {
-            gotData = true;
-        }
-        System.out.println("Account Validation Res: " + response);
-    }
 
     private void initialiseViews() {
         SignInLayout = findViewById(R.id.login_page);
@@ -144,17 +162,18 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         backButton = findViewById(R.id.back);
         password = findViewById(R.id.password);
 
-        RememberMeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            rememberMe = isChecked;
-        });
 
-        CountryCode = findViewById(R.id.country_code);
+        CountryCode = findViewById(R.id.country_codes);
         CountryFlag = findViewById(R.id.country_flag);
+        LoginCountryCode = findViewById(R.id.login_country_codes);
+        LoginCountryFlag = findViewById(R.id.login_country_flag);
+
     }
 
     private void screenToLoad(int screenToLoad) {
         if (Utils.RememberMe(this)) {
-            getEmailTextInLogin.setText(Utils.getString(this, "savedCredentials", "email"));
+            String phone = Utils.getString(this, "savedCredentials", "email");
+            getEmailTextInLogin.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
             getPasswordTextInLogin.setText(Utils.getString(this, "savedCredentials", "password"));
             RememberMeCheckBox.setChecked(Utils.RememberMe(this)); // Ensure the checkbox is checked
         }
@@ -175,6 +194,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         ShowConformPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         backButton.setOnClickListener(v -> handleBack());
+
         SignInBtn.setOnClickListener(v -> {
             try {
                 handleSignIn();
@@ -199,6 +219,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             }
         });
     }
+
     private void handleRegisterClick() {
         Utils.triggerHapticFeedback(this);
         RegScreen.setVisibility(View.VISIBLE);
@@ -227,16 +248,53 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             Utils.showToast(this, "Incorrect mobile number");
             phoneNumber.requestFocus();
         } else {
-            JSONObject res = ApiService.register(name + " " + surname, pass, phone, emailAddress);
-            if (res.get("responseCode").toString().equals("200")) {
-                // Registration was successful
-                RegScreen.setVisibility(GONE);
-                SignInLayout.setVisibility(View.VISIBLE);
-                getEmailTextInLogin.setText(emailAddress);
-                getPasswordTextInLogin.setText(pass);
-            } else {
-                Utils.showToast(UserManagement.this, res.toString());
-            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject res = ApiService.register(name + " " + surname, pass, CountryCode.getSelectedItem() + phone, emailAddress);
+
+                        if (res.getInt("responseCode") == 200) {
+                            // To handle success and UI updates on the main thread
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Registration was successful
+                                    RegScreen.setVisibility(GONE);
+                                    SignInLayout.setVisibility(View.VISIBLE);
+
+                                    getEmailTextInLogin.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
+                                    getPasswordTextInLogin.setText(pass);
+
+                                }
+                            });
+
+                        } else {
+                            // Handle error response on UI thread
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.showToast(UserManagement.this, res.toString());
+                                }
+                            });
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        // Handle IOException on UI thread
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showToast(UserManagement.this, "Error: " + e.getMessage());
+                            }
+                        });
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }).start();
+
+
         }
     }
 
@@ -259,7 +317,7 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
             @Override
             public void run() {
                 try {
-                    JSONObject res = ApiService.login(password, AgentID);
+                    JSONObject res = ApiService.login(password, LoginCountryCode.getSelectedItem()+ AgentID);
 
                     if (res.getInt("responseCode") == 200) {
                         // To handle success and UI updates on the main thread
@@ -267,7 +325,6 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                             @Override
                             public void run() {
                                 try {
-                                    Utils.success(UserManagement.this, "Success");
 
                                     // Extract the string inside the "response" field and parse it as a new JSONObject
                                     String responseString = res.getString("response");
@@ -279,12 +336,11 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
                                     JSONArray paramsList = methodResponse.getJSONArray("paramsList");
                                     JSONObject userObject = paramsList.getJSONObject(0);
 
-                                    // Extract user details
+
                                     String agentID = userObject.getString("agentID");
                                     String agentName = userObject.getString("agentName");
                                     String balance = userObject.getString("balance");
                                     String agentEmail = userObject.getString("agentEmail");
-                                    String status = userObject.getString("status");
                                     String statusCode = userObject.getString("statusCode");
                                     String lastConnect = userObject.getString("lastConnect");
 
@@ -299,19 +355,35 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
                                     // Save necessary credentials
                                     Utils.saveAutoFillPermission(UserManagement.this, rememberMe);
-                                    Utils.saveString(UserManagement.this, "savedCredentials", "email", agentName);
+                                    Utils.saveString(UserManagement.this, "savedCredentials", "email", agentID);
                                     Utils.saveString(UserManagement.this, "savedCredentials", "password", password);
 
                                     // Save user account details
                                     saveAccount(firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode));
-
+                                    RememberMeCheckBox.setChecked(false);
                                     // Navigate to the Dashboard
                                     Intent intent = new Intent(UserManagement.this, Dashboard.class);
                                     startActivity(intent);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Utils.showToast(UserManagement.this, "Error parsing response data: " + e.getMessage());
+                                    String responseString = null;
+                                    try {
+                                        responseString = res.getString("response");
+                                        System.out.println(responseString);
+                                        JSONObject responseJson = new JSONObject(responseString);
+
+                                        // Now extract "methodResponse" and navigate through the JSON structure
+                                        JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                        JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                                        JSONObject userObject = paramsList.getJSONObject(0);
+                                        String status = userObject.getString("status");
+
+                                        Utils.showToast(UserManagement.this, status);
+                                    } catch (JSONException ex) {
+                                        throw new RuntimeException(ex);
+                                    }
+
                                 }
                             }
                         });
@@ -369,117 +441,8 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
 
     public static List<Country> getCountryList() {
         List<Country> countryList = new ArrayList<>();
-        countryList.add(new Country("+27", "South Africa", "za"));
-        countryList.add(new Country("+93", "Afghanistan", "af"));
-        countryList.add(new Country("+355", "Albania", "al"));
-        countryList.add(new Country("+213", "Algeria", "dz"));
-        countryList.add(new Country("+1-684", "American Samoa", "as"));
-        countryList.add(new Country("+376", "Andorra", "ad"));
-        countryList.add(new Country("+244", "Angola", "ao"));
-        countryList.add(new Country("+1-264", "Anguilla", "ai"));
-        countryList.add(new Country("+672", "Antarctica", "aq"));
-        countryList.add(new Country("+1-268", "Antigua and Barbuda", "ag"));
-        countryList.add(new Country("+54", "Argentina", "ar"));
-        countryList.add(new Country("+374", "Armenia", "am"));
-        countryList.add(new Country("+297", "Aruba", "aw"));
-        countryList.add(new Country("+61", "Australia", "au"));
-        countryList.add(new Country("+43", "Austria", "at"));
-        countryList.add(new Country("+994", "Azerbaijan", "az"));
-        countryList.add(new Country("+1-242", "Bahamas", "bs"));
-        countryList.add(new Country("+973", "Bahrain", "bh"));
-        countryList.add(new Country("+880", "Bangladesh", "bd"));
-        countryList.add(new Country("+1-246", "Barbados", "bb"));
-        countryList.add(new Country("+375", "Belarus", "by"));
-        countryList.add(new Country("+32", "Belgium", "be"));
-        countryList.add(new Country("+501", "Belize", "bz"));
-        countryList.add(new Country("+229", "Benin", "bj"));
-        countryList.add(new Country("+1-441", "Bermuda", "bm"));
-        countryList.add(new Country("+975", "Bhutan", "bt"));
-        countryList.add(new Country("+591", "Bolivia", "bo"));
-        countryList.add(new Country("+387", "Bosnia and Herzegovina", "ba"));
-        countryList.add(new Country("+267", "Botswana", "bw"));
-        countryList.add(new Country("+55", "Brazil", "br"));
-        countryList.add(new Country("+246", "British Indian Ocean Territory", "io"));
-        countryList.add(new Country("+1-284", "British Virgin Islands", "vg"));
-        countryList.add(new Country("+673", "Brunei", "bn"));
-        countryList.add(new Country("+359", "Bulgaria", "bg"));
-        countryList.add(new Country("+226", "Burkina Faso", "bf"));
-        countryList.add(new Country("+257", "Burundi", "bi"));
-        countryList.add(new Country("+855", "Cambodia", "kh"));
-        countryList.add(new Country("+237", "Cameroon", "cm"));
-        countryList.add(new Country("+1", "Canada", "ca"));
-        countryList.add(new Country("+238", "Cape Verde", "cv"));
-        countryList.add(new Country("+1-345", "Cayman Islands", "ky"));
-        countryList.add(new Country("+236", "Central African Republic", "cf"));
-        countryList.add(new Country("+235", "Chad", "td"));
-        countryList.add(new Country("+56", "Chile", "cl"));
-        countryList.add(new Country("+86", "China", "cn"));
-        countryList.add(new Country("+61", "Christmas Island", "cx"));
-        countryList.add(new Country("+61", "Cocos Islands", "cc"));
-        countryList.add(new Country("+57", "Colombia", "co"));
-        countryList.add(new Country("+269", "Comoros", "km"));
-        countryList.add(new Country("+682", "Cook Islands", "ck"));
-        countryList.add(new Country("+506", "Costa Rica", "cr"));
-        countryList.add(new Country("+385", "Croatia", "hr"));
-        countryList.add(new Country("+53", "Cuba", "cu"));
-        countryList.add(new Country("+599", "Curacao", "cw"));
-        countryList.add(new Country("+357", "Cyprus", "cy"));
-        countryList.add(new Country("+420", "Czech Republic", "cz"));
-        countryList.add(new Country("+243", "Democratic Republic of the Congo", "cd"));
-        countryList.add(new Country("+45", "Denmark", "dk"));
-        countryList.add(new Country("+253", "Djibouti", "dj"));
-        countryList.add(new Country("+1-767", "Dominica", "dm"));
-        countryList.add(new Country("+1-809", "Dominican Republic", "do"));
-        countryList.add(new Country("+670", "East Timor", "tl"));
-        countryList.add(new Country("+593", "Ecuador", "ec"));
-        countryList.add(new Country("+20", "Egypt", "eg"));
-        countryList.add(new Country("+503", "El Salvador", "sv"));
-        countryList.add(new Country("+240", "Equatorial Guinea", "gq"));
-        countryList.add(new Country("+291", "Eritrea", "er"));
-        countryList.add(new Country("+372", "Estonia", "ee"));
-        countryList.add(new Country("+251", "Ethiopia", "et"));
-        countryList.add(new Country("+500", "Falkland Islands", "fk"));
-        countryList.add(new Country("+298", "Faroe Islands", "fo"));
-        countryList.add(new Country("+679", "Fiji", "fj"));
-        countryList.add(new Country("+358", "Finland", "fi"));
-        countryList.add(new Country("+33", "France", "fr"));
-        countryList.add(new Country("+689", "French Polynesia", "pf"));
-        countryList.add(new Country("+241", "Gabon", "ga"));
-        countryList.add(new Country("+220", "Gambia", "gm"));
-        countryList.add(new Country("+995", "Georgia", "ge"));
-        countryList.add(new Country("+49", "Germany", "de"));
-        countryList.add(new Country("+233", "Ghana", "gh"));
-        countryList.add(new Country("+350", "Gibraltar", "gi"));
-        countryList.add(new Country("+30", "Greece", "gr"));
-        countryList.add(new Country("+299", "Greenland", "gl"));
-        countryList.add(new Country("+1-473", "Grenada", "gd"));
-        countryList.add(new Country("+1-671", "Guam", "gu"));
-        countryList.add(new Country("+502", "Guatemala", "gt"));
-        countryList.add(new Country("+44-1481", "Guernsey", "gg"));
-        countryList.add(new Country("+224", "Guinea", "gn"));
-        countryList.add(new Country("+245", "Guinea-Bissau", "gw"));
-        countryList.add(new Country("+592", "Guyana", "gy"));
-        countryList.add(new Country("+509", "Haiti", "ht"));
-        countryList.add(new Country("+504", "Honduras", "hn"));
-        countryList.add(new Country("+852", "Hong Kong", "hk"));
-        countryList.add(new Country("+36", "Hungary", "hu"));
-        countryList.add(new Country("+354", "Iceland", "is"));
-        countryList.add(new Country("+91", "India", "in"));
-        countryList.add(new Country("+62", "Indonesia", "id"));
-        countryList.add(new Country("+98", "Iran", "ir"));
-        countryList.add(new Country("+964", "Iraq", "iq"));
-        countryList.add(new Country("+353", "Ireland", "ie"));
-        countryList.add(new Country("+44-1624", "Isle of Man", "im"));
-        countryList.add(new Country("+972", "Israel", "il"));
-        countryList.add(new Country("+39", "Italy", "it"));
-        countryList.add(new Country("+225", "Ivory Coast", "ci"));
-        countryList.add(new Country("+1-876", "Jamaica", "jm"));
-        countryList.add(new Country("+81", "Japan", "jp"));
-        countryList.add(new Country("+44-1534", "Jersey", "je"));
-        countryList.add(new Country("+962", "Jordan", "jo"));
-        countryList.add(new Country("+7", "Kazakhstan", "kz"));
-        countryList.add(new Country("+254", "Kenya", "ke"));
-        countryList.add(new Country("+686", "Kiribati", "ki"));
+        countryList.add(new Country("27", "South Africa", "za"));
+        countryList.add(new Country("263", "Zimbabwe", "zw"));
 
         return countryList;
     }
@@ -488,10 +451,16 @@ public class UserManagement extends AppCompatActivity implements AccountValidati
         SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         Firstname.setText(prefs.getString("name", ""));
         Lastname.setText(prefs.getString("surname", ""));
-        phoneNumber.setText(prefs.getString("phone", ""));
+        String phone = prefs.getString("phone", "");// Get the selected country code based on the phone number
+        String selectedCode = phone.startsWith("27") ? phone.substring(0, 2) : phone.substring(0, 3);
+
+        CountryFlag.setImageResource(phone.startsWith("27")?R.drawable.za:R.drawable.zw);
+        phoneNumber.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
         email.setText(prefs.getString("emailAddress", ""));
         phoneNumber.setShowSoftInputOnFocus(false);
         phoneNumber.setEnabled(false);
+        CountryCode.setEnabled(false);
+
         emailConfirmation.setText(prefs.getString("emailAddress", ""));
         CreateAccBtn.setText("Update Profile");
 

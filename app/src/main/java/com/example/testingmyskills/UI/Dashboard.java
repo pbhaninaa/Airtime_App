@@ -1,24 +1,20 @@
 package com.example.testingmyskills.UI;
 
 import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
-
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -32,7 +28,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +48,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.testingmyskills.Dao.XMLRPCClient;
-import com.example.testingmyskills.Interfaces.BalanceResponseCallback;
 import com.example.testingmyskills.JavaClasses.ApiService;
 import com.example.testingmyskills.JavaClasses.CurrencyTextWatcher;
 import com.example.testingmyskills.JavaClasses.MyJavaScriptInterface;
@@ -63,9 +56,6 @@ import com.example.testingmyskills.JavaClasses.PaymentProcessor;
 import com.example.testingmyskills.R;
 import com.example.testingmyskills.JavaClasses.Utils;
 
-
-import org.apache.xmlrpc.XmlRpcException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,14 +63,16 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import okhttp3.internal.Util;
 
-public class Dashboard extends AppCompatActivity implements BalanceResponseCallback {
+
+public class Dashboard extends AppCompatActivity {
     private ConstraintLayout AppFrame;
-    private LinearLayout WebScree, Header, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, ZesaIsp, LoadBalanceLayout;
+    private LinearLayout WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
-    private TextView HeaderTitle, SelectedIsp, AvailableBalance, StatusMessage, SelectedItem, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
-    private EditText Phone, AmountTLoad, LoadingRef, LoadingNote;
+    private TextView AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
+    private EditText Phone, AmountTLoad, LoadingNote;
     private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn;
     private RecyclerView ItemRecyclerView;
     private Spinner ItemFilterSpinner, ItemToBuySpinner;
@@ -88,6 +80,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     private ConstraintLayout ConfirmationScreen;
     private LinearLayout job_list_screen;
     private ImageButton backFromList;
+    private ImageView statusLight;
     private Button BuyBtn, Yes, No, LoadBalance;
     private TextView number_of_posts;
     private Spinner filter_spinner;
@@ -112,9 +105,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs);
         getProfile();
-        String transactionType = "account_balance_enquiry";
-        MSISDN = "263781801174";
-        APICall(MSISDN, transactionType, this);
         show = true;
         initialiseViews();
         getSelectedCategory = false;
@@ -126,7 +116,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
-        spinners();
+//        spinners();
         AppFrame.setVisibility(View.VISIBLE);
         BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? View.GONE : View.VISIBLE);
         ISPsLayout.setVisibility(View.VISIBLE);
@@ -180,9 +170,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         No = findViewById(R.id.no);
         jobListRecyclerView = findViewById(R.id.MoreItemsRecyclerView);
         AppFrame = findViewById(R.id.app_frame);
-        Header = findViewById(R.id.balance_display_layout);
         LogoutButton = findViewById(R.id.logout_button);
-        HeaderTitle = findViewById(R.id.balances_text);
         AvailableBalance = findViewById(R.id.available_balance);
         StatusMessage = findViewById(R.id.status_message);
         NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
@@ -201,18 +189,17 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         ItemRecyclerView = findViewById(R.id.Items_recycler_view);
         ItemFilterSpinner = findViewById(R.id.items_spinner);
         MoreBtn = findViewById(R.id.More_Items);
-        SelectedItem = findViewById(R.id.SelectedItem);
 
         ItemToBuySpinner = findViewById(R.id.item_to_buy);
         ItemToBuyText = findViewById(R.id.item_to_buy_text);
 
         Navbar = findViewById(R.id.navbar);
         SelectedIsp = findViewById(R.id.selected_network_text);
+        AmountToLoadSymbol = findViewById(R.id.currency_symbol);
 
         EconetIsp = findViewById(R.id.econetISP);
         TelecelIsp = findViewById(R.id.telecelISP);
         NetoneIsp = findViewById(R.id.netoneISP);
-        ZesaIsp = findViewById(R.id.zesaISP);
         Phone = findViewById(R.id.mobile_number);
         BackToHome = findViewById(R.id.back_to_home);
 
@@ -225,7 +212,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         LoadBalance = findViewById(R.id.btn_load_balance);
         LoadingNote = findViewById(R.id.loading_notes);
         AmountTLoad = findViewById(R.id.loading_amount);
-
+        statusLight = findViewById(R.id.status_light);
     }
 
     private void handleLoadBalance() {
@@ -309,57 +296,45 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         hideLayouts(LoadBalanceLayout, NavBuyBtn);
     }
 
-    @Override
-    public void onBalanceReceived(Map<String, Object> response) {
-        try {
-            String amount = Objects.requireNonNull(response.get("Amount")).toString();
-            amount = amount;
-            String Balance = amount.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(amount)));
-            double balance = Double.parseDouble(amount);
-        } catch (Exception e) {
-            System.out.println("Error occurred: " + e.getMessage());
-        }
-        System.out.println("Dash Res: " + response);
-    }
 
     public void spinners() {
-//        filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//                // Retrieve the selected item
-//                String selectedItem = parentView.getItemAtPosition(position).toString();
-//
-//
-//                RecyclerView recyclerView = findViewById(R.id.MoreItemsRecyclerView);
-//                recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-//                recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), selectedItem)));
-//                numItems = filterProductsByType(getProducts(), selectedItem).size();
-//
-//                number_of_posts.setText(String.format("%s%s", numItems, getString(R.string.items_found)));
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parentView) {
-//                // Handle no selection if needed
-//            }
-//        });
-//        ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//                // Retrieve the selected item
-//                String selectedItem = parentView.getItemAtPosition(position).toString();
-//                List<Map<String, Object>> array = filterProductsByType(getProducts(), selectedItem);
+        filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // Retrieve the selected item
+                String selectedItem = parentView.getItemAtPosition(position).toString();
+
+
+                RecyclerView recyclerView = findViewById(R.id.MoreItemsRecyclerView);
+                recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), selectedItem)));
+                numItems = filterProductsByType(getProducts(), selectedItem).size();
+
+                number_of_posts.setText(String.format("%s%s", numItems, getString(R.string.items_found)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Handle no selection if needed
+            }
+        });
+        ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // Retrieve the selected item
+                String selectedItem = parentView.getItemAtPosition(position).toString();
+                List<Map<String, Object>> array = filterProductsByType(getProducts(), selectedItem);
 //                SelectedItem.setText(selectedItem + " is selected");
-//                ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-//                ItemRecyclerView.setAdapter(new RecommendedAd(array));
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parentView) {
-//                // Handle no selection if needed
-//            }
-//        });
+                ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                ItemRecyclerView.setAdapter(new RecommendedAd(array));
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Handle no selection if needed
+            }
+        });
 
 
     }
@@ -373,33 +348,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         }
     }
 
-    @Override
-    public void onLoadValues(Map<String, Object> response) {
-
-        int status = (int) response.get("Status");
-        String des = Objects.requireNonNull(response.get("Description")).toString();
-        if (status == 0) {
-            Utils.showToast(this, des);
-        } else if (status == 1) {
-            clearFields();
-            Utils.success(this, des);
-        }
-        System.out.println("Load Res: " + response);
-    }
-
-    @Override
-    public void onLoadBalance(Map<String, Object> response) {
-
-        int status = (int) response.get("Status");
-        String des = Objects.requireNonNull(response.get("Description")).toString();
-        if (status == 0) {
-            Utils.showToast(this, des);
-        } else if (status == 1) {
-            clearFields();
-            Utils.success(this, des);
-        }
-        System.out.println("Load Balance Res: " + response);
-    }
 
     private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
 
@@ -419,20 +367,6 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     }
 
-    private void APICall(String number, String transactionType, BalanceResponseCallback callback) {
-        new Thread(() -> {
-            try {
-                Map<String, Object> response = XMLRPCClient.accountBalanceEnquiry(number, transactionType);
-                runOnUiThread(() -> {
-                    callback.onBalanceReceived(response);
-                });
-            } catch (XmlRpcException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
-    }
 
     private void adaptors() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
@@ -446,7 +380,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     private void recyclerViews() {
         jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        jobListRecyclerView.setAdapter(new RecommendedAd(getProducts()));
+        jobListRecyclerView.setAdapter(new Statement(getStatement()));
 
         ItemRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ItemRecyclerView.setAdapter(new RecommendedAd(getProducts()));
@@ -506,7 +440,11 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
-                                    Utils.showToast(Dashboard.this, "Error parsing response data: " + e.getMessage());
+                                    try {
+                                        Utils.showToast(Dashboard.this, res.getString("response"));
+                                    } catch (JSONException ex) {
+                                        throw new RuntimeException(ex);
+                                    }
                                 }
                             }
                         });
@@ -552,7 +490,9 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         String formatedSalutation = "Hello " + name + " " + surname + " " + phone + "  Last updated " + updated;
         String Balance = balance.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(bal.isEmpty() ? balance : bal)));
         StatusMessage.setText(formatedSalutation);
+        Utils.setStatusColor(this, (bal.isEmpty() ? balance : bal), statusLight);
         AvailableBalance.setText(Balance);
+        AmountToLoadSymbol.setText(currencySymbol);
     }
 
     private void logout() {
@@ -728,6 +668,104 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
         startActivity(intent);
     }
 
+    public void getLastTransaction(View view) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Hardcoded values based on the provided object
+                    String network = "Econet";                             // Network
+                    String agentID = "27649045091";                        // Agent ID
+                    String customerID = "263781801175";                    // Customer ID
+                    String referenceID = "LV-1000-1019050613";             // Reference ID
+
+                    // Call the `transactionStatusEnquiry` method with hardcoded parameters
+                    JSONObject res = ApiService.transactionStatusEnquiry(
+                            network,          // Hardcoded Network value
+                            agentID,          // Hardcoded Agent ID
+                            customerID,       // Hardcoded Customer ID
+                            referenceID       // Hardcoded Reference ID
+                    );
+
+                    if (res.getInt("responseCode") == 200) {
+                        // Handle success and UI updates on the main thread
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    // Parse the response as a string
+                                    String responseString = res.getString("response");
+                                    JSONObject responseJson = new JSONObject(responseString); // Parse the response JSON
+                                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+
+                                    // Dynamically look for keys that start with "paramsList"
+                                    String paramsKey = null;
+                                    Iterator<String> keys = methodResponse.keys();
+                                    while (keys.hasNext()) {
+                                        String key = keys.next();
+                                        if (key.startsWith("paramsList")) {
+                                            paramsKey = key;
+                                            break;
+                                        }
+                                    }
+
+                                    if (paramsKey != null) {
+                                        // Access the paramsList array using the found key
+                                        JSONArray paramsList = methodResponse.getJSONArray(paramsKey);
+                                        JSONObject responseDetails = paramsList.getJSONObject(0);
+
+                                        // Fetch the "Serial" field
+                                        String serial = responseDetails.optString("Serial", "N/A");
+
+                                        if (!serial.equals("N/A")) {
+                                            // Show success alert with the serial number
+                                            runOnUiThread(() -> new AlertDialog.Builder(Dashboard.this)
+                                                    .setTitle("Transaction was successful with")
+                                                    .setMessage("Serial Number: " + serial)
+                                                    .setPositiveButton("OK", null) // Dismiss the alert when OK is clicked
+                                                    .show());
+                                        } else {
+                                            // Handle the case where "Serial" is not available
+                                            runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error: Serial not found in the response."));
+                                        }
+                                    } else {
+                                        // Handle the case where no paramsList key is found
+                                        runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error: paramsList not found in the response."));
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error parsing response data: " + e.getMessage()));
+                                }
+                            }
+
+
+                        });
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.showToast(Dashboard.this, res.toString());
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showToast(Dashboard.this, "Error: " + e.getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
+
     public class RecommendedAd extends RecyclerView.Adapter<RecommendedAd.ViewHolder> {
 
         private List<Map<String, Object>> jobPosts;
@@ -806,6 +844,153 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
 
     }
 
+    public class Statement extends RecyclerView.Adapter<Statement.ViewHolder> {
+
+        private List<Map<String, Object>> statements;
+
+        public Statement(List<Map<String, Object>> statements) {
+            this.statements = statements != null ? statements : new ArrayList<>(); // Ensure statements is non-null
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            // Inflate the layout for the ViewHolder
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.history, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            // Get the statement data at the current position and bind it to the ViewHolder
+            Map<String, Object> statement = statements.get(position);
+            holder.bind(statement);
+        }
+
+        @Override
+        public int getItemCount() {
+            return statements.size();
+        }
+
+        public void updateStatements(List<Map<String, Object>> newStatements) {
+            this.statements = newStatements != null ? newStatements : new ArrayList<>();
+            notifyDataSetChanged(); // Notify adapter to refresh the list
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView referenceID, entryDate, transactionType, amount, balance;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                // Bind the views from the layout to corresponding variables
+                referenceID = itemView.findViewById(R.id.referenceId);
+                entryDate = itemView.findViewById(R.id.entryDate);
+                transactionType = itemView.findViewById(R.id.transactionType);
+                amount = itemView.findViewById(R.id.amount);
+                balance = itemView.findViewById(R.id.cumulativeBalance);
+            }
+
+            // Method to bind the statement data to the UI elements
+            public void bind(Map<String, Object> statement) {
+                // Get values from the map
+                String transactionTypeValue = getValueFromMap(statement, "transactionType", "N/A");
+
+                // Set the text for each UI component
+                referenceID.setText(getValueFromMap(statement, "referenceID", "N/A"));
+                entryDate.setText(getValueFromMap(statement, "entryDate", "N/A"));
+
+                // Properly format the balance using String.format
+                String cumulativeBalance = getValueFromMap(statement, "cumulativeBalance", "000");
+
+                // Check if cumulativeBalance is null, empty, or not a valid number, and default it to "0000"
+                if (cumulativeBalance == null || cumulativeBalance.trim().isEmpty()) {
+                    cumulativeBalance = "0000";
+                }
+
+                String formattedBalance = String.format("%s%s", currencySymbol, Utils.FormatAmount(cumulativeBalance));
+                balance.setText(formattedBalance);
+
+
+                // Set the transaction type
+                transactionType.setText(transactionTypeValue);
+
+                // Determine which amount to display based on the transaction type
+                String amountKey = transactionTypeValue.contains("Deposit") ? "depositAmount" : "rechargeAmount";
+
+                // Format the amount for display
+                String formattedAmount = Utils.FormatAmount(getValueFromMap(statement, amountKey, "N/A"));
+                amount.setText(String.format("%s%s", currencySymbol, formattedAmount));
+            }
+
+
+            // Utility method to safely fetch values from the map
+            private String getValueFromMap(Map<String, Object> map, String key, String defaultValue) {
+                Object value = map.get(key);
+                return value != null ? value.toString() : defaultValue;
+            }
+        }
+    }
+
+    public static List<Map<String, Object>> getStatement() {
+        List<Map<String, Object>> items = new ArrayList<>();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+//                JSONObject catalogRequestResponse = ApiService.statement(agentID, agentName, agentPassword, agentEmail);
+                    JSONObject catalogRequestResponse = ApiService.statement();
+                    if (catalogRequestResponse.has("response")) {
+                        String nestedResponseString = catalogRequestResponse.getString("response");
+                        JSONObject nestedResponse = new JSONObject(nestedResponseString);
+                        if (nestedResponse.has("methodResponse")) {
+                            JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
+                            for (int i = 0; i < paramsList.length(); i++) {
+                                JSONObject product = paramsList.getJSONObject(i);
+                                Map<String, Object> item = new HashMap<>();
+                                item.put("customerID", product.optString("customerID", ""));
+                                item.put("network", product.optString("network", ""));
+                                item.put("transactionType", product.optString("transactionType", ""));
+                                item.put("productID", product.optString("productID", ""));
+                                item.put("productDescription", product.optString("productDescription", ""));
+                                item.put("productCategory", product.optString("productCategory", ""));
+                                item.put("rechargeAmount", product.optString("RechargeAmount", ""));
+                                item.put("depositAmount", product.optString("DepositAmount", ""));
+                                item.put("providerSerial", product.optString("providerSerial", ""));
+                                item.put("providerReference", product.optString("providerReference", ""));
+                                item.put("providerStatus", product.optString("providerStatus", ""));
+                                item.put("providerStatusCode", product.optString("providerStatusCode", ""));
+                                item.put("currency", product.optString("currency", ""));
+                                item.put("costPrice", product.optString("costPrice", ""));
+                                item.put("agentID", product.optString("agentID", ""));
+                                item.put("agentName", product.optString("agentName", ""));
+                                item.put("agentSplit", product.optString("agentSplit", ""));
+                                item.put("providerID", product.optString("providerID", ""));
+                                item.put("providerSplit", product.optString("providerSplit", ""));
+                                item.put("cumulativeBalance", product.optString("cumulativeBalance", ""));
+                                item.put("providerBalance", product.optString("providerBalance", ""));
+                                item.put("entryDate", product.optString("entryDate", ""));
+
+                                items.add(item);
+                            }
+                        } else {
+                            System.out.println("Error: methodResponse not found in nested response.");
+                        }
+                    } else {
+                        System.out.println("Error: response not found in catalogRequestResponse.");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    System.out.println("JSON Parsing Error: " + e.getMessage());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+        return items;
+    }
+
+    ;
 
     public List<Map<String, Object>> getProducts() {
         List<Map<String, Object>> items = new ArrayList<>();
@@ -858,7 +1043,7 @@ public class Dashboard extends AppCompatActivity implements BalanceResponseCallb
     public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
         List<Map<String, Object>> filteredProducts = new ArrayList<>();
         for (Map<String, Object> product : products) {
-            if (product.get("type") != null && product.get("type").toString().toLowerCase().contains(filterType.toLowerCase())) {
+            if (product.get("productCategory") != null && product.get("productCategory").toString().toLowerCase().contains(filterType.toLowerCase())) {
                 filteredProducts.add(product);
             }
         }

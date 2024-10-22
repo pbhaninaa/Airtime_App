@@ -157,19 +157,45 @@
 
                 </LinearLayout>
 
-
-                <EditText
-                    android:id="@+id/email_in_login_page"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/five"
-                    android:autofillHints="none"
-                    android:background="@drawable/edit_text_background"
-                    android:hint="@string/e_mail_address"
-                    android:inputType="textEmailAddress"
-                    android:padding="12sp"
-                    android:textColor="@color/primary_color"
-                    android:textColorHint="@color/light_gray"  />
+                    android:background="@drawable/edit_text_background">
+
+                    <ImageView
+                        android:id="@+id/login_country_flag"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="@dimen/two"
+                        android:src="@drawable/za" />
+
+                    <Spinner
+                        android:id="@+id/login_country_codes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/two"
+                        android:gravity="center"
+                        android:text="27"
+                        android:textSize="18sp" />
+
+
+                    <EditText
+                        android:id="@+id/email_in_login_page"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:background="@null"
+                        android:gravity="start"
+                        android:hint="123456789"
+                        android:inputType="number"
+                        android:maxLength="9"
+                        android:textColor="@color/primary_color"
+                        android:textSize="18sp" />
+                </LinearLayout>
 
 
                 <LinearLayout
@@ -515,6 +541,7 @@
 
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -548,8 +575,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/eight"
-                            android:text="@string/app_name"
                             android:gravity="center"
+                            android:text="@string/app_name"
                             android:textColor="@color/white"
                             android:textSize="@dimen/twelve"
                             android:textStyle="bold" />
@@ -617,6 +644,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/forty"
                     android:orientation="horizontal">
+
                     <TextView
                         android:id="@+id/sign_up_btn"
                         android:layout_width="wrap_content"
@@ -626,6 +654,7 @@
                         android:textColor="@color/light_gray"
                         android:textSize="25sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -637,8 +666,6 @@
                         android:textColor="@color/primary_color"
                         android:textSize="25sp"
                         android:textStyle="bold" />
-
-
 
 
                 </LinearLayout>
@@ -717,43 +744,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:padding="5sp"
                     android:layout_marginTop="@dimen/five"
                     android:background="@drawable/edit_text_background"
                     android:orientation="horizontal"
+                    android:padding="5sp"
                     android:paddingStart="10sp">
+
                     <ImageView
                         android:id="@+id/country_flag"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
-                        android:visibility="gone"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="@dimen/two"
                         android:src="@drawable/za" />
+
                     <Spinner
-                        android:id="@+id/country_code"
-                        android:layout_width="100sp"
+                        android:id="@+id/country_codes"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="8dp"
-                        android:visibility="gone"
-                        android:hint="+27"
-                        android:textSize="18sp" />
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="8dp"
-                        android:src="@drawable/zw" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="25dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="@dimen/two"
                         android:gravity="center"
-                        android:hint="+263"
-                        android:textColorHint="@color/primary_color"
+                        android:text="27"
                         android:textSize="18sp" />
 
 
@@ -762,13 +774,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:gravity="start"
                         android:layout_marginEnd="8dp"
+                        android:background="@null"
+                        android:gravity="start"
+                        android:hint="123456789"
                         android:inputType="number"
                         android:textColor="@color/primary_color"
-                        android:background="@null"
-                        android:hint="123456789"
-                        android:textSize="18sp"  />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 

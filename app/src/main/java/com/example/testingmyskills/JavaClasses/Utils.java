@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +61,6 @@ public class Utils {
     }
 
 
-
     public static void shakeView(View view, Context context) {
         Animation shake = AnimationUtils.loadAnimation(context, R.anim.shake);
         view.startAnimation(shake);
@@ -81,7 +81,6 @@ public class Utils {
             Log.d("HapticFeedback", "Vibrator is null");
         }
     }
-
 
 
     public static void showToast(Context context, String message) {
@@ -208,23 +207,35 @@ public class Utils {
         return email.matches(emailPattern);
     }
 
-    public static void setMessage(Activity activity, String bal, TextView Message) {
-        // Parse the balance amount to a double
-double balance = Double.parseDouble(bal);
+    public static void setStatusColor(Activity activity, String bal, ImageView statusLight) {
 
-        // Set appropriate messages based on the remaining balance
+        // Check if bal is null or empty
+        if (bal == null || bal.trim().isEmpty()) {
+            statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.red)); // Set to red for invalid balance
+            return;
+        }
+
+        // Parse the balance amount to a double
+        double balance;
+        try {
+            balance = Double.parseDouble(bal.trim()); // Trim to remove any leading or trailing spaces
+        } catch (NumberFormatException e) {
+            statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.red)); // Set to red for invalid number format
+            return;
+        }
+
+        // Set the default image resource
+        statusLight.setImageResource(R.drawable.round_conners_background);
+
+        // Set appropriate colors based on the remaining balance
         if (balance > 3000) {
-//            Message.setText(R.string.safe);
-            Message.setTextColor(ContextCompat.getColor(activity, R.color.lime)); // Assuming you have a green color defined
+            statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.lime)); // Green color
+        } else if (balance > 2000) {
+            statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.gold)); // Yellow color
         } else if (balance > 1000) {
-            Message.setText(R.string.medium_safe);
-            Message.setTextColor(ContextCompat.getColor(activity, R.color.gold)); // Assuming you have a yellow color defined
-        } else if (balance > 500) {
-            Message.setText(R.string.less_safe);
-            Message.setTextColor(ContextCompat.getColor(activity, R.color.orange)); // Assuming you have an orange color defined
+            statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.orange)); // Orange color
         } else {
-            Message.setText(R.string.not_safe);
-            Message.setTextColor(ContextCompat.getColor(activity, R.color.red)); // Assuming you have a red color defined
+            statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.red)); // Red color
         }
     }
 
@@ -261,9 +272,6 @@ double balance = Double.parseDouble(bal);
         System.out.println("Generated Basket ID: " + strBasket);
         return strBasket;
     }
-
-
-
 
 
 }

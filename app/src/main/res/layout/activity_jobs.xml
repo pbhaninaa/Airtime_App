@@ -150,14 +150,15 @@
                             android:paddingBottom="@dimen/three">
 
                             <ImageView
-                                android:layout_width="15sp"
-                                android:layout_height="15sp"
+                                android:id="@+id/status_light"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
                                 android:layout_gravity="center"
                                 android:layout_marginRight="@dimen/five"
                                 android:background="@drawable/round_conners_background"
-                                android:backgroundTint="@color/primary_color"
                                 android:contentDescription="@string/todo"
-                                android:gravity="center" />
+                                android:gravity="center"/>
+
 
                             <TextView
                                 android:id="@+id/selected_network_text"
@@ -225,6 +226,7 @@
                                     android:layout_marginBottom="@dimen/five"
                                     android:contentDescription="TODO"
                                     android:gravity="center"
+                                    android:onClick="getLastTransaction"
                                     android:src="@drawable/illustration" />
 
                             </RelativeLayout>
@@ -631,10 +633,8 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="8dp"
                                 android:backgroundTint="@android:color/transparent"
-
                                 android:hint="+27"
-                                android:textSize="18sp"
-                                android:visibility="gone" />
+                                android:textSize="18sp" />
 
                             <EditText
                                 android:id="@+id/mobile_number"
@@ -693,16 +693,15 @@
                         android:orientation="horizontal"
                         android:padding="@dimen/twelve">
 
-                        <!--                        <TextView-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="match_parent"-->
-                        <!--                            android:background="@null"-->
-                        <!--                            android:hint="Amount"-->
-                        <!--                            android:inputType="numberDecimal"-->
-                        <!--                            android:text="ZIG"-->
-                        <!--                            android:textColor="@color/light_gray"-->
-                        <!--                            android:textSize="@dimen/eighteen"-->
-                        <!--                            android:textStyle="bold" />-->
+                        <TextView
+                            android:id="@+id/currency_symbol"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/five"
+                            android:background="@null"
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/primary_color"
+                            android:textSize="@dimen/eighteen" />
 
                         <EditText
                             android:id="@+id/loading_amount"
@@ -794,14 +793,14 @@
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="@string/todo"
                         android:src="@drawable/baseline_keyboard_arrow_left_24"
-                        app:tint="@color/white" />
+                        app:tint="@color/back_ground_gray" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:text="@string/popular_items"
+                        android:text="Account History"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -815,7 +814,8 @@
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="@string/todo"
                         android:src="@drawable/filter_icon"
-                        app:tint="@color/white" />
+                        android:visibility="invisible"
+                        app:tint="@color/back_ground_gray" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -826,7 +826,8 @@
                     android:layout_weight="3"
                     android:orientation="horizontal"
                     android:paddingLeft="@dimen/thirty"
-                    android:paddingRight="25sp">
+                    android:paddingRight="25sp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/number_of_posts"
@@ -856,7 +857,7 @@
                 <ScrollView
                     android:id="@+id/scroll_view"
                     android:layout_width="match_parent"
-                    android:layout_height="450sp"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/sixteen"
                     android:layout_marginBottom="5sp">
 
@@ -1106,7 +1107,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="More"
+                    android:text="History"
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
