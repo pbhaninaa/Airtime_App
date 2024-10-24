@@ -254,7 +254,8 @@ public class UserManagement extends AppCompatActivity {
                 @Override
                 public void run() {
                     try {
-                        JSONObject res = ApiService.register(name + " " + surname, pass, CountryCode.getSelectedItem() + phone, emailAddress);
+                        String p = CountryCode.getSelectedItem() + phone;
+                        JSONObject res = ApiService.register(name + " " + surname, pass, p.replace("+",""), emailAddress);
 
                         if (res.getInt("responseCode") == 200) {
                             // To handle success and UI updates on the main thread
@@ -319,7 +320,8 @@ public class UserManagement extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    JSONObject res = ApiService.login(password, LoginCountryCode.getSelectedItem() + AgentID);
+                    String p = CountryCode.getSelectedItem() + AgentID;
+                    JSONObject res = ApiService.login(password, p.replace("+",""));
 
                     if (res.getInt("responseCode") == 200) {
                         // To handle success and UI updates on the main thread
@@ -444,8 +446,8 @@ public class UserManagement extends AppCompatActivity {
 
     public static List<Country> getCountryList() {
         List<Country> countryList = new ArrayList<>();
-        countryList.add(new Country("27", "South Africa", "za"));
-        countryList.add(new Country("263", "Zimbabwe", "zw"));
+        countryList.add(new Country("+27", "South Africa", "za"));
+        countryList.add(new Country("+263", "Zimbabwe", "zw"));
 
         return countryList;
     }

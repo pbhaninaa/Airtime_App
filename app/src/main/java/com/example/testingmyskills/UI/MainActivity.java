@@ -23,10 +23,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
-    public static String MSISDN = "263781801175";
     private Button CandidateBtn;
     private ConstraintLayout landing_page;
-    public static SQLiteDatabase db;
     private Handler mainHandler = new Handler(Looper.getMainLooper());
 
     @Override

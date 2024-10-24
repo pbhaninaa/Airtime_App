@@ -178,7 +178,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/two"
                         android:gravity="center"
-                        android:text="27"
+                        android:text="+27"
                         android:textSize="18sp" />
 
 
@@ -765,7 +765,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/two"
                         android:gravity="center"
-                        android:text="27"
+                        android:text="+27"
                         android:textSize="18sp" />
 
 

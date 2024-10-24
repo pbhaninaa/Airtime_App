@@ -28,6 +28,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
@@ -317,48 +319,6 @@ public class Dashboard extends AppCompatActivity {
     }
 
 
-    public void spinners() {
-        filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // Retrieve the selected item
-                String selectedItem = parentView.getItemAtPosition(position).toString();
-
-
-                RecyclerView recyclerView = findViewById(R.id.MoreItemsRecyclerView);
-                recyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                recyclerView.setAdapter(new RecommendedAd(filterProductsByType(getProducts(), selectedItem)));
-                numItems = filterProductsByType(getProducts(), selectedItem).size();
-
-                number_of_posts.setText(String.format("%s%s", numItems, getString(R.string.items_found)));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // Handle no selection if needed
-            }
-        });
-        ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // Retrieve the selected item
-                String selectedItem = parentView.getItemAtPosition(position).toString();
-                List<Map<String, Object>> array = filterProductsByType(getProducts(), selectedItem);
-//                SelectedItem.setText(selectedItem + " is selected");
-                ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                ItemRecyclerView.setAdapter(new RecommendedAd(array));
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // Handle no selection if needed
-            }
-        });
-
-
-    }
-
     @Override
     public void onBackPressed() {
         if (Web.canGoBack()) {
@@ -403,9 +363,8 @@ public class Dashboard extends AppCompatActivity {
 
 
     private void adaptors() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, MainActivity.econetItems);
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, MainActivity.econetItems);
+        adapter.setDropDownViewResource(R.layout.spinner_layout);
 
         filter_spinner.setAdapter(adapter);
         ItemFilterSpinner.setAdapter(adapter);
@@ -413,7 +372,6 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void recyclerViews() {
-
         SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         String name = sharedPreferences.getString("name", "");
         String surname = sharedPreferences.getString("surname", "");
@@ -422,11 +380,19 @@ public class Dashboard extends AppCompatActivity {
         String AgentPassword = sharedPreferences.getString("password", "");
         String AgentName = name + " " + surname;
 
+        // Setup Job List RecyclerView with the statement adapter
         jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         jobListRecyclerView.setAdapter(new Statement(getStatement(AgentID, AgentName, AgentPassword, AgentEmail)));
 
-        ItemRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ItemRecyclerView.setAdapter(new RecommendedAd(getProducts()));
+        // Fetch products asynchronously and update the ItemRecyclerView
+        getProducts(new ProductsCallback() {
+            @Override
+            public void onProductsLoaded(List<Map<String, Object>> products) {
+                // Once the products are loaded, set up the RecyclerView
+                ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                ItemRecyclerView.setAdapter(new RecommendedAd(products));
+            }
+        });
     }
 
     private void setOnclickListeners() {
@@ -605,16 +571,13 @@ public class Dashboard extends AppCompatActivity {
         if (price.equals("0.00")) {
             AmountTLoadInBuy.setError("Price is required");
         }
-        String balanceStr = AvailableBalance.getText().toString()
-                .replace(currencySymbol, "")
-                .replace(",", "")
-                .replace("Account Balance", "")
-                .trim();
-
-        Utils.showToast(this, "Phone : " + phone + "\n Price:" + price);
+        String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "").replace(",", "").replace("Account Balance", "").trim();
+//Phila
+        String p = CountryCode.getSelectedItem() + phone;
         try {
             double priceValue = price.isEmpty() ? 0 : Double.parseDouble(price);
-            if (priceValue > 0) {
+            if (priceValue < 0) {
+                AmountTLoadInBuy.setError("Price is required");
                 return;
             }
             double balanceValue = Double.parseDouble(balanceStr);
@@ -623,22 +586,15 @@ public class Dashboard extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
+//                            JSONObject res = ApiService.loadValue("Econet", "27649045091", "263781801175", "10", "Airtime", "Airtime");
                             JSONObject res = ApiService.loadValue(
-                                    "Econet",
-                                    "27649045091",
-                                    "263781801175",
-                                    "10",
+                                    SelectedIsp.getText().toString(),
+                                    Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"),
+                                    p,
+                                    price,
                                     "Airtime",
                                     "Airtime"
                             );
-//        JSONObject rese = ApiService.loadValue(
-//                                    SelectedIsp.getText().toString(),
-//                                    Utils.getString(Dashboard.this,"LoggedUserCredentials","phone"),
-//                                    CountryCode.getSelectedItem() + phone,
-//                                    price,
-//                                    "Airtime",
-//                                    "Airtime"
-//                            );
                             if (res.getInt("responseCode") == 200) {
                                 // Handle success and UI updates on the main thread
                                 runOnUiThread(new Runnable() {
@@ -661,10 +617,7 @@ public class Dashboard extends AppCompatActivity {
 
                                             if (!Serial.isEmpty()) {
 
-                                                new AlertDialog.Builder(Dashboard.this)
-                                                        .setTitle("Bundle Loaded Successfully")
-                                                        .setMessage("Serial: " + Serial)
-                                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                new AlertDialog.Builder(Dashboard.this).setTitle("Bundle Loaded Successfully").setMessage("Serial: " + Serial).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {
                                                                 // Call your method here when OK is clicked
@@ -726,8 +679,7 @@ public class Dashboard extends AppCompatActivity {
         if (phone.isEmpty()) {
             return;
         }
-        String balanceStr = AvailableBalance.getText().toString()
-                .replace(currencySymbol, "")  // Remove the currency symbol
+        String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "")  // Remove the currency symbol
                 .replace(",", "")             // Remove commas
                 .replace("Account Balance", "") // Remove the "Account Balance" text
                 .trim();                      // Remove extra spaces
@@ -746,15 +698,13 @@ public class Dashboard extends AppCompatActivity {
                             String agentId = sharedPreferences.getString("phone", "");
                             String agentPassword = sharedPreferences.getString("password", "");
                             String agentName = name + " " + surname;
-
-                            JSONObject res = ApiService.loadBundle(
-                                    SelectedIsp.getText().toString(),             // ISP Name
+                            String p = CountryCode.getSelectedItem() + phone;
+                            JSONObject res = ApiService.loadBundle(SelectedIsp.getText().toString(),             // ISP Name
                                     agentId,                                      // Agent ID
                                     agentName,                         // Full Name
                                     agentPassword,                                   // User identifier or password
-                                    CountryCode.getSelectedItem() + phone, // Phone number formatted with "263"
-                                    SelectedItemPrice.getText().toString()
-                                            .replace(currencySymbol, "")              // Remove currency symbol
+                                    p.replace("+", ""), // Phone number formatted with "263"
+                                    SelectedItemPrice.getText().toString().replace(currencySymbol, "")              // Remove currency symbol
                                             .replace(".", ""),                        // Remove decimal points
                                     ItemCode,                                     // Item code
                                     SelectedItemType.getText().toString()         // Item type
@@ -783,10 +733,7 @@ public class Dashboard extends AppCompatActivity {
 
                                             if (!Serial.isEmpty()) {
 
-                                                new AlertDialog.Builder(Dashboard.this)
-                                                        .setTitle("Bundle Loaded Successfully")
-                                                        .setMessage("Serial: " + Serial)
-                                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                new AlertDialog.Builder(Dashboard.this).setTitle("Bundle Loaded Successfully").setMessage("Serial: " + Serial).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {
                                                                 // Call your method here when OK is clicked
@@ -863,8 +810,7 @@ public class Dashboard extends AppCompatActivity {
                     String referenceID = Utils.getString(Dashboard.this, "LastTransactionRefs", "referenceID");
 
 
-                    JSONObject res = ApiService.transactionStatusEnquiry(
-                            network,          // Retrieved Network value
+                    JSONObject res = ApiService.transactionStatusEnquiry(network,          // Retrieved Network value
                             agentID,          // Retrieved Agent ID
                             customerID,       // Retrieved Customer ID
                             referenceID       // Retrieved Reference ID
@@ -903,10 +849,7 @@ public class Dashboard extends AppCompatActivity {
 
                                         if (!serial.equals("N/A")) {
                                             // Show success alert with the serial number
-                                            runOnUiThread(() -> new AlertDialog.Builder(Dashboard.this)
-                                                    .setTitle("Transaction was successful with")
-                                                    .setMessage("Serial Number: " + serial)
-                                                    .setPositiveButton("OK", null) // Dismiss the alert when OK is clicked
+                                            runOnUiThread(() -> new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful with").setMessage("Serial Number: " + serial).setPositiveButton("OK", null) // Dismiss the alert when OK is clicked
                                                     .show());
                                         } else {
                                             // Handle the case where "Serial" is not available
@@ -1177,11 +1120,67 @@ public class Dashboard extends AppCompatActivity {
 
     ;
 
-    public List<Map<String, Object>> getProducts() {
-        List<Map<String, Object>> items = new ArrayList<>();
+    public void spinners() {
+        filter_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedItem = parentView.getItemAtPosition(position).toString();
+
+                // Fetch products and update the UI when data is available
+                getProducts(new ProductsCallback() {
+                    @Override
+                    public void onProductsLoaded(List<Map<String, Object>> products) {
+                        List<Map<String, Object>> filteredProducts = filterProductsByType(products, selectedItem);
+                        jobListRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                        jobListRecyclerView.setAdapter(new RecommendedAd(filteredProducts));
+
+                        numItems = filteredProducts.size();
+                        number_of_posts.setText(String.format("%s %s", numItems, getString(R.string.items_found)));
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Handle no selection if needed
+            }
+        });
+
+        ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedItem = parentView.getItemAtPosition(position).toString();
+
+                // Fetch products and update the UI when data is available
+                getProducts(new ProductsCallback() {
+                    @Override
+                    public void onProductsLoaded(List<Map<String, Object>> products) {
+                        List<Map<String, Object>> filteredProducts = filterProductsByType(products, selectedItem);
+                        ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                        ItemRecyclerView.setAdapter(new RecommendedAd(filteredProducts));
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Handle no selection if needed
+            }
+        });
+    }
+
+    // Callback interface for async product fetching
+    public interface ProductsCallback {
+        void onProductsLoaded(List<Map<String, Object>> products);
+    }
+
+    // Fetch products asynchronously
+    public void getProducts(ProductsCallback callback) {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
+                List<Map<String, Object>> items = new ArrayList<>();
                 try {
                     JSONObject catalogRequestResponse = ApiService.catalogRequest();
                     if (catalogRequestResponse.has("response")) {
@@ -1212,27 +1211,32 @@ public class Dashboard extends AppCompatActivity {
                     } else {
                         System.out.println("Error: response not found in catalogRequestResponse.");
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    System.out.println("JSON Parsing Error: " + e.getMessage());
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
+
+                // Invoke the callback on the main thread after products are loaded
+                new Handler(Looper.getMainLooper()).post(() -> callback.onProductsLoaded(items));
             }
         }).start();
-        return items;
     }
 
-
+    // Filter products by selected type
     public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
         List<Map<String, Object>> filteredProducts = new ArrayList<>();
+        System.out.println("Filter by : " + filterType);
+        int i = 0;
+        System.out.println(products);
         for (Map<String, Object> product : products) {
-            // Check if productCategory is not null and contains the filterType
-            if (product.get("productCategory") != null && product.get("productCategory").toString().toLowerCase().contains(filterType.toLowerCase())) {
+
+            if (product.get("type") != null && product.get("type").toString().toLowerCase().contains(filterType.toLowerCase())) {
+                System.out.println(product + "product at index:" + i);
                 filteredProducts.add(product);
+                i++;
             }
+
         }
+        System.out.println(filteredProducts.size() + " Returned Products");
         return filteredProducts;
     }
 
