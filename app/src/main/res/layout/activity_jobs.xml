@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -195,6 +196,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="left"
+                                    android:text="Welcome to Qpos"
                                     android:textColor="@color/white"
                                     android:textSize="18sp"
                                     android:textStyle="bold" />
@@ -204,7 +206,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="left"
-                                    android:text="Still in a good state"
+                                    android:text="we appreciate your visit."
                                     android:textColor="@color/white"
                                     android:textSize="12sp" />
                             </LinearLayout>
@@ -240,6 +242,7 @@
                     android:id="@+id/ISP_display_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:visibility="gone"
                     android:orientation="vertical">
 
                     <ScrollView
@@ -493,8 +496,7 @@
                     android:id="@+id/Buying_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -503,6 +505,7 @@
                         android:orientation="vertical">
 
                         <LinearLayout
+                            android:id="@+id/selected_item"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/ten"
@@ -600,40 +603,24 @@
                             android:orientation="horizontal"
                             android:paddingStart="10sp">
 
+
+
                             <ImageView
+                                android:id="@+id/login_country_flag"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:layout_gravity="center"
-                                android:layout_marginEnd="8dp"
-                                android:src="@drawable/zw" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="25dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="8dp"
-                                android:gravity="center"
-                                android:hint="+263"
-                                android:textColorHint="@color/primary_color"
-                                android:textSize="18sp" />
-
-                            <ImageView
-                                android:id="@+id/country_flag"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:layout_gravity="center"
-                                android:layout_marginEnd="8dp"
-                                android:src="@drawable/za"
-                                android:visibility="gone" />
+                                android:layout_marginEnd="@dimen/two"
+                                android:src="@drawable/za" />
 
                             <Spinner
-                                android:id="@+id/country_code"
-                                android:layout_width="120sp"
+                                android:id="@+id/login_country_codes"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="8dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:hint="+27"
+                                android:layout_marginEnd="@dimen/two"
+                                android:gravity="center"
+                                android:text="27"
                                 android:textSize="18sp" />
 
                             <EditText
@@ -644,32 +631,62 @@
                                 android:layout_marginEnd="8dp"
                                 android:background="@null"
                                 android:gravity="start"
-                                android:hint="0123456789"
+                                android:maxLength="9"
+                                android:hint="123456789"
                                 android:inputType="number"
                                 android:textColor="@color/primary_color"
                                 android:textSize="18sp" />
 
                         </LinearLayout>
-                        <!--                        <faranjit.currency.edittext.CurrencyEditText-->
-                        <EditText
-                            android:id="@+id/Itme_price"
+                        <LinearLayout
+                            android:id="@+id/amount_in_buy"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/ten"
-                            android:autofillHints="none"
-                            android:background="@drawable/rounded_with_white_background"
-                            android:hint="@string/price"
-                            android:inputType="number"
-                            android:padding="@dimen/twelve"
-                            android:text="0.00"
-                            android:textColor="@color/primary_color"
-                            android:visibility="gone" />
+                            android:background="@drawable/edit_text_background"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="@dimen/ten"
+                            android:visibility="gone"
+                            android:padding="@dimen/fifteen">
+
+                            <TextView
+                                android:id="@+id/currency_symbol_in_buy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="@dimen/ten"
+                                android:layout_marginEnd="@dimen/ten"
+                                android:background="@null"
+                                android:text="@string/currency_symbol"
+                                android:inputType="numberDecimal"
+                                android:textColor="@color/primary_color"
+                                android:textSize="@dimen/eighteen" />
+
+                            <EditText
+                                android:id="@+id/loading_amount_in_buy"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@null"
+                                android:hint="0.00"
+                                android:inputType="numberDecimal"
+
+                                android:text="0.00"
+                                android:textColor="@color/primary_color"
+                                android:textColorHint="@color/light_gray"
+                                android:textSize="@dimen/eighteen" />
+                        </LinearLayout>
 
                         <Button
                             android:id="@+id/btn_buy"
                             style="@style/CustomButtonStyle2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@string/buy"
+                            android:textStyle="bold" />
+                        <Button
+                            android:id="@+id/btn_buy_1"
+                            style="@style/CustomButtonStyle2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
                             android:text="@string/buy"
                             android:textStyle="bold" />
 
@@ -727,6 +744,7 @@
                         android:background="@drawable/edit_text_background"
                         android:hint="Notes"
                         android:inputType="text"
+                        android:visibility="gone"
                         android:padding="12sp"
                         android:textColor="@color/primary_color"
                         android:textColorHint="@color/light_gray" />
@@ -1051,14 +1069,40 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@android:color/transparent"
-                    android:src="@drawable/shop"
+                    android:src="@drawable/top_up"
                     app:tint="@color/primary_color" />
+;
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Add"
+                    android:text="@string/load"
+                    android:textColor="@color/primary_color"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/nav_load_btn1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:src="@drawable/shop"
+                    app:tint="@color/primary_color" />
+;
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/buy"
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>

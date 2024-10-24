@@ -6,6 +6,7 @@ android {
     namespace 'com.example.testingmyskills'
     compileSdk 33
 
+
     defaultConfig {
         applicationId "com.example.testingmyskills"
         minSdk 23
@@ -18,8 +19,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "API_BASE_URL", '"http://localhost:8080/api/"'
-            buildConfigField "String", "SERVER_URL", '"http://102.219.85.66:7022/xmlrpc"'
+            buildConfigField "String", "API_BASE_URL", '"http://102.219.85.66:8080/api/"'
         }
         release {
             buildConfigField "String", "API_BASE_URL", '"https://your-production-api-url.com/api/"'

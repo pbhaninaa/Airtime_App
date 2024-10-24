@@ -1,6 +1,8 @@
 package com.example.testingmyskills.JavaClasses;
 
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -114,7 +116,7 @@ public class Utils {
 
     // Function to save email and password to SharedPreferences
     public static void saveCredentials(Context context, String email, String password) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(EMAIL_KEY, email);
         editor.putString(PASSWORD_KEY, password);
@@ -122,7 +124,7 @@ public class Utils {
     }
 
     public static void saveAutoFillPermission(Context context, boolean rememberMe) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(REMEMBER_ME, rememberMe);
         editor.apply();
@@ -130,59 +132,62 @@ public class Utils {
 
     // Function to get email from SharedPreferences
     public static String getEmail(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         return prefs.getString(EMAIL_KEY, "");
     }
 
     public static boolean RememberMe(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         return prefs.getBoolean(REMEMBER_ME, false);
     }
 
     public static boolean isUserLogged(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences("StayLogged", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("LoggedUserCredentials", MODE_PRIVATE);
         return prefs.getBoolean("isUserLogged", false);
     }
 
-    public static boolean isUserRegistered(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences("StayLogged", Context.MODE_PRIVATE);
-        return prefs.getBoolean("isUserRegistered", false);
-    }
 
     // Function to get password from SharedPreferences
     public static String getPassword(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         return prefs.getString(PASSWORD_KEY, "");
     }
 
     // Function to get password from SharedPreferences
     public static String getString(Context context, String Pref_name, String Pref_Key) {
-        SharedPreferences prefs = context.getSharedPreferences(Pref_name, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(Pref_name, MODE_PRIVATE);
         return prefs.getString(Pref_Key, "");
     }
 
     public static void saveString(Context context, String Pref_name, String Pref_Key, String Value) {
-        SharedPreferences prefs = context.getSharedPreferences(Pref_name, Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(Pref_name, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(Pref_Key, Value);
         editor.apply();
     }
 
     public static void logout(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+//        SharedPreferences sharedPreferences = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.clear();
+//        editor.apply();
 
-        SharedPreferences prefs = context.getSharedPreferences("StayLogged", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("StayLogged", MODE_PRIVATE);
         SharedPreferences.Editor StayLogged = prefs.edit();
         StayLogged.clear();
         StayLogged.apply();
 
-        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor user = preferences.edit();
         user.clear();
         user.apply();
+
+        SharedPreferences preferences1 = context.getSharedPreferences("LoggedUserCredentials", MODE_PRIVATE);
+        SharedPreferences.Editor ed = preferences1.edit();
+        ed.clear();  // Clear all data in this SharedPreferences
+        ed.apply();  // Use apply() to asynchronously save changes
+
+
     }
 
     public static String FormatAmount(String a) {
@@ -197,6 +202,15 @@ public class Utils {
             System.out.println(amountString);
             return "NaN"; // Indicate that the input could not be parsed
         }
+    }
+    public static void saveRefs(Context context,String network,String agentID,String customerID, String referenceID){
+        SharedPreferences sharedPref = context. getSharedPreferences("LastTransactionRefs", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sharedPref.edit();
+        ed.putString("network", network);
+        ed.putString("agentID", agentID);
+        ed.putString("customerID", customerID);
+        ed.putString("referenceID", referenceID);
+        ed.apply();
     }
 
     public static boolean isValidEmail(String email) {

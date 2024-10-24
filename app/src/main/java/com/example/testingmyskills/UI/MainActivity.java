@@ -33,9 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initialiseViews();
-
         // Check if user is logged in
         if (isUserLogged(this)) {
             Intent intent = new Intent(MainActivity.this, Dashboard.class);

@@ -4,6 +4,8 @@ import static android.view.View.GONE;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -317,7 +319,7 @@ public class UserManagement extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    JSONObject res = ApiService.login(password, LoginCountryCode.getSelectedItem()+ AgentID);
+                    JSONObject res = ApiService.login(password, LoginCountryCode.getSelectedItem() + AgentID);
 
                     if (res.getInt("responseCode") == 200) {
                         // To handle success and UI updates on the main thread
@@ -358,8 +360,9 @@ public class UserManagement extends AppCompatActivity {
                                     Utils.saveString(UserManagement.this, "savedCredentials", "email", agentID);
                                     Utils.saveString(UserManagement.this, "savedCredentials", "password", password);
 
+
                                     // Save user account details
-                                    saveAccount(firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode));
+                                    saveAccount(firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode),password,true);
                                     RememberMeCheckBox.setChecked(false);
                                     // Navigate to the Dashboard
                                     Intent intent = new Intent(UserManagement.this, Dashboard.class);
@@ -454,7 +457,7 @@ public class UserManagement extends AppCompatActivity {
         String phone = prefs.getString("phone", "");// Get the selected country code based on the phone number
         String selectedCode = phone.startsWith("27") ? phone.substring(0, 2) : phone.substring(0, 3);
 
-        CountryFlag.setImageResource(phone.startsWith("27")?R.drawable.za:R.drawable.zw);
+        CountryFlag.setImageResource(phone.startsWith("27") ? R.drawable.za : R.drawable.zw);
         phoneNumber.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
         email.setText(prefs.getString("emailAddress", ""));
         phoneNumber.setShowSoftInputOnFocus(false);
@@ -466,7 +469,7 @@ public class UserManagement extends AppCompatActivity {
 
     }
 
-    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time, int id) {
+    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time, int id,String pass,boolean logged) {
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("name", name);
@@ -476,8 +479,18 @@ public class UserManagement extends AppCompatActivity {
         editor.putString("emailAddress", emailAddress);
         editor.putString("balance", balance);
         editor.putString("id", String.valueOf(id));  // Convert the integer to a string
-
         editor.apply();
+
+        SharedPreferences sharedPref = getSharedPreferences("LoggedUserCredentials", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sharedPref.edit();
+        ed.putString("name", name);
+        ed.putString("surname", surname);
+        ed.putString("phone", phone);
+        ed.putString("password", pass);
+        ed.putString("email", emailAddress);
+        ed.putBoolean("isUserLogged", logged);
+
+        ed.apply();
 
 
     }
