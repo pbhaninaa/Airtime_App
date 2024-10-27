@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -144,6 +143,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="-1sp"
                             android:background="@drawable/top_left_conner_cut"
+                            android:onClick="showManualLoad"
                             android:orientation="horizontal"
                             android:paddingStart="@dimen/fifteen"
                             android:paddingTop="@dimen/three"
@@ -154,11 +154,12 @@
                                 android:id="@+id/status_light"
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
+                                android:onClick="showManualLoad"
                                 android:layout_gravity="center"
                                 android:layout_marginRight="@dimen/five"
                                 android:background="@drawable/round_conners_background"
                                 android:contentDescription="@string/todo"
-                                android:gravity="center"/>
+                                android:gravity="center" />
 
 
                             <TextView
@@ -242,8 +243,8 @@
                     android:id="@+id/ISP_display_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <ScrollView
                         android:layout_width="match_parent"
@@ -418,19 +419,20 @@
                     android:id="@+id/Items_display_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/white_box_with_shadow"
                         android:orientation="vertical"
-                        android:paddingTop="@dimen/fifteen"
-                        android:paddingBottom="@dimen/fifteen"
                         android:paddingStart="@dimen/ten"
+                        android:paddingTop="@dimen/fifteen"
                         android:paddingEnd="@dimen/ten"
+                        android:paddingBottom="@dimen/fifteen"
                         tools:ignore="NestedWeights">
-<!--Phila-->
+
                         <Spinner
                             android:id="@+id/items_spinner"
                             android:layout_width="match_parent"
@@ -463,11 +465,11 @@
                             android:id="@+id/More_Items"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:visibility="gone"
                             android:text="@string/more"
                             android:textColor="@color/primary_color"
                             android:textSize="15sp"
-                            android:textStyle="normal" />
+                            android:textStyle="normal"
+                            android:visibility="gone" />
 
 
                     </LinearLayout>
@@ -499,8 +501,8 @@
                     android:id="@+id/Buying_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -608,7 +610,6 @@
                             android:paddingStart="10sp">
 
 
-
                             <ImageView
                                 android:id="@+id/login_country_flag"
                                 android:layout_width="40dp"
@@ -635,22 +636,23 @@
                                 android:layout_marginEnd="8dp"
                                 android:background="@null"
                                 android:gravity="start"
-                                android:maxLength="9"
                                 android:hint="123456789"
                                 android:inputType="number"
+                                android:maxLength="9"
                                 android:textColor="@color/primary_color"
                                 android:textSize="18sp" />
 
                         </LinearLayout>
+
                         <LinearLayout
                             android:id="@+id/amount_in_buy"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ten"
                             android:background="@drawable/edit_text_background"
                             android:orientation="horizontal"
-                            android:layout_marginTop="@dimen/ten"
-                            android:visibility="gone"
-                            android:padding="@dimen/fifteen">
+                            android:padding="@dimen/fifteen"
+                            android:visibility="gone">
 
                             <TextView
                                 android:id="@+id/currency_symbol_in_buy"
@@ -659,8 +661,8 @@
                                 android:layout_marginStart="@dimen/ten"
                                 android:layout_marginEnd="@dimen/ten"
                                 android:background="@null"
-                                android:text="@string/currency_symbol"
                                 android:inputType="numberDecimal"
+                                android:text="@string/currency_symbol"
                                 android:textColor="@color/primary_color"
                                 android:textSize="@dimen/eighteen" />
 
@@ -671,10 +673,8 @@
                                 android:background="@null"
                                 android:hint="0.00"
                                 android:inputType="numberDecimal"
-
-                                android:text="0.00"
                                 android:textColor="@color/primary_color"
-                                android:textColorHint="@color/light_gray"
+                                android:textColorHint="@color/primary_color"
                                 android:textSize="@dimen/eighteen" />
                         </LinearLayout>
 
@@ -685,26 +685,26 @@
                             android:layout_height="wrap_content"
                             android:text="@string/buy"
                             android:textStyle="bold" />
+
                         <Button
                             android:id="@+id/btn_buy_1"
                             style="@style/CustomButtonStyle2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="gone"
                             android:text="@string/buy"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
                 </LinearLayout>
-                <!--                Load_balance_layout-->
+                <!--Load_balance_layout-->
                 <LinearLayout
                     android:id="@+id/Load_balance_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/sixteen"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:orientation="vertical">
 
 
                     <LinearLayout
@@ -729,12 +729,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
-                            android:hint="Amount"
+                            android:hint="0.00"
                             android:inputType="numberDecimal"
-
-                            android:text="0.00"
                             android:textColor="@color/primary_color"
-                            android:textColorHint="@color/light_gray"
+                            android:textColorHint="@color/primary_color"
                             android:textSize="@dimen/eighteen" />
                     </LinearLayout>
 
@@ -748,16 +746,24 @@
                         android:background="@drawable/edit_text_background"
                         android:hint="Notes"
                         android:inputType="text"
-                        android:visibility="gone"
                         android:padding="12sp"
                         android:textColor="@color/primary_color"
-                        android:textColorHint="@color/light_gray" />
+                        android:textColorHint="@color/light_gray"
+                        android:visibility="gone" />
 
                     <Button
                         android:id="@+id/btn_load_balance"
                         style="@style/CustomButtonStyle2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:text="@string/load"
+                        android:textStyle="bold" />
+                    <Button
+                        android:id="@+id/btn_load_balance1"
+                        style="@style/CustomButtonStyle2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:text="@string/load"
                         android:textStyle="bold" />
 
@@ -1073,7 +1079,7 @@
                     android:backgroundTint="@android:color/transparent"
                     android:src="@drawable/top_up"
                     app:tint="@color/primary_color" />
-;
+                ;
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -1083,6 +1089,7 @@
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -1098,7 +1105,7 @@
                     android:backgroundTint="@android:color/transparent"
                     android:src="@drawable/shop"
                     app:tint="@color/primary_color" />
-;
+                ;
 
                 <TextView
                     android:layout_width="wrap_content"

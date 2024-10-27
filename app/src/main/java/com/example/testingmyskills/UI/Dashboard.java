@@ -85,7 +85,7 @@ public class Dashboard extends AppCompatActivity {
     private LinearLayout job_list_screen;
     private ImageButton backFromList;
     private ImageView statusLight, CountryFlag;
-    private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance;
+    private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1,LoadBalance;
     private TextView number_of_posts;
     private Spinner filter_spinner;
 
@@ -95,21 +95,9 @@ public class Dashboard extends AppCompatActivity {
     private LinearLayout filterSection;
     private boolean show;
     static String currencySymbol, ItemCode;
-    private String ItemToBuy;
-    public static String MSISDN;
-    private boolean getSelectedCategory;
     private RecyclerView jobListRecyclerView;
-    private String filePath = "JSON.json";
     private int numItems;
-    double amount = 0;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-
-    // Hardcoded values based on the provided object
-    String network = "";                             // Network
-    String agentID = "";                        // Agent ID
-    String customerID = "";                    // Customer ID
-    String referenceID = "";             // Reference ID
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +106,6 @@ public class Dashboard extends AppCompatActivity {
         getProfile();
         show = true;
         initialiseViews();
-        getSelectedCategory = false;
         Utils.hideSoftNavBar(Dashboard.this);
         setOnclickListeners();
         recyclerViews();
@@ -159,8 +146,8 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        AmountTLoad.addTextChangedListener(new CurrencyTextWatcher(AmountTLoad));
-        AmountTLoadInBuy.addTextChangedListener(new CurrencyTextWatcher(AmountTLoadInBuy));
+//        AmountTLoad.addTextChangedListener(new CurrencyTextWatcher(AmountTLoad));
+//        AmountTLoadInBuy.addTextChangedListener(new CurrencyTextWatcher(AmountTLoadInBuy));
         spinners();
 
     }
@@ -228,6 +215,7 @@ public class Dashboard extends AppCompatActivity {
 
         LoadBalanceLayout = findViewById(R.id.Load_balance_layout);
         LoadBalance = findViewById(R.id.btn_load_balance);
+        LoadBalance1 = findViewById(R.id.btn_load_balance1);
         LoadingNote = findViewById(R.id.loading_notes);
         AmountTLoad = findViewById(R.id.loading_amount);
         statusLight = findViewById(R.id.status_light);
@@ -344,7 +332,8 @@ public class Dashboard extends AppCompatActivity {
             BuyBtn1.setVisibility(View.VISIBLE);
             BuyBtn.setVisibility(View.GONE);
         }
-
+        LoadBalance1.setVisibility(View.GONE);
+        LoadBalance.setVisibility(View.VISIBLE);
         if (SelectedIsp.getText().toString().isEmpty()) {
             Utils.showToast(this, "Select Network");
             return;
@@ -416,6 +405,78 @@ public class Dashboard extends AppCompatActivity {
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
         BackToHome.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
         LoadBalance.setOnClickListener(v -> handleLoadBalance());
+        LoadBalance1.setOnClickListener(v -> handleManualLoadBalance());
+    }
+
+    private void handleManualLoadBalance() {
+        String amount = AmountTLoad.getText().toString().trim();
+//        String notes = LoadingNote.getText().toString().trim();
+        amount = amount.replaceAll("[^\\d.]", "");
+//        notes = notes.replaceAll("[^\\dA-Za-z\\s]", "");
+
+        if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
+            AmountTLoad.setError("Amount is required");
+            return;
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject res = ApiService.depositFunds(Utils.getString(Dashboard.this,"LoggedUserCredentials","phone"),AmountTLoad.getText().toString(),"840");
+                    if (res.getInt("responseCode") == 200) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    String responseString = res.getString("response");
+                                    JSONObject responseJson = new JSONObject(responseString);
+                                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                    JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                                    JSONObject userObject = paramsList.getJSONObject(0);
+                                    String balance = userObject.getString("cumulativeBalance");
+                                    getAccount(balance);
+                                    setISP(SelectedIsp.getText().toString());
+                                    hideLayouts(ItemsLayout, NavIPSBtn);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    try {
+                                        Utils.showToast(Dashboard.this, res.getString("response"));
+                                    } catch (JSONException ex) {
+                                        throw new RuntimeException(ex);
+                                    }
+                                }
+                            }
+                        });
+
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Utils.showToast(Dashboard.this, res.getString("response"));
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showToast(Dashboard.this, "An Error Occurred");
+                        }
+                    });
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+
     }
 
 
@@ -546,7 +607,6 @@ public class Dashboard extends AppCompatActivity {
         String phoneNumber = name + "(" + prefs.getString("phone", "") + ")";
         String salutation = "Hello " + phoneNumber;
         String updateTime = "last updated a minute ago";
-        MSISDN = prefs.getString("phone", "");
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(salutation);
         int start = 0;
@@ -572,8 +632,12 @@ public class Dashboard extends AppCompatActivity {
             AmountTLoadInBuy.setError("Price is required");
         }
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "").replace(",", "").replace("Account Balance", "").trim();
-//Phila
+
         String p = CountryCode.getSelectedItem() + phone;
+        if (!p.equals("+263781801175")) {
+            Utils.showToast(Dashboard.this,"Invalid Number");
+            return;
+        }
         try {
             double priceValue = price.isEmpty() ? 0 : Double.parseDouble(price);
             if (priceValue < 0) {
@@ -623,6 +687,7 @@ public class Dashboard extends AppCompatActivity {
                                                                 // Call your method here when OK is clicked
                                                                 hideLayouts(ItemsLayout, NavIPSBtn);
                                                                 getAccount(balance);
+                                                                setISP(SelectedIsp.getText().toString());
                                                                 Utils.saveRefs(Dashboard.this, Network, AgentID, CustomerID, basketID);
                                                                 clearFields();
                                                             }
@@ -699,6 +764,10 @@ public class Dashboard extends AppCompatActivity {
                             String agentPassword = sharedPreferences.getString("password", "");
                             String agentName = name + " " + surname;
                             String p = CountryCode.getSelectedItem() + phone;
+                            if (!p.equals("+263781801175")) {
+                                Utils.showToast(Dashboard.this,"Invalid Number");
+                                return;
+                            }
                             JSONObject res = ApiService.loadBundle(SelectedIsp.getText().toString(),             // ISP Name
                                     agentId,                                      // Agent ID
                                     agentName,                         // Full Name
@@ -738,7 +807,8 @@ public class Dashboard extends AppCompatActivity {
                                                             public void onClick(DialogInterface dialog, int which) {
                                                                 // Call your method here when OK is clicked
                                                                 hideLayouts(ItemsLayout, NavIPSBtn);
-                                                                getAccount(balance);
+                                                                setISP(SelectedIsp.getText().toString());
+
                                                                 Utils.saveRefs(Dashboard.this, Network, AgentID, CustomerID, basketID);
 
                                                                 clearFields();
@@ -890,6 +960,13 @@ public class Dashboard extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    public void showManualLoad(View view) {
+        Utils.showToast(this,"Manual Deposit funds activated");
+        LoadBalance1.setVisibility(View.VISIBLE);
+        LoadBalance.setVisibility(View.GONE);
+
     }
 
     public class RecommendedAd extends RecyclerView.Adapter<RecommendedAd.ViewHolder> {
@@ -1224,19 +1301,13 @@ public class Dashboard extends AppCompatActivity {
     // Filter products by selected type
     public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
         List<Map<String, Object>> filteredProducts = new ArrayList<>();
-        System.out.println("Filter by : " + filterType);
-        int i = 0;
-        System.out.println(products);
         for (Map<String, Object> product : products) {
 
             if (product.get("type") != null && product.get("type").toString().toLowerCase().contains(filterType.toLowerCase())) {
-                System.out.println(product + "product at index:" + i);
                 filteredProducts.add(product);
-                i++;
             }
 
         }
-        System.out.println(filteredProducts.size() + " Returned Products");
         return filteredProducts;
     }
 
