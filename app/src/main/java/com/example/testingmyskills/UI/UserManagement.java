@@ -204,13 +204,7 @@ public class UserManagement extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         });
-//        ForgotPasswordBtn.setOnClickListener(v -> {
-//            try {
-////                handleForgotPasswordClick();
-//            } catch (JSONException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
+        ForgotPasswordBtn.setOnClickListener(v -> Utils.showEmailDialog(this));
 //        SignUp.setOnClickListener(v -> handleCreateClick());
         CreateAccBtn.setOnClickListener(v -> {
             try {
@@ -255,7 +249,7 @@ public class UserManagement extends AppCompatActivity {
                 public void run() {
                     try {
                         String p = CountryCode.getSelectedItem() + phone;
-                        JSONObject res = ApiService.register(name + " " + surname, pass, p.replace("+",""), emailAddress);
+                        JSONObject res = ApiService.register(name + " " + surname, pass, p.replace("+", ""), emailAddress);
 
                         if (res.getInt("responseCode") == 200) {
                             // To handle success and UI updates on the main thread
@@ -321,7 +315,7 @@ public class UserManagement extends AppCompatActivity {
             public void run() {
                 try {
                     String p = CountryCode.getSelectedItem() + AgentID;
-                    JSONObject res = ApiService.login(password, p.replace("+",""));
+                    JSONObject res = ApiService.login(password, p.replace("+", ""));
 
                     if (res.getInt("responseCode") == 200) {
                         // To handle success and UI updates on the main thread
@@ -364,7 +358,7 @@ public class UserManagement extends AppCompatActivity {
 
 
                                     // Save user account details
-                                    saveAccount(firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode),password,true);
+                                    saveAccount(firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode), password, true);
                                     RememberMeCheckBox.setChecked(false);
                                     // Navigate to the Dashboard
                                     Intent intent = new Intent(UserManagement.this, Dashboard.class);
@@ -471,7 +465,7 @@ public class UserManagement extends AppCompatActivity {
 
     }
 
-    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time, int id,String pass,boolean logged) {
+    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time, int id, String pass, boolean logged) {
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("name", name);

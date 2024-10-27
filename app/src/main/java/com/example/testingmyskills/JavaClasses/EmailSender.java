@@ -1,9 +1,8 @@
 package com.example.testingmyskills.JavaClasses;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
 
-import com.mailjet.client.ClientOptions;
 import com.mailjet.client.MailjetClient;
 import com.mailjet.client.MailjetRequest;
 import com.mailjet.client.MailjetResponse;
@@ -17,19 +16,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class EmailSender {
-    static MailjetClient client;
-    private static String API_KEY ="6c3afe2c49b9577c76173a5b89cdf8a3";
-    private static String SECRET_KEY ="d02384dbbc4ec9787de3235aaa9c2736";
-    static MailjetRequest request;
-    static MailjetResponse response;
+    private static final String API_KEY = "6c3afe2c49b9577c76173a5b89cdf8a3"; // Be cautious with hardcoding this
+    private static final String SECRET_KEY = "d02384dbbc4ec9787de3235aaa9c2736"; // Same as above
 
-    public static void sendEmail(Context context, String email, String name, String password) throws JSONException {
+    public static void sendEmail(Context context, String email, String password) throws JSONException {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        String name = sharedPreferences.getString("name", "");
 
-        // Initialize the Mailjet client with API key and secret
-        client = new MailjetClient(API_KEY, SECRET_KEY);
-        Utils.success(context, "Email");
+        MailjetClient client = new MailjetClient(API_KEY, SECRET_KEY);
+
         // Create the email request
-        request = new MailjetRequest(Emailv31.resource)
+        MailjetRequest request = new MailjetRequest(Emailv31.resource)
                 .property(Emailv31.MESSAGES, new JSONArray()
                         .put(new JSONObject()
                                 .put(Emailv31.Message.FROM, new JSONObject()
@@ -41,24 +38,24 @@ public class EmailSender {
                                                 .put("Name", name)))
                                 .put(Emailv31.Message.SUBJECT, "Requested App Password.")
                                 .put(Emailv31.Message.TEXTPART, "My first Mailjet email")
-                                .put(Emailv31.Message.HTMLPART, "<h3>Dear App user, your app password is as follows!</h3><br />Password: " + password + "\n Try not to forget it next time")));
+                                .put(Emailv31.Message.HTMLPART, "<h3>Dear " + name + ",<br/> your app password is as follows!</h3><br />Password: " + password + "\n Try not to forget it next time")));
 
+        // Use ExecutorService for asynchronous task
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             try {
-                // Send the email
-
-                response = client.post(request);
-
-                System.out.println("============================================================================");
-                System.out.println(response.getStatus());
-                System.out.println(response.getData());
-                System.out.println("============================================================================");
-
+                MailjetResponse response = client.post(request);
+                if (response.getStatus() == 200) {
+                    // Successfully sent email
+                    System.out.println("Email sent successfully.");
+                } else {
+                    // Failed to send email
+                    System.out.println("Failed to send email. Status: " + response.getStatus());
+                    System.out.println("Error: " + response.getData().toString());
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
     }
-
 }

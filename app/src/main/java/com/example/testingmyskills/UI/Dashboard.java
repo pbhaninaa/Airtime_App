@@ -30,6 +30,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
@@ -85,7 +86,7 @@ public class Dashboard extends AppCompatActivity {
     private LinearLayout job_list_screen;
     private ImageButton backFromList;
     private ImageView statusLight, CountryFlag;
-    private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1,LoadBalance;
+    private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
     private TextView number_of_posts;
     private Spinner filter_spinner;
 
@@ -146,10 +147,10 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-//        AmountTLoad.addTextChangedListener(new CurrencyTextWatcher(AmountTLoad));
-//        AmountTLoadInBuy.addTextChangedListener(new CurrencyTextWatcher(AmountTLoadInBuy));
+        AmountTLoad.addTextChangedListener(new CurrencyTextWatcher(AmountTLoad));
+        AmountTLoadInBuy.addTextChangedListener(new CurrencyTextWatcher(AmountTLoadInBuy));
         spinners();
-
+        getAccount("");
     }
 
     private void initialiseViews() {
@@ -227,18 +228,12 @@ public class Dashboard extends AppCompatActivity {
 
     private void handleLoadBalance() {
         String amount = AmountTLoad.getText().toString().trim();
-//        String notes = LoadingNote.getText().toString().trim();
-        amount = amount.replaceAll("[^\\d.]", "");
-//        notes = notes.replaceAll("[^\\dA-Za-z\\s]", "");
+        amount = amount.replaceAll("[^\\d.]", "").replaceAll("[^\\d,]", "");
 
         if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
             AmountTLoad.setError("Amount is required");
             return;
         }
-//        if (notes.isEmpty()) {
-//            LoadingNote.setError("Notes are required");
-//            return;
-//        }
         Web.getSettings().setJavaScriptEnabled(true);
         Web.getSettings().setDomStorageEnabled(true);
         Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
@@ -296,6 +291,7 @@ public class Dashboard extends AppCompatActivity {
     private void handlePaymentResult(String result) {
         runOnUiThread(() -> {
             // Parse and handle the payment result here
+            System.out.println("Philasande Payment"+result);
             Utils.showToast(this, result);
             // Update UI or perform other actions based on the result
         });
@@ -370,8 +366,11 @@ public class Dashboard extends AppCompatActivity {
         String AgentName = name + " " + surname;
 
         // Setup Job List RecyclerView with the statement adapter
+        // Ensure that `this` here refers to a `Context` (such as an Activity)
         jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        jobListRecyclerView.setAdapter(new Statement(getStatement(AgentID, AgentName, AgentPassword, AgentEmail)));
+
+// Pass `this` (Context) along with the statements list to the adapter
+        jobListRecyclerView.setAdapter(new Statement(this, getStatement(AgentID, AgentName, AgentPassword, AgentEmail)));
 
         // Fetch products asynchronously and update the ItemRecyclerView
         getProducts(new ProductsCallback() {
@@ -410,9 +409,7 @@ public class Dashboard extends AppCompatActivity {
 
     private void handleManualLoadBalance() {
         String amount = AmountTLoad.getText().toString().trim();
-//        String notes = LoadingNote.getText().toString().trim();
-        amount = amount.replaceAll("[^\\d.]", "");
-//        notes = notes.replaceAll("[^\\dA-Za-z\\s]", "");
+        amount = amount.replaceAll("[^\\d.]", "").replaceAll("[^\\d,]", "");
 
         if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
             AmountTLoad.setError("Amount is required");
@@ -423,7 +420,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    JSONObject res = ApiService.depositFunds(Utils.getString(Dashboard.this,"LoggedUserCredentials","phone"),AmountTLoad.getText().toString(),"840");
+                    JSONObject res = ApiService.depositFunds(Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), AmountTLoad.getText().toString(), "840");
                     if (res.getInt("responseCode") == 200) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -566,6 +563,7 @@ public class Dashboard extends AppCompatActivity {
         AvailableBalance.setText(Balance);
         AmountToLoadSymbol.setText(currencySymbol);
         currencySymbolInBuy.setText(currencySymbol);
+        clearFields();
     }
 
     private void logout() {
@@ -628,16 +626,17 @@ public class Dashboard extends AppCompatActivity {
             Phone.setError("Phone is required");
             return;
         }
+        String p = CountryCode.getSelectedItem() + phone;
+        if (!p.equals("+263781801175")) {
+            Utils.showToast(Dashboard.this, "Invalid Number");
+            return;
+        }
         if (price.equals("0.00")) {
             AmountTLoadInBuy.setError("Price is required");
         }
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "").replace(",", "").replace("Account Balance", "").trim();
 
-        String p = CountryCode.getSelectedItem() + phone;
-        if (!p.equals("+263781801175")) {
-            Utils.showToast(Dashboard.this,"Invalid Number");
-            return;
-        }
+
         try {
             double priceValue = price.isEmpty() ? 0 : Double.parseDouble(price);
             if (priceValue < 0) {
@@ -650,12 +649,11 @@ public class Dashboard extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-//                            JSONObject res = ApiService.loadValue("Econet", "27649045091", "263781801175", "10", "Airtime", "Airtime");
                             JSONObject res = ApiService.loadValue(
                                     SelectedIsp.getText().toString(),
                                     Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"),
                                     p,
-                                    price,
+                                    price.replace(",", "").replace(".", ""),
                                     "Airtime",
                                     "Airtime"
                             );
@@ -744,6 +742,11 @@ public class Dashboard extends AppCompatActivity {
         if (phone.isEmpty()) {
             return;
         }
+        String p = CountryCode.getSelectedItem() + phone;
+        if (!p.equals("+263781801175")) {
+            Utils.showToast(Dashboard.this, "Invalid Number");
+            return;
+        }
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "")  // Remove the currency symbol
                 .replace(",", "")             // Remove commas
                 .replace("Account Balance", "") // Remove the "Account Balance" text
@@ -763,11 +766,7 @@ public class Dashboard extends AppCompatActivity {
                             String agentId = sharedPreferences.getString("phone", "");
                             String agentPassword = sharedPreferences.getString("password", "");
                             String agentName = name + " " + surname;
-                            String p = CountryCode.getSelectedItem() + phone;
-                            if (!p.equals("+263781801175")) {
-                                Utils.showToast(Dashboard.this,"Invalid Number");
-                                return;
-                            }
+
                             JSONObject res = ApiService.loadBundle(SelectedIsp.getText().toString(),             // ISP Name
                                     agentId,                                      // Agent ID
                                     agentName,                         // Full Name
@@ -963,7 +962,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void showManualLoad(View view) {
-        Utils.showToast(this,"Manual Deposit funds activated");
+        Utils.showToast(this, "Manual Deposit funds activated");
         LoadBalance1.setVisibility(View.VISIBLE);
         LoadBalance.setVisibility(View.GONE);
 
@@ -1046,12 +1045,14 @@ public class Dashboard extends AppCompatActivity {
         }
 
     }
-
-    public static class Statement extends RecyclerView.Adapter<Statement.ViewHolder> {
+public class Statement extends RecyclerView.Adapter<Statement.ViewHolder> {
 
         private List<Map<String, Object>> statements;
+        private final Context context;
 
-        public Statement(List<Map<String, Object>> statements) {
+        // Constructor that takes both the statements list and context
+        public Statement(Context context, List<Map<String, Object>> statements) {
+            this.context = context;
             this.statements = statements != null ? statements : new ArrayList<>(); // Ensure statements is non-null
         }
 
@@ -1068,6 +1069,40 @@ public class Dashboard extends AppCompatActivity {
             // Get the statement data at the current position and bind it to the ViewHolder
             Map<String, Object> statement = statements.get(position);
             holder.bind(statement);
+
+            // Set up onClick listener for each item
+            holder.itemView.setOnClickListener(v -> {
+                // Get the primary color defined in colors.xml
+                int primaryColor = context.getResources().getColor(R.color.tertiary_color); // replace `colorPrimary` with your color's name if different
+                String colorHex = String.format("#%06X", (0xFFFFFF & primaryColor)); // Convert color to hex string
+
+                // Convert the statement map to a readable HTML string format, excluding null or empty values
+                StringBuilder detailsBuilder = new StringBuilder();
+                for (Map.Entry<String, Object> entry : statement.entrySet()) {
+                    Object value = entry.getValue();
+
+                    // Check if value is not null or empty, then add it to the details
+                    if (value != null && !value.toString().trim().isEmpty()) {
+                        // Capitalize the first letter of the key
+                        String key = entry.getKey();
+                        String capitalizedKey = key.substring(0, 1).toUpperCase() + key.substring(1);
+
+                        // Append key in bold with primary color and value in normal text
+                        detailsBuilder.append("<font color='").append(colorHex).append("'>")
+                                .append(capitalizedKey).append(":</font> ")
+                                .append(value).append("<br><br>");
+                    }
+                }
+                String details = detailsBuilder.toString();
+
+                // Create and display an AlertDialog showing transaction details
+                new AlertDialog.Builder(context)
+                        .setTitle("Transaction Details")
+                        .setMessage(details.isEmpty() ? "No details available." : Html.fromHtml(details)) // Use Html.fromHtml for styled text
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss()) // Dismiss the alert when OK is clicked
+                        .show();
+            });
+
         }
 
         @Override
@@ -1113,7 +1148,6 @@ public class Dashboard extends AppCompatActivity {
                 String formattedBalance = String.format("%s%s", currencySymbol, Utils.FormatAmount(cumulativeBalance));
                 balance.setText(formattedBalance);
 
-
                 // Set the transaction type
                 transactionType.setText(transactionTypeValue);
 
@@ -1125,7 +1159,6 @@ public class Dashboard extends AppCompatActivity {
                 String formattedAmount = Utils.FormatAmount(transactionAmount);
                 amount.setText(String.format("%s%s", currencySymbol, formattedAmount));
             }
-
 
             // Utility method to safely fetch values from the map
             private String getValueFromMap(Map<String, Object> map, String key, String defaultValue) {

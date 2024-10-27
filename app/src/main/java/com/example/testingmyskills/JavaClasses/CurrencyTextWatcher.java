@@ -23,32 +23,22 @@ public class CurrencyTextWatcher implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-//        if (!s.toString().equals(current)) {
-//            String cleanString = s.toString().replaceAll("[^\\d]", "");
-//            double parsed = cleanString.isEmpty() ? 0.0 : Double.parseDouble(cleanString);
-//
-//            // Create a formatter for South African currency
-//            NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("en", "ZW"));
-//            String formatted = formatter.format(parsed / 100);
-//
-//            current = formatted;
-//            editText.setText(formatted);
-//            editText.setSelection(formatted.length());
-//        }
         if (!s.toString().equals(current)) {
+            editText.removeTextChangedListener(this); // Temporarily remove the listener to prevent infinite loop
+
             String cleanString = s.toString().replaceAll("[^\\d]", ""); // Remove all non-numeric characters
             double parsed = cleanString.isEmpty() ? 0.0 : Double.parseDouble(cleanString);
 
-            // Create a formatter for South African numeric format (without currency symbol)
-            NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("en", "ZW")); // Zimbabwe locale for number format
-
-            String formatted = formatter.format(parsed / 100); // Keep formatting but no currency sign
+            // Use DecimalFormat to enforce two decimal places
+            DecimalFormat formatter = new DecimalFormat("#,##0.00");
+            String formatted = formatter.format(parsed / 100); // Divide by 100 to handle cents
 
             current = formatted;
             editText.setText(formatted);
             editText.setSelection(formatted.length());
-        }
 
+            editText.addTextChangedListener(this); // Add the listener back
+        }
     }
 
     @Override

@@ -4,19 +4,27 @@ package com.example.testingmyskills.JavaClasses;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +53,8 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.json.JSONException;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -62,6 +72,100 @@ public class Utils {
         decorView.setSystemUiVisibility(uiOptions);
     }
 
+    public static void showEmailDialog(Context context) {
+        // Create a LinearLayout to hold the EditTexts
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        // Create an EditText for the email input
+        final EditText emailInput = new EditText(context);
+        emailInput.setBackgroundResource(R.drawable.edit_text_background); // Set custom background
+        emailInput.setHint("Enter email address");
+
+        // Create an EditText for the User ID input
+        final EditText userIdInput = new EditText(context);
+        userIdInput.setBackgroundResource(R.drawable.edit_text_background);
+        userIdInput.setInputType(InputType.TYPE_CLASS_PHONE); // Allow only numeric input
+
+// Set the main hint
+        userIdInput.setHint("Enter User ID");
+
+// Create a smaller text example for the hint
+        String exampleHint = " (e.g., 263783241537)";
+        SpannableString spannableString = new SpannableString(userIdInput.getHint() + exampleHint);
+        spannableString.setSpan(new RelativeSizeSpan(0.8f), userIdInput.getHint().length(), spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // Set the size of the example
+
+        userIdInput.setHint(spannableString); // Set the combined hint with the example
+
+        // Set margin for both EditTexts
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        // Use the Utils method to convert dp to px for margins
+        int marginInDp = 20; // 50dp margin
+        int marginInPx = Utils.convertDpToPx(context, marginInDp); // Convert dp to pixels
+        params.setMargins(marginInPx, 5, marginInPx, 5);
+
+        // Apply margins to both EditTexts
+        emailInput.setLayoutParams(params);
+        userIdInput.setLayoutParams(params);
+
+        // Add both EditTexts to the LinearLayout
+        layout.addView(emailInput);
+        layout.addView(userIdInput);
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("Send Email")
+                .setMessage("Please enter your email address and User ID:")
+                .setView(layout) // Set the layout containing the EditTexts
+                .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String recipientEmail = emailInput.getText().toString().trim();
+                        String userId = userIdInput.getText().toString().trim(); // Get the User ID
+
+                        String recipientPassword = "Philas@12345"; // Replace this with the actual password
+
+                        if (recipientEmail.isEmpty() && userId.isEmpty()) {
+                            showToast(context, "Email and User ID cannot be empty.");
+                        } else if (recipientEmail.isEmpty()) {
+                            showToast(context, "Email cannot be empty.");
+                        } else if (userId.isEmpty()) {
+                            showToast(context, "User ID cannot be empty.");
+                        } else if (!isValidEmail(recipientEmail)) {
+                            showToast(context, "Please enter a valid email address.");
+                        } else if (!isValidUserId(userId)) {
+                            showToast(context, "User ID must include a valid country code and cannot start with 0.");
+                        } else {
+                            // Send the email including the User ID in the body
+                            try {
+                                EmailSender.sendEmail(context, recipientEmail, recipientPassword);
+                                showToast(context, "Email sent successfully!");
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+
+                })
+
+
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
+    public static int convertDpToPx(Context context, int dp) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
 
     public static void shakeView(View view, Context context) {
         Animation shake = AnimationUtils.loadAnimation(context, R.anim.shake);
@@ -203,8 +307,9 @@ public class Utils {
             return "NaN"; // Indicate that the input could not be parsed
         }
     }
-    public static void saveRefs(Context context,String network,String agentID,String customerID, String referenceID){
-        SharedPreferences sharedPref = context. getSharedPreferences("LastTransactionRefs", MODE_PRIVATE);
+
+    public static void saveRefs(Context context, String network, String agentID, String customerID, String referenceID) {
+        SharedPreferences sharedPref = context.getSharedPreferences("LastTransactionRefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = sharedPref.edit();
         ed.putString("network", network);
         ed.putString("agentID", agentID);
@@ -220,6 +325,10 @@ public class Utils {
         // Check if the provided email matches the regex pattern
         return email.matches(emailPattern);
     }
+    private static boolean isValidUserId(String userId) {
+        return userId.matches("^(\\d{1,3})([1-9][0-9]{7,9})$");
+    }
+
 
     public static void setStatusColor(Activity activity, String bal, ImageView statusLight) {
 
