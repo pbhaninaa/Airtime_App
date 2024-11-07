@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -161,7 +162,6 @@ public class UserManagement extends AppCompatActivity {
         phoneNumber = findViewById(R.id.mNumber);
         email = findViewById(R.id.email);
         emailConfirmation = findViewById(R.id.emailC);
-        backButton = findViewById(R.id.back);
         password = findViewById(R.id.password);
 
 
@@ -195,15 +195,7 @@ public class UserManagement extends AppCompatActivity {
         SignUpBtn.setOnClickListener(v -> handleBack());
         ShowConformPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
-        backButton.setOnClickListener(v -> handleBack());
 
-        SignInBtn.setOnClickListener(v -> {
-            try {
-                handleSignIn();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
         ForgotPasswordBtn.setOnClickListener(v -> Utils.showEmailDialog(this));
 //        SignUp.setOnClickListener(v -> handleCreateClick());
         CreateAccBtn.setOnClickListener(v -> {
@@ -452,7 +444,8 @@ public class UserManagement extends AppCompatActivity {
         Lastname.setText(prefs.getString("surname", ""));
         String phone = prefs.getString("phone", "");// Get the selected country code based on the phone number
         String selectedCode = phone.startsWith("27") ? phone.substring(0, 2) : phone.substring(0, 3);
-
+        LinearLayout back= findViewById(R.id.back_to_home_from_Profile);
+        back.setVisibility(View.VISIBLE);
         CountryFlag.setImageResource(phone.startsWith("27") ? R.drawable.za : R.drawable.zw);
         phoneNumber.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
         email.setText(prefs.getString("emailAddress", ""));
@@ -491,4 +484,8 @@ public class UserManagement extends AppCompatActivity {
 
     }
 
+    public void backToHome(View view) {
+        Intent intent = new Intent(UserManagement.this, Dashboard.class);
+        startActivity(intent);
+    }
 }
