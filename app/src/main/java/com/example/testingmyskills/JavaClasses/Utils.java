@@ -3,6 +3,7 @@ package com.example.testingmyskills.JavaClasses;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -71,7 +72,14 @@ public class Utils {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
     }
-
+    public static void rotateImageView(ImageView imageView) {
+        // Create an ObjectAnimator to rotate the ImageView
+        ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 360f);
+        rotateAnimator.setDuration(1000);  // Duration for one full rotation (in milliseconds)
+        rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);  // Repeat infinitely
+        rotateAnimator.setRepeatMode(ObjectAnimator.RESTART);  // Restart animation after one full rotation
+        rotateAnimator.start();  // Start the animation
+    }
     public static void showEmailDialog(Context context) {
         // Create a LinearLayout to hold the EditTexts
         LinearLayout layout = new LinearLayout(context);

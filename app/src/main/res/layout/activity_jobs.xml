@@ -154,12 +154,12 @@
                                 android:id="@+id/status_light"
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
-                                android:onClick="showManualLoad"
                                 android:layout_gravity="center"
                                 android:layout_marginRight="@dimen/five"
                                 android:background="@drawable/round_conners_background"
                                 android:contentDescription="@string/todo"
-                                android:gravity="center" />
+                                android:gravity="center"
+                                android:onClick="showManualLoad" />
 
 
                             <TextView
@@ -243,8 +243,8 @@
                     android:id="@+id/ISP_display_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <ScrollView
                         android:layout_width="match_parent"
@@ -399,12 +399,28 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <WebView
-                        android:id="@+id/web_view"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="300sp"
                         android:background="@drawable/rounded_with_white_background"
-                        android:backgroundTint="@color/white" />
+                        android:backgroundTint="@color/white"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/web_view_loading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/load" />
+
+                        <WebView
+                            android:id="@+id/web_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/rounded_with_white_background"
+                            android:backgroundTint="@color/white"
+                            android:visibility="gone" />
+                    </LinearLayout>
 
                     <Button
                         style="@style/CustomButtonStyle2"
@@ -476,8 +492,8 @@
                     <ScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingBottom="@dimen/forty_five"
-                        android:layout_marginBottom="@dimen/fifty">
+                        android:layout_marginBottom="@dimen/fifty"
+                        android:paddingBottom="@dimen/forty_five">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -673,8 +689,8 @@
                                 android:layout_height="match_parent"
                                 android:background="@null"
                                 android:hint="0.00"
-                                android:text="0.00"
                                 android:inputType="numberDecimal"
+                                android:text="0.00"
                                 android:textColor="@color/primary_color"
                                 android:textColorHint="@color/primary_color"
                                 android:textSize="@dimen/eighteen" />
@@ -706,8 +722,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/sixteen"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
 
                     <LinearLayout
@@ -733,8 +749,8 @@
                             android:layout_height="match_parent"
                             android:background="@null"
                             android:hint="0.00"
-                            android:text="0.00"
                             android:inputType="numberDecimal"
+                            android:text="0.00"
                             android:textColor="@color/primary_color"
                             android:textColorHint="@color/primary_color"
                             android:textSize="@dimen/eighteen" />
@@ -762,14 +778,15 @@
                         android:layout_height="wrap_content"
                         android:text="@string/load"
                         android:textStyle="bold" />
+
                     <Button
                         android:id="@+id/btn_load_balance1"
                         style="@style/CustomButtonStyle2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
                         android:text="@string/load"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
 
                 </LinearLayout>
@@ -780,8 +797,7 @@
         </RelativeLayout>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--    More Items -->
+    </androidx.constraintlayout.widget.ConstraintLayout><!--    More Items -->
     <LinearLayout
         android:id="@+id/Job_list_screen"
         android:layout_width="match_parent"
@@ -890,7 +906,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/sixteen"
                     android:paddingBottom="50sp">
-<!-- Phila-->
+                    <!-- Phila-->
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/MoreItemsRecyclerView"
                         android:layout_width="match_parent"
@@ -907,8 +923,7 @@
 
         </RelativeLayout>
 
-    </LinearLayout>
-    <!--    confirmation_screen-->
+    </LinearLayout><!--    confirmation_screen-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/confirmation_screen"
         android:layout_width="match_parent"
@@ -972,8 +987,7 @@
             </LinearLayout>
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--Don't remove-->
+    </androidx.constraintlayout.widget.ConstraintLayout><!--Don't remove-->
     <LinearLayout
         android:id="@+id/navbar"
         android:layout_width="match_parent"
@@ -1024,9 +1038,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:visibility="gone"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageButton
                     android:id="@+id/nav_networks_btn1"

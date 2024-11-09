@@ -196,6 +196,13 @@ public class UserManagement extends AppCompatActivity {
         ShowConformPasswordInRegister.setOnClickListener(v -> handleShowPassword());
         ShowPasswordInRegister.setOnClickListener(v -> handleShowPassword());
 
+        SignInBtn.setOnClickListener(v -> {
+            try {
+                handleSignIn();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         ForgotPasswordBtn.setOnClickListener(v -> Utils.showEmailDialog(this));
 //        SignUp.setOnClickListener(v -> handleCreateClick());
         CreateAccBtn.setOnClickListener(v -> {
@@ -485,7 +492,8 @@ public class UserManagement extends AppCompatActivity {
     }
 
     public void backToHome(View view) {
-        Intent intent = new Intent(UserManagement.this, Dashboard.class);
-        startActivity(intent);
+        Utils.showToast(this,"test");
+//        Intent intent = new Intent(UserManagement.this, Dashboard.class);
+//        startActivity(intent);
     }
 }

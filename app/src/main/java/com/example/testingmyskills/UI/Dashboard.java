@@ -5,6 +5,7 @@ import static com.example.testingmyskills.UI.UserManagement.getCountryList;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -85,7 +86,7 @@ public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen;
     private LinearLayout job_list_screen;
     private ImageButton backFromList;
-    private ImageView statusLight, CountryFlag;
+    private ImageView statusLight, CountryFlag,  load ;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
     private TextView number_of_posts;
     private Spinner filter_spinner;
@@ -151,12 +152,13 @@ public class Dashboard extends AppCompatActivity {
         AmountTLoadInBuy.addTextChangedListener(new CurrencyTextWatcher(AmountTLoadInBuy));
         spinners();
         getAccount("");
+        Utils.rotateImageView(load);
     }
 
     private void initialiseViews() {
         SelectedItem = findViewById(R.id.selected_item);
         AmountCapture = findViewById(R.id.amount_in_buy);
-
+    load = findViewById(R.id.web_view_loading);
         WebScree = findViewById(R.id.web);
         Web = findViewById(R.id.web_view);
 
@@ -238,6 +240,7 @@ public class Dashboard extends AppCompatActivity {
         Web.getSettings().setDomStorageEnabled(true);
         Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         Web.addJavascriptInterface(new MyJavaScriptInterface(this), "Android");
+
         Web.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -246,24 +249,27 @@ public class Dashboard extends AppCompatActivity {
                 AmountTLoad.setText("");
                 LoadingNote.setText("");
 
-                // Check if the URL contains payment result information
                 if (url.contains("payment-success")) {
-                    // Extract payment success information from the URL
+
                     String transactionId = Uri.parse(url).getQueryParameter("transactionId");
                     handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
-                    return true; // Prevent further loading
+
+                    return true;  // Prevent loading this URL in the WebView
                 } else if (url.contains("payment-failure")) {
-                    // Handle payment failure
+
                     handlePaymentResult("{\"status\": \"failure\"}");
-                    return true;
+                    return true;  // Prevent loading this URL in the WebView
                 }
 
-                view.loadUrl(url); // Continue loading other URLs in the WebView
+                view.loadUrl(url); // Allow the WebView to load other URLs
                 return false;
             }
+
         });
+
         hideLayouts(WebScree, NavBuyBtn);
         Navbar.setVisibility(View.GONE);
+
         String finalAmount = amount;
         new Thread(() -> {
             PaymentProcessor processor = new PaymentProcessor();
@@ -271,14 +277,15 @@ public class Dashboard extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 try {
-                    JSONObject jsonResponse = new JSONObject(response);
+                 JSONObject jsonResponse = new JSONObject(response);
                     String redirectUrl = jsonResponse.optString("redirectUrl");
 
                     if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                        // Load the payment page into the WebView instead of opening a new browser
                         Web.loadUrl(redirectUrl);
+
+                        load.setVisibility(View.GONE);
+                        Web.setVisibility(View.VISIBLE);
                     } else {
-                        System.out.println("Redirect URL is not available.");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -288,29 +295,48 @@ public class Dashboard extends AppCompatActivity {
         }).start();
     }
 
+
     private void handlePaymentResult(String result) {
         runOnUiThread(() -> {
-            // Parse and handle the payment result here
-            System.out.println("Philasande Payment"+result);
-            Utils.showToast(this, result);
-            // Update UI or perform other actions based on the result
+            try {
+                JSONObject resultJson = new JSONObject(result);
+                String status = resultJson.getString("status");
+                String message;
+
+                if ("success".equals(status)) {
+                    message = "Payment successful! Transaction ID: " + resultJson.optString("transactionId");
+                } else {
+                    message = "Payment failed. Please try again.";
+                }
+
+                Utils.showToast(this, message);
+
+                // Delay the closure of the payment view to allow user to see the message
+                new Handler().postDelayed(() -> closePaymentView(null), 2000);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Utils.showToast(this, "Error processing payment result.");
+            }
         });
     }
 
     public void closePaymentView(View view) {
+        // Optionally clear the WebView to prevent showing the payment page again
+        Web.loadUrl("about:blank");
+
         Navbar.setVisibility(View.VISIBLE);
         hideLayouts(LoadBalanceLayout, NavBuyBtn);
     }
 
-
     @Override
     public void onBackPressed() {
         if (Web.canGoBack()) {
-            Web.goBack();  // Go back in WebView's history
+            Web.goBack();
         } else {
-            super.onBackPressed();  // Default behavior
+            super.onBackPressed();
         }
     }
+
 
 
     private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
