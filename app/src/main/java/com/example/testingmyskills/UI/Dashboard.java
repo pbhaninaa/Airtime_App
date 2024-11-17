@@ -955,25 +955,21 @@ public class Dashboard extends AppCompatActivity {
                     String referenceID = Utils.getString(Dashboard.this, "LastTransactionRefs", "referenceID");
 
 
-                    JSONObject res = ApiService.transactionStatusEnquiry(network,          // Retrieved Network value
-                            agentID,          // Retrieved Agent ID
-                            customerID,       // Retrieved Customer ID
-                            referenceID       // Retrieved Reference ID
+                    JSONObject res = ApiService.transactionStatusEnquiry(network,
+                            agentID,
+                            customerID,
+                            referenceID
                     );
 
 
                     if (res.getInt("responseCode") == 200) {
-                        // Handle success and UI updates on the main thread
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    // Parse the response as a string
                                     String responseString = res.getString("response");
-                                    JSONObject responseJson = new JSONObject(responseString); // Parse the response JSON
+                                    JSONObject responseJson = new JSONObject(responseString);
                                     JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
-
-                                    // Dynamically look for keys that start with "paramsList"
                                     String paramsKey = null;
                                     Iterator<String> keys = methodResponse.keys();
                                     while (keys.hasNext()) {
@@ -985,27 +981,21 @@ public class Dashboard extends AppCompatActivity {
                                     }
 
                                     if (paramsKey != null) {
-                                        // Access the paramsList array using the found key
                                         JSONArray paramsList = methodResponse.getJSONArray(paramsKey);
                                         JSONObject responseDetails = paramsList.getJSONObject(0);
 
-                                        // Fetch the "Serial" field
                                         String serial = responseDetails.optString("Serial", "N/A");
-
                                         if (!serial.equals("N/A") && !serial.isEmpty()) {
-                                            // Show success alert with the serial number
                                             runOnUiThread(() -> new AlertDialog.Builder(Dashboard.this)
                                                     .setTitle("Transaction was successful")
                                                     .setMessage("Serial Number: " + serial)
-                                                    .setPositiveButton("OK", null) // Dismiss the alert when OK is clicked
+                                                    .setPositiveButton("OK", null)
                                                     .show());
                                         } else {
-                                            // Handle the case where "Serial" is not available
                                             runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error: Serial not found in the response."));
                                         }
 
                                     } else {
-                                        // Handle the case where no paramsList key is found
                                         runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error: paramsList not found in the response."));
                                     }
 
