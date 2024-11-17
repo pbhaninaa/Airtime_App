@@ -15,7 +15,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
@@ -240,8 +245,8 @@ public class Dashboard extends AppCompatActivity {
         Web.getSettings().setDomStorageEnabled(true);
         Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         Web.addJavascriptInterface(new MyJavaScriptInterface(this), "Android");
+                Web.setWebViewClient(new WebViewClient() {
 
-        Web.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
@@ -250,13 +255,11 @@ public class Dashboard extends AppCompatActivity {
                 LoadingNote.setText("");
 
                 if (url.contains("payment-success")) {
-
                     String transactionId = Uri.parse(url).getQueryParameter("transactionId");
                     handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
 
                     return true;  // Prevent loading this URL in the WebView
                 } else if (url.contains("payment-failure")) {
-
                     handlePaymentResult("{\"status\": \"failure\"}");
                     return true;  // Prevent loading this URL in the WebView
                 }
@@ -264,7 +267,6 @@ public class Dashboard extends AppCompatActivity {
                 view.loadUrl(url); // Allow the WebView to load other URLs
                 return false;
             }
-
         });
 
         hideLayouts(WebScree, NavBuyBtn);
@@ -277,7 +279,7 @@ public class Dashboard extends AppCompatActivity {
 
             runOnUiThread(() -> {
                 try {
-                 JSONObject jsonResponse = new JSONObject(response);
+                    JSONObject jsonResponse = new JSONObject(response);
                     String redirectUrl = jsonResponse.optString("redirectUrl");
 
                     if (redirectUrl != null && !redirectUrl.isEmpty()) {
@@ -286,6 +288,8 @@ public class Dashboard extends AppCompatActivity {
                         load.setVisibility(View.GONE);
                         Web.setVisibility(View.VISIBLE);
                     } else {
+                        // Handle failure or error case
+                        Utils.showToast(this, "Failed to get redirect URL.");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -300,11 +304,16 @@ public class Dashboard extends AppCompatActivity {
         runOnUiThread(() -> {
             try {
                 JSONObject resultJson = new JSONObject(result);
+
                 String status = resultJson.getString("status");
                 String message;
+                String transactionId = resultJson.optString("transactionId");  // Get the transaction ID
 
                 if ("success".equals(status)) {
-                    message = "Payment successful! Transaction ID: " + resultJson.optString("transactionId");
+                    message = "Payment successful! Transaction ID: " + transactionId;
+
+                    // Call your server to confirm the payment using the webhook
+                    confirmPaymentWithWebhook(transactionId);  // Send the transactionId to your server's webhook
                 } else {
                     message = "Payment failed. Please try again.";
                 }
@@ -320,12 +329,47 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    public void closePaymentView(View view) {
-        // Optionally clear the WebView to prevent showing the payment page again
-        Web.loadUrl("about:blank");
+    private void confirmPaymentWithWebhook(String transactionId) {
+        new Thread(() -> {
+            try {
+                String webhookUrl = "https://your-server.com/webhook";
+                JSONObject payload = new JSONObject();
+                payload.put("status", "successful");
+                payload.put("transactionId", transactionId);
 
+                HttpURLConnection connection = (HttpURLConnection) new URL(webhookUrl).openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+                OutputStream os = connection.getOutputStream();
+                os.write(payload.toString().getBytes());
+                os.flush();
+                os.close();
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+                    System.out.println("Webhook response: " + response.toString());
+                } else {
+                    System.out.println("Webhook request failed. Response code: " + responseCode);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void closePaymentView(View view) {
+        Web.loadUrl("about:blank");
         Navbar.setVisibility(View.VISIBLE);
-        hideLayouts(LoadBalanceLayout, NavBuyBtn);
+        hideLayouts(LoadBalanceLayout, NavLaodBalanceBtn);
     }
 
     @Override

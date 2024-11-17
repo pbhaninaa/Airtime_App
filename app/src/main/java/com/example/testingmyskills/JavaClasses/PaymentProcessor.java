@@ -14,13 +14,15 @@ public class PaymentProcessor {
         HttpURLConnection urlConnection = null;
         String result = "";
         try {
-            // Create URL
             URL url = new URL(urlString);
 
-            // Create JSON object for the POST data
             JSONObject postData = new JSONObject();
             postData.put("amount", amount.replace(".",""));
             postData.put("currency", "ZAR");
+            postData.put("successUrl", "https://www.youtube.com/watch?v=LF26HBPhXMM");
+            postData.put("failureUrl", "https://payments.yoco.com/api/checkouts");
+            postData.put("cancelUrl", "https://payments.yoco.com/api/checkouts");
+
 
             // Open connection
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -60,7 +62,9 @@ public class PaymentProcessor {
                 urlConnection.disconnect();
             }
         }
+        System.out.println("Phila: "+result);
         return result;
+
     }
 }
 
