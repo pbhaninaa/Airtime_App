@@ -492,8 +492,7 @@ public class UserManagement extends AppCompatActivity {
     }
 
     public void backToHome(View view) {
-        Utils.showToast(this,"test");
-//        Intent intent = new Intent(UserManagement.this, Dashboard.class);
-//        startActivity(intent);
+        Intent intent = new Intent(UserManagement.this, Dashboard.class);
+        startActivity(intent);
     }
 }
