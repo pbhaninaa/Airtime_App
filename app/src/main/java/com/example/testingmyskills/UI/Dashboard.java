@@ -284,14 +284,18 @@ public class Dashboard extends AppCompatActivity {
                     String redirectUrl = jsonResponse.optString("redirectUrl");
 
                     if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                        Web.loadUrl(redirectUrl);
+                        // Add a delay of 5 seconds (5000 milliseconds)
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            Web.loadUrl(redirectUrl);
 
-                        load.setVisibility(View.GONE);
-                        Web.setVisibility(View.VISIBLE);
+                            load.setVisibility(View.GONE);
+                            Web.setVisibility(View.VISIBLE);
+                        }, 5000);
                     } else {
                         // Handle failure or error case
                         Utils.showToast(this, "Failed to get redirect URL.");
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                     System.out.println("Failed to parse JSON response.");
@@ -368,10 +372,13 @@ public class Dashboard extends AppCompatActivity {
 
     public void closePaymentView(View view) {
         Web.loadUrl("about:blank");
-        Navbar.setVisibility(View.VISIBLE);
-        LoadBalance1.setVisibility(View.GONE);
-        LoadBalance.setVisibility(View.VISIBLE);
-        hideLayouts(ItemsLayout, NavIPSBtn);
+        handleManualLoadBalance();
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+//        Navbar.setVisibility(View.VISIBLE);
+//        LoadBalance1.setVisibility(View.GONE);
+//        LoadBalance.setVisibility(View.VISIBLE);
+//        hideLayouts(ItemsLayout, NavIPSBtn);
 
 
     }
