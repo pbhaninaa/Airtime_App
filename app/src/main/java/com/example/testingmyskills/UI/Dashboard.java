@@ -475,7 +475,10 @@ public class Dashboard extends AppCompatActivity {
         EconetIsp.setOnClickListener(v -> setISP("Econet"));
         NetoneIsp.setOnClickListener(v -> setISP("NetOne"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
-        BackToHome.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
+        BackToHome.setOnClickListener(v -> {
+            Navbar.setVisibility(View.VISIBLE);
+            hideLayouts(ISPsLayout, NavHomeBtn);
+        });
         LoadBalance.setOnClickListener(v -> handleLoadBalance());
         LoadBalance1.setOnClickListener(v -> handleManualLoadBalance());
     }
