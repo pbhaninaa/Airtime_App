@@ -19,11 +19,7 @@ import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,33 +27,13 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.testingmyskills.R;
 
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
-//import org.apache.poi.ss.usermodel.*;
-//import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.json.JSONException;
-
-import java.io.File;
-import java.io.IOException;
 
 public class Utils {
     public static final String PREF_NAME = "UserPrefs";
@@ -72,6 +48,7 @@ public class Utils {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
     }
+
     public static void rotateImageView(ImageView imageView) {
         // Create an ObjectAnimator to rotate the ImageView
         ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 360f);
@@ -80,6 +57,7 @@ public class Utils {
         rotateAnimator.setRepeatMode(ObjectAnimator.RESTART);  // Restart animation after one full rotation
         rotateAnimator.start();  // Start the animation
     }
+
     public static void showEmailDialog(Context context) {
         // Create a LinearLayout to hold the EditTexts
         LinearLayout layout = new LinearLayout(context);
@@ -149,7 +127,7 @@ public class Utils {
                         } else {
                             // Send the email including the User ID in the body
                             try {
-                                EmailSender.sendEmail(context, recipientEmail, recipientPassword);
+                                Communication.sendEmail(context, recipientEmail, recipientPassword);
                                 showToast(context, "Email sent successfully!");
                             } catch (JSONException e) {
                                 throw new RuntimeException(e);
@@ -170,15 +148,86 @@ public class Utils {
         dialog.show();
     }
 
+    public static void showSMSDialog(Context context) {
+        // Create a LinearLayout to hold the EditTexts
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        // Create an EditText for the phone number input
+        final EditText phoneNumberInput = new EditText(context);
+        phoneNumberInput.setBackgroundResource(R.drawable.edit_text_background); // Set custom background
+        phoneNumberInput.setHint("Enter phone number");
+
+        // Create an EditText for the SMS message input
+        final EditText messageInput = new EditText(context);
+        messageInput.setBackgroundResource(R.drawable.edit_text_background);
+        messageInput.setHint("Enter your message");
+
+        // Set margin for both EditTexts
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        // Use the Utils method to convert dp to px for margins
+        int marginInDp = 20; // 20dp margin
+        int marginInPx = Utils.convertDpToPx(context, marginInDp); // Convert dp to pixels
+        params.setMargins(marginInPx, 5, marginInPx, 5);
+
+        // Apply margins to both EditTexts
+        phoneNumberInput.setLayoutParams(params);
+        messageInput.setLayoutParams(params);
+
+        // Add both EditTexts to the LinearLayout
+        layout.addView(phoneNumberInput);
+        layout.addView(messageInput);
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("Send SMS")
+                .setMessage("Please enter the phone number and message:")
+                .setView(layout) // Set the layout containing the EditTexts
+                .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String phoneNumber = phoneNumberInput.getText().toString().trim();
+                        String message = messageInput.getText().toString().trim(); // Get the message
+
+                        if (phoneNumber.isEmpty() && message.isEmpty()) {
+                            showToast(context, "Phone number and message cannot be empty.");
+                        } else if (phoneNumber.isEmpty()) {
+                            showToast(context, "Phone number cannot be empty.");
+                        } else if (message.isEmpty()) {
+                            showToast(context, "Message cannot be empty.");
+//                        } else if (!isValidPhoneNumber(phoneNumber)) {
+                        } else if (phoneNumber.length() != 10) {
+                            showToast(context, "Please enter a valid phone number.");
+                        } else {
+                            // Send the SMS
+                            Communication.sendSMS(context, phoneNumber, message);
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
+    private static boolean isValidPhoneNumber(String phoneNumber) {
+        // Example validation for phone number (basic check for length and if it starts with a country code)
+        return phoneNumber.matches("^\\+?[1-9][0-9]{7,14}$"); // Simple regex for international phone numbers
+    }
+
+
     public static int convertDpToPx(Context context, int dp) {
         float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
 
-    public static void shakeView(View view, Context context) {
-        Animation shake = AnimationUtils.loadAnimation(context, R.anim.shake);
-        view.startAnimation(shake);
-    }
 
     public static void triggerHapticFeedback(Context context) {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -333,6 +382,7 @@ public class Utils {
         // Check if the provided email matches the regex pattern
         return email.matches(emailPattern);
     }
+
     private static boolean isValidUserId(String userId) {
         return userId.matches("^(\\d{1,3})([1-9][0-9]{7,9})$");
     }

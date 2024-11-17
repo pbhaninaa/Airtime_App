@@ -2,6 +2,7 @@ package com.example.testingmyskills.JavaClasses;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.telephony.SmsManager;
 
 import com.mailjet.client.MailjetClient;
 import com.mailjet.client.MailjetRequest;
@@ -15,7 +16,7 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class EmailSender {
+public class Communication {
     private static final String API_KEY = "6c3afe2c49b9577c76173a5b89cdf8a3"; // Be cautious with hardcoding this
     private static final String SECRET_KEY = "d02384dbbc4ec9787de3235aaa9c2736"; // Same as above
 
@@ -57,5 +58,26 @@ public class EmailSender {
                 e.printStackTrace();
             }
         });
+    }
+    public static void sendSMS(Context context, String phoneNumber,  String message) {
+        // Ensure the phone number is valid
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            // Get SmsManager instance
+            SmsManager smsManager = SmsManager.getDefault();
+
+            // Send SMS in a background thread to avoid blocking the UI
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            executor.submit(() -> {
+                try {
+                    smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+                    System.out.println("SMS sent successfully.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Failed to send SMS.");
+                }
+            });
+        } else {
+            System.out.println("Invalid phone number.");
+        }
     }
 }
