@@ -992,14 +992,18 @@ public class Dashboard extends AppCompatActivity {
                                         // Fetch the "Serial" field
                                         String serial = responseDetails.optString("Serial", "N/A");
 
-                                        if (!serial.equals("N/A")) {
+                                        if (!serial.equals("N/A") && !serial.isEmpty()) {
                                             // Show success alert with the serial number
-                                            runOnUiThread(() -> new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful with").setMessage("Serial Number: " + serial).setPositiveButton("OK", null) // Dismiss the alert when OK is clicked
+                                            runOnUiThread(() -> new AlertDialog.Builder(Dashboard.this)
+                                                    .setTitle("Transaction was successful")
+                                                    .setMessage("Serial Number: " + serial)
+                                                    .setPositiveButton("OK", null) // Dismiss the alert when OK is clicked
                                                     .show());
                                         } else {
                                             // Handle the case where "Serial" is not available
                                             runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error: Serial not found in the response."));
                                         }
+
                                     } else {
                                         // Handle the case where no paramsList key is found
                                         runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error: paramsList not found in the response."));
