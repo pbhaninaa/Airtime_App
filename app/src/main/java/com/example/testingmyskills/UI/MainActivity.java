@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initialiseViews();
-Utils.hideSoftNavBar(this);
+        Utils.hideSoftNavBar(this);
         if (isUserLogged(this)) {
             Intent intent = new Intent(MainActivity.this, Dashboard.class);
             startActivity(intent);
@@ -48,6 +48,7 @@ Utils.hideSoftNavBar(this);
     private void setOnclickListeners() {
         CandidateBtn.setOnClickListener(v -> handleCompanyClick());
     }
+
     private void handleCompanyClick() {
         Utils.triggerHapticFeedback(this);
         Intent intent = new Intent(MainActivity.this, UserManagement.class);

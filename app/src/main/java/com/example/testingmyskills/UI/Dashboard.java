@@ -91,7 +91,7 @@ public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen;
     private LinearLayout job_list_screen;
     private ImageButton backFromList;
-    private ImageView statusLight, CountryFlag,  load ;
+    private ImageView statusLight, CountryFlag, load;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
     private TextView number_of_posts;
     private Spinner filter_spinner;
@@ -163,7 +163,7 @@ public class Dashboard extends AppCompatActivity {
     private void initialiseViews() {
         SelectedItem = findViewById(R.id.selected_item);
         AmountCapture = findViewById(R.id.amount_in_buy);
-    load = findViewById(R.id.web_view_loading);
+        load = findViewById(R.id.web_view_loading);
         WebScree = findViewById(R.id.web);
         Web = findViewById(R.id.web_view);
 
@@ -241,11 +241,12 @@ public class Dashboard extends AppCompatActivity {
             AmountTLoad.setError("Amount is required");
             return;
         }
+
         Web.getSettings().setJavaScriptEnabled(true);
         Web.getSettings().setDomStorageEnabled(true);
         Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         Web.addJavascriptInterface(new MyJavaScriptInterface(this), "Android");
-                Web.setWebViewClient(new WebViewClient() {
+        Web.setWebViewClient(new WebViewClient() {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -304,13 +305,12 @@ public class Dashboard extends AppCompatActivity {
         runOnUiThread(() -> {
             try {
                 JSONObject resultJson = new JSONObject(result);
-
                 String status = resultJson.getString("status");
                 String message;
                 String transactionId = resultJson.optString("transactionId");  // Get the transaction ID
 
                 if ("success".equals(status)) {
-                    message = "Payment successful! Transaction ID: " + transactionId;
+                    message = "Payment successful!";
 
                     // Call your server to confirm the payment using the webhook
                     confirmPaymentWithWebhook(transactionId);  // Send the transactionId to your server's webhook
@@ -321,7 +321,7 @@ public class Dashboard extends AppCompatActivity {
                 Utils.showToast(this, message);
 
                 // Delay the closure of the payment view to allow user to see the message
-                new Handler().postDelayed(() -> closePaymentView(null), 2000);
+                new Handler().postDelayed(() -> closePaymentView(null), 200);
             } catch (JSONException e) {
                 e.printStackTrace();
                 Utils.showToast(this, "Error processing payment result.");
@@ -369,7 +369,11 @@ public class Dashboard extends AppCompatActivity {
     public void closePaymentView(View view) {
         Web.loadUrl("about:blank");
         Navbar.setVisibility(View.VISIBLE);
-        hideLayouts(LoadBalanceLayout, NavLaodBalanceBtn);
+        LoadBalance1.setVisibility(View.GONE);
+        LoadBalance.setVisibility(View.VISIBLE);
+        hideLayouts(ItemsLayout, NavIPSBtn);
+
+
     }
 
     @Override
@@ -380,7 +384,6 @@ public class Dashboard extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 
 
     private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
@@ -1115,7 +1118,8 @@ public class Dashboard extends AppCompatActivity {
         }
 
     }
-public class Statement extends RecyclerView.Adapter<Statement.ViewHolder> {
+
+    public class Statement extends RecyclerView.Adapter<Statement.ViewHolder> {
 
         private List<Map<String, Object>> statements;
         private final Context context;

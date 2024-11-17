@@ -400,7 +400,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="350sp"
+                        android:layout_height="450sp"
                         android:background="@drawable/rounded_with_white_background"
                         android:backgroundTint="@color/white"
                         android:gravity="center">
@@ -427,6 +427,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="closePaymentView"
                         android:text="Close"
+                        android:visibility="gone"
                         android:textStyle="bold" />
                 </LinearLayout>
                 <!--   Items_display_layout this shows List of Items after ASP Selection -->

@@ -8,7 +8,6 @@ import java.net.URL;
 import org.json.JSONObject;
 
 public class PaymentProcessor {
-
     public String createOrder(String amount, String apiKey) {
         String urlString = "https://payments.yoco.com/api/checkouts";
         HttpURLConnection urlConnection = null;
@@ -19,10 +18,11 @@ public class PaymentProcessor {
             JSONObject postData = new JSONObject();
             postData.put("amount", amount.replace(".",""));
             postData.put("currency", "ZAR");
-            postData.put("successUrl", "https://www.youtube.com/watch?v=LF26HBPhXMM");
+
+            // Use custom scheme to bounce back to the app
+            postData.put("successUrl", "testingmyskills://payment-success");
             postData.put("failureUrl", "https://payments.yoco.com/api/checkouts");
             postData.put("cancelUrl", "https://payments.yoco.com/api/checkouts");
-
 
             // Open connection
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -62,9 +62,7 @@ public class PaymentProcessor {
                 urlConnection.disconnect();
             }
         }
-        System.out.println("Phila: "+result);
         return result;
-
     }
 }
 
