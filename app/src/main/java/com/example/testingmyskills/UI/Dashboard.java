@@ -252,8 +252,8 @@ public class Dashboard extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
 
-                AmountTLoad.setText("");
-                LoadingNote.setText("");
+//                AmountTLoad.setText("");
+//                LoadingNote.setText("");
 
                 if (url.contains("payment-success")) {
                     String transactionId = Uri.parse(url).getQueryParameter("transactionId");
@@ -373,12 +373,6 @@ public class Dashboard extends AppCompatActivity {
     public void closePaymentView(View view) {
         Web.loadUrl("about:blank");
         handleManualLoadBalance();
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-//        Navbar.setVisibility(View.VISIBLE);
-//        LoadBalance1.setVisibility(View.GONE);
-//        LoadBalance.setVisibility(View.VISIBLE);
-//        hideLayouts(ItemsLayout, NavIPSBtn);
 
 
     }
@@ -444,19 +438,11 @@ public class Dashboard extends AppCompatActivity {
         String AgentEmail = sharedPreferences.getString("email", "");
         String AgentPassword = sharedPreferences.getString("password", "");
         String AgentName = name + " " + surname;
-
-        // Setup Job List RecyclerView with the statement adapter
-        // Ensure that `this` here refers to a `Context` (such as an Activity)
         jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-// Pass `this` (Context) along with the statements list to the adapter
         jobListRecyclerView.setAdapter(new Statement(this, getStatement(AgentID, AgentName, AgentPassword, AgentEmail)));
-
-        // Fetch products asynchronously and update the ItemRecyclerView
         getProducts(new ProductsCallback() {
             @Override
             public void onProductsLoaded(List<Map<String, Object>> products) {
-                // Once the products are loaded, set up the RecyclerView
                 ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                 ItemRecyclerView.setAdapter(new RecommendedAd(products));
             }
@@ -515,8 +501,12 @@ public class Dashboard extends AppCompatActivity {
                                     JSONArray paramsList = methodResponse.getJSONArray("paramsList");
                                     JSONObject userObject = paramsList.getJSONObject(0);
                                     String balance = userObject.getString("cumulativeBalance");
+                                    Utils.saveString(Dashboard.this, "profile", "balance", balance);
                                     getAccount(balance);
                                     setISP(SelectedIsp.getText().toString());
+                                    Navbar.setVisibility(View.VISIBLE);
+                                    LoadBalance1.setVisibility(View.GONE);
+                                    LoadBalance.setVisibility(View.VISIBLE);
                                     hideLayouts(ItemsLayout, NavIPSBtn);
 
                                 } catch (JSONException e) {
@@ -634,6 +624,13 @@ public class Dashboard extends AppCompatActivity {
 
     private void getAccount(String bal) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        if (!bal.isEmpty()) {
+            Utils.saveString(Dashboard.this, "profile", "balance", bal);
+        } else {
+            Utils.saveString(Dashboard.this, "profile", "balance", sharedPreferences.getString("balance", ""));
+        }
+
+
         String name = sharedPreferences.getString("name", "");
         String surname = sharedPreferences.getString("surname", "");
         String phone = sharedPreferences.getString("phone", "");
@@ -999,7 +996,7 @@ public class Dashboard extends AppCompatActivity {
                                                     .setPositiveButton("OK", null)
                                                     .show());
                                         } else {
-                                            runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error: Serial not found in the response."));
+                                            runOnUiThread(() -> Utils.showToast(Dashboard.this, "No transaction to display"));
                                         }
 
                                     } else {
@@ -1011,7 +1008,6 @@ public class Dashboard extends AppCompatActivity {
                                     runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error parsing response data: " + e.getMessage()));
                                 }
                             }
-
 
                         });
                     } else {
