@@ -12,7 +12,14 @@ import java.util.Map;
 public class IveriPaymentProcessor {
     private static final String BASE_URL = "https://portal.host.iveri.com/Lite/Authorise.aspx";
 
-    public String createOrder(String applicationId, String amount, String successUrl, String failUrl, String tryLaterUrl, String errorUrl) {
+    // Hardcoded parameters
+    private static final String APPLICATION_ID = "YOUR_APPLICATION_ID"; // Replace with your iVeri Application ID
+    private static final String SUCCESS_URL = "testingmyskills://payment-success"; // Redirect back to the app
+    private static final String FAIL_URL = "https://portal.host.iveri.com/Lite/Fail";
+    private static final String TRY_LATER_URL = "https://portal.host.iveri.com/Lite/TryLater";
+    private static final String ERROR_URL = "https://portal.host.iveri.com/Lite/Error";
+
+    public String createOrder(String amount) {
         String result = "";
 
         try {
@@ -25,13 +32,13 @@ public class IveriPaymentProcessor {
 
             // Prepare POST data
             Map<String, String> postData = new HashMap<>();
-            postData.put("Lite_Merchant_ApplicationId", applicationId);
-            postData.put("Lite_Order_Amount", amount.replace(".", ""));
+            postData.put("Lite_Merchant_ApplicationId", APPLICATION_ID);
+            postData.put("Lite_Order_Amount", amount.replace(".", "")); // Amount in cents
             postData.put("Lite_Currency_AlphaCode", "ZAR");
-            postData.put("Lite_Website_Successful_Url", successUrl);
-            postData.put("Lite_Website_Fail_Url", failUrl);
-            postData.put("Lite_Website_TryLater_Url", tryLaterUrl);
-            postData.put("Lite_Website_Error_Url", errorUrl);
+            postData.put("Lite_Website_Successful_Url", SUCCESS_URL); // Redirect to app on success
+            postData.put("Lite_Website_Fail_Url", FAIL_URL); // iVeri fail page
+            postData.put("Lite_Website_TryLater_Url", TRY_LATER_URL); // iVeri try later page
+            postData.put("Lite_Website_Error_Url", ERROR_URL); // iVeri error page
             postData.put("Lite_Authorisation", "False"); // Indicates a purchase/sale
 
             // Convert POST data to URL-encoded format
