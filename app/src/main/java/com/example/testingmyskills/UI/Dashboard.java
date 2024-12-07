@@ -304,6 +304,74 @@ public class Dashboard extends AppCompatActivity {
         }).start();
     }
 
+private void handleIveriPayment() {
+    String amount = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
+
+    if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
+        AmountTLoad.setError("Amount is required");
+        return;
+    }
+
+    Web.getSettings().setJavaScriptEnabled(true);
+    Web.getSettings().setDomStorageEnabled(true);
+    Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+    Web.addJavascriptInterface(new MyJavaScriptInterface(this), "Android");
+    Web.setWebViewClient(new WebViewClient() {
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            String url = request.getUrl().toString();
+
+            if (url.contains("payment-success")) {
+                String transactionId = Uri.parse(url).getQueryParameter("transactionId");
+                handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
+                return true; // Prevent loading this URL in the WebView
+            } else if (url.contains("payment-failure")) {
+                handlePaymentResult("{\"status\": \"failure\"}");
+                return true; // Prevent loading this URL in the WebView
+            }
+
+            view.loadUrl(url); // Allow the WebView to load other URLs
+            return false;
+        }
+    });
+
+    hideLayouts(WebScree, NavBuyBtn);
+    Navbar.setVisibility(View.GONE);
+
+    String finalAmount = amount;
+    new Thread(() -> {
+        IveriPaymentProcessor processor = new IveriPaymentProcessor();
+        String response = processor.createOrder(
+            getResources().getString(R.string.iveri_application_id), 
+            finalAmount,
+            "testingmyskills://payment-success",
+            "testingmyskills://payment-failure",
+            "testingmyskills://payment-error",
+            "testingmyskills://payment-cancel"
+        );
+
+        runOnUiThread(() -> {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                String redirectUrl = jsonResponse.optString("redirectUrl");
+
+                if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        Web.loadUrl(redirectUrl);
+                        load.setVisibility(View.GONE);
+                        Web.setVisibility(View.VISIBLE);
+                    }, 5000);
+                } else {
+                    Utils.showToast(this, "Failed to get redirect URL.");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Utils.showToast(this, "Error parsing payment response.");
+            }
+        });
+    }).start();
+}
 
     private void handlePaymentResult(String result) {
         runOnUiThread(() -> {
@@ -452,6 +520,7 @@ public class Dashboard extends AppCompatActivity {
     private void setOnclickListeners() {
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
+        // BuyBtn.setOnClickListener(v -> handleIveriPayment());
         BuyBtn1.setOnClickListener(v -> buy());
         FilterButton.setOnClickListener(v -> hideFilter());
         No.setOnClickListener(v -> handleNo());
