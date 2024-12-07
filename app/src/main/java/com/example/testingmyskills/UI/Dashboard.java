@@ -341,15 +341,9 @@ private void handleIveriPayment() {
 
     String finalAmount = amount;
     new Thread(() -> {
-        IveriPaymentProcessor processor = new IveriPaymentProcessor();
-        String response = processor.createOrder(
-            getResources().getString(R.string.iveri_application_id), 
-            finalAmount,
-            "testingmyskills://payment-success",
-            "testingmyskills://payment-failure",
-            "testingmyskills://payment-error",
-            "testingmyskills://payment-cancel"
-        );
+       IveriPaymentProcessor processor = new IveriPaymentProcessor();
+       String response = processor.createOrder(finalAmount); 
+
 
         runOnUiThread(() -> {
             try {
