@@ -8,21 +8,21 @@ import java.net.URL;
 import org.json.JSONObject;
 
 public class PaymentProcessor {
-    public String createOrder(String amount, String apiKey) {
-        String urlString = "https://payments.yoco.com/api/checkouts";
+    public String createOrder(String amount, String apiKey,String successUrl,String checkoutUrl) {
+
         HttpURLConnection urlConnection = null;
         String result = "";
         try {
-            URL url = new URL(urlString);
+            URL url = new URL(checkoutUrl);
 
             JSONObject postData = new JSONObject();
             postData.put("amount", amount.replace(".",""));
             postData.put("currency", "ZAR");
 
             // Use custom scheme to bounce back to the app
-            postData.put("successUrl", "testingmyskills://payment-success");
-            postData.put("failureUrl", "https://payments.yoco.com/api/checkouts");
-            postData.put("cancelUrl", "https://payments.yoco.com/api/checkouts");
+            postData.put("successUrl", successUrl);
+            postData.put("failureUrl", checkoutUrl);
+            postData.put("cancelUrl", checkoutUrl);
 
             // Open connection
             urlConnection = (HttpURLConnection) url.openConnection();

@@ -39,6 +39,7 @@ import android.os.Looper;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,7 @@ import android.widget.Toast;
 
 import com.example.testingmyskills.JavaClasses.ApiService;
 import com.example.testingmyskills.JavaClasses.CurrencyTextWatcher;
+import com.example.testingmyskills.JavaClasses.IveriPaymentProcessor;
 import com.example.testingmyskills.JavaClasses.MyJavaScriptInterface;
 import com.example.testingmyskills.JavaClasses.Country;
 import com.example.testingmyskills.JavaClasses.PaymentProcessor;
@@ -265,7 +267,7 @@ public class Dashboard extends AppCompatActivity {
                     return true;  // Prevent loading this URL in the WebView
                 }
 
-                view.loadUrl(url); // Allow the WebView to load other URLs
+                view.loadUrl(url); // Allow the WebView to load other UR
                 return false;
             }
         });
@@ -276,7 +278,10 @@ public class Dashboard extends AppCompatActivity {
         String finalAmount = amount;
         new Thread(() -> {
             PaymentProcessor processor = new PaymentProcessor();
-            String response = processor.createOrder(finalAmount, getResources().getString(R.string.api_key));
+            String response = processor.createOrder(finalAmount,
+                    getResources().getString(R.string.yoco_api_key),
+                    getResources().getString(R.string.successRedirectUrl),
+                    getResources().getString(R.string.yoco_failureUrl));
 
             runOnUiThread(() -> {
                 try {
@@ -303,70 +308,185 @@ public class Dashboard extends AppCompatActivity {
             });
         }).start();
     }
+    private void handleIveriPayment() {
+        String amount = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
 
-private void handleIveriPayment() {
-    String amount = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
-
-    if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
-        AmountTLoad.setError("Amount is required");
-        return;
-    }
-
-    Web.getSettings().setJavaScriptEnabled(true);
-    Web.getSettings().setDomStorageEnabled(true);
-    Web.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-    Web.addJavascriptInterface(new MyJavaScriptInterface(this), "Android");
-    Web.setWebViewClient(new WebViewClient() {
-
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            String url = request.getUrl().toString();
-
-            if (url.contains("payment-success")) {
-                String transactionId = Uri.parse(url).getQueryParameter("transactionId");
-                handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
-                return true; // Prevent loading this URL in the WebView
-            } else if (url.contains("payment-failure")) {
-                handlePaymentResult("{\"status\": \"failure\"}");
-                return true; // Prevent loading this URL in the WebView
-            }
-
-            view.loadUrl(url); // Allow the WebView to load other URLs
-            return false;
+        if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
+            AmountTLoad.setError("Amount is required");
+            return;
         }
-    });
 
-    hideLayouts(WebScree, NavBuyBtn);
-    Navbar.setVisibility(View.GONE);
+        // Enable JavaScript and configure WebView
+        Web.getSettings().setJavaScriptEnabled(true);
+        Web.getSettings().setDomStorageEnabled(true);
+        Web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW); // Allow mixed content
+        Web.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
 
-    String finalAmount = amount;
-    new Thread(() -> {
-       IveriPaymentProcessor processor = new IveriPaymentProcessor();
-       String response = processor.createOrder(finalAmount); 
-
-
-        runOnUiThread(() -> {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                String redirectUrl = jsonResponse.optString("redirectUrl");
-
-                if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        Web.loadUrl(redirectUrl);
-                        load.setVisibility(View.GONE);
-                        Web.setVisibility(View.VISIBLE);
-                    }, 5000);
-                } else {
-                    Utils.showToast(this, "Failed to get redirect URL.");
+                // Check if payment is successful or failed based on URL parameters
+                if (url.contains("payment-success")) {
+                    String transactionId = Uri.parse(url).getQueryParameter("transactionId");
+                    handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
+                    return true; // Prevent loading this URL in the WebView
+                } else if (url.contains("payment-failure")) {
+                    handlePaymentResult("{\"status\": \"failure\"}");
+                    return true; // Prevent loading this URL in the WebView
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Utils.showToast(this, "Error parsing payment response.");
+                System.out.println("URL : "+url);
+                view.loadUrl(url); // Allow the WebView to load other URLs
+                return false;
             }
         });
-    }).start();
-}
 
+        // Hide layouts and navigation elements
+        hideLayouts(WebScree, NavBuyBtn);
+        Navbar.setVisibility(View.GONE);
+
+        // Start payment process in a background thread
+        String finalAmount = amount;
+        new Thread(() -> {
+            IveriPaymentProcessor processor = new IveriPaymentProcessor();
+            String response = processor.createOrder(
+                    "https://portal.host.iveri.com/Lite/Authorise.aspx", // Replace with the correct base URL
+                    finalAmount,
+                    "your-application-id", // Replace with actual application ID
+                    "successRedirectUrl",
+                    "errorRedirectUrl",
+                    "failureRedirectUrl",
+                    "tryLaterRedirectUrl"
+            );
+
+            // Handle the response on the main thread
+            runOnUiThread(() -> {
+                try {
+                    // Log and handle HTML response (payment page URL)
+                    if (response.trim().startsWith("<html")) {
+                        Log.d("HTMLResponse", response);
+                        Web.loadDataWithBaseURL(null, response, "text/html", "UTF-8", null);
+                        load.setVisibility(View.GONE);
+                        Web.setVisibility(View.VISIBLE);
+                    } else  if (response.trim().startsWith("{")) {
+                        // Handle JSON response (transaction details)
+                        JSONObject jsonResponse = new JSONObject(response);
+                        String redirectUrl = jsonResponse.optString("redirectUrl");
+
+                        if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                            Web.loadUrl(redirectUrl);
+                            load.setVisibility(View.GONE);
+                            Web.setVisibility(View.VISIBLE);
+                        } else {
+                            Utils.showToast(this, "Failed to get redirect URL.");
+                        }
+                    } else {
+                        // Unexpected response
+                        Utils.showToast(this, "Unexpected server response.");
+                        Log.e("UnexpectedResponse", response);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Utils.showToast(this, "Error parsing payment response.");
+                }
+            });
+        }).start();
+    }
+
+  /*  private void handleIveriPayment() {
+        String amount = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
+
+        if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
+            AmountTLoad.setError("Amount is required");
+            return;
+        }
+
+        // Enable JavaScript and configure WebView
+        Web.getSettings().setJavaScriptEnabled(true);
+        Web.getSettings().setDomStorageEnabled(true);
+        Web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW); // Allow mixed content
+        Web.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+
+                if (url.contains("payment-success")) {
+                    String transactionId = Uri.parse(url).getQueryParameter("transactionId");
+                    handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
+                    return true; // Prevent loading this URL in the WebView
+                } else if (url.contains("payment-failure")) {
+                    handlePaymentResult("{\"status\": \"failure\"}");
+                    return true; // Prevent loading this URL in the WebView
+                }
+
+                view.loadUrl(url); // Allow the WebView to load other URLs
+                return false;
+            }
+        });
+
+        // Hide layouts and navigation elements
+        hideLayouts(WebScree, NavBuyBtn);
+        Navbar.setVisibility(View.GONE);
+
+        // Start payment process in a background thread
+        String finalAmount = amount;
+        new Thread(() -> {
+            String baseUrl = "https://portal.host.iveri.com/Lite/Authorise.aspx";
+            String appId = getResources().getString(R.string.iveri_api_key);
+            String successUrl = getResources().getString(R.string.successRedirectUrl);
+            String errorUrl = getResources().getString(R.string.iveri_errorUrl);
+            String failureUrl = getResources().getString(R.string.iveri_failureUrl);
+            String tryLaterUrl = getResources().getString(R.string.iveri_tryLaterUrl);
+
+// Create the order
+            IveriPaymentProcessor processor = new IveriPaymentProcessor();
+            String response = processor.createOrder(baseUrl, "10000", appId, successUrl, errorUrl, failureUrl, tryLaterUrl);
+
+
+            // Handle the response on the main thread
+            runOnUiThread(() -> {
+                try {
+                    if (response.trim().startsWith("<html")) {
+                        // Log the HTML response for debugging
+                        Log.d("HTMLResponse", response);
+
+                        // Load the HTML response into the WebView
+                        Web.loadDataWithBaseURL(null, response, "text/html", "UTF-8", null);
+
+                        // Adjust visibility
+                        load.setVisibility(View.GONE);
+                        Web.setVisibility(View.VISIBLE);
+                    } else if (response.trim().startsWith("{")) {
+
+                        System.out.println("Has an OBJ");
+                        // JSON response - Parse and handle redirect URL
+                        JSONObject jsonResponse = new JSONObject(response);
+                        String redirectUrl = jsonResponse.optString("redirectUrl");
+
+                        if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                            System.out.println("Redirect not Null");
+
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                Web.loadUrl(redirectUrl);
+                                load.setVisibility(View.GONE);
+                                Web.setVisibility(View.VISIBLE);
+                            }, 1000);
+                        } else {
+                            Utils.showToast(this, "Failed to get redirect URL.");
+                        }
+                    } else {
+                        // Unexpected response
+                        Utils.showToast(this, "Unexpected server response.");
+                        Log.e("UnexpectedResponse", response);
+                    }
+                } catch (JSONException e) {
+                    // Log the error and show a message
+                    e.printStackTrace();
+                    Utils.showToast(this, "Error parsing payment response.");
+                }
+            });
+        }).start();
+    }
+*/
     private void handlePaymentResult(String result) {
         runOnUiThread(() -> {
             try {
@@ -535,7 +655,8 @@ private void handleIveriPayment() {
             Navbar.setVisibility(View.VISIBLE);
             hideLayouts(ISPsLayout, NavHomeBtn);
         });
-        LoadBalance.setOnClickListener(v -> handleLoadBalance());
+//        LoadBalance.setOnClickListener(v -> handleLoadBalance());
+        LoadBalance.setOnClickListener(v -> handleIveriPayment());
         LoadBalance1.setOnClickListener(v -> handleManualLoadBalance());
     }
 
@@ -770,15 +891,15 @@ private void handleIveriPayment() {
             return;
         }
         String p = CountryCode.getSelectedItem() + phone;
-        if (!p.equals("+263781801175")) {
-            Utils.showToast(Dashboard.this, "Invalid Number");
-            return;
-        }
+
         if (price.equals("0.00")) {
             AmountTLoadInBuy.setError("Price is required");
         }
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "").replace(",", "").replace("Account Balance", "").trim();
-
+        if (!p.startsWith("+263")) {
+            Utils.showToast(Dashboard.this, "Invalid Number");
+            return;
+        }
 
         try {
             double priceValue = price.isEmpty() ? 0 : Double.parseDouble(price);
@@ -886,7 +1007,7 @@ private void handleIveriPayment() {
             return;
         }
         String p = CountryCode.getSelectedItem() + phone;
-        if (!p.equals("+263781801175")) {
+        if (!p.equals("+263")) {
             Utils.showToast(Dashboard.this, "Invalid Number");
             return;
         }

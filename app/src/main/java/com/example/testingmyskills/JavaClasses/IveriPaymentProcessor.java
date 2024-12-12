@@ -10,21 +10,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IveriPaymentProcessor {
-    private static final String BASE_URL = "https://portal.host.iveri.com/Lite/Authorise.aspx";
 
-    // Hardcoded parameters
-    private static final String APPLICATION_ID = "YOUR_APPLICATION_ID"; // Replace with your iVeri Application ID
-    private static final String SUCCESS_URL = "testingmyskills://payment-success"; // Redirect back to the app
-    private static final String FAIL_URL = "https://portal.host.iveri.com/Lite/Fail";
-    private static final String TRY_LATER_URL = "https://portal.host.iveri.com/Lite/TryLater";
-    private static final String ERROR_URL = "https://portal.host.iveri.com/Lite/Error";
-
-    public String createOrder(String amount) {
+    // Method to create an iVeri payment order
+    public String createOrder(String baseUrl, String amount, String appId,
+                              String successUrl, String errorUrl,
+                              String failureUrl, String tryLaterUrl) {
         String result = "";
 
         try {
-            // Setup URL connection
-            URL url = new URL(BASE_URL);
+            // Setup the URL connection
+            URL url = new URL(baseUrl); // Use full URL
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -32,14 +27,14 @@ public class IveriPaymentProcessor {
 
             // Prepare POST data
             Map<String, String> postData = new HashMap<>();
-            postData.put("Lite_Merchant_ApplicationId", APPLICATION_ID);
+            postData.put("Lite_Merchant_ApplicationId", appId); // Application ID
             postData.put("Lite_Order_Amount", amount.replace(".", "")); // Amount in cents
-            postData.put("Lite_Currency_AlphaCode", "ZAR");
-            postData.put("Lite_Website_Successful_Url", SUCCESS_URL); // Redirect to app on success
-            postData.put("Lite_Website_Fail_Url", FAIL_URL); // iVeri fail page
-            postData.put("Lite_Website_TryLater_Url", TRY_LATER_URL); // iVeri try later page
-            postData.put("Lite_Website_Error_Url", ERROR_URL); // iVeri error page
-            postData.put("Lite_Authorisation", "False"); // Indicates a purchase/sale
+            postData.put("Lite_Currency_AlphaCode", "ZAR"); // Currency
+            postData.put("Lite_Website_Successful_Url", successUrl); // Success URL
+            postData.put("Lite_Website_Fail_Url", failureUrl); // Failure URL
+            postData.put("Lite_Website_TryLater_Url", tryLaterUrl); // Try Later URL
+            postData.put("Lite_Website_Error_Url", errorUrl); // Error URL
+            postData.put("Lite_Authorisation", "False"); // False for purchase/sale
 
             // Convert POST data to URL-encoded format
             StringBuilder postDataString = new StringBuilder();
@@ -58,7 +53,7 @@ public class IveriPaymentProcessor {
             os.flush();
             os.close();
 
-            // Get response
+            // Get the response
             int responseCode = urlConnection.getResponseCode();
             BufferedReader br;
             if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -67,6 +62,7 @@ public class IveriPaymentProcessor {
                 br = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
             }
 
+            // Read and build the response string
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = br.readLine()) != null) {
@@ -80,6 +76,6 @@ public class IveriPaymentProcessor {
             result = "Error: " + e.getMessage();
         }
 
-        return result;
+        return result; // Return the server response
     }
 }
