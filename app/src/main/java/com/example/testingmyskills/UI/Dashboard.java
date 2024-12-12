@@ -897,7 +897,7 @@ public class Dashboard extends AppCompatActivity {
         }
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "").replace(",", "").replace("Account Balance", "").trim();
         if (!p.startsWith("+263")) {
-            Utils.showToast(Dashboard.this, "Invalid Number");
+            Utils.showToast(Dashboard.this, "Invalid Number : "+p);
             return;
         }
 
@@ -1007,8 +1007,8 @@ public class Dashboard extends AppCompatActivity {
             return;
         }
         String p = CountryCode.getSelectedItem() + phone;
-        if (!p.equals("+263")) {
-            Utils.showToast(Dashboard.this, "Invalid Number");
+        if (!p.startsWith("+263")) {
+            Utils.showToast(Dashboard.this, "Invalid Number : "+p);
             return;
         }
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "")  // Remove the currency symbol
