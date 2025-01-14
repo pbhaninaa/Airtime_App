@@ -19,6 +19,7 @@ import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,7 +35,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.json.JSONException;
-
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 public class Utils {
     public static final String PREF_NAME = "UserPrefs";
     public static final String EMAIL_KEY = "email";
@@ -42,11 +45,11 @@ public class Utils {
     private static final String REMEMBER_ME = "rememberMe";
 
     public static void hideSoftNavBar(Activity activity) {
-        View decorView = activity.getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        decorView.setSystemUiVisibility(uiOptions);
+//        View decorView = activity.getWindow().getDecorView();
+//        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                | View.SYSTEM_UI_FLAG_FULLSCREEN
+//        corVie      | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+//        dew.setSystemUiVisibility(uiOptions);
     }
 
     public static void rotateImageView(ImageView imageView) {
@@ -351,19 +354,67 @@ public class Utils {
 
     }
 
+
+
     public static String FormatAmount(String a) {
-        String amountString = a.replace(",", "");
+        // Handle locale-specific decimal and grouping separators
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.getDefault());
+        char decimalSeparator = symbols.getDecimalSeparator();
+        char groupingSeparator = symbols.getGroupingSeparator();
+
+        // Remove grouping separators (e.g., commas in US or periods in some European countries)
+        String amountString = a.replace(String.valueOf(groupingSeparator), "");
+
+        // Replace the decimal separator (e.g., comma for some locales) with a period for parsing
+        amountString = amountString.replace(decimalSeparator, '.');
+
+        if (a.contains(String.valueOf(decimalSeparator))) {
+            // If there's a decimal separator in the original string, return the formatted input
+            return a;
+        }
+
         try {
             double parsedAmount = Double.parseDouble(amountString);
+
+            // Round to two decimal places
             double amountConverted = Math.round(parsedAmount * 100.00) / 100.00;
-            // Format the double value with commas separating every three digits before the decimal point and two decimal places
-            DecimalFormat decimalFormat = new DecimalFormat("#,###,###,##0.00");
+
+            // Create a DecimalFormat instance for the output with the current locale
+            DecimalFormat decimalFormat = new DecimalFormat("#,###,###,##0.00", symbols);
+
+            // Format the double value and return it
             return decimalFormat.format(amountConverted);
         } catch (NumberFormatException e) {
             System.out.println(amountString);
             return "NaN"; // Indicate that the input could not be parsed
         }
     }
+
+    public static void setFieldFocus(EditText field, Context context) {
+        // Request focus for the field
+        field.requestFocus();
+
+        // Get the InputMethodManager system service
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Show the soft keyboard
+        if (imm != null) {
+            imm.showSoftInput(field, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    public static void hideSoftKeyboard(Context context) {
+        // Get the InputMethodManager system service
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Get the current window token
+        View view = ((Activity) context).getCurrentFocus();
+
+        if (imm != null && view != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
 
     public static void saveRefs(Context context, String network, String agentID, String customerID, String referenceID) {
         SharedPreferences sharedPref = context.getSharedPreferences("LastTransactionRefs", MODE_PRIVATE);
@@ -409,11 +460,11 @@ public class Utils {
         statusLight.setImageResource(R.drawable.round_conners_background);
 
         // Set appropriate colors based on the remaining balance
-        if (balance > 3000) {
+        if (balance > 50.00) {
             statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.lime)); // Green color
-        } else if (balance > 2000) {
+        } else if (balance > 30.00) {
             statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.gold)); // Yellow color
-        } else if (balance > 1000) {
+        } else if (balance > 20.00) {
             statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.orange)); // Orange color
         } else {
             statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.red)); // Red color

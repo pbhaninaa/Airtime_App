@@ -181,7 +181,7 @@
                             android:gravity="center"
                             android:paddingStart="15sp"
                             android:paddingEnd="15sp"
-                            android:paddingBottom="15sp"
+                            android:paddingBottom="5sp"
                             android:src="@drawable/logo">
 
                             <LinearLayout
@@ -249,7 +249,7 @@
                     <ScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/ten"
+                        android:layout_marginTop="@dimen/five"
                         android:layout_marginBottom="@dimen/fifty">
 
                         <LinearLayout
@@ -265,9 +265,7 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:paddingLeft="15sp"
-                                    android:paddingRight="15sp">
+                                    android:orientation="horizontal">
 
                                     <LinearLayout
                                         android:id="@+id/econetISP"
@@ -332,9 +330,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="9sp"
-                                    android:orientation="horizontal"
-                                    android:paddingLeft="15sp"
-                                    android:paddingRight="15sp">
+                                    android:orientation="horizontal">
 
                                     <LinearLayout
                                         android:id="@+id/netoneISP"
@@ -395,6 +391,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/rounded_with_white_background"
+                    android:visibility="gone"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -428,6 +425,7 @@
                         android:visibility="gone"
                         android:textStyle="bold" />
                 </LinearLayout>
+
                 <!--   Items_display_layout this shows List of Items after ASP Selection -->
                 <LinearLayout
                     android:id="@+id/Items_display_layout"
@@ -522,14 +520,14 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/sixteen"
+                        android:layout_marginTop="@dimen/five"
                         android:orientation="vertical">
 
                         <LinearLayout
                             android:id="@+id/selected_item"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/ten"
+                            android:layout_marginBottom="@dimen/five"
                             android:background="@drawable/rounded_conners_with_gradient"
                             android:orientation="vertical"
                             tools:ignore="NestedWeights">
@@ -540,7 +538,10 @@
                                 android:background="@drawable/rounded_with_white_background"
                                 android:gravity="center_vertical"
                                 android:orientation="vertical"
-                                android:padding="10sp">
+                                android:paddingStart="@dimen/ten"
+                                android:paddingTop="@dimen/fifteen"
+                                android:paddingEnd="@dimen/ten"
+                                android:paddingBottom="@dimen/fifteen">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -552,7 +553,9 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="left"
-                                        android:layout_weight="2"
+                                        android:layout_weight="1"
+
+
                                         android:gravity="left"
                                         android:orientation="vertical"
                                         android:paddingStart="20sp">
@@ -719,7 +722,7 @@
                     android:id="@+id/Load_balance_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/sixteen"
+                    android:layout_marginTop="@dimen/five"
                     android:orientation="vertical"
                     android:visibility="gone">
 
@@ -1082,6 +1085,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/topUpBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -1092,7 +1096,7 @@
                 <ImageButton
                     android:id="@+id/nav_load_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="35dp"
+                    android:layout_height="wrap_content"
                     android:backgroundTint="@android:color/transparent"
                     android:src="@drawable/top_up"
                     app:tint="@color/primary_color" />
@@ -1128,7 +1132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/buy"
+                    android:text="Airtime"
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>

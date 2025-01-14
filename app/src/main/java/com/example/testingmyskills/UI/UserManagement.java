@@ -402,7 +402,8 @@ public class UserManagement extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Utils.showToast(UserManagement.this, "Error: " + e.getMessage());
+                            Utils.showToast(UserManagement.this, e.getMessage());
+                            //Utils.showToast(UserManagement.this, "Error: " + e.getMessage());
                         }
                     });
                 } catch (Exception e) {
@@ -440,6 +441,12 @@ public class UserManagement extends AppCompatActivity {
     public static List<Country> getCountryList() {
         List<Country> countryList = new ArrayList<>();
         countryList.add(new Country("+27", "South Africa", "za"));
+        countryList.add(new Country("+263", "Zimbabwe", "zw"));
+
+        return countryList;
+    }   public static List<Country> getZimCode() {
+        List<Country> countryList = new ArrayList<>();
+//        countryList.add(new Country("+27", "South Africa", "za"));
         countryList.add(new Country("+263", "Zimbabwe", "zw"));
 
         return countryList;

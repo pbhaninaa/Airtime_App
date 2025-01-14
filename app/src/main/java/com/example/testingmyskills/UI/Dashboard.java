@@ -1,12 +1,14 @@
 package com.example.testingmyskills.UI;
 
 import static com.example.testingmyskills.UI.UserManagement.getCountryList;
+import static com.example.testingmyskills.UI.UserManagement.getZimCode;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -115,6 +117,12 @@ public class Dashboard extends AppCompatActivity {
         getProfile();
         show = true;
         initialiseViews();
+// To be removed when top up functionality works
+        LinearLayout topUp;
+        topUp = (LinearLayout) findViewById(R.id.topUpBtn);
+
+        topUp.setVisibility(Utils.getString(this, "savedCredentials", "email").contains("649045091") ? View.VISIBLE : View.GONE);
+
         Utils.hideSoftNavBar(Dashboard.this);
         setOnclickListeners();
         recyclerViews();
@@ -130,7 +138,7 @@ public class Dashboard extends AppCompatActivity {
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
 
-        ArrayAdapter<Country> ada = new ArrayAdapter<>(this, R.layout.spinner_item, getCountryList());
+        ArrayAdapter<Country> ada = new ArrayAdapter<>(this, R.layout.spinner_item, getZimCode());
         ada.setDropDownViewResource(R.layout.spinner_item);
         CountryCode.setAdapter(ada);
 
@@ -308,6 +316,7 @@ public class Dashboard extends AppCompatActivity {
             });
         }).start();
     }
+
     private void handleIveriPayment() {
         String amount = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
 
@@ -334,7 +343,7 @@ public class Dashboard extends AppCompatActivity {
                     handlePaymentResult("{\"status\": \"failure\"}");
                     return true; // Prevent loading this URL in the WebView
                 }
-                System.out.println("URL : "+url);
+                System.out.println("URL : " + url);
                 view.loadUrl(url); // Allow the WebView to load other URLs
                 return false;
             }
@@ -367,7 +376,7 @@ public class Dashboard extends AppCompatActivity {
                         Web.loadDataWithBaseURL(null, response, "text/html", "UTF-8", null);
                         load.setVisibility(View.GONE);
                         Web.setVisibility(View.VISIBLE);
-                    } else  if (response.trim().startsWith("{")) {
+                    } else if (response.trim().startsWith("{")) {
                         // Handle JSON response (transaction details)
                         JSONObject jsonResponse = new JSONObject(response);
                         String redirectUrl = jsonResponse.optString("redirectUrl");
@@ -392,101 +401,101 @@ public class Dashboard extends AppCompatActivity {
         }).start();
     }
 
-  /*  private void handleIveriPayment() {
-        String amount = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
+    /*  private void handleIveriPayment() {
+          String amount = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
 
-        if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
-            AmountTLoad.setError("Amount is required");
-            return;
-        }
+          if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
+              AmountTLoad.setError("Amount is required");
+              return;
+          }
 
-        // Enable JavaScript and configure WebView
-        Web.getSettings().setJavaScriptEnabled(true);
-        Web.getSettings().setDomStorageEnabled(true);
-        Web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW); // Allow mixed content
-        Web.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
+          // Enable JavaScript and configure WebView
+          Web.getSettings().setJavaScriptEnabled(true);
+          Web.getSettings().setDomStorageEnabled(true);
+          Web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW); // Allow mixed content
+          Web.setWebViewClient(new WebViewClient() {
+              @Override
+              public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                  String url = request.getUrl().toString();
 
-                if (url.contains("payment-success")) {
-                    String transactionId = Uri.parse(url).getQueryParameter("transactionId");
-                    handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
-                    return true; // Prevent loading this URL in the WebView
-                } else if (url.contains("payment-failure")) {
-                    handlePaymentResult("{\"status\": \"failure\"}");
-                    return true; // Prevent loading this URL in the WebView
-                }
+                  if (url.contains("payment-success")) {
+                      String transactionId = Uri.parse(url).getQueryParameter("transactionId");
+                      handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
+                      return true; // Prevent loading this URL in the WebView
+                  } else if (url.contains("payment-failure")) {
+                      handlePaymentResult("{\"status\": \"failure\"}");
+                      return true; // Prevent loading this URL in the WebView
+                  }
 
-                view.loadUrl(url); // Allow the WebView to load other URLs
-                return false;
-            }
-        });
+                  view.loadUrl(url); // Allow the WebView to load other URLs
+                  return false;
+              }
+          });
 
-        // Hide layouts and navigation elements
-        hideLayouts(WebScree, NavBuyBtn);
-        Navbar.setVisibility(View.GONE);
+          // Hide layouts and navigation elements
+          hideLayouts(WebScree, NavBuyBtn);
+          Navbar.setVisibility(View.GONE);
 
-        // Start payment process in a background thread
-        String finalAmount = amount;
-        new Thread(() -> {
-            String baseUrl = "https://portal.host.iveri.com/Lite/Authorise.aspx";
-            String appId = getResources().getString(R.string.iveri_api_key);
-            String successUrl = getResources().getString(R.string.successRedirectUrl);
-            String errorUrl = getResources().getString(R.string.iveri_errorUrl);
-            String failureUrl = getResources().getString(R.string.iveri_failureUrl);
-            String tryLaterUrl = getResources().getString(R.string.iveri_tryLaterUrl);
+          // Start payment process in a background thread
+          String finalAmount = amount;
+          new Thread(() -> {
+              String baseUrl = "https://portal.host.iveri.com/Lite/Authorise.aspx";
+              String appId = getResources().getString(R.string.iveri_api_key);
+              String successUrl = getResources().getString(R.string.successRedirectUrl);
+              String errorUrl = getResources().getString(R.string.iveri_errorUrl);
+              String failureUrl = getResources().getString(R.string.iveri_failureUrl);
+              String tryLaterUrl = getResources().getString(R.string.iveri_tryLaterUrl);
 
-// Create the order
-            IveriPaymentProcessor processor = new IveriPaymentProcessor();
-            String response = processor.createOrder(baseUrl, "10000", appId, successUrl, errorUrl, failureUrl, tryLaterUrl);
+  // Create the order
+              IveriPaymentProcessor processor = new IveriPaymentProcessor();
+              String response = processor.createOrder(baseUrl, "10000", appId, successUrl, errorUrl, failureUrl, tryLaterUrl);
 
 
-            // Handle the response on the main thread
-            runOnUiThread(() -> {
-                try {
-                    if (response.trim().startsWith("<html")) {
-                        // Log the HTML response for debugging
-                        Log.d("HTMLResponse", response);
+              // Handle the response on the main thread
+              runOnUiThread(() -> {
+                  try {
+                      if (response.trim().startsWith("<html")) {
+                          // Log the HTML response for debugging
+                          Log.d("HTMLResponse", response);
 
-                        // Load the HTML response into the WebView
-                        Web.loadDataWithBaseURL(null, response, "text/html", "UTF-8", null);
+                          // Load the HTML response into the WebView
+                          Web.loadDataWithBaseURL(null, response, "text/html", "UTF-8", null);
 
-                        // Adjust visibility
-                        load.setVisibility(View.GONE);
-                        Web.setVisibility(View.VISIBLE);
-                    } else if (response.trim().startsWith("{")) {
+                          // Adjust visibility
+                          load.setVisibility(View.GONE);
+                          Web.setVisibility(View.VISIBLE);
+                      } else if (response.trim().startsWith("{")) {
 
-                        System.out.println("Has an OBJ");
-                        // JSON response - Parse and handle redirect URL
-                        JSONObject jsonResponse = new JSONObject(response);
-                        String redirectUrl = jsonResponse.optString("redirectUrl");
+                          System.out.println("Has an OBJ");
+                          // JSON response - Parse and handle redirect URL
+                          JSONObject jsonResponse = new JSONObject(response);
+                          String redirectUrl = jsonResponse.optString("redirectUrl");
 
-                        if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                            System.out.println("Redirect not Null");
+                          if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                              System.out.println("Redirect not Null");
 
-                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                Web.loadUrl(redirectUrl);
-                                load.setVisibility(View.GONE);
-                                Web.setVisibility(View.VISIBLE);
-                            }, 1000);
-                        } else {
-                            Utils.showToast(this, "Failed to get redirect URL.");
-                        }
-                    } else {
-                        // Unexpected response
-                        Utils.showToast(this, "Unexpected server response.");
-                        Log.e("UnexpectedResponse", response);
-                    }
-                } catch (JSONException e) {
-                    // Log the error and show a message
-                    e.printStackTrace();
-                    Utils.showToast(this, "Error parsing payment response.");
-                }
-            });
-        }).start();
-    }
-*/
+                              new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                  Web.loadUrl(redirectUrl);
+                                  load.setVisibility(View.GONE);
+                                  Web.setVisibility(View.VISIBLE);
+                              }, 1000);
+                          } else {
+                              Utils.showToast(this, "Failed to get redirect URL.");
+                          }
+                      } else {
+                          // Unexpected response
+                          Utils.showToast(this, "Unexpected server response.");
+                          Log.e("UnexpectedResponse", response);
+                      }
+                  } catch (JSONException e) {
+                      // Log the error and show a message
+                      e.printStackTrace();
+                      Utils.showToast(this, "Error parsing payment response.");
+                  }
+              });
+          }).start();
+      }
+  */
     private void handlePaymentResult(String result) {
         runOnUiThread(() -> {
             try {
@@ -571,13 +580,19 @@ public class Dashboard extends AppCompatActivity {
 
     private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
 
+
         if (imageButton.getId() == R.id.nav_buy_btn1) {
             SelectedItem.setVisibility(View.VISIBLE);
             AmountCapture.setVisibility(View.GONE);
             BuyBtn1.setVisibility(View.GONE);
             BuyBtn.setVisibility(View.VISIBLE);
+            if (!SelectedIsp.getText().toString().isEmpty())
+                Utils.setFieldFocus(Phone, Dashboard.this);
+
 
         } else if (imageButton.getId() == R.id.nav_load_btn1) {
+            if (!SelectedIsp.getText().toString().isEmpty())
+                Utils.setFieldFocus(Phone, Dashboard.this);
 
             SelectedItem.setVisibility(View.GONE);
             AmountCapture.setVisibility(View.VISIBLE);
@@ -652,8 +667,15 @@ public class Dashboard extends AppCompatActivity {
         NetoneIsp.setOnClickListener(v -> setISP("NetOne"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
         BackToHome.setOnClickListener(v -> {
+            Utils.hideSoftKeyboard(Dashboard.this);
+
             Navbar.setVisibility(View.VISIBLE);
-            hideLayouts(ISPsLayout, NavHomeBtn);
+            if (ItemsLayout.getVisibility() == View.VISIBLE) {
+                hideLayouts(ISPsLayout, NavHomeBtn);
+            } else {
+                hideLayouts(ItemsLayout, NavHomeBtn);
+
+            }
         });
 //        LoadBalance.setOnClickListener(v -> handleLoadBalance());
         LoadBalance.setOnClickListener(v -> handleIveriPayment());
@@ -684,7 +706,7 @@ public class Dashboard extends AppCompatActivity {
                                     JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
                                     JSONArray paramsList = methodResponse.getJSONArray("paramsList");
                                     JSONObject userObject = paramsList.getJSONObject(0);
-                                    String balance = userObject.getString("cumulativeBalance");
+                                    String balance = userObject.getString("decimalBalance");
                                     Utils.saveString(Dashboard.this, "profile", "balance", balance);
                                     getAccount(balance);
                                     setISP(SelectedIsp.getText().toString());
@@ -756,7 +778,7 @@ public class Dashboard extends AppCompatActivity {
                                     JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
                                     JSONArray paramsList = methodResponse.getJSONArray("paramsList");
                                     JSONObject userObject = paramsList.getJSONObject(0);
-                                    String balance = userObject.getString("cumulativeBalance");
+                                    String balance = userObject.getString("decimalBalance");
                                     getAccount(balance);
                                     SelectedIsp.setText(ISP);
                                     hideLayouts(ItemsLayout, NavIPSBtn);
@@ -896,10 +918,10 @@ public class Dashboard extends AppCompatActivity {
             AmountTLoadInBuy.setError("Price is required");
         }
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "").replace(",", "").replace("Account Balance", "").trim();
-        if (!p.startsWith("+263")) {
-            Utils.showToast(Dashboard.this, "Invalid Number : "+p);
-            return;
-        }
+//        if (!p.startsWith("+263")) {
+//            Utils.showToast(Dashboard.this, "Invalid Number : "+p);
+//            return;
+//        }
 
         try {
             double priceValue = price.isEmpty() ? 0 : Double.parseDouble(price);
@@ -934,7 +956,7 @@ public class Dashboard extends AppCompatActivity {
                                             JSONObject responseDetails = paramsList.getJSONObject(0);
                                             String Serial = responseDetails.getString("providerSerial");
                                             String description = responseDetails.getString("providerStatus");
-                                            String balance = responseDetails.getString("cumulativeBalance");
+                                            String balance = responseDetails.getString("decimalBalance");
                                             String Network = responseDetails.getString("network");
                                             String basketID = responseDetails.getString("basketID");
                                             String CustomerID = responseDetails.getString("customerID");
@@ -952,6 +974,8 @@ public class Dashboard extends AppCompatActivity {
                                                                 setISP(SelectedIsp.getText().toString());
                                                                 Utils.saveRefs(Dashboard.this, Network, AgentID, CustomerID, basketID);
                                                                 clearFields();
+                                                                Utils.hideSoftKeyboard(Dashboard.this);
+
                                                             }
                                                         }) // Dismiss the alert when OK is clicked
                                                         .show();
@@ -1007,10 +1031,10 @@ public class Dashboard extends AppCompatActivity {
             return;
         }
         String p = CountryCode.getSelectedItem() + phone;
-        if (!p.startsWith("+263")) {
-            Utils.showToast(Dashboard.this, "Invalid Number : "+p);
-            return;
-        }
+//        if (!p.startsWith("+263")) {
+//            Utils.showToast(Dashboard.this, "Invalid Number : "+p);
+//            return;
+//        }
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "")  // Remove the currency symbol
                 .replace(",", "")             // Remove commas
                 .replace("Account Balance", "") // Remove the "Account Balance" text
@@ -1056,7 +1080,7 @@ public class Dashboard extends AppCompatActivity {
                                             JSONObject responseDetails = paramsList.getJSONObject(0);
                                             String Serial = responseDetails.getString("providerSerial");
                                             String description = responseDetails.getString("providerStatus");
-                                            String balance = responseDetails.getString("cumulativeBalance");
+                                            String balance = responseDetails.getString("decimalBalance");
                                             String Network = responseDetails.getString("network");
                                             String basketID = responseDetails.getString("basketID");
                                             String CustomerID = responseDetails.getString("customerID");
@@ -1270,12 +1294,12 @@ public class Dashboard extends AppCompatActivity {
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    ItemToBuyText.setText(String.format("%s\n that last for %s", Type.getText().toString(), time));
+                    ItemToBuyText.setText(String.format("%s\n thatef last for %s", Type.getText().toString(), time));
                     SelectedItemType.setText(itemDescription);
                     SelectedItemLifeTime.setText(time);
                     SelectedItemPrice.setText(String.format("%s%s", currencySymbol, price));
                     ItemCode = itemCode;
-
+                    Utils.setFieldFocus(Phone, Dashboard.this);
                     if (job_list_screen.getVisibility() == View.VISIBLE) {
                         job_list_screen.setVisibility(View.GONE);
                         AppFrame.setVisibility(View.VISIBLE);
@@ -1328,10 +1352,9 @@ public class Dashboard extends AppCompatActivity {
             Map<String, Object> statement = statements.get(position);
             holder.bind(statement);
 
-            // Set up onClick listener for each item
             holder.itemView.setOnClickListener(v -> {
                 // Get the primary color defined in colors.xml
-                int primaryColor = context.getResources().getColor(R.color.tertiary_color); // replace `colorPrimary` with your color's name if different
+                int primaryColor = context.getResources().getColor(R.color.vodacom_color); // Replace `primary_color` with your color's name if different
                 String colorHex = String.format("#%06X", (0xFFFFFF & primaryColor)); // Convert color to hex string
 
                 // Convert the statement map to a readable HTML string format, excluding null or empty values
@@ -1345,21 +1368,26 @@ public class Dashboard extends AppCompatActivity {
                         String key = entry.getKey();
                         String capitalizedKey = key.substring(0, 1).toUpperCase() + key.substring(1);
 
-                        // Append key in bold with primary color and value in normal text
+                        // Append key in bold with primary color, reduce font size using <small> tags, and add space between key and value
                         detailsBuilder.append("<font color='").append(colorHex).append("'>")
-                                .append(capitalizedKey).append(":</font> ")
-                                .append(value).append("<br><br>");
+                                .append("<small>").append(capitalizedKey).append(":\t</small></font> ")
+                                .append("<small>").append(value).append("</small><br>");
                     }
                 }
                 String details = detailsBuilder.toString();
 
                 // Create and display an AlertDialog showing transaction details
-                new AlertDialog.Builder(context)
-                        .setTitle("Transaction Details")
-                        .setMessage(details.isEmpty() ? "No details available." : Html.fromHtml(details)) // Use Html.fromHtml for styled text
-                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss()) // Dismiss the alert when OK is clicked
-                        .show();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    new AlertDialog.Builder(context)
+                            .setTitle("Transaction Details")
+                            .setMessage(details.isEmpty() ? "No details available." : Html.fromHtml(details, Html.FROM_HTML_MODE_LEGACY)) // Use Html.fromHtml for styled text
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss()) // Dismiss the alert when OK is clicked
+                            .show();
+                }
             });
+
+
+
 
         }
 
@@ -1396,14 +1424,14 @@ public class Dashboard extends AppCompatActivity {
                 entryDate.setText(getValueFromMap(statement, "entryDate", "N/A"));
 
                 // Properly format the balance using String.format
-                String cumulativeBalance = getValueFromMap(statement, "cumulativeBalance", "000");
+                String decimalBalance = getValueFromMap(statement, "decimalBalance", "000");
 
                 // Check if cumulativeBalance is null, empty, or not a valid number, and default it to "0000"
-                if (cumulativeBalance == null || cumulativeBalance.trim().isEmpty()) {
-                    cumulativeBalance = "0000";
+                if (decimalBalance == null || decimalBalance.trim().isEmpty()) {
+                    decimalBalance = "0000";
                 }
 
-                String formattedBalance = String.format("%s%s", currencySymbol, Utils.FormatAmount(cumulativeBalance));
+                String formattedBalance = String.format("%s%s", currencySymbol, Utils.FormatAmount(decimalBalance));
                 balance.setText(formattedBalance);
 
                 // Set the transaction type
@@ -1462,7 +1490,7 @@ public class Dashboard extends AppCompatActivity {
                                 item.put("agentSplit", product.optString("agentSplit", ""));
                                 item.put("providerID", product.optString("providerID", ""));
                                 item.put("providerSplit", product.optString("providerSplit", ""));
-                                item.put("cumulativeBalance", product.optString("cumulativeBalance", ""));
+                                item.put("decimalBalance", product.optString("decimalBalance", ""));
                                 item.put("providerBalance", product.optString("providerBalance", ""));
                                 item.put("entryDate", product.optString("entryDate", ""));
 
