@@ -79,43 +79,36 @@ public class Utils {
 // Set the main hint
         userIdInput.setHint("Enter User ID");
 
-// Create a smaller text example for the hint
         String exampleHint = " (e.g., 263783241537)";
         SpannableString spannableString = new SpannableString(userIdInput.getHint() + exampleHint);
         spannableString.setSpan(new RelativeSizeSpan(0.8f), userIdInput.getHint().length(), spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // Set the size of the example
 
-        userIdInput.setHint(spannableString); // Set the combined hint with the example
+        userIdInput.setHint(spannableString);
 
-        // Set margin for both EditTexts
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        // Use the Utils method to convert dp to px for margins
-        int marginInDp = 20; // 50dp margin
-        int marginInPx = Utils.convertDpToPx(context, marginInDp); // Convert dp to pixels
+        int marginInDp = 20;
+        int marginInPx = Utils.convertDpToPx(context, marginInDp);
         params.setMargins(marginInPx, 5, marginInPx, 5);
-
-        // Apply margins to both EditTexts
         emailInput.setLayoutParams(params);
         userIdInput.setLayoutParams(params);
-
-        // Add both EditTexts to the LinearLayout
         layout.addView(emailInput);
         layout.addView(userIdInput);
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("Send Email")
                 .setMessage("Please enter your email address and User ID:")
-                .setView(layout) // Set the layout containing the EditTexts
+                .setView(layout)
                 .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String recipientEmail = emailInput.getText().toString().trim();
-                        String userId = userIdInput.getText().toString().trim(); // Get the User ID
+                        String userId = userIdInput.getText().toString().trim();
 
-                        String recipientPassword = "Philas@12345"; // Replace this with the actual password
+                        String recipientPassword = "Philas@12345";
 
                         if (recipientEmail.isEmpty() && userId.isEmpty()) {
                             showToast(context, "Email and User ID cannot be empty.");

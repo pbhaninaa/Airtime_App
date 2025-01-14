@@ -313,7 +313,7 @@ public class UserManagement extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    String p = CountryCode.getSelectedItem() + AgentID;
+                    String p = LoginCountryCode.getSelectedItem() + AgentID;
                     JSONObject res = ApiService.login(password, p.replace("+", ""));
 
                     if (res.getInt("responseCode") == 200) {
