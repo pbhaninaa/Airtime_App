@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);Utils.hideSoftNavBar(this);
         initialiseViews();
         Utils.hideSoftNavBar(this);
         if (isUserLogged(this)) {

@@ -427,6 +427,7 @@
                 </LinearLayout>
 
                 <!--   Items_display_layout this shows List of Items after ASP Selection -->
+<!--                Phila-->
                 <LinearLayout
                     android:id="@+id/Items_display_layout"
                     android:layout_width="match_parent"
@@ -638,7 +639,7 @@
 
                             <Spinner
                                 android:id="@+id/login_country_codes"
-                                android:layout_width="100sp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="@dimen/two"
@@ -907,7 +908,6 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/sixteen"
                     android:paddingBottom="50sp">
-                    <!-- Phila-->
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/MoreItemsRecyclerView"
                         android:layout_width="match_parent"

@@ -113,7 +113,7 @@ public class Dashboard extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_jobs);
+        setContentView(R.layout.activity_jobs);Utils.hideSoftNavBar(Dashboard.this);
         getProfile();
         show = true;
         initialiseViews();
@@ -853,6 +853,9 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void logout() {
+        Utils.hideSoftKeyboard(Dashboard.this);
+        Utils.hideSoftNavBar(Dashboard.this);
+        Navbar.setVisibility(View.GONE);
         AppFrame.setVisibility(View.GONE);
         ConfirmationScreen.setVisibility(View.VISIBLE);
     }
@@ -1385,8 +1388,6 @@ public class Dashboard extends AppCompatActivity {
                             .show();
                 }
             });
-
-
 
 
         }

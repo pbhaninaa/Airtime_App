@@ -336,7 +336,7 @@ public class UserManagement extends AppCompatActivity {
 
                                     String agentID = userObject.getString("agentID");
                                     String agentName = userObject.getString("agentName");
-                                    String balance = userObject.getString("balance");
+                                    String balance = userObject.getString("decimalBalance");
                                     String agentEmail = userObject.getString("agentEmail");
                                     String statusCode = userObject.getString("statusCode");
                                     String lastConnect = userObject.getString("lastConnect");
@@ -359,6 +359,9 @@ public class UserManagement extends AppCompatActivity {
                                     // Save user account details
                                     saveAccount(firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode), password, true);
                                     RememberMeCheckBox.setChecked(false);
+                                    Utils.hideSoftKeyboard(UserManagement.this);
+                                    Utils.hideSoftNavBar(UserManagement.this);
+
                                     // Navigate to the Dashboard
                                     Intent intent = new Intent(UserManagement.this, Dashboard.class);
                                     startActivity(intent);
