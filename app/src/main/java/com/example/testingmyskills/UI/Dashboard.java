@@ -117,6 +117,7 @@ public class Dashboard extends AppCompatActivity {
         getProfile();
         show = true;
         initialiseViews();
+
 // To be removed when top up functionality works
         LinearLayout topUp;
         topUp = (LinearLayout) findViewById(R.id.topUpBtn);
@@ -127,7 +128,7 @@ public class Dashboard extends AppCompatActivity {
         setOnclickListeners();
         recyclerViews();
         adaptors();
-
+//        getLastTransaction(v);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
@@ -842,7 +843,7 @@ public class Dashboard extends AppCompatActivity {
         String phone = sharedPreferences.getString("phone", "");
         String balance = sharedPreferences.getString("balance", "");
         String updated = sharedPreferences.getString("time", "");
-        String formatedSalutation = "Hello " + name + " " + surname + " " + phone + "  Last updated " + updated;
+        String formatedSalutation = "Hello " + name + " " + surname + " " + phone + "  Last updated " + updated+"\n";
         String Balance = balance.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(bal.isEmpty() ? balance : bal)));
         StatusMessage.setText(formatedSalutation);
         Utils.setStatusColor(this, (bal.isEmpty() ? balance : bal), statusLight);
@@ -1163,17 +1164,12 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-
-                    String network = Utils.getString(Dashboard.this, "LastTransactionRefs", "network");
                     String agentID = Utils.getString(Dashboard.this, "LastTransactionRefs", "agentID");
-                    String customerID = Utils.getString(Dashboard.this, "LastTransactionRefs", "customerID");
-                    String referenceID = Utils.getString(Dashboard.this, "LastTransactionRefs", "referenceID");
 
 
-                    JSONObject res = ApiService.transactionStatusEnquiry(network,
-                            agentID,
-                            customerID,
-                            referenceID
+                    JSONObject res = ApiService.getLastTransaction(
+                            agentID
+
                     );
 
 
@@ -1199,16 +1195,42 @@ public class Dashboard extends AppCompatActivity {
                                         JSONArray paramsList = methodResponse.getJSONArray(paramsKey);
                                         JSONObject responseDetails = paramsList.getJSONObject(0);
 
-                                        String serial = responseDetails.optString("Serial", "N/A");
+                                        String serial = responseDetails.optString("providerSerial", "N/A");
                                         if (!serial.equals("N/A") && !serial.isEmpty()) {
-                                            runOnUiThread(() -> new AlertDialog.Builder(Dashboard.this)
-                                                    .setTitle("Transaction was successful")
-                                                    .setMessage("Serial Number: " + serial)
-                                                    .setPositiveButton("OK", null)
-                                                    .show());
+                                            String currentM = StatusMessage.getText().toString();
+
+                                            // Extract the first 3 key-value pairs
+                                            StringBuilder keyValuePairs = new StringBuilder();
+                                            Iterator<String> keys1 = responseDetails.keys();
+                                            int count = 0;
+                                            while (keys1.hasNext() && count < 3) {
+                                                String key = keys1.next();
+                                                String value = responseDetails.optString(key, "N/A");
+                                                keyValuePairs.append(key).append(": ").append(value).append(", \n");
+                                                count++;
+                                            }
+
+                                            // Remove trailing comma and space
+                                            if (keyValuePairs.length() > 0) {
+                                                keyValuePairs.setLength(keyValuePairs.length() - 2);
+                                            }
+
+                                            // Append key-value pairs to currentM
+                                            String updatedMessage = currentM +  keyValuePairs;
+
+                                            // Update StatusMessage
+                                            runOnUiThread(() -> {
+                                                StatusMessage.setText(updatedMessage); // Update the TextView with the new message
+                                                new AlertDialog.Builder(Dashboard.this)
+                                                        .setTitle("Transaction was successful")
+                                                        .setMessage("Serial Number: " + serial)
+                                                        .setPositiveButton("OK", null)
+                                                        .show();
+                                            });
                                         } else {
                                             runOnUiThread(() -> Utils.showToast(Dashboard.this, "No transaction to display"));
                                         }
+
 
                                     } else {
                                         runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error: paramsList not found in the response."));

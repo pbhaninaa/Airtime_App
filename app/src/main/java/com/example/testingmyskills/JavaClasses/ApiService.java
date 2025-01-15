@@ -59,6 +59,9 @@ public class ApiService {
     public static JSONObject transactionStatusEnquiry(String network, String agentID, String customerID, String referenceID) throws Exception {
         String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Transaction Status Enquiry\", \"AgentID\":\"" + agentID + "\", \"CustomerID\":\"" + customerID.replace("+", "") + "\", \"ReferenceID\":\"" + referenceID + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "transaction-status-enquiry", jsonInputString);
+    }public static JSONObject getLastTransaction(String agentID) throws Exception {
+        String jsonInputString = "{ \"TransactionType\":\"Last Transaction\", \"AgentID\":\"" + agentID + "\"}";
+        return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL , jsonInputString);
     }
 
     // Statement Endpoint
