@@ -101,7 +101,7 @@ public class Utils {
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("Send Email")
-                .setMessage("Please enter your email address and User ID:")
+                .setMessage("Enter Email Address and AgentID:")
                 .setView(layout)
                 .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     @Override
