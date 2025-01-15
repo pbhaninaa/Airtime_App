@@ -36,6 +36,8 @@ import org.json.*;
 import java.io.IOException;
 import java.util.*;
 
+import okhttp3.internal.Util;
+
 //8QGGLHPVSQ3TFEX7QLTCRU2Y
 public class UserManagement extends AppCompatActivity {
     private ConstraintLayout SignUpLayout, RegScreen, SignInLayout;
@@ -60,6 +62,8 @@ public class UserManagement extends AppCompatActivity {
         gotData = false;
         initialiseViews();
         setOnclickListeners();
+        Utils.setCaps(Firstname);
+        Utils.setCaps(Lastname);
 
         int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.login_page);
         screenToLoad(constraintLayoutId);
@@ -443,9 +447,8 @@ public class UserManagement extends AppCompatActivity {
 
     public static List<Country> getCountryList() {
         List<Country> countryList = new ArrayList<>();
-        countryList.add(new Country("+27", "South Africa", "za"));
         countryList.add(new Country("+263", "Zimbabwe", "zw"));
-
+        countryList.add(new Country("+27", "South Africa", "za"));
         return countryList;
     }   public static List<Country> getZimCode() {
         List<Country> countryList = new ArrayList<>();

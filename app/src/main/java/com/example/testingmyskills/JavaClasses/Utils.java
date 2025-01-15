@@ -12,9 +12,11 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -101,7 +103,7 @@ public class Utils {
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("Send Email")
-                .setMessage("Please enter your email address and User ID:")
+                .setMessage("Enter Email Address and AgentID:")
                 .setView(layout)
                 .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     @Override
@@ -225,6 +227,36 @@ public class Utils {
         return (int) (dp * scale + 0.5f);
     }
 
+    public static void setCaps(EditText editText) {
+        editText.addTextChangedListener(new TextWatcher() {
+            private boolean isUpdating = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!isUpdating) {
+                    isUpdating = true;
+                    String text = s.toString();
+                    if (!text.isEmpty() && Character.isLowerCase(text.charAt(0))) {
+                        // Capitalize the first letter
+                        String updatedText = Character.toUpperCase(text.charAt(0)) + text.substring(1);
+                        editText.setText(updatedText);
+                        editText.setSelection(updatedText.length()); // Move cursor to the end
+                    }
+                    isUpdating = false;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed
+            }
+        });
+    }
 
     public static void triggerHapticFeedback(Context context) {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);

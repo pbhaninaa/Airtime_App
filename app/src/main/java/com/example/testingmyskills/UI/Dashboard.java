@@ -1186,12 +1186,17 @@ public class Dashboard extends AppCompatActivity {
 
                                     if (paramsKey != null) {
                                         JSONArray paramsList = methodResponse.getJSONArray(paramsKey);
-
                                         // Check if the array is empty
                                         if (paramsList.length() == 0) {
-                                            runOnUiThread(() -> Utils.showToast(Dashboard.this, "No transactions found."));
-                                            return;
+                                            double balance = Double.parseDouble(Utils.getString(Dashboard.this, "profile", "balance"));
+                                            if (balance > 0) {
+                                                runOnUiThread(() -> Utils.showToast(Dashboard.this, "No transactions found. Balance: " + balance));
+                                                return; // Exit the method after showing the toast
+                                            }
+
+                                            return; // Exit if no transactions and balance is 0 or invalid
                                         }
+
 
                                         // Process the first element if the array is not empty
                                         JSONObject responseDetails = paramsList.getJSONObject(0);
@@ -1211,7 +1216,7 @@ public class Dashboard extends AppCompatActivity {
                                                     String amount = responseDetails.optString("rechargeAmount", "N/A");
                                                     String customerNumber = responseDetails.optString("customerID", "N/A");
 
-                                                    new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Recharge Number: " + customerNumber + "\nRecharge Amount: " +currencySymbol+ amount + "\nRecharge Serial: " + serial).setPositiveButton("OK", null).show();
+                                                    new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Recharge Number: " + customerNumber + "\nRecharge Amount: " + currencySymbol + amount + "\nRecharge Serial: " + serial).setPositiveButton("OK", null).show();
                                                 }
                                             });
 
@@ -1556,7 +1561,7 @@ public class Dashboard extends AppCompatActivity {
                 getProducts(new ProductsCallback() {
                     @Override
                     public void onProductsLoaded(List<Map<String, Object>> products) {
-                        List<Map<String, Object>> filteredProducts = filterProductsByType(products, selectedItem);
+                        List<Map<String, Object>> filteredProducts = filterProductsByType(products, selectedItem.equals("WhatsApp Bundles") ? "WHATSAPP_BUNDLES" : selectedItem);
                         ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                         ItemRecyclerView.setAdapter(new RecommendedAd(filteredProducts));
                     }

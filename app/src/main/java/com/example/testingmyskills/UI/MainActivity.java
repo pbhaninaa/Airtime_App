@@ -55,6 +55,6 @@ public class MainActivity extends AppCompatActivity {
     public static String[] econetItems = {
             "Data",
             "Voice",
-            "SMS"
+            "SMS","WhatsApp Bundles"
     };
 }
