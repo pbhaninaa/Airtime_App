@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Currency;
 import java.util.Iterator;
 import java.util.List;
 
@@ -113,7 +114,8 @@ public class Dashboard extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_jobs);Utils.hideSoftNavBar(Dashboard.this);
+        setContentView(R.layout.activity_jobs);
+        Utils.hideSoftNavBar(Dashboard.this);
         getProfile();
         show = true;
         initialiseViews();
@@ -128,7 +130,7 @@ public class Dashboard extends AppCompatActivity {
         setOnclickListeners();
         recyclerViews();
         adaptors();
-//        getLastTransaction(v);
+        getLastTransaction(null);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
@@ -287,10 +289,7 @@ public class Dashboard extends AppCompatActivity {
         String finalAmount = amount;
         new Thread(() -> {
             PaymentProcessor processor = new PaymentProcessor();
-            String response = processor.createOrder(finalAmount,
-                    getResources().getString(R.string.yoco_api_key),
-                    getResources().getString(R.string.successRedirectUrl),
-                    getResources().getString(R.string.yoco_failureUrl));
+            String response = processor.createOrder(finalAmount, getResources().getString(R.string.yoco_api_key), getResources().getString(R.string.successRedirectUrl), getResources().getString(R.string.yoco_failureUrl));
 
             runOnUiThread(() -> {
                 try {
@@ -358,15 +357,9 @@ public class Dashboard extends AppCompatActivity {
         String finalAmount = amount;
         new Thread(() -> {
             IveriPaymentProcessor processor = new IveriPaymentProcessor();
-            String response = processor.createOrder(
-                    "https://portal.host.iveri.com/Lite/Authorise.aspx", // Replace with the correct base URL
-                    finalAmount,
-                    "your-application-id", // Replace with actual application ID
-                    "successRedirectUrl",
-                    "errorRedirectUrl",
-                    "failureRedirectUrl",
-                    "tryLaterRedirectUrl"
-            );
+            String response = processor.createOrder("https://portal.host.iveri.com/Lite/Authorise.aspx", // Replace with the correct base URL
+                    finalAmount, "your-application-id", // Replace with actual application ID
+                    "successRedirectUrl", "errorRedirectUrl", "failureRedirectUrl", "tryLaterRedirectUrl");
 
             // Handle the response on the main thread
             runOnUiThread(() -> {
@@ -667,6 +660,11 @@ public class Dashboard extends AppCompatActivity {
         EconetIsp.setOnClickListener(v -> setISP("Econet"));
         NetoneIsp.setOnClickListener(v -> setISP("NetOne"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
+        LogoutButton.setOnLongClickListener(view -> {
+            // Code to close the app on long press
+            finishAffinity(); // Closes the current activity and all others in the stack
+            return true; // Return true to indicate the event is consumed
+        });
         BackToHome.setOnClickListener(v -> {
             Utils.hideSoftKeyboard(Dashboard.this);
 
@@ -758,8 +756,8 @@ public class Dashboard extends AppCompatActivity {
 
 
     public void setISP(String ISP) {
-
         if (!ISP.equals("Econet")) {
+
             Utils.showToast(this, "Not yet available");
             return;
         }
@@ -773,6 +771,7 @@ public class Dashboard extends AppCompatActivity {
                             @Override
                             public void run() {
                                 try {
+                                    getLastTransaction(null);
                                     String responseString = res.getString("response");
                                     System.out.println(responseString);
                                     JSONObject responseJson = new JSONObject(responseString);
@@ -843,7 +842,7 @@ public class Dashboard extends AppCompatActivity {
         String phone = sharedPreferences.getString("phone", "");
         String balance = sharedPreferences.getString("balance", "");
         String updated = sharedPreferences.getString("time", "");
-        String formatedSalutation = "Hello " + name + " " + surname + " " + phone + "  Last updated " + updated+"\n";
+        String formatedSalutation = "Hello, " + name + " " + surname + " \n" + "Agent ID:  " + phone + "\n";
         String Balance = balance.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(bal.isEmpty() ? balance : bal)));
         StatusMessage.setText(formatedSalutation);
         Utils.setStatusColor(this, (bal.isEmpty() ? balance : bal), statusLight);
@@ -939,14 +938,7 @@ public class Dashboard extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            JSONObject res = ApiService.loadValue(
-                                    SelectedIsp.getText().toString(),
-                                    Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"),
-                                    p,
-                                    price.replace(",", "").replace(".", ""),
-                                    "Airtime",
-                                    "Airtime"
-                            );
+                            JSONObject res = ApiService.loadValue(SelectedIsp.getText().toString(), Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), p, price.replace(",", "").replace(".", ""), "Airtime", "Airtime");
                             if (res.getInt("responseCode") == 200) {
                                 // Handle success and UI updates on the main thread
                                 runOnUiThread(new Runnable() {
@@ -1158,17 +1150,17 @@ public class Dashboard extends AppCompatActivity {
         startActivity(intent);
     }
 
+
     public void getLastTransaction(View view) {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    String agentID = Utils.getString(Dashboard.this, "LastTransactionRefs", "agentID");
+                    String agentID = Utils.getString(Dashboard.this, "savedCredentials", "email");
 
 
-                    JSONObject res = ApiService.getLastTransaction(
-                            agentID
+                    JSONObject res = ApiService.getLastTransaction(agentID
 
                     );
 
@@ -1207,35 +1199,22 @@ public class Dashboard extends AppCompatActivity {
 
                                         if (!serial.equals("N/A") && !serial.isEmpty()) {
                                             String currentM = StatusMessage.getText().toString();
-
-                                            // Extract the first 3 key-value pairs
-                                            StringBuilder keyValuePairs = new StringBuilder();
-                                            Iterator<String> keys1 = responseDetails.keys();
-                                            int count = 0;
-                                            while (keys1.hasNext() && count < 3) {
-                                                String key = keys1.next();
-                                                String value = responseDetails.optString(key, "N/A");
-                                                keyValuePairs.append(key).append(": ").append(value).append(", \n");
-                                                count++;
-                                            }
-
-                                            // Remove trailing comma and space
-                                            if (keyValuePairs.length() > 0) {
-                                                keyValuePairs.setLength(keyValuePairs.length() - 2);
-                                            }
-
-                                            // Append key-value pairs to currentM
-                                            String updatedMessage = currentM + keyValuePairs;
+                                            String LastTransactionDate = "Last Transaction: " + responseDetails.optString("entryDate", "N/A");
+                                            String updatedMessage = currentM + LastTransactionDate;
 
                                             // Update StatusMessage
                                             runOnUiThread(() -> {
-                                                StatusMessage.setText(updatedMessage);
-                                                new AlertDialog.Builder(Dashboard.this)
-                                                        .setTitle("Transaction was successful")
-                                                        .setMessage("Serial Number: " + serial)
-                                                        .setPositiveButton("OK", null)
-                                                        .show();
+                                                if (!StatusMessage.getText().toString().contains(LastTransactionDate)) {
+                                                    StatusMessage.setText(updatedMessage);
+                                                }
+                                                if (view != null) {
+                                                    String amount = responseDetails.optString("rechargeAmount", "N/A");
+                                                    String customerNumber = responseDetails.optString("customerID", "N/A");
+
+                                                    new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Recharge Number: " + customerNumber + "\nRecharge Amount: " +currencySymbol+ amount + "\nRecharge Serial: " + serial).setPositiveButton("OK", null).show();
+                                                }
                                             });
+
                                         } else {
                                             runOnUiThread(() -> Utils.showToast(Dashboard.this, "No transaction to display"));
                                         }
@@ -1401,18 +1380,14 @@ public class Dashboard extends AppCompatActivity {
                         String capitalizedKey = key.substring(0, 1).toUpperCase() + key.substring(1);
 
                         // Append key in bold with primary color, reduce font size using <small> tags, and add space between key and value
-                        detailsBuilder.append("<font color='").append(colorHex).append("'>")
-                                .append("<small>").append(capitalizedKey).append(":\t</small></font> ")
-                                .append("<small>").append(value).append("</small><br>");
+                        detailsBuilder.append("<font color='").append(colorHex).append("'>").append("<small>").append(capitalizedKey).append(":\t</small></font> ").append("<small>").append(value).append("</small><br>");
                     }
                 }
                 String details = detailsBuilder.toString();
 
                 // Create and display an AlertDialog showing transaction details
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    new AlertDialog.Builder(context)
-                            .setTitle("Transaction Details")
-                            .setMessage(details.isEmpty() ? "No details available." : Html.fromHtml(details, Html.FROM_HTML_MODE_LEGACY)) // Use Html.fromHtml for styled text
+                    new AlertDialog.Builder(context).setTitle("Transaction Details").setMessage(details.isEmpty() ? "No details available." : Html.fromHtml(details, Html.FROM_HTML_MODE_LEGACY)) // Use Html.fromHtml for styled text
                             .setPositiveButton("OK", (dialog, which) -> dialog.dismiss()) // Dismiss the alert when OK is clicked
                             .show();
                 }
