@@ -1181,6 +1181,7 @@ public class Dashboard extends AppCompatActivity {
                                     String responseString = res.getString("response");
                                     JSONObject responseJson = new JSONObject(responseString);
                                     JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+
                                     String paramsKey = null;
                                     Iterator<String> keys = methodResponse.keys();
                                     while (keys.hasNext()) {
@@ -1193,9 +1194,17 @@ public class Dashboard extends AppCompatActivity {
 
                                     if (paramsKey != null) {
                                         JSONArray paramsList = methodResponse.getJSONArray(paramsKey);
-                                        JSONObject responseDetails = paramsList.getJSONObject(0);
 
+                                        // Check if the array is empty
+                                        if (paramsList.length() == 0) {
+                                            runOnUiThread(() -> Utils.showToast(Dashboard.this, "No transactions found."));
+                                            return;
+                                        }
+
+                                        // Process the first element if the array is not empty
+                                        JSONObject responseDetails = paramsList.getJSONObject(0);
                                         String serial = responseDetails.optString("providerSerial", "N/A");
+
                                         if (!serial.equals("N/A") && !serial.isEmpty()) {
                                             String currentM = StatusMessage.getText().toString();
 
@@ -1216,11 +1225,11 @@ public class Dashboard extends AppCompatActivity {
                                             }
 
                                             // Append key-value pairs to currentM
-                                            String updatedMessage = currentM +  keyValuePairs;
+                                            String updatedMessage = currentM + keyValuePairs;
 
                                             // Update StatusMessage
                                             runOnUiThread(() -> {
-                                                StatusMessage.setText(updatedMessage); // Update the TextView with the new message
+                                                StatusMessage.setText(updatedMessage);
                                                 new AlertDialog.Builder(Dashboard.this)
                                                         .setTitle("Transaction was successful")
                                                         .setMessage("Serial Number: " + serial)
@@ -1230,16 +1239,14 @@ public class Dashboard extends AppCompatActivity {
                                         } else {
                                             runOnUiThread(() -> Utils.showToast(Dashboard.this, "No transaction to display"));
                                         }
-
-
                                     } else {
                                         runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error: paramsList not found in the response."));
                                     }
-
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error parsing response data: " + e.getMessage()));
                                 }
+
                             }
 
                         });
