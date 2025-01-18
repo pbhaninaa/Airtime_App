@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -29,22 +30,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
-
-import com.example.testingmyskills.R;
-import com.example.testingmyskills.UI.UserManagement;
-
-import java.io.IOException;
+import com.example.testingmyskills.R;import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import javax.mail.MessagingException;
+import android.telephony.TelephonyManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.Manifest;
+import androidx.core.app.ActivityCompat;
+import java.util.List;
 public class Utils {
     public static final String PREF_NAME = "UserPrefs";
     public static final String EMAIL_KEY = "email";
@@ -135,9 +138,9 @@ public class Utils {
                                     // Send the email including the User ID in the body
                                     try {
                                         // Use the retrieved password in the sendEmail method
-                                        Communication.sendEmail(context, recipientEmail, agentPassword);
-                                        showToast(context, "Email sent successfully!");
-                                    } catch (JSONException e) {
+                                        Communication.sendEmailsInSMT(context, recipientEmail,agentName, agentPassword);
+
+                                    } catch (MessagingException e) {
                                         e.printStackTrace();
                                         showToast(context, "Error sending email: " + e.getMessage());
                                     }
@@ -161,7 +164,112 @@ public class Utils {
                 .create();
         dialog.show();
     }
+    public static String getIMEI(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
+        if (telephonyManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // For Android 6.0 and above, we need to request the permission dynamically.
+                if (context.checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        // From Android 10, the IMEI is accessible via getImei() for each SIM card
+                        return telephonyManager.getImei();
+                    } else {
+                        // Before Android 10, getDeviceId() works
+                        return telephonyManager.getDeviceId();
+                    }
+                } else {
+                    // Handle case where permission is not granted
+                    return "Permission not granted";
+                }
+            } else {
+                // For Android versions below Marshmallow
+                return telephonyManager.getDeviceId();
+            }
+        }
+
+        return null; // Return null if TelephonyManager is unavailable
+    }
+    public static String getDeviceDetails(Context context) {
+        StringBuilder deviceDetails = new StringBuilder();
+
+        // Add greeting
+        deviceDetails.append("Dear ").append("Admin").append(",\n");
+        deviceDetails.append("The following device has made transactions:\n");
+
+        // Get Device Information
+        deviceDetails.append("Device Model: ").append(Build.MODEL).append("\n");
+        deviceDetails.append("Manufacturer: ").append(Build.MANUFACTURER).append("\n");
+
+        // TelephonyManager to get IMEI and device details
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        // Get IMEI (if permission is granted)
+        if (telephonyManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (context.checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        // For Android 10 and above, use getImei()
+                        deviceDetails.append("IMEI NO: ").append(telephonyManager.getImei()).append("\n");
+                    } else {
+                        // For Android 9 and below, use getDeviceId()
+                        deviceDetails.append("IMEI NO: ").append(telephonyManager.getDeviceId()).append("\n");
+                    }
+                } else {
+                    deviceDetails.append("IMEI NO: Permission not granted\n");
+                }
+            } else {
+                deviceDetails.append("IMEI NO: ").append(telephonyManager.getDeviceId()).append("\n");
+            }
+        } else {
+            deviceDetails.append("IMEI NO: Device not available\n");
+        }
+
+        // Add additional device information
+        deviceDetails.append("OS Version: ").append(Build.VERSION.RELEASE).append("\n");
+        deviceDetails.append("API Level: ").append(Build.VERSION.SDK_INT).append("\n");
+
+        // Get the device's location (actual location as an address)
+        String locationInfo = getDeviceLocation(context);
+        deviceDetails.append("Device Location: ").append(locationInfo).append("\n");
+
+        return deviceDetails.toString();
+    }
+
+    private static String getDeviceLocation(Context context) {
+        // Get the LocationManager service
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        // Check if we have location permissions
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            // Get the last known location (assuming high accuracy location provider is available)
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if (location != null) {
+                // Use Geocoder to convert coordinates into a human-readable address
+                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    if (addresses != null && !addresses.isEmpty()) {
+                        Address address = addresses.get(0);
+                        // Return the address as a string (e.g., city, state, country)
+                        return address.getAddressLine(0);  // First address line
+                    } else {
+                        return "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return "Unable to get location address";
+                }
+            } else {
+                return "Location not available";
+            }
+        } else {
+            return "Location permission not granted";
+        }
+    }
     // Static method for resetting password and using callback to return the result
     public static void getPassword(final Context context, String agentId, String agentEmail, final PasswordCallback callback) {
         new Thread(new Runnable() {
