@@ -31,12 +31,17 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 
 import com.example.testingmyskills.R;
+import com.example.testingmyskills.UI.UserManagement;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -64,7 +69,8 @@ public class Utils {
         rotateAnimator.start();  // Start the animation
     }
 
-    public static void showEmailDialog(Context context) {
+    // Static method for showing email dialog
+    public static void showEmailDialog(final Context context) {
         // Create a LinearLayout to hold the EditTexts
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -79,7 +85,7 @@ public class Utils {
         userIdInput.setBackgroundResource(R.drawable.edit_text_background);
         userIdInput.setInputType(InputType.TYPE_CLASS_PHONE); // Allow only numeric input
 
-// Set the main hint
+        // Set the main hint
         userIdInput.setHint("Enter User ID");
 
         String exampleHint = " (e.g., 263783241537)";
@@ -94,7 +100,7 @@ public class Utils {
         );
 
         int marginInDp = 20;
-        int marginInPx = Utils.convertDpToPx(context, marginInDp);
+        int marginInPx = convertDpToPx(context, marginInDp);
         params.setMargins(marginInPx, 5, marginInPx, 5);
         emailInput.setLayoutParams(params);
         userIdInput.setLayoutParams(params);
@@ -108,10 +114,8 @@ public class Utils {
                 .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String recipientEmail = emailInput.getText().toString().trim();
-                        String userId = userIdInput.getText().toString().trim();
-
-                        String recipientPassword = "Philas@12345";
+                        final String recipientEmail = emailInput.getText().toString().trim();
+                        final String userId = userIdInput.getText().toString().trim();
 
                         if (recipientEmail.isEmpty() && userId.isEmpty()) {
                             showToast(context, "Email and User ID cannot be empty.");
@@ -124,19 +128,30 @@ public class Utils {
                         } else if (!isValidUserId(userId)) {
                             showToast(context, "User ID must include a valid country code and cannot start with 0.");
                         } else {
-                            // Send the email including the User ID in the body
-                            try {
-                                Communication.sendEmail(context, recipientEmail, recipientPassword);
-                                showToast(context, "Email sent successfully!");
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
-                            }
+                            // Call getPassword to retrieve the agent password asynchronously
+                            getPassword(context, userId, recipientEmail, new PasswordCallback() {
+                                @Override
+                                public void onPasswordRetrieved(String agentPassword, String agentName) {
+                                    // Send the email including the User ID in the body
+                                    try {
+                                        // Use the retrieved password in the sendEmail method
+                                        Communication.sendEmail(context, recipientEmail, agentPassword);
+                                        showToast(context, "Email sent successfully!");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        showToast(context, "Error sending email: " + e.getMessage());
+                                    }
+                                }
+
+                                @Override
+                                public void onError(String errorMessage) {
+                                    // Handle error in retrieving password
+                                    showToast(context,   "User Not Found");
+                                }
+                            });
                         }
                     }
-
                 })
-
-
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -145,6 +160,70 @@ public class Utils {
                 })
                 .create();
         dialog.show();
+    }
+
+    // Static method for resetting password and using callback to return the result
+    public static void getPassword(final Context context, String agentId, String agentEmail, final PasswordCallback callback) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject res = ApiService.resetPassword(agentId, agentEmail);
+
+                    if (res.getInt("responseCode") == 200) {
+                        // To handle success and UI updates on the main thread
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    String responseString = res.getString("response");
+                                    System.out.println("Success: " + responseString);
+                                    JSONObject responseJson = new JSONObject(responseString);
+                                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                    JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                                    JSONObject userObject = paramsList.getJSONObject(0);
+
+                                    String agentPassword = userObject.getString("agentPassword");
+                                    String agentName = userObject.getString("agentName");
+
+                                    callback.onPasswordRetrieved(agentPassword, agentName);  // Return the result through callback
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    callback.onError("Error parsing response.");
+                                }
+                            }
+                        });
+                    } else {
+                        // Handle error response on UI thread
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(res.toString());  // Pass error message to callback
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // Handle IOException on UI thread
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(e.getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onError("An unexpected error occurred.");
+                }
+            }
+        }).start();
+    }
+
+    // Callback interface for retrieving the password
+    public interface PasswordCallback {
+        void onPasswordRetrieved(String agentPassword, String agentName);
+        void onError(String errorMessage);
     }
 
     public static void showSMSDialog(Context context) {

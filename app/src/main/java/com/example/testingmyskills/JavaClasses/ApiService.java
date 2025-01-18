@@ -63,6 +63,13 @@ public class ApiService {
         String jsonInputString = "{ \"TransactionType\":\"Last Transaction\", \"AgentID\":\"" + agentID + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL , jsonInputString);
     }
+    public static JSONObject resetPassword(String agentID,String email) throws Exception {
+        System.out.println("Test1");
+
+        String jsonInputString = "{ \"TransactionType\":\"Password Reset\", \"AgentID\":\"" + agentID + "\", \"AgentEmail\":\"" + email + "\"}";
+        System.out.println("Test2");
+        return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "reset-password", jsonInputString);
+    }
 
     // Statement Endpoint
     public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail) throws Exception {

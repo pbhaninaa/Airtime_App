@@ -4,8 +4,6 @@ import static android.view.View.GONE;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -35,8 +33,6 @@ import org.json.*;
 
 import java.io.IOException;
 import java.util.*;
-
-import okhttp3.internal.Util;
 
 //8QGGLHPVSQ3TFEX7QLTCRU2Y
 public class UserManagement extends AppCompatActivity {
@@ -208,6 +204,7 @@ public class UserManagement extends AppCompatActivity {
             }
         });
         ForgotPasswordBtn.setOnClickListener(v -> Utils.showEmailDialog(this));
+
 //        SignUp.setOnClickListener(v -> handleCreateClick());
         CreateAccBtn.setOnClickListener(v -> {
             try {
@@ -421,6 +418,7 @@ public class UserManagement extends AppCompatActivity {
 
     }
 
+
     private void handleShowPassword() {
         Utils.triggerHapticFeedback(this);
         showPassword = !showPassword;
@@ -450,7 +448,9 @@ public class UserManagement extends AppCompatActivity {
         countryList.add(new Country("+263", "Zimbabwe", "zw"));
         countryList.add(new Country("+27", "South Africa", "za"));
         return countryList;
-    }   public static List<Country> getZimCode() {
+    }
+
+    public static List<Country> getZimCode() {
         List<Country> countryList = new ArrayList<>();
 //        countryList.add(new Country("+27", "South Africa", "za"));
         countryList.add(new Country("+263", "Zimbabwe", "zw"));
@@ -464,7 +464,7 @@ public class UserManagement extends AppCompatActivity {
         Lastname.setText(prefs.getString("surname", ""));
         String phone = prefs.getString("phone", "");// Get the selected country code based on the phone number
         String selectedCode = phone.startsWith("27") ? phone.substring(0, 2) : phone.substring(0, 3);
-        LinearLayout back= findViewById(R.id.back_to_home_from_Profile);
+        LinearLayout back = findViewById(R.id.back_to_home_from_Profile);
         back.setVisibility(View.VISIBLE);
         CountryFlag.setImageResource(phone.startsWith("27") ? R.drawable.za : R.drawable.zw);
         phoneNumber.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);

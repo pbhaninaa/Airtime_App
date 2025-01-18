@@ -39,7 +39,7 @@ public class Communication {
                                                 .put("Name", name)))
                                 .put(Emailv31.Message.SUBJECT, "Requested App Password.")
                                 .put(Emailv31.Message.TEXTPART, "My first Mailjet email")
-                                .put(Emailv31.Message.HTMLPART, "<h3>Dear " + name + ",<br/> your app password is as follows!</h3><br />Password: " + password + "\n Try not to forget it next time")));
+                                .put(Emailv31.Message.HTMLPART, "<h4>Dear User,<br/> your app password is as follows!</h4>\nPassword: " + password )));
 
         // Use ExecutorService for asynchronous task
         ExecutorService executor = Executors.newSingleThreadExecutor();
