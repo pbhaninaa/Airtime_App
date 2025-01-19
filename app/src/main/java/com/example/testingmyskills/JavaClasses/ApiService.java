@@ -1,5 +1,7 @@
 package com.example.testingmyskills.JavaClasses;
 
+import android.content.Context;
+
 import com.example.testingmyskills.BuildConfig;
 import com.example.testingmyskills.Dao.HelperClass;
 
@@ -8,14 +10,15 @@ import org.json.JSONObject;
 public class ApiService {
 
     // Login Endpoint
-    public static JSONObject login(String agentPassword, String agentID) throws Exception {
-        String jsonInputString = "{\"TransactionType\":\"Login\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentID\":\"" + agentID + "\"}";
+    public static JSONObject login(String agentPassword, String agentID, Context context) throws Exception {
+
+        String jsonInputString = "{\"TransactionType\":\"Login\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentID\":\"" + agentID +"\",\"DeviceID\":\""+ Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "login", jsonInputString);
     }
 
     // Registration Endpoint
-    public static JSONObject register(String agentName, String agentPassword, String agentID, String email) throws Exception {
-        String jsonInputString = "{\"TransactionType\":\"Registration\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentID\":\"" + agentID + "\", \"AgentEmail\":\"" + email + "\"}";
+    public static JSONObject register(String agentName, String agentPassword, String agentID, String email,Context context) throws Exception {
+        String jsonInputString = "{\"TransactionType\":\"Registration\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentID\":\"" + agentID + "\", \"AgentEmail\":\"" + email + "\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) +"\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "register", jsonInputString);
     }
 
@@ -32,48 +35,46 @@ public class ApiService {
     }
 
     // Balance Enquiry Endpoint
-    public static JSONObject balanceEnquiry(String network, String agentID) throws Exception {
-        String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Balance Enquiry\", \"AgentID\":\"" + agentID + "\"}";
+    public static JSONObject balanceEnquiry(String network, String agentID, Context context) throws Exception {
+        String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Balance Enquiry\", \"AgentID\":\"" + agentID +"\",\"DeviceID\":\""+ Utils.getDeviceEMEI(context) +"\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "balance-enquiry", jsonInputString);
     }
 
     // Deposit Funds Endpoint
-    public static JSONObject depositFunds(String agentID, String depositAmount, String currency) throws Exception {
-        String jsonInputString = "{\"TransactionType\":\"Deposit Funds\", \"AgentID\":\"" + agentID + "\", \"DepositAmount\":\"" + depositAmount.replace(".", "") + "\", \"Currency\":\"" + currency + "\"}";
+    public static JSONObject depositFunds(String agentID, String depositAmount, String currency,Context context) throws Exception {
+        String jsonInputString = "{\"TransactionType\":\"Deposit Funds\", \"AgentID\":\"" + agentID + "\", \"DepositAmount\":\"" + depositAmount.replace(".", "") + "\", \"Currency\":\"" + currency +"\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "deposit-funds", jsonInputString);
     }
 
     // Load Value Endpoint
-    public static JSONObject loadValue(String network, String agentID, String customerID, String rechargeAmount, String productID, String productDescription) throws Exception {
-        String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Load Value\", \"AgentID\":\"" + agentID + "\", \"CustomerID\":\"" + customerID.replace("+", "") + "\", \"RechargeAmount\":\"" + rechargeAmount.replace(".", "") + "\", \"ProductID\":\"" + productID + "\", \"ProductDescription\":\"" + productDescription + "\"}";
+    public static JSONObject loadValue(String network, String agentID, String customerID, String rechargeAmount, String productID, String productDescription,Context context) throws Exception {
+        String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Load Value\", \"AgentID\":\"" + agentID + "\", \"CustomerID\":\"" + customerID.replace("+", "") + "\", \"RechargeAmount\":\"" + rechargeAmount.replace(".", "") + "\", \"ProductID\":\"" + productID + "\", \"ProductDescription\":\"" + productDescription +"\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "load-value", jsonInputString);
     }
 
     // Load Bundle Endpoint
-    public static JSONObject loadBundle(String network, String agentID, String agentName, String agentPassword, String customerID, String rechargeAmount, String productID, String productDescription) throws Exception {
-        String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Load Bundle\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"CustomerID\":\"" + customerID.replace("+", "") + "\", \"RechargeAmount\":\"" + rechargeAmount.replace(".", "") + "\", \"ProductID\":\"" + productID + "\", \"ProductDescription\":\"" + productDescription + "\"}";
+    public static JSONObject loadBundle(String network, String agentID, String agentName, String agentPassword, String customerID, String rechargeAmount, String productID, String productDescription,Context context) throws Exception {
+        String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Load Bundle\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"CustomerID\":\"" + customerID.replace("+", "") + "\", \"RechargeAmount\":\"" + rechargeAmount.replace(".", "") + "\", \"ProductID\":\"" + productID + "\", \"ProductDescription\":\"" + productDescription +"\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "load-bundle", jsonInputString);
     }
 
     // Transaction Status Enquiry Endpoint
-    public static JSONObject transactionStatusEnquiry(String network, String agentID, String customerID, String referenceID) throws Exception {
-        String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Transaction Status Enquiry\", \"AgentID\":\"" + agentID + "\", \"CustomerID\":\"" + customerID.replace("+", "") + "\", \"ReferenceID\":\"" + referenceID + "\"}";
+    public static JSONObject transactionStatusEnquiry(String network, String agentID, String customerID, String referenceID,Context context) throws Exception {
+        String jsonInputString = "{\"Network\":\"" + network + "\", \"TransactionType\":\"Transaction Status Enquiry\", \"AgentID\":\"" + agentID + "\", \"CustomerID\":\"" + customerID.replace("+", "") + "\", \"ReferenceID\":\"" + referenceID +"\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "transaction-status-enquiry", jsonInputString);
-    }public static JSONObject getLastTransaction(String agentID) throws Exception {
-        String jsonInputString = "{ \"TransactionType\":\"Last Transaction\", \"AgentID\":\"" + agentID + "\"}";
+    }public static JSONObject getLastTransaction(String agentID,Context context) throws Exception {
+        String jsonInputString = "{ \"TransactionType\":\"Last Transaction\", \"AgentID\":\"" + agentID +"\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL , jsonInputString);
     }
-    public static JSONObject resetPassword(String agentID,String email) throws Exception {
-        System.out.println("Test1");
-
-        String jsonInputString = "{ \"TransactionType\":\"Password Reset\", \"AgentID\":\"" + agentID + "\", \"AgentEmail\":\"" + email + "\"}";
+    public static JSONObject resetPassword(String agentID,String email,Context context) throws Exception {
+   String jsonInputString = "{ \"TransactionType\":\"Password Reset\", \"AgentID\":\"" + agentID + "\", \"AgentEmail\":\"" + email +"\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) +"\"}";
         System.out.println("Test2");
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "reset-password", jsonInputString);
     }
 
     // Statement Endpoint
-    public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail) throws Exception {
-        String jsonInputString = "{\"TransactionType\":\"Statement\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentEmail\":\"" + agentEmail + "\"}";
+    public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail,Context context) throws Exception {
+        String jsonInputString = "{\"TransactionType\":\"Statement\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentEmail\":\"" + agentEmail +"\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL, jsonInputString);
     }
 }

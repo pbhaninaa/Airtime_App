@@ -111,7 +111,6 @@ public class Communication {
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
                 message.setSubject("Requested App Password.");
                 message.setText("Dear " + agentName + ",\nYour app password is below!\n"  + agentPassword);
-
                 // Send the email
                 Transport.send(message);
 

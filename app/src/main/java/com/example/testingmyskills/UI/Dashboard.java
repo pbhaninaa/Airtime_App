@@ -630,7 +630,7 @@ public class Dashboard extends AppCompatActivity {
         String AgentPassword = sharedPreferences.getString("password", "");
         String AgentName = name + " " + surname;
         jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        jobListRecyclerView.setAdapter(new Statement(this, getStatement(AgentID, AgentName, AgentPassword, AgentEmail)));
+        jobListRecyclerView.setAdapter(new Statement(this, getStatement(AgentID, AgentName, AgentPassword, AgentEmail, Dashboard.this)));
         getProducts(new ProductsCallback() {
             @Override
             public void onProductsLoaded(List<Map<String, Object>> products) {
@@ -694,7 +694,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    JSONObject res = ApiService.depositFunds(Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), AmountTLoad.getText().toString(), "840");
+                    JSONObject res = ApiService.depositFunds(Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), AmountTLoad.getText().toString(), "840", Dashboard.this);
                     if (res.getInt("responseCode") == 200) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -765,7 +765,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    JSONObject res = ApiService.balanceEnquiry(ISP, Utils.getString(Dashboard.this, "profile", "phone"));
+                    JSONObject res = ApiService.balanceEnquiry(ISP, Utils.getString(Dashboard.this, "profile", "phone"), Dashboard.this);
                     if (res.getInt("responseCode") == 200) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -938,7 +938,7 @@ public class Dashboard extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            JSONObject res = ApiService.loadValue(SelectedIsp.getText().toString(), Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), p, price.replace(",", "").replace(".", ""), "Airtime", "Airtime");
+                            JSONObject res = ApiService.loadValue(SelectedIsp.getText().toString(), Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), p, price.replace(",", "").replace(".", ""), "Airtime", "Airtime", Dashboard.this);
                             if (res.getInt("responseCode") == 200) {
                                 // Handle success and UI updates on the main thread
                                 runOnUiThread(new Runnable() {
@@ -1059,8 +1059,8 @@ public class Dashboard extends AppCompatActivity {
                                     SelectedItemPrice.getText().toString().replace(currencySymbol, "")              // Remove currency symbol
                                             .replace(".", ""),                        // Remove decimal points
                                     ItemCode,                                     // Item code
-                                    SelectedItemType.getText().toString()         // Item type
-                            );
+                                    SelectedItemType.getText().toString()         // Item type,
+                                    , Dashboard.this);
 
 
                             if (res.getInt("responseCode") == 200) {
@@ -1160,9 +1160,7 @@ public class Dashboard extends AppCompatActivity {
                     String agentID = Utils.getString(Dashboard.this, "savedCredentials", "email");
 
 
-                    JSONObject res = ApiService.getLastTransaction(agentID
-
-                    );
+                    JSONObject res = ApiService.getLastTransaction(agentID, Dashboard.this);
 
 
                     if (res.getInt("responseCode") == 200) {
@@ -1464,13 +1462,13 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public static List<Map<String, Object>> getStatement(String AgentID, String AgentName, String AgentPassword, String AgentEmail) {
+    public static List<Map<String, Object>> getStatement(String AgentID, String AgentName, String AgentPassword, String AgentEmail, Context context) {
         List<Map<String, Object>> items = new ArrayList<>();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    JSONObject catalogRequestResponse = ApiService.statement(AgentID, AgentName, AgentPassword, AgentEmail);
+                    JSONObject catalogRequestResponse = ApiService.statement(AgentID, AgentName, AgentPassword, AgentEmail, context);
 //                    JSONObject catalogRequestResponse = ApiService.statement();
                     if (catalogRequestResponse.has("response")) {
                         String nestedResponseString = catalogRequestResponse.getString("response");

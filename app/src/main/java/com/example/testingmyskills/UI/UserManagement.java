@@ -234,6 +234,7 @@ public class UserManagement extends AppCompatActivity {
         String phone = phoneNumber.getText().toString().trim();
         String emailAddress = email.getText().toString().trim();
         String pass = password.getText().toString().trim();
+        Context context = getApplicationContext();
         if (name.isEmpty() || surname.isEmpty() || phone.isEmpty() ||
                 emailAddress.isEmpty() || pass.isEmpty()) {
             Utils.showToast(this, "Please fill all the fields");
@@ -249,7 +250,12 @@ public class UserManagement extends AppCompatActivity {
                 public void run() {
                     try {
                         String p = CountryCode.getSelectedItem() + phone;
-                        JSONObject res = ApiService.register(name + " " + surname, pass, p.replace("+", ""), emailAddress);
+                        JSONObject res = ApiService.register(
+                                name + " " + surname,
+                                pass,
+                                p.replace("+", ""),
+                                emailAddress,
+                                context);
 
                         if (res.getInt("responseCode") == 200) {
                             // To handle success and UI updates on the main thread
@@ -299,7 +305,7 @@ public class UserManagement extends AppCompatActivity {
         Utils.triggerHapticFeedback(this);
         String AgentID = getEmailTextInLogin.getText().toString().trim();
         String password = getPasswordTextInLogin.getText().toString().trim();
-
+Context context = getApplicationContext();
         if (AgentID.isEmpty()) {
             getEmailTextInLogin.setError("AgentID is required");
             return;
@@ -315,7 +321,7 @@ public class UserManagement extends AppCompatActivity {
             public void run() {
                 try {
                     String p = LoginCountryCode.getSelectedItem() + AgentID;
-                    JSONObject res = ApiService.login(password, p.replace("+", ""));
+                    JSONObject res = ApiService.login(password, p.replace("+", ""),context);
 
                     if (res.getInt("responseCode") == 200) {
                         // To handle success and UI updates on the main thread

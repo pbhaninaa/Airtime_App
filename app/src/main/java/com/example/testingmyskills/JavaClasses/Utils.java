@@ -30,7 +30,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
-import com.example.testingmyskills.R;import java.io.IOException;
+import com.example.testingmyskills.R;
+import com.google.android.gms.maps.model.Dash;
+
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -190,6 +193,19 @@ public class Utils {
 
         return null; // Return null if TelephonyManager is unavailable
     }
+    public static String getDeviceEMEI( Context context) {
+        // Validate input
+        String input = getIMEI(context);
+        if (input == null || input.length() <= 7) {
+            return input;  // If the string is too short or empty, return it as is
+        }
+
+        // Get the unmasked part and replace the rest with asterisks
+        String unmaskedPart = input.substring(0, 7);
+        String maskedPart = "*".repeat(input.length() - 7);
+
+        return unmaskedPart + maskedPart;
+    }
     public static String getDeviceDetails(Context context) {
         StringBuilder deviceDetails = new StringBuilder();
 
@@ -276,7 +292,7 @@ public class Utils {
             @Override
             public void run() {
                 try {
-                    JSONObject res = ApiService.resetPassword(agentId, agentEmail);
+                    JSONObject res = ApiService.resetPassword(agentId, agentEmail, context);
 
                     if (res.getInt("responseCode") == 200) {
                         // To handle success and UI updates on the main thread
