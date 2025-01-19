@@ -203,12 +203,13 @@ public class UserManagement extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         });
-        ForgotPasswordBtn.setOnClickListener(v -> Utils.showEmailDialog(this));
+        ForgotPasswordBtn.setOnClickListener(v -> Utils.showEmailDialog(this,this));
 
 //        SignUp.setOnClickListener(v -> handleCreateClick());
         CreateAccBtn.setOnClickListener(v -> {
             try {
-                Utils.triggerHapticFeedback(this);
+
+
                 handleAccCreation();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -245,6 +246,7 @@ public class UserManagement extends AppCompatActivity {
             Utils.showToast(this, "Incorrect mobile number");
             phoneNumber.requestFocus();
         } else {
+            Utils.triggerHapticFeedback(this);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -302,6 +304,7 @@ public class UserManagement extends AppCompatActivity {
     }
 
     private void handleSignIn() throws Exception {
+
         Utils.triggerHapticFeedback(this);
         String AgentID = getEmailTextInLogin.getText().toString().trim();
         String password = getPasswordTextInLogin.getText().toString().trim();
@@ -315,6 +318,7 @@ Context context = getApplicationContext();
             getPasswordTextInLogin.setError("Password is required");
             return;
         }
+        Utils.LoadingLayout(this,this);
 
         new Thread(new Runnable() {
             @Override

@@ -83,7 +83,7 @@ import okhttp3.internal.Util;
 
 
 public class Dashboard extends AppCompatActivity {
-    private ConstraintLayout AppFrame;
+    private ConstraintLayout AppFrame, LoadingLayout;
     private LinearLayout SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
@@ -96,7 +96,7 @@ public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen;
     private LinearLayout job_list_screen;
     private ImageButton backFromList;
-    private ImageView statusLight, CountryFlag, load;
+    private ImageView statusLight, CountryFlag, load,LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
     private TextView number_of_posts;
     private Spinner filter_spinner;
@@ -174,6 +174,8 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void initialiseViews() {
+        LoadingLayout = findViewById(R.id.load_layout);
+        LoadingImage = findViewById(R.id.load_layout_image);
         SelectedItem = findViewById(R.id.selected_item);
         AmountCapture = findViewById(R.id.amount_in_buy);
         load = findViewById(R.id.web_view_loading);
@@ -756,6 +758,8 @@ public class Dashboard extends AppCompatActivity {
 
 
     public void setISP(String ISP) {
+        Utils.LoadingLayout(this,this);
+
         if (!ISP.equals("Econet")) {
 
             Utils.showToast(this, "Not yet available");

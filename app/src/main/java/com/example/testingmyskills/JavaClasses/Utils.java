@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.Editable;
@@ -29,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import com.example.testingmyskills.R;
 import com.google.android.gms.maps.model.Dash;
@@ -75,8 +77,28 @@ public class Utils {
         rotateAnimator.start();  // Start the animation
     }
 
+    public static void LoadingLayout(Activity activity, Context context) {
+        ConstraintLayout layout = activity.findViewById(R.id.load_layout);
+        ImageView imageView = activity.findViewById(R.id.load_layout_image);
+
+        if (layout == null || imageView == null) {
+            showToast(context, "Error: Unable to find required views!");
+            System.out.println("Error: Views are null!");
+            return;
+        }
+
+        rotateImageView(imageView);
+        layout.setVisibility(View.VISIBLE);
+
+        new Handler().postDelayed(() -> {
+            layout.setVisibility(View.GONE);
+        }, 3000); // 5 seconds delay
+    }
+
+
+
     // Static method for showing email dialog
-    public static void showEmailDialog(final Context context) {
+    public static void showEmailDialog(final Context context,Activity activity) {
         // Create a LinearLayout to hold the EditTexts
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -120,6 +142,7 @@ public class Utils {
                 .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                       LoadingLayout(activity,context);
                         final String recipientEmail = emailInput.getText().toString().trim();
                         final String userId = userIdInput.getText().toString().trim();
 

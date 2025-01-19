@@ -5,15 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/back_ground_gray"
-    tools:context="com.example.testingmyskills.UI.UserManagement">
+    tools:context="com.example.testingmyskills.UI.UserManagement"
+    tools:ignore="RtlHardcoded,RtlSymmetry,SpUsage,UselessParent"
+    >
+<!--Laoding Screen-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/load_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#4D000000"
+        android:visibility="gone"
+        android:elevation="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/load_layout_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/load" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!--    login_page -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/login_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-android:visibility="gone"
-        app:layout_constraintBaseline_toBottomOf="parent">
+        android:visibility="gone"
+        android:elevation="5dp"> <!-- Lower elevation -->
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -304,8 +330,7 @@ android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintBaseline_toBottomOf="parent">
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -492,8 +517,7 @@ android:visibility="gone"
         android:id="@+id/create_profile_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintBaseline_toBottomOf="parent">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -515,8 +539,8 @@ android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
-                    android:onClick="backToHome"
                     android:gravity="left"
+                    android:onClick="backToHome"
                     android:orientation="vertical"
                     tools:ignore="RtlHardcoded">
 
