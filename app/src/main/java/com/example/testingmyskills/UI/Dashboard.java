@@ -758,13 +758,13 @@ public class Dashboard extends AppCompatActivity {
 
 
     public void setISP(String ISP) {
-        Utils.LoadingLayout(this,this);
 
         if (!ISP.equals("Econet")) {
 
             Utils.showToast(this, "Not yet available");
             return;
         }
+        Utils.LoadingLayout(this,this);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1382,14 +1382,20 @@ public class Dashboard extends AppCompatActivity {
 
                     // Check if value is not null or empty, then add it to the details
                     if (value != null && !value.toString().trim().isEmpty()) {
-                        // Capitalize the first letter of the key
+                        // Capitalize the first letter of the key and add space before uppercase letters
                         String key = entry.getKey();
-                        String capitalizedKey = key.substring(0, 1).toUpperCase() + key.substring(1);
+
+                        // Insert spaces before uppercase letters and capitalize the first letter
+                        String formattedKey = key.replaceAll("([a-z])([A-Z])", "$1 $2");
+                        String capitalizedKey = formattedKey.substring(0, 1).toUpperCase() + formattedKey.substring(1);
 
                         // Append key in bold with primary color, reduce font size using <small> tags, and add space between key and value
-                        detailsBuilder.append("<font color='").append(colorHex).append("'>").append("<small>").append(capitalizedKey).append(":\t</small></font> ").append("<small>").append(value).append("</small><br>");
+                        detailsBuilder.append("<font color='").append(colorHex).append("'>")
+                                .append("<small>").append(capitalizedKey).append(":\t</small></font> ")
+                                .append("<small>").append(value).append("</small><br>");
                     }
                 }
+
                 String details = detailsBuilder.toString();
 
                 // Create and display an AlertDialog showing transaction details
@@ -1448,7 +1454,6 @@ public class Dashboard extends AppCompatActivity {
 
                 // Set the transaction type
                 transactionType.setText(transactionTypeValue);
-
                 // Determine which amount to display based on the transaction type
                 String amountKey = transactionTypeValue.contains("Deposit") ? "depositAmount" : "rechargeAmount";
                 String transactionAmount = getValueFromMap(statement, amountKey, "N/A");
@@ -1461,6 +1466,7 @@ public class Dashboard extends AppCompatActivity {
             // Utility method to safely fetch values from the map
             private String getValueFromMap(Map<String, Object> map, String key, String defaultValue) {
                 Object value = map.get(key);
+
                 return value != null ? value.toString() : defaultValue;
             }
         }

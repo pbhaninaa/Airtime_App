@@ -13,6 +13,8 @@ import android.widget.Button;
 import com.example.testingmyskills.JavaClasses.Utils;
 import com.example.testingmyskills.R;
 
+import okhttp3.internal.Util;
+
 public class MainActivity extends AppCompatActivity {
     private Button CandidateBtn;
     private ConstraintLayout landing_page;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);Utils.hideSoftNavBar(this);
+        Utils.requestPermissions(this);
         initialiseViews();
         Utils.hideSoftNavBar(this);
         if (isUserLogged(this)) {

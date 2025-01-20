@@ -202,19 +202,43 @@ public class Utils {
                         return telephonyManager.getImei();
                     } else {
                         // Before Android 10, getDeviceId() works
+                        System.out.print("IMEI : "+telephonyManager.getDeviceId());
                         return telephonyManager.getDeviceId();
                     }
                 } else {
                     // Handle case where permission is not granted
-                    return "Permission not granted";
+                    return "No Permission";
                 }
             } else {
                 // For Android versions below Marshmallow
+                System.out.print("IMEI : "+telephonyManager.getDeviceId());
                 return telephonyManager.getDeviceId();
             }
         }
 
         return null; // Return null if TelephonyManager is unavailable
+    }
+    public static void requestPermissions(Activity activity) {
+        // List of permissions to request
+        String[] permissions = {
+                Manifest.permission.INTERNET,
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.READ_PHONE_STATE, // Access phone state
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.VIBRATE,
+                Manifest.permission.SEND_SMS
+        };
+
+        // Check and request permissions if needed
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity, new String[]{permission}, 0);
+                }
+            }
+        }
     }
     public static String getDeviceEMEI( Context context) {
         // Validate input
