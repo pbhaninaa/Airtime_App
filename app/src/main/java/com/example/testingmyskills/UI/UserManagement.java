@@ -79,6 +79,7 @@ public class UserManagement extends AppCompatActivity {
                 hideBottomNav();
                 Country selectedCountry = (Country) parent.getItemAtPosition(position);
                 String flagName = selectedCountry.getCountryFlag();
+                phoneNumber.requestFocus();
                 // Get the resource ID of the drawable dynamically
                 int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
                 // Set the ImageView with the corresponding flag
@@ -290,7 +291,7 @@ public class UserManagement extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Utils.showToast(UserManagement.this, "Error: " + e.getMessage());
+                                Utils.showToast(UserManagement.this, e.getMessage().contains("connect")?"Service Provider Offline":e.getMessage());
                             }
                         });
                     } catch (Exception e) {
@@ -325,6 +326,7 @@ Context context = getApplicationContext();
             public void run() {
                 try {
                     String p = LoginCountryCode.getSelectedItem() + AgentID;
+
                     JSONObject res = ApiService.login(password, p.replace("+", ""),context);
 
                     if (res.getInt("responseCode") == 200) {
@@ -416,8 +418,9 @@ Context context = getApplicationContext();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Utils.showToast(UserManagement.this, e.getMessage());
-                            //Utils.showToast(UserManagement.this, "Error: " + e.getMessage());
+
+                            Utils.showToast(UserManagement.this, e.getMessage().contains("connect")?"Service Provider Offline":e.getMessage());
+
                         }
                     });
                 } catch (Exception e) {

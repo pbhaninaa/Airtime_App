@@ -6,13 +6,12 @@ android {
     namespace 'com.example.testingmyskills'
     compileSdk 33
 
-
     defaultConfig {
         applicationId "com.example.testingmyskills"
         minSdk 23
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -66,10 +65,51 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
     implementation 'com.auth0:java-jwt:3.18.2'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
-    implementation 'androidx.browser:browser:1.5.0' // Check for the latest version
+    implementation 'androidx.browser:browser:1.5.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-//    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+}
 
+import java.util.regex.Pattern
 
+// Function to increment versionName by 0.1
+def incrementVersionName() {
+    File buildFile = file('build.gradle')
+    def content = buildFile.text
+
+    def versionPattern = /versionName\s+"(\d+\.\d+\.\d+)"/
+    def matcher = Pattern.compile(versionPattern).matcher(content)
+
+    if (matcher.find()) {
+        String currentVersion = matcher.group(1)
+        def parts = currentVersion.split("\\.")
+        int major = Integer.parseInt(parts[0])
+        int minor = Integer.parseInt(parts[1])
+        int patch = Integer.parseInt(parts[2])
+
+        // Increment the minor version (0.1)
+        minor += 1
+
+        // Adjust major and minor versions if needed
+        if (minor >= 10) {
+            minor = 0
+            major += 1
+        }
+
+        String newVersion = "$major.$minor.$patch"
+        content = content.replaceFirst(versionPattern, "versionName \"$newVersion\"")
+        buildFile.write(content)
+        println "Version updated to: $newVersion"
+    } else {
+        println "Version name not found in build.gradle."
+    }
+}
+
+// Hook into the build process
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleRelease') {
+        task.doFirst {
+            incrementVersionName()
+        }
+    }
 }
