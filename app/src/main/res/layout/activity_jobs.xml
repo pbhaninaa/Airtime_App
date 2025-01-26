@@ -1214,5 +1214,15 @@
             </LinearLayout>
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/version_d"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15sp"
+            android:layout_marginTop="@dimen/hundred"
+            android:gravity="center"
+            android:text="Prepaid"
+            android:textColor="@color/primary_color"
+            android:textSize="10sp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

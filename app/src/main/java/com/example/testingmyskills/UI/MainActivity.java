@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             "Voice",
             "SMS","WhatsApp"
     };
-    private String getAppVersion() {
+    public String getAppVersion() {
         try {
             PackageManager packageManager = getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
