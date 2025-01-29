@@ -39,7 +39,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone"
         android:elevation="5dp">
 
         <RelativeLayout
@@ -318,8 +317,17 @@
                     style="@style/CustomButtonStyle2"
                     android:layout_width="@dimen/two_hundred"
                     android:layout_height="@dimen/ten"
-                    android:layout_marginBottom="20sp"
+                    android:layout_marginBottom="@dimen/two"
                     android:background="@color/gold_yellow" />
+                <TextView
+                    android:id="@+id/version_l"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/five"
+                    android:gravity="center"
+                    android:text="version"
+                    android:textColor="@color/primary_color"
+                    android:textSize="10sp" />
 
             </LinearLayout>
         </RelativeLayout>
@@ -505,8 +513,9 @@
                     style="@style/CustomButtonStyle2"
                     android:layout_width="@dimen/two_hundred"
                     android:layout_height="@dimen/ten"
-                    android:layout_marginBottom="20sp"
+                    android:layout_marginBottom="@dimen/twenty"
                     android:background="@color/gold_yellow" />
+
 
             </LinearLayout>
 
@@ -518,6 +527,7 @@
         android:id="@+id/create_profile_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -874,6 +884,7 @@
                     android:layout_height="@dimen/ten"
                     android:layout_marginBottom="20sp"
                     android:background="@color/gold_yellow" />
+
 
             </LinearLayout>
 

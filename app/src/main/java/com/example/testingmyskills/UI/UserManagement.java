@@ -8,6 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -46,6 +48,7 @@ public class UserManagement extends AppCompatActivity {
     private CheckBox RememberMeCheckBox;
     private ImageView CountryFlag, LoginCountryFlag;
     private FrameLayout backButton;
+    private TextView version ;
     String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
 
     @Override
@@ -60,7 +63,7 @@ public class UserManagement extends AppCompatActivity {
         setOnclickListeners();
         Utils.setCaps(Firstname);
         Utils.setCaps(Lastname);
-
+        version.setText("Version : "+getAppVersion());
         int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.login_page);
         screenToLoad(constraintLayoutId);
 
@@ -139,6 +142,7 @@ public class UserManagement extends AppCompatActivity {
 
 
     private void initialiseViews() {
+        version = findViewById(R.id.version_l);
         SignInLayout = findViewById(R.id.login_page);
         getEmailTextInLogin = findViewById(R.id.email_in_login_page);
         getPasswordTextInLogin = findViewById(R.id.password_in_login_page);
@@ -172,7 +176,16 @@ public class UserManagement extends AppCompatActivity {
         LoginCountryFlag = findViewById(R.id.login_country_flag);
 
     }
-
+    public String getAppVersion() {
+        try {
+            PackageManager packageManager = getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
+            return packageInfo.versionName; // Returns the versionName from build.gradle
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "Unknown"; // Return a default value in case of an error
+        }
+    }
     private void screenToLoad(int screenToLoad) {
         if (Utils.RememberMe(this)) {
             String phone = Utils.getString(this, "savedCredentials", "email");
