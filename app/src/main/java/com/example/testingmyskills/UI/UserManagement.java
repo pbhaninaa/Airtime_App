@@ -48,7 +48,7 @@ public class UserManagement extends AppCompatActivity {
     private CheckBox RememberMeCheckBox;
     private ImageView CountryFlag, LoginCountryFlag;
     private FrameLayout backButton;
-    private TextView version ;
+//    private TextView version ;
     String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
 
     @Override
@@ -63,7 +63,7 @@ public class UserManagement extends AppCompatActivity {
         setOnclickListeners();
         Utils.setCaps(Firstname);
         Utils.setCaps(Lastname);
-        version.setText("Version : "+getAppVersion());
+//        version.setText("Version : "+getAppVersion());
         int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.login_page);
         screenToLoad(constraintLayoutId);
 
@@ -142,7 +142,7 @@ public class UserManagement extends AppCompatActivity {
 
 
     private void initialiseViews() {
-        version = findViewById(R.id.version_l);
+//        version = findViewById(R.id.version_l);
         SignInLayout = findViewById(R.id.login_page);
         getEmailTextInLogin = findViewById(R.id.email_in_login_page);
         getPasswordTextInLogin = findViewById(R.id.password_in_login_page);

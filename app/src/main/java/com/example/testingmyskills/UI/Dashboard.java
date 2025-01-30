@@ -124,7 +124,7 @@ public class Dashboard extends AppCompatActivity {
         getProfile();
         show = true;
         initialiseViews();
-        version.setText("Version : "+getAppVersion());
+//        version.setText("Version : "+getAppVersion());
 
 // To be removed when top up functionality works
         LinearLayout topUp;
@@ -183,7 +183,7 @@ public class Dashboard extends AppCompatActivity {
 
     private void initialiseViews() {
 
-        version = findViewById(R.id.version_d);
+//        version = findViewById(R.id.version_d);
 
         LoadingLayout = findViewById(R.id.load_layout);
         LoadingImage = findViewById(R.id.load_layout_image);
@@ -996,15 +996,18 @@ public class Dashboard extends AppCompatActivity {
                                             String basketID = responseDetails.getString("basketID");
                                             String CustomerID = responseDetails.getString("customerID");
                                             String AgentID = responseDetails.getString("agentID");
+                                            String date = responseDetails.getString("entryDate");
+                                            String amount = responseDetails.getString("decimalAmount");
 
 
                                             if (!Serial.isEmpty()) {
+                                                Utils.hideSoftKeyboard(Dashboard.this);
+                                                new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Date: "+date+"\n\nRecharge Number: " + CustomerID + "\nRecharge Amount: " + currencySymbol + amount + "\nRecharge Serial: " + Serial).setPositiveButton("OK", null).show();
                                                 hideLayouts(ISPsLayout, NavIPSBtn);
-                                                getAccount(balance);
                                                 setISP(SelectedIsp.getText().toString());
                                                 Utils.saveRefs(Dashboard.this, Network, AgentID, CustomerID, basketID);
                                                 clearFields();
-                                                Utils.hideSoftKeyboard(Dashboard.this);
+                                                getAccount(balance);
 //
 
                                             } else {
@@ -1114,17 +1117,18 @@ public class Dashboard extends AppCompatActivity {
                                             String basketID = responseDetails.getString("basketID");
                                             String CustomerID = responseDetails.getString("customerID");
                                             String AgentID = responseDetails.getString("agentID");
-                                            String amount = responseDetails.getString("rechargeAmount");
+                                            String amount = responseDetails.getString("decimalAmount");
+                                            String date = responseDetails.getString("entryDate");
 
 
                                             if (!Serial.isEmpty()) {
+
+                                                Utils.hideSoftKeyboard(Dashboard.this);
+                                                new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Date: "+date+"\n\nRecharge Number: " + CustomerID + "\nRecharge Amount: " + currencySymbol + amount + "\nRecharge Serial: " + Serial).setPositiveButton("OK", null).show();
                                                 hideLayouts(ISPsLayout, NavIPSBtn);
                                                 setISP(SelectedIsp.getText().toString());
                                                 Utils.saveRefs(Dashboard.this, Network, AgentID, CustomerID, basketID);
                                                 clearFields();
-                                                Utils.hideSoftKeyboard(Dashboard.this);
-                                                new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Recharge Number: " + CustomerID + "\nRecharge Amount: " + currencySymbol + amount + "\nRecharge Serial: " + Serial).setPositiveButton("OK", null).show();
-
 
                                             } else {
                                                 Utils.showToast(Dashboard.this, description);
@@ -1238,10 +1242,12 @@ public class Dashboard extends AppCompatActivity {
                                                     StatusMessage.setText(updatedMessage);
                                                 }
                                                 if (view != null) {
+
                                                     String amount = responseDetails.optString("rechargeAmount", "N/A");
                                                     String customerNumber = responseDetails.optString("customerID", "N/A");
+                                                    String date = responseDetails.optString("entryDate", "N/A");
 
-                                                    new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Recharge Number: " + customerNumber + "\nRecharge Amount: " + currencySymbol + amount + "\nRecharge Serial: " + serial).setPositiveButton("OK", null).show();
+                                                    new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Date: "+date+"\n\nRecharge Number: " + customerNumber + "\nRecharge Amount: " + currencySymbol + amount + "\nRecharge Serial: " + serial).setPositiveButton("OK", null).show();
                                                 }
                                             });
 
