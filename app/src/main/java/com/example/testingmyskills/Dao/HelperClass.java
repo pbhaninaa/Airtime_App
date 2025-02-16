@@ -25,8 +25,6 @@ public class HelperClass {
             os.write(input, 0, input.length);
         }
         int responseCode = conn.getResponseCode();
-        System.out.println("Parameters : "+jsonInputString);
-        System.out.println("Response Code: " + responseCode);
         if (responseCode == HttpURLConnection.HTTP_OK) {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 StringBuilder response = new StringBuilder();

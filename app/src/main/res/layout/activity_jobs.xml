@@ -7,7 +7,7 @@
     android:background="@color/back_ground_gray"
     tools:context="com.example.testingmyskills.UI.Dashboard"
     tools:ignore="RtlHardcoded,RtlSymmetry,SpUsage,UselessParent">
-    <!--    app_frame -->
+    <!--    app_frame Phila -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/app_frame"
         android:layout_width="match_parent"
@@ -433,6 +433,7 @@
                     android:id="@+id/Items_display_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -801,7 +802,7 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--    More Items -->
+    <!--    Load Page -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/load_layout"
         android:layout_width="match_parent"
@@ -886,10 +887,10 @@
                         android:layout_height="22dp"
                         android:layout_gravity="left"
                         android:layout_weight="1"
+                        android:onClick="showHistory"
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="@string/todo"
                         android:src="@drawable/filter_icon"
-                        android:visibility="invisible"
                         app:tint="@color/back_ground_gray" />
                 </LinearLayout>
 
@@ -1127,7 +1128,7 @@
                     android:backgroundTint="@android:color/transparent"
                     android:src="@drawable/top_up"
                     app:tint="@color/primary_color" />
-                ;
+
 
                 <TextView
                     android:layout_width="wrap_content"

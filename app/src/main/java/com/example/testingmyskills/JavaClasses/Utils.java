@@ -95,7 +95,14 @@ public class Utils {
         }, 3000); // 5 seconds delay
     }
 
+    public static String getTodayDate() {
+        // Get the current date
+        Date date = new Date();
 
+        // Format the date into "yyyy/MM/dd"
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        return dateFormat.format(date);
+    }
 
     // Static method for showing email dialog
     public static void showEmailDialog(final Context context,Activity activity) {

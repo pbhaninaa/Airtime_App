@@ -1,9 +1,27 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme -->
     <style name="Base.Theme.AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Primary Colors -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+
+        <!-- Secondary Colors -->
+        <item name="colorSecondary">@color/primary_color</item>
+        <item name="colorOnSecondary">@android:color/black</item>
+
+        <!-- Tertiary Colors -->
+        <item name="colorTertiary">@color/tertiary_color</item>
+        <item name="colorOnTertiary">@android:color/black</item>
+
+        <!-- Background & Surface -->
+        <item name="android:colorBackground">@color/back_ground_gray</item>
+        <item name="colorSurface">@color/back_ground_gray</item>
+        <item name="colorOnSurface">@android:color/black</item>
+
+        <!-- Calendar Color -->
+        <item name="colorCalendar">@color/tertiary_color</item>
     </style>
 
+    <!-- Main App Theme -->
     <style name="Theme.AppTheme" parent="Base.Theme.AppTheme" />
 </resources>
