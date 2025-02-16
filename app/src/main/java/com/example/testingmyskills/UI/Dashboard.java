@@ -686,16 +686,11 @@ public class Dashboard extends AppCompatActivity {
         String AgentPassword = sharedPreferences.getString("password", "");
         String AgentName = name + " " + surname;
         jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        jobListRecyclerView.setAdapter(new Statement(this, getStatement(AgentID, AgentName, AgentPassword, AgentEmail, Dashboard.this)));
+        jobListRecyclerView.setAdapter(new Statement(this, getStatement(AgentID, AgentName, AgentPassword, AgentEmail, Dashboard.this,startDate,endDate)));
 
     }
 
-    public void showHistory(View v) {
-        job_list_screen.setVisibility(View.VISIBLE);
-        AppFrame.setVisibility(View.GONE);
 
-
-    }
 
     private void setOnclickListeners() {
         backFromList.setOnClickListener(v -> handleBackFromList());
@@ -995,7 +990,7 @@ public class Dashboard extends AppCompatActivity {
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("Select Dates")
-                .setMessage("Choose Start and End Dates:")
+                .setMessage("Select Date Range:")
                 .setView(layout)
                 .setPositiveButton("OK", (dialog1, which) -> {
                     String start = startDateInput.getText().toString().trim();
@@ -1551,8 +1546,8 @@ public class Dashboard extends AppCompatActivity {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView referenceID, entryDate, transactionType, amount, balance;
-            LinearLayout amountRow, balanceRow;
+            TextView referenceID, entryDate, transactionType, amount, balance,total;
+            LinearLayout amountRow, balanceRow,balanceRow1;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -1562,8 +1557,10 @@ public class Dashboard extends AppCompatActivity {
                 transactionType = itemView.findViewById(R.id.transactionType);
                 amount = itemView.findViewById(R.id.amount);
                 balance = itemView.findViewById(R.id.cumulativeBalance);
+                total = itemView.findViewById(R.id.cumulativeTotal);
                 amountRow = itemView.findViewById(R.id.amount_row); // Correct usage
                 balanceRow = itemView.findViewById(R.id.balance_row); // Correct usage
+                balanceRow1 = itemView.findViewById(R.id.balance_row1); // Correct usage
             }
 
 
@@ -1582,6 +1579,12 @@ public class Dashboard extends AppCompatActivity {
                 // Check if cumulativeBalance is null, empty, or not a valid number, and default it to "0000"
                 if (decimalBalance == null || decimalBalance.trim().isEmpty()) {
                     decimalBalance = "0.00";
+                }// Properly format the balance using String.format
+                String decimalTotal = getValueFromMap(statement, "decimalTotal", "0.00");
+
+                // Check if cumulativeBalance is null, empty, or not a valid number, and default it to "0000"
+                if (decimalTotal == null || decimalTotal.trim().isEmpty()) {
+                    decimalTotal = "0.00";
                 }
 
                 String formattedBalance = String.format("%s%s", currencySymbol, Utils.FormatAmount(decimalBalance));
@@ -1596,9 +1599,11 @@ public class Dashboard extends AppCompatActivity {
                 // Format the amount for display
                 String formattedAmount = Utils.FormatAmount(transactionAmount);
                 amount.setText(String.format("%s%s", currencySymbol, formattedAmount));
+                total.setText(String.format("%s%s", currencySymbol, Utils.FormatAmount(decimalTotal)));
                 System.out.println("balance:" + decimalBalance + "\n amount:" + transactionAmount);
                 amountRow.setVisibility(transactionAmount.equals("0.00") ? View.GONE : View.VISIBLE);
                 balanceRow.setVisibility(decimalBalance.equals("0.00") ? View.GONE : View.VISIBLE);
+//                balanceRow1.setVisibility(decimalTotal.equals("0.00") ? View.GONE : View.VISIBLE);
 
             }
 
@@ -1611,13 +1616,13 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public static List<Map<String, Object>> getStatement(String AgentID, String AgentName, String AgentPassword, String AgentEmail, Context context) {
+    public static List<Map<String, Object>> getStatement(String AgentID, String AgentName, String AgentPassword, String AgentEmail, Context context,String startDate, String endDate) {
         List<Map<String, Object>> items = new ArrayList<>();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    JSONObject catalogRequestResponse = ApiService.statement(AgentID, AgentName, AgentPassword, AgentEmail, context);
+                    JSONObject catalogRequestResponse = ApiService.statement(AgentID, AgentName, AgentPassword, AgentEmail, context,startDate,endDate);
 //                    JSONObject catalogRequestResponse = ApiService.statement();
                     if (catalogRequestResponse.has("response")) {
                         String nestedResponseString = catalogRequestResponse.getString("response");
@@ -1650,6 +1655,7 @@ public class Dashboard extends AppCompatActivity {
                                 item.put("decimalBalance", product.optString("decimalBalance", ""));
                                 item.put("providerBalance", product.optString("providerBalance", ""));
                                 item.put("agentSplit", product.optString("agentSplit", ""));
+                                item.put("totalAmount", product.optString("decimalTotal", ""));
 
                                 items.add(item);
                             }

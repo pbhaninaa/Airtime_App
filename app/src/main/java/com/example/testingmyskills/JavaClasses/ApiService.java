@@ -73,8 +73,8 @@ public class ApiService {
     }
 
     // Statement Endpoint
-    public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail,Context context) throws Exception {
-        String jsonInputString = "{\"TransactionType\":\"Statement\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentEmail\":\"" + agentEmail +"\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
+    public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail,Context context,String startDate, String endDate) throws Exception {
+        String jsonInputString = "{\"TransactionType\":\"Statement\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"StartDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\", \"AgentEmail\":\"" + agentEmail +"\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL, jsonInputString);
     }
 }
