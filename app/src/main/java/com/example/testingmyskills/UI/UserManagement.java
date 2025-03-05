@@ -391,6 +391,7 @@ Context context = getApplicationContext();
                                     // Navigate to the Dashboard
                                     Intent intent = new Intent(UserManagement.this, Dashboard.class);
                                     startActivity(intent);
+                                    Utils.CloseLoadingLayout(UserManagement.this,UserManagement.this);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();

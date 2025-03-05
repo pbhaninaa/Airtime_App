@@ -73,8 +73,28 @@ public class ApiService {
     }
 
     // Statement Endpoint
-    public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail,Context context,String startDate, String endDate) throws Exception {
-        String jsonInputString = "{\"TransactionType\":\"Statement\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"StartDate\":\"" + startDate + "\", \"endDate\":\"" + endDate + "\", \"AgentEmail\":\"" + agentEmail +"\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
-        return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL, jsonInputString);
+    public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail, Context context, String startDate, String endDate) throws Exception {
+        // Start building the JSON string
+        StringBuilder jsonInputString = new StringBuilder("{\"TransactionType\":\"Statement\", \"AgentID\":\"" + agentID +
+                "\", \"AgentName\":\"" + agentName +
+                "\", \"AgentPassword\":\"" + agentPassword +
+                "\", \"AgentEmail\":\"" + agentEmail +
+                "\", \"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"");
+
+        // Add StartDate if it's not null or empty
+        if (startDate != null && !startDate.trim().isEmpty()) {
+            jsonInputString.append(", \"StartDate\":\"").append(startDate).append("\"");
+        }
+
+        // Add EndDate if it's not null or empty
+        if (endDate != null && !endDate.trim().isEmpty()) {
+            jsonInputString.append(", \"EndDate\":\"").append(endDate).append("\"");
+        }
+
+        // Close the JSON string
+        jsonInputString.append("}");
+
+        return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL, jsonInputString.toString());
     }
+
 }

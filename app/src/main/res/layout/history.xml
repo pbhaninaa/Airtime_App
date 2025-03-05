@@ -154,28 +154,7 @@
             android:text="2000"
             android:textColor="@color/black" />
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/balance_row1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="5dp">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Total"
-            android:textColor="@color/primary_color"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/cumulativeTotal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/black" />
-    </LinearLayout>
 
     <!-- Continue for other fields like providerSerial, providerReference, etc. -->
 <View

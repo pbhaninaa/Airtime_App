@@ -100,6 +100,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import android.content.ComponentName;
+import android.content.Intent;
+
+
 
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout AppFrame, LoadingLayout;
@@ -667,7 +671,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void recyclerViews() {
-        populateHistory();
+        populateHistory(null,null);
         getProducts(new ProductsCallback() {
             @Override
             public void onProductsLoaded(List<Map<String, Object>> products) {
@@ -677,7 +681,7 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    public void populateHistory() {
+    public void populateHistory(String startDate,String endDate) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         String name = sharedPreferences.getString("name", "");
         String surname = sharedPreferences.getString("surname", "");
@@ -816,7 +820,6 @@ public class Dashboard extends AppCompatActivity {
         }
         Utils.LoadingLayout(this, this);
 
-
         getBalance(ISP);
         SelectedIsp.setText(ISP);
         hideLayouts(ItemsLayout, NavIPSBtn);
@@ -847,6 +850,7 @@ public class Dashboard extends AppCompatActivity {
                                     JSONObject userObject = paramsList.getJSONObject(0);
                                     String balance = userObject.getString("decimalBalance");
                                     getAccount(balance);
+                                    Utils.CloseLoadingLayout(Dashboard.this,Dashboard.this);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -939,7 +943,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
 
-    public static void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
+    public  void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
         // Create the layout and views
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -1014,7 +1018,7 @@ public class Dashboard extends AppCompatActivity {
                                     startDate = start;
                                     endDate = end;
                                     Utils.showToast(context, "Selected Dates:\nStart: " + startDate + "\nEnd: " + endDate);
-
+                                    populateHistory(start,end);
                                 }
                             }
                         } catch (ParseException e) {
@@ -1109,7 +1113,7 @@ public class Dashboard extends AppCompatActivity {
                                             String AgentID = responseDetails.getString("agentID");
                                             String date = responseDetails.getString("entryDate");
                                             String amount = responseDetails.getString("decimalAmount");
-
+                                            Utils.CloseLoadingLayout(Dashboard.this,Dashboard.this);
 
                                             if (!Serial.isEmpty()) {
                                                 Utils.hideSoftKeyboard(Dashboard.this);
@@ -1222,6 +1226,7 @@ public class Dashboard extends AppCompatActivity {
                                             String AgentID = responseDetails.getString("agentID");
                                             String amount = responseDetails.getString("decimalAmount");
                                             String date = responseDetails.getString("entryDate");
+                                            Utils.CloseLoadingLayout(Dashboard.this,Dashboard.this);
                                             if (!Serial.isEmpty()) {
                                                 Utils.hideSoftKeyboard(Dashboard.this);
                                                 new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Date: " + date + "\n\nRecharge Number: " + CustomerID + "\nRecharge Amount: " + currencySymbol + amount + "\nRecharge Serial: " + Serial).setPositiveButton("OK", null).show();
@@ -1278,7 +1283,12 @@ public class Dashboard extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToOtherApp(View view) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("com.example.finance", "com.example.finance.MainActivity"));
+        startActivity(intent);
 
+    }
     public void getLastTransaction(View view) {
 
         new Thread(new Runnable() {
@@ -1546,8 +1556,8 @@ public class Dashboard extends AppCompatActivity {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView referenceID, entryDate, transactionType, amount, balance,total;
-            LinearLayout amountRow, balanceRow,balanceRow1;
+            TextView referenceID, entryDate, transactionType, amount, balance;
+            LinearLayout amountRow, balanceRow;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -1557,10 +1567,8 @@ public class Dashboard extends AppCompatActivity {
                 transactionType = itemView.findViewById(R.id.transactionType);
                 amount = itemView.findViewById(R.id.amount);
                 balance = itemView.findViewById(R.id.cumulativeBalance);
-                total = itemView.findViewById(R.id.cumulativeTotal);
                 amountRow = itemView.findViewById(R.id.amount_row); // Correct usage
                 balanceRow = itemView.findViewById(R.id.balance_row); // Correct usage
-                balanceRow1 = itemView.findViewById(R.id.balance_row1); // Correct usage
             }
 
 
@@ -1599,11 +1607,8 @@ public class Dashboard extends AppCompatActivity {
                 // Format the amount for display
                 String formattedAmount = Utils.FormatAmount(transactionAmount);
                 amount.setText(String.format("%s%s", currencySymbol, formattedAmount));
-                total.setText(String.format("%s%s", currencySymbol, Utils.FormatAmount(decimalTotal)));
-                System.out.println("balance:" + decimalBalance + "\n amount:" + transactionAmount);
                 amountRow.setVisibility(transactionAmount.equals("0.00") ? View.GONE : View.VISIBLE);
                 balanceRow.setVisibility(decimalBalance.equals("0.00") ? View.GONE : View.VISIBLE);
-//                balanceRow1.setVisibility(decimalTotal.equals("0.00") ? View.GONE : View.VISIBLE);
 
             }
 
@@ -1655,7 +1660,6 @@ public class Dashboard extends AppCompatActivity {
                                 item.put("decimalBalance", product.optString("decimalBalance", ""));
                                 item.put("providerBalance", product.optString("providerBalance", ""));
                                 item.put("agentSplit", product.optString("agentSplit", ""));
-                                item.put("totalAmount", product.optString("decimalTotal", ""));
 
                                 items.add(item);
                             }

@@ -90,11 +90,21 @@ public class Utils {
         rotateImageView(imageView);
         layout.setVisibility(View.VISIBLE);
 
-        new Handler().postDelayed(() -> {
-            layout.setVisibility(View.GONE);
-        }, 3000); // 5 seconds delay
+
+    }
+public static void CloseLoadingLayout(Activity activity, Context context){
+    ConstraintLayout layout = activity.findViewById(R.id.load_layout);
+    ImageView imageView = activity.findViewById(R.id.load_layout_image);
+
+    if (layout == null || imageView == null) {
+        showToast(context, "Error: Unable to find required views!");
+        System.out.println("Error: Views are null!");
+        return;
     }
 
+    rotateImageView(imageView);
+    layout.setVisibility(View.GONE);
+}
     public static String getTodayDate() {
         // Get the current date
         Date date = new Date();
@@ -168,20 +178,27 @@ public class Utils {
                             getPassword(context, userId, recipientEmail, new PasswordCallback() {
                                 @Override
                                 public void onPasswordRetrieved(String agentPassword, String agentName) {
-                                    // Send the email including the User ID in the body
                                     try {
-                                        // Use the retrieved password in the sendEmail method
-                                        Communication.sendEmailsInSMT(context, recipientEmail,agentName, agentPassword);
+                                        if (Communication.sendEmailsInSMTP(recipientEmail, agentName, agentPassword)) {
+                                            Utils.showToast(context, "Email sent successfully.");
+                                        } else {
+                                            Utils.showToast(context, "Failed to send email.");
+                                        }
 
-                                    } catch (MessagingException e) {
+                                        CloseLoadingLayout(activity, context);
+
+                                    } catch (Exception e) {  // Change to general Exception
                                         e.printStackTrace();
-                                        showToast(context, "Error sending email: " + e.getMessage());
+                                        CloseLoadingLayout(activity, context);
+                                        Utils.showToast(context, "Error sending email: " + e.getMessage());
                                     }
                                 }
 
                                 @Override
                                 public void onError(String errorMessage) {
                                     // Handle error in retrieving password
+                                    CloseLoadingLayout(activity,context);
+
                                     showToast(context,   "User Not Found");
                                 }
                             });
