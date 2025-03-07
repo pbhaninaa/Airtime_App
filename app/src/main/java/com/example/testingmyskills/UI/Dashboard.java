@@ -60,7 +60,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -100,9 +99,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
 import android.content.ComponentName;
 import android.content.Intent;
-
 
 
 public class Dashboard extends AppCompatActivity {
@@ -126,13 +125,11 @@ public class Dashboard extends AppCompatActivity {
 
 
     private ImageButton FilterButton;
-    private ScrollView scrollView;
-    private LinearLayout filterSection;
     private boolean show;
     static String currencySymbol, ItemCode;
     private RecyclerView jobListRecyclerView;
     private int numItems;
-    private static String startDate,endDate;
+    private static String startDate, endDate;
 
 
     @Override
@@ -208,6 +205,7 @@ public class Dashboard extends AppCompatActivity {
 
 //        version = findViewById(R.id.version_d);
 
+
         LoadingLayout = findViewById(R.id.load_layout);
         LoadingImage = findViewById(R.id.load_layout_image);
         SelectedItem = findViewById(R.id.selected_item);
@@ -223,8 +221,6 @@ public class Dashboard extends AppCompatActivity {
         BuyBtn = findViewById(R.id.btn_buy);
         BuyBtn1 = findViewById(R.id.btn_buy_1);
         FilterButton = findViewById(R.id.filter_button);
-        filterSection = findViewById(R.id.filter_section);
-        scrollView = findViewById(R.id.scroll_view);
         ConfirmationScreen = findViewById(R.id.confirmation_screen);
         Yes = findViewById(R.id.yes);
         No = findViewById(R.id.no);
@@ -644,6 +640,16 @@ public class Dashboard extends AppCompatActivity {
             AmountCapture.setVisibility(View.VISIBLE);
             BuyBtn1.setVisibility(View.VISIBLE);
             BuyBtn.setVisibility(View.GONE);
+        } else if (imageButton.getId() == R.id.more1) {
+//             Phila
+            SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
+            String name = sharedPreferences.getString("name", "");
+            String surname = sharedPreferences.getString("surname", "");
+            String AgentID = sharedPreferences.getString("phone", "");
+            String AgentEmail = sharedPreferences.getString("email", "");
+            String AgentPassword = sharedPreferences.getString("password", "");
+            String AgentName = name + " " + surname;
+
         }
         LoadBalance1.setVisibility(View.GONE);
         LoadBalance.setVisibility(View.VISIBLE);
@@ -658,6 +664,7 @@ public class Dashboard extends AppCompatActivity {
         WebScree.setVisibility(View.GONE);
         layoutToDisplay.setVisibility(View.VISIBLE);
 
+
     }
 
 
@@ -671,7 +678,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void recyclerViews() {
-        populateHistory(null,null);
+        populateHistory(null, null);
         getProducts(new ProductsCallback() {
             @Override
             public void onProductsLoaded(List<Map<String, Object>> products) {
@@ -681,7 +688,22 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    public void populateHistory(String startDate,String endDate) {
+    /*
+        public void populateHistory(String startDate, String endDate) {
+            SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
+            String name = sharedPreferences.getString("name", "");
+            String surname = sharedPreferences.getString("surname", "");
+            String AgentID = sharedPreferences.getString("phone", "");
+            String AgentEmail = sharedPreferences.getString("email", "");
+            String AgentPassword = sharedPreferences.getString("password", "");
+            String AgentName = name + " " + surname;
+            jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            jobListRecyclerView.setAdapter(new Statement(this, getStatement(AgentID, AgentName, AgentPassword, AgentEmail, Dashboard.this, startDate, endDate)));
+
+
+
+        }*/
+    public void populateHistory(String startDate, String endDate) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         String name = sharedPreferences.getString("name", "");
         String surname = sharedPreferences.getString("surname", "");
@@ -689,11 +711,44 @@ public class Dashboard extends AppCompatActivity {
         String AgentEmail = sharedPreferences.getString("email", "");
         String AgentPassword = sharedPreferences.getString("password", "");
         String AgentName = name + " " + surname;
-        jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        jobListRecyclerView.setAdapter(new Statement(this, getStatement(AgentID, AgentName, AgentPassword, AgentEmail, Dashboard.this,startDate,endDate)));
 
+        System.out.println("before getStatement");
+
+        getStatement(AgentID, AgentName, AgentPassword, AgentEmail, this, startDate, endDate, new StatementCallback() {
+            @Override
+            public void onResult(List<Map<String, Object>> statements) {
+                runOnUiThread(() -> {
+                    Log.d("STATEMENT_SIZE", "Size: " + (statements != null ? statements.size() : 0));
+                    System.out.println("after getStatement");
+
+                    // Ensure layout manager is set
+                    if (jobListRecyclerView.getLayoutManager() == null) {
+                        jobListRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                    }
+
+                    // Update or set adapter
+                    if (jobListRecyclerView.getAdapter() != null && jobListRecyclerView.getAdapter() instanceof Statement) {
+                        ((Statement) jobListRecyclerView.getAdapter()).updateStatements(statements);
+                    } else {
+                        jobListRecyclerView.setAdapter(new Statement(Dashboard.this, statements));
+                    }
+                });
+            }
+        });
     }
 
+
+    public void AlertString(Context context, String message) {
+        new AlertDialog.Builder(context)
+                .setMessage(message)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
 
 
     private void setOnclickListeners() {
@@ -710,6 +765,7 @@ public class Dashboard extends AppCompatActivity {
         NavLaodBalanceBtn1.setOnClickListener(v -> hideLayouts(BuyLayout, NavLaodBalanceBtn1));
         NavIPSBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavIPSBtn));
         NavMoreBtn.setOnClickListener(v -> handleShowMore());
+
         NavBuyBtn.setOnClickListener(v -> hideLayouts(BuyLayout, NavBuyBtn));
         MoreBtn.setOnClickListener(v -> handleShowMore());
         NavProfileBtn.setOnClickListener(v -> showProfile());
@@ -850,7 +906,7 @@ public class Dashboard extends AppCompatActivity {
                                     JSONObject userObject = paramsList.getJSONObject(0);
                                     String balance = userObject.getString("decimalBalance");
                                     getAccount(balance);
-                                    Utils.CloseLoadingLayout(Dashboard.this,Dashboard.this);
+                                    Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -943,7 +999,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
 
-    public  void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
+    public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
         // Create the layout and views
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -1018,7 +1074,9 @@ public class Dashboard extends AppCompatActivity {
                                     startDate = start;
                                     endDate = end;
                                     Utils.showToast(context, "Selected Dates:\nStart: " + startDate + "\nEnd: " + endDate);
-                                    populateHistory(start,end);
+                                    populateHistory(start, end);
+
+
                                 }
                             }
                         } catch (ParseException e) {
@@ -1113,7 +1171,7 @@ public class Dashboard extends AppCompatActivity {
                                             String AgentID = responseDetails.getString("agentID");
                                             String date = responseDetails.getString("entryDate");
                                             String amount = responseDetails.getString("decimalAmount");
-                                            Utils.CloseLoadingLayout(Dashboard.this,Dashboard.this);
+                                            Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
 
                                             if (!Serial.isEmpty()) {
                                                 Utils.hideSoftKeyboard(Dashboard.this);
@@ -1177,9 +1235,9 @@ public class Dashboard extends AppCompatActivity {
         clearFields();
         String p = CountryCode.getSelectedItem() + phone;
 
-        String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "")  // Remove the currency symbol
-                .replace(",", "")             // Remove commas
-                .replace("Account Balance", "") // Remove the "Account Balance" text
+        String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "")
+                .replace(",", "")
+                .replace("Account Balance", "")
                 .trim();
         Utils.LoadingLayout(this, this);
         try {
@@ -1197,15 +1255,15 @@ public class Dashboard extends AppCompatActivity {
                             String agentPassword = sharedPreferences.getString("password", "");
                             String agentName = name + " " + surname;
 
-                            JSONObject res = ApiService.loadBundle(SelectedIsp.getText().toString(),             // ISP Name
-                                    agentId,                                      // Agent ID
-                                    agentName,                         // Full Name
-                                    agentPassword,                                   // User identifier or password
-                                    p.replace("+", ""), // Phone number formatted with "263"
-                                    SelectedItemPrice.getText().toString().replace(currencySymbol, "")              // Remove currency symbol
-                                            .replace(".", ""),                        // Remove decimal points
-                                    ItemCode,                                     // Item code
-                                    SelectedItemType.getText().toString()         // Item type,
+                            JSONObject res = ApiService.loadBundle(SelectedIsp.getText().toString(),
+                                    agentId,
+                                    agentName,
+                                    agentPassword,
+                                    p.replace("+", ""),
+                                    SelectedItemPrice.getText().toString().replace(currencySymbol, "")
+                                            .replace(".", ""),
+                                    ItemCode,
+                                    SelectedItemType.getText().toString()
                                     , Dashboard.this);
                             if (res.getInt("responseCode") == 200) {
                                 // Handle success and UI updates on the main thread
@@ -1226,7 +1284,7 @@ public class Dashboard extends AppCompatActivity {
                                             String AgentID = responseDetails.getString("agentID");
                                             String amount = responseDetails.getString("decimalAmount");
                                             String date = responseDetails.getString("entryDate");
-                                            Utils.CloseLoadingLayout(Dashboard.this,Dashboard.this);
+                                            Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
                                             if (!Serial.isEmpty()) {
                                                 Utils.hideSoftKeyboard(Dashboard.this);
                                                 new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Date: " + date + "\n\nRecharge Number: " + CustomerID + "\nRecharge Amount: " + currencySymbol + amount + "\nRecharge Serial: " + Serial).setPositiveButton("OK", null).show();
@@ -1289,6 +1347,7 @@ public class Dashboard extends AppCompatActivity {
         startActivity(intent);
 
     }
+
     public void getLastTransaction(View view) {
 
         new Thread(new Runnable() {
@@ -1621,19 +1680,96 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public static List<Map<String, Object>> getStatement(String AgentID, String AgentName, String AgentPassword, String AgentEmail, Context context,String startDate, String endDate) {
-        List<Map<String, Object>> items = new ArrayList<>();
+    /*
+        public static List<Map<String, Object>> getStatement(String AgentID, String AgentName, String AgentPassword, String AgentEmail, Context context, String startDate, String endDate) {
+            List<Map<String, Object>> items = new ArrayList<>();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject catalogRequestResponse = ApiService.statement(AgentID, AgentName, AgentPassword, AgentEmail, context, startDate, endDate);
+    //                    JSONObject catalogRequestResponse = ApiService.statement();
+                        if (catalogRequestResponse.has("response")) {
+                            String nestedResponseString = catalogRequestResponse.getString("response");
+                            JSONObject nestedResponse = new JSONObject(nestedResponseString);
+                            if (nestedResponse.has("methodResponse")) {
+                                JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
+                                for (int i = 0; i < paramsList.length(); i++) {
+                                    JSONObject product = paramsList.getJSONObject(i);
+                                    Map<String, Object> item = new HashMap<>();
+                                    item.put("customerID", product.optString("customerID", ""));
+                                    item.put("basketID", product.optString("basketID", ""));
+                                    item.put("network", product.optString("network", ""));
+                                    item.put("transactionType", product.optString("transactionType", ""));
+                                    item.put("productID", product.optString("productID", ""));
+                                    item.put("productDescription", product.optString("productDescription", ""));
+                                    item.put("productCategory", product.optString("productCategory", ""));
+                                    item.put("rechargeAmount", product.optString("rechargeAmount", ""));
+                                    item.put("depositAmount", product.optString("DepositAmount", ""));
+                                    item.put("providerSerial", product.optString("providerSerial", ""));
+                                    item.put("providerReference", product.optString("providerReference", ""));
+                                    item.put("providerStatus", product.optString("providerStatus", ""));
+                                    item.put("providerStatusCode", product.optString("providerStatusCode", ""));
+                                    item.put("currency", product.optString("currency", ""));
+                                    item.put("costPrice", product.optString("costPrice", ""));
+                                    item.put("agentID", product.optString("agentID", ""));
+                                    item.put("agentName", product.optString("agentName", ""));
+                                    item.put("entryDate", product.optString("entryDate", ""));
+                                    item.put("providerID", product.optString("providerID", ""));
+                                    item.put("providerSplit", product.optString("providerSplit", ""));
+                                    item.put("decimalBalance", product.optString("decimalBalance", ""));
+                                    item.put("providerBalance", product.optString("providerBalance", ""));
+                                    item.put("agentSplit", product.optString("agentSplit", ""));
+
+                                    items.add(item);
+                                }
+                            } else {
+                                System.out.println("Error: methodResponse not found in nested response.");
+                            }
+                        } else {
+                            System.out.println("Error: response not found in catalogRequestResponse.");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        System.out.println("JSON Parsing Error: " + (e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage()));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }).start();
+            return items;
+        }
+
+        ;*/
+    public interface StatementCallback {
+        void onResult(List<Map<String, Object>> statements);
+    }
+
+    public static void getStatement(
+            String AgentID, String AgentName, String AgentPassword, String AgentEmail,
+            Context context, String startDate, String endDate,
+            StatementCallback callback) {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
+                List<Map<String, Object>> items = new ArrayList<>();
                 try {
-                    JSONObject catalogRequestResponse = ApiService.statement(AgentID, AgentName, AgentPassword, AgentEmail, context,startDate,endDate);
-//                    JSONObject catalogRequestResponse = ApiService.statement();
+                    JSONObject catalogRequestResponse = ApiService.statement(
+                            AgentID, AgentName, AgentPassword, AgentEmail, context, startDate, endDate
+                    );
+
                     if (catalogRequestResponse.has("response")) {
+                        System.out.println("getStatement response");
+                        System.out.println("getStatement size : " + catalogRequestResponse.length());
+
                         String nestedResponseString = catalogRequestResponse.getString("response");
                         JSONObject nestedResponse = new JSONObject(nestedResponseString);
+
                         if (nestedResponse.has("methodResponse")) {
                             JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
+
                             for (int i = 0; i < paramsList.length(); i++) {
                                 JSONObject product = paramsList.getJSONObject(i);
                                 Map<String, Object> item = new HashMap<>();
@@ -1660,7 +1796,6 @@ public class Dashboard extends AppCompatActivity {
                                 item.put("decimalBalance", product.optString("decimalBalance", ""));
                                 item.put("providerBalance", product.optString("providerBalance", ""));
                                 item.put("agentSplit", product.optString("agentSplit", ""));
-
                                 items.add(item);
                             }
                         } else {
@@ -1672,16 +1807,20 @@ public class Dashboard extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
-                    System.out.println("JSON Parsing Error: " + (e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage()));
+                    System.out.println("JSON Parsing Error: " +
+                            (e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage()));
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
+                }
+
+                // Send results back to the UI thread
+                if (callback != null) {
+                    callback.onResult(items);
                 }
             }
         }).start();
-        return items;
     }
 
-    ;
 
     public void spinners() {
         ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
