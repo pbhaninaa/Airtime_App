@@ -678,7 +678,6 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void recyclerViews() {
-        populateHistory(null, null);
         getProducts(new ProductsCallback() {
             @Override
             public void onProductsLoaded(List<Map<String, Object>> products) {
@@ -688,21 +687,7 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    /*
-        public void populateHistory(String startDate, String endDate) {
-            SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
-            String name = sharedPreferences.getString("name", "");
-            String surname = sharedPreferences.getString("surname", "");
-            String AgentID = sharedPreferences.getString("phone", "");
-            String AgentEmail = sharedPreferences.getString("email", "");
-            String AgentPassword = sharedPreferences.getString("password", "");
-            String AgentName = name + " " + surname;
-            jobListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-            jobListRecyclerView.setAdapter(new Statement(this, getStatement(AgentID, AgentName, AgentPassword, AgentEmail, Dashboard.this, startDate, endDate)));
 
-
-
-        }*/
     public void populateHistory(String startDate, String endDate) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         String name = sharedPreferences.getString("name", "");
@@ -712,16 +697,12 @@ public class Dashboard extends AppCompatActivity {
         String AgentPassword = sharedPreferences.getString("password", "");
         String AgentName = name + " " + surname;
 
-        System.out.println("before getStatement");
 
         getStatement(AgentID, AgentName, AgentPassword, AgentEmail, this, startDate, endDate, new StatementCallback() {
             @Override
             public void onResult(List<Map<String, Object>> statements) {
                 runOnUiThread(() -> {
-                    Log.d("STATEMENT_SIZE", "Size: " + (statements != null ? statements.size() : 0));
-                    System.out.println("after getStatement");
-
-                    // Ensure layout manager is set
+                      // Ensure layout manager is set
                     if (jobListRecyclerView.getLayoutManager() == null) {
                         jobListRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     }
@@ -1073,7 +1054,6 @@ public class Dashboard extends AppCompatActivity {
                                 } else {
                                     startDate = start;
                                     endDate = end;
-                                    Utils.showToast(context, "Selected Dates:\nStart: " + startDate + "\nEnd: " + endDate);
                                     populateHistory(start, end);
 
 
@@ -1680,68 +1660,6 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    /*
-        public static List<Map<String, Object>> getStatement(String AgentID, String AgentName, String AgentPassword, String AgentEmail, Context context, String startDate, String endDate) {
-            List<Map<String, Object>> items = new ArrayList<>();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        JSONObject catalogRequestResponse = ApiService.statement(AgentID, AgentName, AgentPassword, AgentEmail, context, startDate, endDate);
-    //                    JSONObject catalogRequestResponse = ApiService.statement();
-                        if (catalogRequestResponse.has("response")) {
-                            String nestedResponseString = catalogRequestResponse.getString("response");
-                            JSONObject nestedResponse = new JSONObject(nestedResponseString);
-                            if (nestedResponse.has("methodResponse")) {
-                                JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
-                                for (int i = 0; i < paramsList.length(); i++) {
-                                    JSONObject product = paramsList.getJSONObject(i);
-                                    Map<String, Object> item = new HashMap<>();
-                                    item.put("customerID", product.optString("customerID", ""));
-                                    item.put("basketID", product.optString("basketID", ""));
-                                    item.put("network", product.optString("network", ""));
-                                    item.put("transactionType", product.optString("transactionType", ""));
-                                    item.put("productID", product.optString("productID", ""));
-                                    item.put("productDescription", product.optString("productDescription", ""));
-                                    item.put("productCategory", product.optString("productCategory", ""));
-                                    item.put("rechargeAmount", product.optString("rechargeAmount", ""));
-                                    item.put("depositAmount", product.optString("DepositAmount", ""));
-                                    item.put("providerSerial", product.optString("providerSerial", ""));
-                                    item.put("providerReference", product.optString("providerReference", ""));
-                                    item.put("providerStatus", product.optString("providerStatus", ""));
-                                    item.put("providerStatusCode", product.optString("providerStatusCode", ""));
-                                    item.put("currency", product.optString("currency", ""));
-                                    item.put("costPrice", product.optString("costPrice", ""));
-                                    item.put("agentID", product.optString("agentID", ""));
-                                    item.put("agentName", product.optString("agentName", ""));
-                                    item.put("entryDate", product.optString("entryDate", ""));
-                                    item.put("providerID", product.optString("providerID", ""));
-                                    item.put("providerSplit", product.optString("providerSplit", ""));
-                                    item.put("decimalBalance", product.optString("decimalBalance", ""));
-                                    item.put("providerBalance", product.optString("providerBalance", ""));
-                                    item.put("agentSplit", product.optString("agentSplit", ""));
-
-                                    items.add(item);
-                                }
-                            } else {
-                                System.out.println("Error: methodResponse not found in nested response.");
-                            }
-                        } else {
-                            System.out.println("Error: response not found in catalogRequestResponse.");
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        System.out.println("JSON Parsing Error: " + (e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage()));
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }).start();
-            return items;
-        }
-
-        ;*/
     public interface StatementCallback {
         void onResult(List<Map<String, Object>> statements);
     }
@@ -1923,6 +1841,7 @@ public class Dashboard extends AppCompatActivity {
             Utils.showToast(this, "Select Network");
             return;
         }
+        populateHistory(null, null);
         Navbar.setVisibility(View.GONE);
         AppFrame.setVisibility(View.GONE);
         job_list_screen.setVisibility(View.VISIBLE);
