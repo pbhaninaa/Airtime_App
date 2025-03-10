@@ -102,7 +102,8 @@ import java.util.Locale;
 
 import android.content.ComponentName;
 import android.content.Intent;
-
+import android.content.ContextWrapper;
+import android.view.ContextThemeWrapper;
 
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout AppFrame, LoadingLayout;
@@ -980,96 +981,96 @@ public class Dashboard extends AppCompatActivity {
     }
 
 
-    public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
-        // Create the layout and views
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.VERTICAL);
+public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
+    // Wrap the context to apply app's theme
+    Context themedContext = new ContextThemeWrapper(context, R.style.AppThemes);
 
-        // Create EditTexts and set up layout
-        final EditText startDateInput = new EditText(context);
-        final EditText endDateInput = new EditText(context);
-        startDateInput.setBackgroundResource(R.drawable.edit_text_background);
-        startDateInput.setHint("Select Start Date");
-        startDateInput.setFocusable(false);
-        startDateInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
-        endDateInput.setBackgroundResource(R.drawable.edit_text_background);
-        endDateInput.setHint("Select End Date");
-        endDateInput.setFocusable(false);
-        endDateInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
+    // Create the layout and views
+    LinearLayout layout = new LinearLayout(themedContext);
+    layout.setOrientation(LinearLayout.VERTICAL);
 
-        // Layout setup
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        int marginInDp = 20;
-        int marginInPx = convertDpToPx(context, marginInDp);
-        params.setMargins(marginInPx, 5, marginInPx, 5);
-        startDateInput.setLayoutParams(params);
-        endDateInput.setLayoutParams(params);
+    // Create EditTexts and set up layout
+    final EditText startDateInput = new EditText(themedContext);
+    final EditText endDateInput = new EditText(themedContext);
+    startDateInput.setBackgroundResource(R.drawable.edit_text_background);
+    startDateInput.setHint("Select Start Date");
+    startDateInput.setFocusable(false);
+    startDateInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
+    endDateInput.setBackgroundResource(R.drawable.edit_text_background);
+    endDateInput.setHint("Select End Date");
+    endDateInput.setFocusable(false);
+    endDateInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
 
-        layout.addView(startDateInput);
-        layout.addView(endDateInput);
+    // Layout setup
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+    );
+    int marginInDp = 20;
+    int marginInPx = convertDpToPx(context, marginInDp);
+    params.setMargins(marginInPx, 5, marginInPx, 5);
+    startDateInput.setLayoutParams(params);
+    endDateInput.setLayoutParams(params);
 
-        final Calendar calendar = Calendar.getInstance();
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+    layout.addView(startDateInput);
+    layout.addView(endDateInput);
 
-        // Date picker listeners
-        startDateInput.setOnClickListener(v -> {
-            new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
-                calendar.set(year, month, dayOfMonth);
-                startDateInput.setText(dateFormat.format(calendar.getTime()));
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
+    final Calendar calendar = Calendar.getInstance();
+    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
 
-        endDateInput.setOnClickListener(v -> {
-            new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
-                calendar.set(year, month, dayOfMonth);
-                endDateInput.setText(dateFormat.format(calendar.getTime()));
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
+    // Date picker listeners
+    startDateInput.setOnClickListener(v -> {
+        new DatePickerDialog(themedContext, (view, year, month, dayOfMonth) -> {
+            calendar.set(year, month, dayOfMonth);
+            startDateInput.setText(dateFormat.format(calendar.getTime()));
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    });
 
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("Select Dates")
-                .setMessage("Select Date Range:")
-                .setView(layout)
-                .setPositiveButton("OK", (dialog1, which) -> {
-                    String start = startDateInput.getText().toString().trim();
-                    String end = endDateInput.getText().toString().trim();
+    endDateInput.setOnClickListener(v -> {
+        new DatePickerDialog(themedContext, (view, year, month, dayOfMonth) -> {
+            calendar.set(year, month, dayOfMonth);
+            endDateInput.setText(dateFormat.format(calendar.getTime()));
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    });
 
-                    if (start.isEmpty() || end.isEmpty()) {
-                        Utils.showToast(context, "Both dates must be selected.");
-                    } else {
-                        try {
-                            Date startD = dateFormat.parse(start);
-                            Date endD = dateFormat.parse(end);
-                            Date currentDate = new Date();
+    AlertDialog dialog = new AlertDialog.Builder(themedContext)
+            .setTitle("Select Dates")
+            .setMessage("Select Date Range:")
+            .setView(layout)
+            .setPositiveButton("OK", (dialog1, which) -> {
+                String start = startDateInput.getText().toString().trim();
+                String end = endDateInput.getText().toString().trim();
 
-                            if (startD != null && endD != null) {
-                                // Validate the dates...
-                                if (startD.after(endD)) {
-                                    Utils.showToast(context, "Start date cannot be after end date.");
-                                } else if (endD.after(currentDate)) {
-                                    Utils.showToast(context, "End date cannot be beyond the current date.");
-                                } else {
-                                    startDate = start;
-                                    endDate = end;
-                                    populateHistory(start, end);
+                if (start.isEmpty() || end.isEmpty()) {
+                    Utils.showToast(themedContext, "Both dates must be selected.");
+                } else {
+                    try {
+                        Date startD = dateFormat.parse(start);
+                        Date endD = dateFormat.parse(end);
+                        Date currentDate = new Date();
 
-
-                                }
+                        if (startD != null && endD != null) {
+                            // Validate the dates...
+                            if (startD.after(endD)) {
+                                Utils.showToast(themedContext, "Start date cannot be after end date.");
+                            } else if (endD.after(currentDate)) {
+                                Utils.showToast(themedContext, "End date cannot be beyond the current date.");
+                            } else {
+                                startDate = start;
+                                endDate = end;
+                                populateHistory(start, end);
                             }
-                        } catch (ParseException e) {
-                            Utils.showToast(context, "Invalid date format.");
                         }
+                    } catch (ParseException e) {
+                        Utils.showToast(themedContext, "Invalid date format.");
                     }
-                })
-                .setNegativeButton("Cancel", (dialog12, which) -> dialog12.dismiss())
-                .create();
+                }
+            })
+            .setNegativeButton("Cancel", (dialog12, which) -> dialog12.dismiss())
+            .create();
 
-        dialog.show();
-    }
-
+    dialog.show();
+}
 
     private static int convertDpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
@@ -1608,11 +1609,7 @@ public class Dashboard extends AppCompatActivity {
                 balance = itemView.findViewById(R.id.cumulativeBalance);
                 amountRow = itemView.findViewById(R.id.amount_row); // Correct usage
                 balanceRow = itemView.findViewById(R.id.balance_row); // Correct usage
-            }
-
-
-            // Method to bind the statement data to the UI elements
-            public void bind(Map<String, Object> statement) {
+            }public void bind(Map<String, Object> statement) {
                 // Get values from the map
                 String transactionTypeValue = getValueFromMap(statement, "transactionType", "N/A");
 
@@ -1623,13 +1620,14 @@ public class Dashboard extends AppCompatActivity {
                 // Properly format the balance using String.format
                 String decimalBalance = getValueFromMap(statement, "decimalBalance", "0.00");
 
-                // Check if cumulativeBalance is null, empty, or not a valid number, and default it to "0000"
+                // Check if decimalBalance is null, empty, or not a valid number, and default it to "0000"
                 if (decimalBalance == null || decimalBalance.trim().isEmpty()) {
                     decimalBalance = "0.00";
                 }// Properly format the balance using String.format
                 String decimalTotal = getValueFromMap(statement, "decimalTotal", "0.00");
+               System.out.println("Decimal Balance "+decimalTotal +"\n Decimal Total "+decimalTotal);
 
-                // Check if cumulativeBalance is null, empty, or not a valid number, and default it to "0000"
+                // Check if decimalTotal is null, empty, or not a valid number, and default it to "0000"
                 if (decimalTotal == null || decimalTotal.trim().isEmpty()) {
                     decimalTotal = "0.00";
                 }
@@ -1646,8 +1644,8 @@ public class Dashboard extends AppCompatActivity {
                 // Format the amount for display
                 String formattedAmount = Utils.FormatAmount(transactionAmount);
                 amount.setText(String.format("%s%s", currencySymbol, formattedAmount));
-                amountRow.setVisibility(transactionAmount.equals("0.00") ? View.GONE : View.VISIBLE);
-                balanceRow.setVisibility(decimalBalance.equals("0.00") ? View.GONE : View.VISIBLE);
+//                amountRow.setVisibility(transactionAmount.equals("0.00") ? View.GONE : View.VISIBLE);
+//                balanceRow.setVisibility(decimalBalance.equals("0.00") ? View.GONE : View.VISIBLE);
 
             }
 
@@ -1713,6 +1711,7 @@ public class Dashboard extends AppCompatActivity {
                                 item.put("providerSplit", product.optString("providerSplit", ""));
                                 item.put("decimalBalance", product.optString("decimalBalance", ""));
                                 item.put("providerBalance", product.optString("providerBalance", ""));
+                                item.put("cumulativeBalance", product.optString("cumulativeBalance", ""));
                                 item.put("agentSplit", product.optString("agentSplit", ""));
                                 items.add(item);
                             }
