@@ -153,13 +153,31 @@
         <item name="colorAccent">@color/tertiary_color</item>
         <!-- Other style attributes -->
     </style>
+<!--    <style name="AppThemes" parent="Theme.AppCompat.Light.DarkActionBar">-->
+<!--        &lt;!&ndash; Customize your theme here &ndash;&gt;-->
+<!--        <item name="background">@color/primary_color</item>-->
+<!--        <item name="colorPrimary">@color/secondary_color</item>-->
+<!--        <item name="colorPrimaryDark">@color/primary_color</item>-->
+<!--        <item name="colorAccent">@color/primary_color</item>-->
+<!--        &lt;!&ndash; Other style attributes &ndash;&gt;-->
+<!--    </style>-->
+    <!-- res/values/styles.xml -->
     <style name="AppThemes" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here -->
-        <item name="background">@color/light_gray</item>
-        <item name="colorPrimary">@color/secondary_color</item>
-        <item name="colorPrimaryDark">@color/primary_color</item>
-        <item name="colorAccent">@color/primary_color</item>
-        <!-- Other style attributes -->
+        <item name="background">@color/primary_color</item> <!-- Background color for the app -->
+        <item name="colorPrimary">@color/secondary_color</item> <!-- Primary color -->
+        <item name="colorPrimaryDark">@color/primary_color</item> <!-- Primary dark color -->
+        <item name="colorAccent">@color/primary_color</item> <!-- Accent color -->
+
+        <!-- Button customizations -->
+        <item name="buttonStyle">@style/CustomButtonStyle</item>
     </style>
+
+    <style name="CustomButtonStyles" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:backgroundTint">@color/primary_color</item> <!-- Set the button's background color to primary color -->
+        <item name="android:textColor">@android:color/white</item> <!-- Set the text color to white -->
+    </style>
+
+
 
 </resources>
