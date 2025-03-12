@@ -980,121 +980,7 @@ public class Dashboard extends AppCompatActivity {
 
     }
 
-/*
-    public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
-        // Wrap the context to apply app's theme
-        Context themedContext = new ContextThemeWrapper(context, R.style.AppThemes);
 
-        // Create the layout and views
-        LinearLayout layout = new LinearLayout(themedContext);
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        // Create EditTexts and set up layout
-        final EditText startDateInput = new EditText(themedContext);
-        final EditText endDateInput = new EditText(themedContext);
-        startDateInput.setBackgroundResource(R.drawable.edit_text_background);
-        startDateInput.setHint("Select Start Date");
-        startDateInput.setFocusable(false);
-        startDateInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
-        endDateInput.setBackgroundResource(R.drawable.edit_text_background);
-        endDateInput.setHint("Select End Date");
-        endDateInput.setFocusable(false);
-        endDateInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
-
-        // Layout setup
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        int marginInDp = 20;
-        int marginInPx = convertDpToPx(context, marginInDp);
-        params.setMargins(marginInPx, 5, marginInPx, 5);
-        startDateInput.setLayoutParams(params);
-        endDateInput.setLayoutParams(params);
-
-        layout.addView(startDateInput);
-        layout.addView(endDateInput);
-
-        final Calendar calendar = Calendar.getInstance();
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-
-        // Date picker listeners
-        startDateInput.setOnClickListener(v -> {
-            new DatePickerDialog(themedContext, (view, year, month, dayOfMonth) -> {
-                calendar.set(year, month, dayOfMonth);
-                startDateInput.setText(dateFormat.format(calendar.getTime()));
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
-
-        endDateInput.setOnClickListener(v -> {
-            new DatePickerDialog(themedContext, (view, year, month, dayOfMonth) -> {
-                calendar.set(year, month, dayOfMonth);
-                endDateInput.setText(dateFormat.format(calendar.getTime()));
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
-
-        AlertDialog dialog = new AlertDialog.Builder(themedContext)
-                .setTitle("Select start date")
-                .setView(layout)
-                .setPositiveButton("OK", (dialog1, which) -> {
-                    String start = startDateInput.getText().toString().trim();
-                    String end = endDateInput.getText().toString().trim();
-
-                    if (start.isEmpty() || end.isEmpty()) {
-                        Utils.showToast(themedContext, "Both dates must be selected.");
-                    } else {
-                        try {
-                            Date startD = dateFormat.parse(start);
-                            Date endD = dateFormat.parse(end);
-                            Date currentDate = new Date();
-
-                            if (startD != null && endD != null) {
-                                // Validate the dates...
-                                if (startD.after(endD)) {
-                                    Utils.showToast(themedContext, "Start date cannot be after end date.");
-                                } else if (endD.after(currentDate)) {
-                                    Utils.showToast(themedContext, "End date cannot be beyond the current date.");
-                                } else {
-                                    startDate = start;
-                                    endDate = end;
-                                    populateHistory(start, end);
-                                }
-                            }
-                        } catch (ParseException e) {
-                            Utils.showToast(themedContext, "Invalid date format.");
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel", (dialog12, which) -> dialog12.dismiss())
-                .create();
-
-        // Show the dialog first
-        dialog.show();
-
-        // Get the buttons and apply the custom button style programmatically
-        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        positiveButton.setBackgroundResource(R.drawable.button_background);  // Apply the custom background
-        positiveButton.setTextColor(Color.WHITE);  // Ensure text color is white
-        positiveButton.setText("OK");
-
-        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        negativeButton.setBackgroundResource(R.drawable.button_background);  // Apply the custom background
-        negativeButton.setTextColor(Color.WHITE);  // Ensure text color is white
-        negativeButton.setText("Cancel");
-
-        // For DatePickerDialog, change the "OK" button as well (if it's accessible)
-        DatePickerDialog datePickerDialog = new DatePickerDialog(themedContext, (view, year, month, dayOfMonth) -> {
-            calendar.set(year, month, dayOfMonth);
-            startDateInput.setText(dateFormat.format(calendar.getTime()));
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-
-        datePickerDialog.show();
-
-        // Set DatePicker "OK" button style
-        Button okButton = datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE);
-        okButton.setBackgroundResource(R.drawable.button_background);  // Apply custom background
-        okButton.setTextColor(Color.WHITE);  // Set text color to white
-    }*/
 public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
     Context themedContext = new ContextThemeWrapper(context, R.style.AppThemes);
 
@@ -1176,6 +1062,7 @@ public void showDateDialog(final Context context, final Activity activity, final
 
     // Date picker for start date
     startDateInput.setOnClickListener(v -> {
+        Calendar today = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(themedContext, (view, year, month, dayOfMonth) -> {
             calendar.set(year, month, dayOfMonth);
             startDateInput.setText(dateFormat.format(calendar.getTime()));
@@ -1183,12 +1070,14 @@ public void showDateDialog(final Context context, final Activity activity, final
             // Change dialog title after selecting start date
             dialog.setTitle("Select End Date");
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        // Disable dates from today onwards
+        datePickerDialog.getDatePicker().setMaxDate(today.getTimeInMillis() - 1); // Disable future dates
 
         // Apply styles to the OK button in the DatePickerDialog
         datePickerDialog.setOnShowListener(dialogInterface -> {
             Button okButton = datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE);
             if (okButton != null) {
-                okButton.setBackgroundResource(R.drawable.button_background);  
+                okButton.setBackgroundResource(R.drawable.button_background);
                 okButton.setTextColor(Color.WHITE);
             }
         });
@@ -1204,6 +1093,8 @@ public void showDateDialog(final Context context, final Activity activity, final
             calendar.set(year, month, dayOfMonth);
             endDateInput.setText(dateFormat.format(calendar.getTime()));
         }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+        // Disable dates from today onwards
+        datePickerDialog.getDatePicker().setMaxDate(today.getTimeInMillis() - 1);
 
         // Apply styles to the OK and Cancel buttons in the DatePickerDialog
         datePickerDialog.setOnShowListener(dialogInterface -> {
