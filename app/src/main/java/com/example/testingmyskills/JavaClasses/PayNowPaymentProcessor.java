@@ -32,6 +32,7 @@ public class PayNowPaymentProcessor {
                 payment.add(item, price);
 
                 WebInitResponse response = paynow.send(payment);
+                System.out.println(response.redirectURL());
 
                 if (response.isRequestSuccess()) {
                     PayNowResponse payNowResponse = new PayNowResponse(response.redirectURL(), true);  // Corrected usage

@@ -121,8 +121,6 @@ public class Dashboard extends AppCompatActivity {
     private ImageButton backFromList;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
-    private TextView number_of_posts;
-    private Spinner filter_spinner;
 
 
     private ImageButton FilterButton;
@@ -131,6 +129,7 @@ public class Dashboard extends AppCompatActivity {
     private RecyclerView jobListRecyclerView;
     private int numItems;
     private static String startDate, endDate;
+    private String totalRechargeAmount , totalDepositAmount;
 
 
     @Override
@@ -199,6 +198,9 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void initialiseViews() {
+
+
+
         LoadingLayout = findViewById(R.id.load_layout);
         LoadingImage = findViewById(R.id.load_layout_image);
         SelectedItem = findViewById(R.id.selected_item);
@@ -208,8 +210,6 @@ public class Dashboard extends AppCompatActivity {
         Web = findViewById(R.id.web_view);
 
         job_list_screen = findViewById(R.id.Job_list_screen);
-        number_of_posts = findViewById(R.id.number_of_posts);
-        filter_spinner = findViewById(R.id.filter_spinner);
         backFromList = findViewById(R.id.back_btn_from_job_list);
         BuyBtn = findViewById(R.id.btn_buy);
         BuyBtn1 = findViewById(R.id.btn_buy_1);
@@ -394,7 +394,6 @@ public class Dashboard extends AppCompatActivity {
                                     handlePaymentResult("{\"status\": \"failure\"}");
                                     return true;
                                 }
-                                Utils.showToast(Dashboard.this, "URL : " + url);
                                 view.loadUrl(url);
                                 return false;
                             }
@@ -551,7 +550,6 @@ public class Dashboard extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, MainActivity.econetItems);
         adapter.setDropDownViewResource(R.layout.spinner_layout);
 
-        filter_spinner.setAdapter(adapter);
         ItemFilterSpinner.setAdapter(adapter);
         ItemToBuySpinner.setAdapter(adapter);
     }
@@ -1505,8 +1503,6 @@ public void showDateDialog(final Context context, final Activity activity, final
                 transactionAmount = (transactionAmount == null || transactionAmount.isEmpty()) ? "0.00" : transactionAmount;
                 String formattedAmount = Utils.FormatAmount(transactionAmount);
                 amount.setText(String.format("%s%s", currencySymbol, formattedAmount));
-//                amountRow.setVisibility(transactionAmount.equals("0.00") ? View.GONE : View.VISIBLE);
-//                balanceRow.setVisibility(decimalBalance.equals("0.00") ? View.GONE : View.VISIBLE);
 
             }
 
@@ -1542,8 +1538,28 @@ public void showDateDialog(final Context context, final Activity activity, final
                         JSONObject nestedResponse = new JSONObject(nestedResponseString);
 
                         if (nestedResponse.has("methodResponse")) {
-                            JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
+                            JSONObject methodResponse = nestedResponse.getJSONObject("methodResponse");
 
+                            String totalDepositAmount = methodResponse.optString("totalDepositAmount", "0.00");
+                            String totalRechargeAmount = methodResponse.optString("totalRechargeAmount", "0.00");
+
+                            // Update UI on the main thread
+                            if (context instanceof Activity) {
+                                Activity activity = (Activity) context;
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        TextView TotalRecharge = activity.findViewById(R.id.totalRechargeAmount_textView);
+                                        TextView TotalDeposit = activity.findViewById(R.id.totalDepositAmount_textView);
+
+                                        TotalDeposit.setText("Total Deposited : " + currencySymbol +Utils.FormatAmount( totalDepositAmount));
+                                        TotalRecharge.setText("Total Recharge : " + currencySymbol +Utils.FormatAmount( totalRechargeAmount));
+                                    }
+                                });
+                            }
+
+                            // Process list data
+                            JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
                             for (int i = 0; i < paramsList.length(); i++) {
                                 JSONObject product = paramsList.getJSONObject(i);
                                 Map<String, Object> item = new HashMap<>();
@@ -1631,6 +1647,7 @@ public void showDateDialog(final Context context, final Activity activity, final
                         String nestedResponseString = catalogRequestResponse.getString("response");
                         JSONObject nestedResponse = new JSONObject(nestedResponseString);
                         if (nestedResponse.has("methodResponse")) {
+
                             JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
                             for (int i = 0; i < paramsList.length(); i++) {
                                 JSONObject product = paramsList.getJSONObject(i);
