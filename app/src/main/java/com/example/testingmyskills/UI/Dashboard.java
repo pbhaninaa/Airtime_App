@@ -86,7 +86,6 @@ import okhttp3.internal.Util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-//======================
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -142,14 +141,13 @@ public class Dashboard extends AppCompatActivity {
         getProfile();
         show = true;
         initialiseViews();
-//        version.setText("Version : "+getAppVersion());
 
 // To be removed when top up functionality works
         LinearLayout topUp;
         topUp = (LinearLayout) findViewById(R.id.topUpBtn);
 
         topUp.setVisibility(Utils.getString(this, "savedCredentials", "email").contains("649045091") || Utils.getString(this, "savedCredentials", "email").contains("782141216") ? View.VISIBLE : View.GONE);
-
+//==========================================
         Utils.hideSoftNavBar(Dashboard.this);
         setOnclickListeners();
         recyclerViews();
@@ -176,10 +174,8 @@ public class Dashboard extends AppCompatActivity {
                 Country selectedCountry = (Country) parent.getItemAtPosition(position);
                 String flagName = selectedCountry.getCountryFlag();
                 Phone.requestFocus();
-                // Get the resource ID of the drawable dynamically
                 int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
-                // Set the ImageView with the corresponding flag
-                if (flagResourceId != 0) {  // Check if the resource was found
+                if (flagResourceId != 0) {
                     CountryFlag.setImageResource(flagResourceId);
                 } else {
                     Toast.makeText(getApplicationContext(), "Flag not found", Toast.LENGTH_SHORT).show();
@@ -188,7 +184,6 @@ public class Dashboard extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
             }
         });
 
@@ -204,10 +199,6 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void initialiseViews() {
-
-//        version = findViewById(R.id.version_d);
-
-
         LoadingLayout = findViewById(R.id.load_layout);
         LoadingImage = findViewById(R.id.load_layout_image);
         SelectedItem = findViewById(R.id.selected_item);
@@ -244,7 +235,6 @@ public class Dashboard extends AppCompatActivity {
         ItemsLayout = findViewById(R.id.Items_display_layout);
 
 
-//        ISPsRecyclerView = findViewById(R.id.isp_list_recycler_view);
         ItemRecyclerView = findViewById(R.id.Items_recycler_view);
         ItemFilterSpinner = findViewById(R.id.items_spinner);
         MoreBtn = findViewById(R.id.More_Items);
@@ -283,15 +273,12 @@ public class Dashboard extends AppCompatActivity {
     public void showLastTransaction() {
         String last = StatusMessage.getText().toString();
 
-        // Get the current time in HH:mm format
         String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-        // Check if 'last' ends with the current time
         if (last.endsWith(currentTime)) {
             getLastTransaction(null);
         } else {
-            // Print to the console
-            System.out.println("Last transaction does not match the current time.");
+            Utils.showToast(this,"Last transaction does not match the current time.");
         }
     }
 
@@ -315,20 +302,18 @@ public class Dashboard extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
 
-//                AmountTLoad.setText("");
-//                LoadingNote.setText("");
 
                 if (url.contains("payment-success")) {
                     String transactionId = Uri.parse(url).getQueryParameter("transactionId");
                     handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
 
-                    return true;  // Prevent loading this URL in the WebView
+                    return true;
                 } else if (url.contains("payment-failure")) {
                     handlePaymentResult("{\"status\": \"failure\"}");
-                    return true;  // Prevent loading this URL in the WebView
+                    return true;
                 }
 
-                view.loadUrl(url); // Allow the WebView to load other UR
+                view.loadUrl(url);
                 return false;
             }
         });
@@ -347,7 +332,6 @@ public class Dashboard extends AppCompatActivity {
                     String redirectUrl = jsonResponse.optString("redirectUrl");
 
                     if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                        // Add a delay of 5 seconds (5000 milliseconds)
                         new Handler(Looper.getMainLooper()).postDelayed(() -> {
                             Web.loadUrl(redirectUrl);
 
@@ -355,13 +339,12 @@ public class Dashboard extends AppCompatActivity {
                             Web.setVisibility(View.VISIBLE);
                         }, 5000);
                     } else {
-                        // Handle failure or error case
                         Utils.showToast(this, "Failed to get redirect URL.");
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    System.out.println("Failed to parse JSON response.");
+                    Utils.showToast(this,"Failed to parse JSON response.");
                 }
             });
         }).start();
@@ -376,10 +359,9 @@ public class Dashboard extends AppCompatActivity {
 
         Utils.hideSoftKeyboard(Dashboard.this);
 
-        // Convert the amount to double before passing it
         double amount = 0.0;
         try {
-            amount = Double.parseDouble(amountString); // Parse the amount to double
+            amount = Double.parseDouble(amountString);
         } catch (NumberFormatException e) {
             e.printStackTrace();
             AmountTLoad.setError("Invalid amount");
@@ -392,10 +374,9 @@ public class Dashboard extends AppCompatActivity {
 
         PayNowPaymentProcessor.createPayNowOrder(this, "Load balance", amount, new PayNowPaymentProcessor.PayNowCallback() {
             @Override
-            public void onSuccess(String redirectUrl) {
+            public void onSuccess(PayNowPaymentProcessor.PayNowResponse payNowResponse) {
                 runOnUiThread(() -> {
-                    if (redirectUrl != null) {
-                        // Enable JavaScript and configure WebView
+                    if (payNowResponse != null && payNowResponse.getRedirectUrl() != null) {
                         Web.getSettings().setJavaScriptEnabled(true);
                         Web.getSettings().setDomStorageEnabled(true);
                         Web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -405,22 +386,21 @@ public class Dashboard extends AppCompatActivity {
                             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                                 String url = request.getUrl().toString();
 
-                                // Check if payment is successful or failed based on URL parameters
                                 if (url.contains("payment-success")) {
                                     String transactionId = Uri.parse(url).getQueryParameter("transactionId");
                                     handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
-                                    return true; // Prevent loading this URL in the WebView
+                                    return true;
                                 } else if (url.contains("payment-failure")) {
                                     handlePaymentResult("{\"status\": \"failure\"}");
-                                    return true; // Prevent loading this URL in the WebView
+                                    return true;
                                 }
-                                System.out.println("URL : " + url);
-                                view.loadUrl(url); // Allow the WebView to load other URLs
+                                Utils.showToast(Dashboard.this, "URL : " + url);
+                                view.loadUrl(url);
                                 return false;
                             }
                         });
 
-                        Web.loadUrl(redirectUrl);
+                        Web.loadUrl(payNowResponse.getRedirectUrl());
                         load.setVisibility(View.GONE);
                         Web.setVisibility(View.VISIBLE);
                     } else {
@@ -438,6 +418,7 @@ public class Dashboard extends AppCompatActivity {
                 });
             }
         });
+
     }
 
 
@@ -447,20 +428,18 @@ public class Dashboard extends AppCompatActivity {
                 JSONObject resultJson = new JSONObject(result);
                 String status = resultJson.getString("status");
                 String message;
-                String transactionId = resultJson.optString("transactionId");  // Get the transaction ID
+                String transactionId = resultJson.optString("transactionId");
 
                 if ("success".equals(status)) {
                     message = "Payment successful!";
 
-                    // Call your server to confirm the payment using the webhook
-                    confirmPaymentWithWebhook(transactionId);  // Send the transactionId to your server's webhook
+                    confirmPaymentWithWebhook(transactionId);
                 } else {
                     message = "Payment failed. Please try again.";
                 }
 
                 Utils.showToast(this, message);
 
-                // Delay the closure of the payment view to allow user to see the message
                 new Handler().postDelayed(() -> closePaymentView(null), 200);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -495,9 +474,9 @@ public class Dashboard extends AppCompatActivity {
                         response.append(inputLine);
                     }
                     in.close();
-                    System.out.println("Webhook response: " + response.toString());
+                    Utils.showToast(this,"Webhook response: " + response.toString());
                 } else {
-                    System.out.println("Webhook request failed. Response code: " + responseCode);
+                    Utils.showToast(this,"Webhook request failed. Response code: " + responseCode);
                 }
 
             } catch (Exception e) {
@@ -542,7 +521,6 @@ public class Dashboard extends AppCompatActivity {
             BuyBtn1.setVisibility(View.VISIBLE);
             BuyBtn.setVisibility(View.GONE);
         } else if (imageButton.getId() == R.id.more1) {
-//             Phila
             SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
             String name = sharedPreferences.getString("name", "");
             String surname = sharedPreferences.getString("surname", "");
@@ -603,12 +581,10 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onResult(List<Map<String, Object>> statements) {
                 runOnUiThread(() -> {
-                      // Ensure layout manager is set
                     if (jobListRecyclerView.getLayoutManager() == null) {
                         jobListRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                     }
 
-                    // Update or set adapter
                     if (jobListRecyclerView.getAdapter() != null && jobListRecyclerView.getAdapter() instanceof Statement) {
                         ((Statement) jobListRecyclerView.getAdapter()).updateStatements(statements);
                     } else {
@@ -636,7 +612,6 @@ public class Dashboard extends AppCompatActivity {
     private void setOnclickListeners() {
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
-        // BuyBtn.setOnClickListener(v -> handlePayNowPayment());
         BuyBtn1.setOnClickListener(v -> buy());
         FilterButton.setOnClickListener(v -> selectDateRange());
         No.setOnClickListener(v -> handleNo());
@@ -655,9 +630,8 @@ public class Dashboard extends AppCompatActivity {
         NetoneIsp.setOnClickListener(v -> setISP("NetOne"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
         LogoutButton.setOnLongClickListener(view -> {
-            // Code to close the app on long press
-            finishAffinity(); // Closes the current activity and all others in the stack
-            return true; // Return true to indicate the event is consumed
+            finishAffinity();
+            return true;
         });
         BackToHome.setOnClickListener(v -> {
             Utils.hideSoftKeyboard(Dashboard.this);
@@ -781,7 +755,6 @@ public class Dashboard extends AppCompatActivity {
                                 try {
                                     getLastTransaction(null);
                                     String responseString = res.getString("response");
-                                    System.out.println(responseString);
                                     JSONObject responseJson = new JSONObject(responseString);
                                     JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
                                     JSONArray paramsList = methodResponse.getJSONArray("paramsList");
@@ -875,18 +848,14 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void selectDateRange() {
-        // In your Dashboard Activity class
         showDateDialog(Dashboard.this, this, this);
-
     }
 
 
 public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
     Context themedContext = new ContextThemeWrapper(context, R.style.AppThemes);
-
     LinearLayout layout = new LinearLayout(themedContext);
     layout.setOrientation(LinearLayout.VERTICAL);
-
     final EditText startDateInput = new EditText(themedContext);
     final EditText endDateInput = new EditText(themedContext);
     startDateInput.setBackgroundResource(R.drawable.edit_text_background);
@@ -914,7 +883,6 @@ public void showDateDialog(final Context context, final Activity activity, final
     final Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
 
-    // Set the end date to the current date by default
     final String currentDate = dateFormat.format(calendar.getTime());
     endDateInput.setText(currentDate);
 
@@ -963,13 +931,10 @@ public void showDateDialog(final Context context, final Activity activity, final
     negativeButton.setTextColor(Color.WHITE);
     negativeButton.setText("Cancel");
 
-    // Start date picker
     startDateInput.setOnClickListener(v -> showDatePicker(themedContext, startDateInput, dialog, dateFormat, endDateInput, false));
 
-    // Automatically open start date picker when the dialog pops up
     new Handler().postDelayed(() -> startDateInput.performClick(), 300);
 
-    // End date picker
     endDateInput.setOnClickListener(v -> showDatePicker(themedContext, endDateInput, dialog, dateFormat, startDateInput, true));
 }
 
@@ -985,11 +950,9 @@ public void showDateDialog(final Context context, final Activity activity, final
                 Date otherDate = dateFormat.parse(otherDateInput.getText().toString());
 
                 if (isEndDate && selected != null && otherDate != null && selected.before(otherDate)) {
-                    // If end date is before start date, reset start date to match the end date
                     otherDateInput.setText(selectedDate);
                     Utils.showToast(context, "Start date updated to match end date.");
                 } else if (!isEndDate && selected != null && otherDate != null && selected.after(otherDate)) {
-                    // If start date is after end date, reset end date to match the start date
                     otherDateInput.setText(selectedDate);
                     Utils.showToast(context, "End date updated to match start date.");
                 }
@@ -997,13 +960,11 @@ public void showDateDialog(final Context context, final Activity activity, final
                 e.printStackTrace();
             }
 
-            // Change dialog title after selecting start date
             if (!isEndDate) {
                 dialog.setTitle("Select End Date");
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
-        // Disable future dates for both start and end date
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1);
 
         datePickerDialog.setOnShowListener(dialogInterface -> {
@@ -1078,13 +1039,12 @@ public void showDateDialog(final Context context, final Activity activity, final
                         try {
                             JSONObject res = ApiService.loadValue(SelectedIsp.getText().toString(), Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), p, price.replace(",", "").replace(".", ""), "Airtime", "Airtime", Dashboard.this);
                             if (res.getInt("responseCode") == 200) {
-                                // Handle success and UI updates on the main thread
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         try {
                                             String responseString = res.getString("response");
-                                            JSONObject responseJson = new JSONObject(responseString); // Parse the response string
+                                            JSONObject responseJson = new JSONObject(responseString);
                                             JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
                                             JSONArray paramsList = methodResponse.getJSONArray("paramsList");
                                             JSONObject responseDetails = paramsList.getJSONObject(0);
@@ -1106,8 +1066,6 @@ public void showDateDialog(final Context context, final Activity activity, final
                                                 setISP(SelectedIsp.getText().toString());
                                                 Utils.saveRefs(Dashboard.this, Network, AgentID, CustomerID, basketID);
                                                 getAccount(balance);
-//
-
                                             } else {
                                                 Utils.showToast(Dashboard.this, description);
                                             }
@@ -1192,13 +1150,12 @@ public void showDateDialog(final Context context, final Activity activity, final
                                     SelectedItemType.getText().toString()
                                     , Dashboard.this);
                             if (res.getInt("responseCode") == 200) {
-                                // Handle success and UI updates on the main thread
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         try {
                                             String responseString = res.getString("response");
-                                            JSONObject responseJson = new JSONObject(responseString); // Parse the response string
+                                            JSONObject responseJson = new JSONObject(responseString);
                                             JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
                                             JSONArray paramsList = methodResponse.getJSONArray("paramsList");
                                             JSONObject responseDetails = paramsList.getJSONObject(0);
@@ -1307,19 +1264,10 @@ public void showDateDialog(final Context context, final Activity activity, final
 
                                     if (paramsKey != null) {
                                         JSONArray paramsList = methodResponse.getJSONArray(paramsKey);
-                                        // Check if the array is empty
                                         if (paramsList.length() == 0) {
                                             double balance = Double.parseDouble(Utils.getString(Dashboard.this, "profile", "balance"));
-//                                            if (balance > 0) {
-//                                                runOnUiThread(() -> Utils.showToast(Dashboard.this, "No transactions found. Balance: " + balance));
-//                                                return; // Exit the method after showing the toast
-//                                            }
-
-                                            return; // Exit if no transactions and balance is 0 or invalid
+                                            return;
                                         }
-
-
-                                        // Process the first element if the array is not empty
                                         JSONObject responseDetails = paramsList.getJSONObject(0);
                                         String serial = responseDetails.optString("providerSerial", "N/A");
 
@@ -1327,8 +1275,6 @@ public void showDateDialog(final Context context, final Activity activity, final
                                             String currentM = StatusMessage.getText().toString();
                                             String LastTransactionDate = "Last Transaction: " + responseDetails.optString("entryDate", "N/A");
                                             String updatedMessage = currentM + LastTransactionDate;
-
-                                            // Update StatusMessage
                                             runOnUiThread(() -> {
                                                 if (!StatusMessage.getText().toString().contains(LastTransactionDate)) {
                                                     StatusMessage.setText(updatedMessage);
@@ -1470,74 +1416,55 @@ public void showDateDialog(final Context context, final Activity activity, final
 
         private List<Map<String, Object>> statements;
         private final Context context;
-
-        // Constructor that takes both the statements list and context
         public Statement(Context context, List<Map<String, Object>> statements) {
             this.context = context;
-            this.statements = statements != null ? statements : new ArrayList<>(); // Ensure statements is non-null
+            this.statements = statements != null ? statements : new ArrayList<>();
         }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            // Inflate the layout for the ViewHolder
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.history, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            // Get the statement data at the current position and bind it to the ViewHolder
             Map<String, Object> statement = statements.get(position);
             holder.bind(statement);
 
             holder.itemView.setOnClickListener(v -> {
-                // Get the primary color defined in colors.xml
-                int primaryColor = context.getResources().getColor(R.color.vodacom_color); // Replace `primary_color` with your color's name if different
-                String colorHex = String.format("#%06X", (0xFFFFFF & primaryColor)); // Convert color to hex string
-
-                // Convert the statement map to a readable HTML string format, excluding null or empty values
+                int primaryColor = context.getResources().getColor(R.color.vodacom_color);
+                String colorHex = String.format("#%06X", (0xFFFFFF & primaryColor));
                 StringBuilder detailsBuilder = new StringBuilder();
                 for (Map.Entry<String, Object> entry : statement.entrySet()) {
                     Object value = entry.getValue();
-
-                    // Check if value is not null or empty, then add it to the details
                     if (value != null && !value.toString().trim().isEmpty()) {
-                        // Capitalize the first letter of the key and add space before uppercase letters
                         String key = entry.getKey();
-
-                        // Insert spaces before uppercase letters and capitalize the first letter
                         String formattedKey = key.replaceAll("([a-z])([A-Z])", "$1 $2");
                         String capitalizedKey = formattedKey.substring(0, 1).toUpperCase() + formattedKey.substring(1);
-
-                        // Append key in bold with primary color, reduce font size using <small> tags, and add space between key and value
-                        detailsBuilder.append("<font color='").append(colorHex).append("'>")
+                         detailsBuilder.append("<font color='").append(colorHex).append("'>")
                                 .append("<small>").append(capitalizedKey).append(":\t</small></font> ")
                                 .append("<small>").append(value).append("</small><br>");
                     }
                 }
 
                 String details = detailsBuilder.toString();
-
-                // Create and display an AlertDialog showing transaction details
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    new AlertDialog.Builder(context).setTitle("Transaction Details").setMessage(details.isEmpty() ? "No details available." : Html.fromHtml(details, Html.FROM_HTML_MODE_LEGACY)) // Use Html.fromHtml for styled text
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss()) // Dismiss the alert when OK is clicked
+                    new AlertDialog.Builder(context).setTitle("Transaction Details").setMessage(details.isEmpty() ? "No details available." : Html.fromHtml(details, Html.FROM_HTML_MODE_LEGACY))
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                             .show();
                 }
             });
-
-
         }
 
         @Override
         public int getItemCount() {
             return statements.size();
         }
-
         public void updateStatements(List<Map<String, Object>> newStatements) {
             this.statements = newStatements != null ? newStatements : new ArrayList<>();
-            notifyDataSetChanged(); // Notify adapter to refresh the list
+            notifyDataSetChanged();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
@@ -1546,33 +1473,25 @@ public void showDateDialog(final Context context, final Activity activity, final
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                // Bind the views from the layout to corresponding variables
                 referenceID = itemView.findViewById(R.id.referenceId);
                 entryDate = itemView.findViewById(R.id.entryDate);
                 transactionType = itemView.findViewById(R.id.transactionType);
                 amount = itemView.findViewById(R.id.amount);
                 balance = itemView.findViewById(R.id.cumulativeBalance);
-                amountRow = itemView.findViewById(R.id.amount_row); // Correct usage
-                balanceRow = itemView.findViewById(R.id.balance_row); // Correct usage
+                amountRow = itemView.findViewById(R.id.amount_row);
+                balanceRow = itemView.findViewById(R.id.balance_row);
             }public void bind(Map<String, Object> statement) {
-                // Get values from the map
                 String transactionTypeValue = getValueFromMap(statement, "transactionType", "N/A");
 
-                // Set the text for each UI component
                 referenceID.setText(getValueFromMap(statement, "basketID", "N/A"));
                 entryDate.setText(getValueFromMap(statement, "entryDate", "N/A"));
-
-                // Properly format the balance using String.format
                 String decimalBalance = getValueFromMap(statement, "decimalBalance", "0.00");
 
-                // Check if decimalBalance is null, empty, or not a valid number, and default it to "0000"
                 if (decimalBalance == null || decimalBalance.trim().isEmpty()) {
                     decimalBalance = "0.00";
-                }// Properly format the balance using String.format
+                }
                 String decimalTotal = getValueFromMap(statement, "decimalTotal", "0.00");
-               System.out.println("Decimal Balance "+decimalTotal +"\n Decimal Total "+decimalTotal);
 
-                // Check if decimalTotal is null, empty, or not a valid number, and default it to "0000"
                 if (decimalTotal == null || decimalTotal.trim().isEmpty()) {
                     decimalTotal = "0.00";
                 }
@@ -1580,13 +1499,10 @@ public void showDateDialog(final Context context, final Activity activity, final
                 String formattedBalance = String.format("%s%s", currencySymbol, Utils.FormatAmount(decimalBalance));
                 balance.setText(formattedBalance);
 
-                // Set the transaction type
                 transactionType.setText(transactionTypeValue);
-                // Determine which amount to display based on the transaction type
                 String amountKey = transactionTypeValue.contains("Deposit") ? "depositAmount" : "rechargeAmount";
                 String transactionAmount = getValueFromMap(statement, amountKey, "N/A");
                 transactionAmount = (transactionAmount == null || transactionAmount.isEmpty()) ? "0.00" : transactionAmount;
-                // Format the amount for display
                 String formattedAmount = Utils.FormatAmount(transactionAmount);
                 amount.setText(String.format("%s%s", currencySymbol, formattedAmount));
 //                amountRow.setVisibility(transactionAmount.equals("0.00") ? View.GONE : View.VISIBLE);
@@ -1594,7 +1510,6 @@ public void showDateDialog(final Context context, final Activity activity, final
 
             }
 
-            // Utility method to safely fetch values from the map
             private String getValueFromMap(Map<String, Object> map, String key, String defaultValue) {
                 Object value = map.get(key);
 
@@ -1622,8 +1537,6 @@ public void showDateDialog(final Context context, final Activity activity, final
                     );
 
                     if (catalogRequestResponse.has("response")) {
-                        System.out.println("getStatement response");
-                        System.out.println("getStatement size : " + catalogRequestResponse.length());
 
                         String nestedResponseString = catalogRequestResponse.getString("response");
                         JSONObject nestedResponse = new JSONObject(nestedResponseString);
@@ -1674,8 +1587,6 @@ public void showDateDialog(final Context context, final Activity activity, final
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                // Send results back to the UI thread
                 if (callback != null) {
                     callback.onResult(items);
                 }
@@ -1689,8 +1600,6 @@ public void showDateDialog(final Context context, final Activity activity, final
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String selectedItem = parentView.getItemAtPosition(position).toString();
-
-                // Fetch products and update the UI when data is available
                 getProducts(new ProductsCallback() {
                     @Override
                     public void onProductsLoaded(List<Map<String, Object>> products) {
@@ -1703,17 +1612,13 @@ public void showDateDialog(final Context context, final Activity activity, final
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // Handle no selection if needed
             }
         });
     }
 
-    // Callback interface for async product fetching
     public interface ProductsCallback {
         void onProductsLoaded(List<Map<String, Object>> products);
     }
-
-    // Fetch products asynchronously
     public void getProducts(ProductsCallback callback) {
 
         new Thread(new Runnable() {
@@ -1753,14 +1658,10 @@ public void showDateDialog(final Context context, final Activity activity, final
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                // Invoke the callback on the main thread after products are loaded
                 new Handler(Looper.getMainLooper()).post(() -> callback.onProductsLoaded(items));
             }
         }).start();
     }
-
-    // Filter products by selected type
     public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
         List<Map<String, Object>> filteredProducts = new ArrayList<>();
         for (Map<String, Object> product : products) {
@@ -1811,10 +1712,10 @@ public void showDateDialog(final Context context, final Activity activity, final
         try {
             PackageManager packageManager = getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-            return packageInfo.versionName; // Returns the versionName from build.gradle
+            return packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            return "Unknown"; // Return a default value in case of an error
+            return "Unknown";
         }
     }
 

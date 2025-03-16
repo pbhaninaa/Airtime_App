@@ -33,9 +33,9 @@ public class PayNowPaymentProcessor {
 
                 WebInitResponse response = paynow.send(payment);
 
-
                 if (response.isRequestSuccess()) {
-                    callback.onSuccess(response.redirectURL());
+                    PayNowResponse payNowResponse = new PayNowResponse(response.redirectURL(), true);  // Corrected usage
+                    callback.onSuccess(payNowResponse);
                 } else {
                     callback.onFailure("Error: " + response.errors());
                 }
@@ -47,7 +47,26 @@ public class PayNowPaymentProcessor {
     }
 
     public interface PayNowCallback {
-        void onSuccess(String redirectUrl);
+        void onSuccess(PayNowResponse payNowResponse);
         void onFailure(String error);
+    }
+
+    // Make PayNowResponse class static
+    public static class PayNowResponse {
+        private String redirectUrl;
+        private boolean isRequestSuccess;
+
+        public PayNowResponse(String redirectUrl, boolean isRequestSuccess) {
+            this.redirectUrl = redirectUrl;
+            this.isRequestSuccess = isRequestSuccess;
+        }
+
+        public String getRedirectUrl() {
+            return redirectUrl;
+        }
+
+        public boolean isRequestSuccess() {
+            return isRequestSuccess;
+        }
     }
 }
