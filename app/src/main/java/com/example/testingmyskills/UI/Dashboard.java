@@ -67,6 +67,7 @@ import android.widget.Toast;
 import com.example.testingmyskills.JavaClasses.ApiService;
 import com.example.testingmyskills.JavaClasses.CurrencyTextWatcher;
 import com.example.testingmyskills.JavaClasses.IveriPaymentProcessor;
+import com.example.testingmyskills.JavaClasses.PayNowPaymentProcessor;
 import com.example.testingmyskills.JavaClasses.MyJavaScriptInterface;
 import com.example.testingmyskills.JavaClasses.Country;
 import com.example.testingmyskills.JavaClasses.PaymentProcessor;
@@ -365,182 +366,81 @@ public class Dashboard extends AppCompatActivity {
             });
         }).start();
     }
+    private void handlePayNowPayment() {
+        String amountString = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
 
-    private void handleIveriPayment() {
-        String amount = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
-
-        if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
+        if (amountString.isEmpty() || amountString.equalsIgnoreCase("0.00")) {
             AmountTLoad.setError("Amount is required");
             return;
         }
 
         Utils.hideSoftKeyboard(Dashboard.this);
 
-        // Enable JavaScript and configure WebView
-        Web.getSettings().setJavaScriptEnabled(true);
-        Web.getSettings().setDomStorageEnabled(true);
-        Web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW); // Allow mixed content
-        Web.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
+        // Convert the amount to double before passing it
+        double amount = 0.0;
+        try {
+            amount = Double.parseDouble(amountString); // Parse the amount to double
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            AmountTLoad.setError("Invalid amount");
+            return;
+        }
 
-                // Check if payment is successful or failed based on URL parameters
-                if (url.contains("payment-success")) {
-                    String transactionId = Uri.parse(url).getQueryParameter("transactionId");
-                    handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
-                    return true; // Prevent loading this URL in the WebView
-                } else if (url.contains("payment-failure")) {
-                    handlePaymentResult("{\"status\": \"failure\"}");
-                    return true; // Prevent loading this URL in the WebView
-                }
-                System.out.println("URL : " + url);
-                view.loadUrl(url); // Allow the WebView to load other URLs
-                return false;
-            }
-        });
-
-        // Hide layouts and navigation elements
         hideLayouts(WebScree, NavBuyBtn);
         Navbar.setVisibility(View.GONE);
+        load.setVisibility(View.VISIBLE);
 
-        // Start payment process in a background thread
-        String finalAmount = amount;
-        new Thread(() -> {
-            IveriPaymentProcessor processor = new IveriPaymentProcessor();
-            String response = processor.createOrder("https://portal.host.iveri.com/Lite/Authorise.aspx", // Replace with the correct base URL
-                    finalAmount, "your-application-id", // Replace with actual application ID
-                    "successRedirectUrl", "errorRedirectUrl", "failureRedirectUrl", "tryLaterRedirectUrl");
+        PayNowPaymentProcessor.createPayNowOrder(this, "Load balance", amount, new PayNowPaymentProcessor.PayNowCallback() {
+            @Override
+            public void onSuccess(String redirectUrl) {
+                runOnUiThread(() -> {
+                    if (redirectUrl != null) {
+                        // Enable JavaScript and configure WebView
+                        Web.getSettings().setJavaScriptEnabled(true);
+                        Web.getSettings().setDomStorageEnabled(true);
+                        Web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
-            // Handle the response on the main thread
-            runOnUiThread(() -> {
-                try {
-                    // Log and handle HTML response (payment page URL)
-                    if (response.trim().startsWith("<html")) {
-                        Log.d("HTMLResponse", response);
-                        Web.loadDataWithBaseURL(null, response, "text/html", "UTF-8", null);
+                        Web.setWebViewClient(new WebViewClient() {
+                            @Override
+                            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                                String url = request.getUrl().toString();
+
+                                // Check if payment is successful or failed based on URL parameters
+                                if (url.contains("payment-success")) {
+                                    String transactionId = Uri.parse(url).getQueryParameter("transactionId");
+                                    handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
+                                    return true; // Prevent loading this URL in the WebView
+                                } else if (url.contains("payment-failure")) {
+                                    handlePaymentResult("{\"status\": \"failure\"}");
+                                    return true; // Prevent loading this URL in the WebView
+                                }
+                                System.out.println("URL : " + url);
+                                view.loadUrl(url); // Allow the WebView to load other URLs
+                                return false;
+                            }
+                        });
+
+                        Web.loadUrl(redirectUrl);
                         load.setVisibility(View.GONE);
                         Web.setVisibility(View.VISIBLE);
-                    } else if (response.trim().startsWith("{")) {
-                        // Handle JSON response (transaction details)
-                        JSONObject jsonResponse = new JSONObject(response);
-                        String redirectUrl = jsonResponse.optString("redirectUrl");
-
-                        if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                            Web.loadUrl(redirectUrl);
-                            load.setVisibility(View.GONE);
-                            Web.setVisibility(View.VISIBLE);
-                        } else {
-                            Utils.showToast(this, "Failed to get redirect URL.");
-                        }
                     } else {
-                        // Unexpected response
-                        Utils.showToast(this, "Unexpected server response.");
-                        Log.e("UnexpectedResponse", response);
+                        load.setVisibility(View.GONE);
+                        AmountTLoad.setError("Failed to generate payment link");
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Utils.showToast(this, "Error parsing payment response.");
-                }
-            });
-        }).start();
+                });
+            }
+
+            @Override
+            public void onFailure(String error) {
+                runOnUiThread(() -> {
+                    load.setVisibility(View.GONE);
+                    AmountTLoad.setError("Payment failed: " + error);
+                });
+            }
+        });
     }
 
-    /*  private void handleIveriPayment() {
-          String amount = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
 
-          if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
-              AmountTLoad.setError("Amount is required");
-              return;
-          }
-
-          // Enable JavaScript and configure WebView
-          Web.getSettings().setJavaScriptEnabled(true);
-          Web.getSettings().setDomStorageEnabled(true);
-          Web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW); // Allow mixed content
-          Web.setWebViewClient(new WebViewClient() {
-              @Override
-              public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                  String url = request.getUrl().toString();
-
-                  if (url.contains("payment-success")) {
-                      String transactionId = Uri.parse(url).getQueryParameter("transactionId");
-                      handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
-                      return true; // Prevent loading this URL in the WebView
-                  } else if (url.contains("payment-failure")) {
-                      handlePaymentResult("{\"status\": \"failure\"}");
-                      return true; // Prevent loading this URL in the WebView
-                  }
-
-                  view.loadUrl(url); // Allow the WebView to load other URLs
-                  return false;
-              }
-          });
-
-          // Hide layouts and navigation elements
-          hideLayouts(WebScree, NavBuyBtn);
-          Navbar.setVisibility(View.GONE);
-
-          // Start payment process in a background thread
-          String finalAmount = amount;
-          new Thread(() -> {
-              String baseUrl = "https://portal.host.iveri.com/Lite/Authorise.aspx";
-              String appId = getResources().getString(R.string.iveri_api_key);
-              String successUrl = getResources().getString(R.string.successRedirectUrl);
-              String errorUrl = getResources().getString(R.string.iveri_errorUrl);
-              String failureUrl = getResources().getString(R.string.iveri_failureUrl);
-              String tryLaterUrl = getResources().getString(R.string.iveri_tryLaterUrl);
-
-  // Create the order
-              IveriPaymentProcessor processor = new IveriPaymentProcessor();
-              String response = processor.createOrder(baseUrl, "10000", appId, successUrl, errorUrl, failureUrl, tryLaterUrl);
-
-
-              // Handle the response on the main thread
-              runOnUiThread(() -> {
-                  try {
-                      if (response.trim().startsWith("<html")) {
-                          // Log the HTML response for debugging
-                          Log.d("HTMLResponse", response);
-
-                          // Load the HTML response into the WebView
-                          Web.loadDataWithBaseURL(null, response, "text/html", "UTF-8", null);
-
-                          // Adjust visibility
-                          load.setVisibility(View.GONE);
-                          Web.setVisibility(View.VISIBLE);
-                      } else if (response.trim().startsWith("{")) {
-
-                          System.out.println("Has an OBJ");
-                          // JSON response - Parse and handle redirect URL
-                          JSONObject jsonResponse = new JSONObject(response);
-                          String redirectUrl = jsonResponse.optString("redirectUrl");
-
-                          if (redirectUrl != null && !redirectUrl.isEmpty()) {
-                              System.out.println("Redirect not Null");
-
-                              new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                  Web.loadUrl(redirectUrl);
-                                  load.setVisibility(View.GONE);
-                                  Web.setVisibility(View.VISIBLE);
-                              }, 1000);
-                          } else {
-                              Utils.showToast(this, "Failed to get redirect URL.");
-                          }
-                      } else {
-                          // Unexpected response
-                          Utils.showToast(this, "Unexpected server response.");
-                          Log.e("UnexpectedResponse", response);
-                      }
-                  } catch (JSONException e) {
-                      // Log the error and show a message
-                      e.printStackTrace();
-                      Utils.showToast(this, "Error parsing payment response.");
-                  }
-              });
-          }).start();
-      }
-  */
     private void handlePaymentResult(String result) {
         runOnUiThread(() -> {
             try {
@@ -736,7 +636,7 @@ public class Dashboard extends AppCompatActivity {
     private void setOnclickListeners() {
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
-        // BuyBtn.setOnClickListener(v -> handleIveriPayment());
+        // BuyBtn.setOnClickListener(v -> handlePayNowPayment());
         BuyBtn1.setOnClickListener(v -> buy());
         FilterButton.setOnClickListener(v -> selectDateRange());
         No.setOnClickListener(v -> handleNo());
@@ -771,7 +671,7 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 //        LoadBalance.setOnClickListener(v -> handleLoadBalance());
-        LoadBalance.setOnClickListener(v -> handleIveriPayment());
+        LoadBalance.setOnClickListener(v -> handlePayNowPayment());
         LoadBalance1.setOnClickListener(v -> handleManualLoadBalance());
     }
 
@@ -1014,6 +914,10 @@ public void showDateDialog(final Context context, final Activity activity, final
     final Calendar calendar = Calendar.getInstance();
     final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
 
+    // Set the end date to the current date by default
+    final String currentDate = dateFormat.format(calendar.getTime());
+    endDateInput.setText(currentDate);
+
     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(themedContext)
             .setTitle("Select Start Date")
             .setView(layout)
@@ -1021,19 +925,18 @@ public void showDateDialog(final Context context, final Activity activity, final
                 String start = startDateInput.getText().toString().trim();
                 String end = endDateInput.getText().toString().trim();
 
-                if (start.isEmpty() || end.isEmpty()) {
-                    Utils.showToast(themedContext, "Both dates must be selected.");
+
+                if (start.isEmpty()) {
+                    Utils.showToast(themedContext, "Start date must be selected.");
                 } else {
                     try {
                         Date startD = dateFormat.parse(start);
                         Date endD = dateFormat.parse(end);
-                        Date currentDate = new Date();
 
                         if (startD != null && endD != null) {
                             if (startD.after(endD)) {
                                 Utils.showToast(themedContext, "Start date cannot be after end date.");
-                            } else if (endD.after(currentDate)) {
-                                Utils.showToast(themedContext, "End date cannot be beyond the current date.");
+
                             } else {
                                 startDate = start;
                                 endDate = end;
@@ -1060,20 +963,49 @@ public void showDateDialog(final Context context, final Activity activity, final
     negativeButton.setTextColor(Color.WHITE);
     negativeButton.setText("Cancel");
 
-    // Date picker for start date
-    startDateInput.setOnClickListener(v -> {
-        Calendar today = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(themedContext, (view, year, month, dayOfMonth) -> {
+    // Start date picker
+    startDateInput.setOnClickListener(v -> showDatePicker(themedContext, startDateInput, dialog, dateFormat, endDateInput, false));
+
+    // Automatically open start date picker when the dialog pops up
+    new Handler().postDelayed(() -> startDateInput.performClick(), 300);
+
+    // End date picker
+    endDateInput.setOnClickListener(v -> showDatePicker(themedContext, endDateInput, dialog, dateFormat, startDateInput, true));
+}
+
+    private void showDatePicker(Context context, EditText dateInput, AlertDialog dialog, SimpleDateFormat dateFormat, EditText otherDateInput, boolean isEndDate) {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
             calendar.set(year, month, dayOfMonth);
-            startDateInput.setText(dateFormat.format(calendar.getTime()));
+            String selectedDate = dateFormat.format(calendar.getTime());
+            dateInput.setText(selectedDate);
+
+            try {
+                Date selected = dateFormat.parse(selectedDate);
+                Date otherDate = dateFormat.parse(otherDateInput.getText().toString());
+
+                if (isEndDate && selected != null && otherDate != null && selected.before(otherDate)) {
+                    // If end date is before start date, reset start date to match the end date
+                    otherDateInput.setText(selectedDate);
+                    Utils.showToast(context, "Start date updated to match end date.");
+                } else if (!isEndDate && selected != null && otherDate != null && selected.after(otherDate)) {
+                    // If start date is after end date, reset end date to match the start date
+                    otherDateInput.setText(selectedDate);
+                    Utils.showToast(context, "End date updated to match start date.");
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
             // Change dialog title after selecting start date
-            dialog.setTitle("Select End Date");
+            if (!isEndDate) {
+                dialog.setTitle("Select End Date");
+            }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        // Disable dates from today onwards
-        datePickerDialog.getDatePicker().setMaxDate(today.getTimeInMillis() - 1); // Disable future dates
 
-        // Apply styles to the OK button in the DatePickerDialog
+        // Disable future dates for both start and end date
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1);
+
         datePickerDialog.setOnShowListener(dialogInterface -> {
             Button okButton = datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE);
             if (okButton != null) {
@@ -1082,41 +1014,8 @@ public void showDateDialog(final Context context, final Activity activity, final
             }
         });
 
-        // Show the DatePickerDialog
         datePickerDialog.show();
-    });
-
-// Date picker for end date
-    endDateInput.setOnClickListener(v -> {
-        Calendar today = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(themedContext, (view, year, month, dayOfMonth) -> {
-            calendar.set(year, month, dayOfMonth);
-            endDateInput.setText(dateFormat.format(calendar.getTime()));
-        }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
-        // Disable dates from today onwards
-        datePickerDialog.getDatePicker().setMaxDate(today.getTimeInMillis() - 1);
-
-        // Apply styles to the OK and Cancel buttons in the DatePickerDialog
-        datePickerDialog.setOnShowListener(dialogInterface -> {
-            Button okButton = datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE);
-            Button cancelButton = datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE);
-
-            if (okButton != null) {
-                okButton.setBackgroundResource(R.drawable.button_background);  // Apply background
-                okButton.setTextColor(Color.WHITE);  // Set text color
-            }
-
-            if (cancelButton != null) {
-                cancelButton.setBackgroundResource(R.drawable.button_background);  // Apply background
-                cancelButton.setTextColor(Color.WHITE);  // Set text color
-            }
-        });
-
-        // Show the DatePickerDialog
-        datePickerDialog.show();
-    });
-
-}
+    }
 
     private static int convertDpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
