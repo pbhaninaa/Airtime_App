@@ -86,6 +86,7 @@ import okhttp3.internal.Util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -106,30 +107,21 @@ import android.content.ContextWrapper;
 import android.view.ContextThemeWrapper;
 
 public class Dashboard extends AppCompatActivity {
-    private ConstraintLayout AppFrame, LoadingLayout;
-    private LinearLayout SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
+    private ConstraintLayout ConfirmationScreen, AppFrame, LoadingLayout;
+    private LinearLayout job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
     private TextView version, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote;
-    private ImageButton NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
-    private RecyclerView ItemRecyclerView;
-    private Spinner ItemFilterSpinner, ItemToBuySpinner;
-    private Spinner CountryCode;
-    private ConstraintLayout ConfirmationScreen;
-    private LinearLayout job_list_screen;
-    private ImageButton backFromList;
+    private ImageButton FilterButton, backFromList, NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
+    private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
-
-
-    private ImageButton FilterButton;
     private boolean show;
-    static String currencySymbol, ItemCode;
-    private RecyclerView jobListRecyclerView;
+    static String currencySymbol, ItemCode, startDate, endDate;
+    private RecyclerView ItemRecyclerView, jobListRecyclerView;
     private int numItems;
-    private static String startDate, endDate;
-    private String totalRechargeAmount , totalDepositAmount;
+    private String totalRechargeAmount, totalDepositAmount;
 
 
     @Override
@@ -197,8 +189,16 @@ public class Dashboard extends AppCompatActivity {
 
     }
 
-    private void initialiseViews() {
+    @Override
+    public void onBackPressed() {
+        if (Web.canGoBack()) {
+            Web.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
+    private void initialiseViews() {
 
 
         LoadingLayout = findViewById(R.id.load_layout);
@@ -278,10 +278,9 @@ public class Dashboard extends AppCompatActivity {
         if (last.endsWith(currentTime)) {
             getLastTransaction(null);
         } else {
-            Utils.showToast(this,"Last transaction does not match the current time.");
+            Utils.showToast(this, "Last transaction does not match the current time.");
         }
     }
-
 
     private void handleLoadBalance() {
         String amount = AmountTLoad.getText().toString().trim();
@@ -344,11 +343,12 @@ public class Dashboard extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Utils.showToast(this,"Failed to parse JSON response.");
+                    Utils.showToast(this, "Failed to parse JSON response.");
                 }
             });
         }).start();
     }
+
     private void handlePayNowPayment() {
         String amountString = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
 
@@ -420,132 +420,6 @@ public class Dashboard extends AppCompatActivity {
 
     }
 
-
-    private void handlePaymentResult(String result) {
-        runOnUiThread(() -> {
-            try {
-                JSONObject resultJson = new JSONObject(result);
-                String status = resultJson.getString("status");
-                String message;
-                String transactionId = resultJson.optString("transactionId");
-
-                if ("success".equals(status)) {
-                    message = "Payment successful!";
-
-                    confirmPaymentWithWebhook(transactionId);
-                } else {
-                    message = "Payment failed. Please try again.";
-                }
-
-                Utils.showToast(this, message);
-
-                new Handler().postDelayed(() -> closePaymentView(null), 200);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Utils.showToast(this, "Error processing payment result.");
-            }
-        });
-    }
-
-    private void confirmPaymentWithWebhook(String transactionId) {
-        new Thread(() -> {
-            try {
-                String webhookUrl = "https://your-server.com/webhook";
-                JSONObject payload = new JSONObject();
-                payload.put("status", "successful");
-                payload.put("transactionId", transactionId);
-
-                HttpURLConnection connection = (HttpURLConnection) new URL(webhookUrl).openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                OutputStream os = connection.getOutputStream();
-                os.write(payload.toString().getBytes());
-                os.flush();
-                os.close();
-
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String inputLine;
-                    StringBuilder response = new StringBuilder();
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-                    Utils.showToast(this,"Webhook response: " + response.toString());
-                } else {
-                    Utils.showToast(this,"Webhook request failed. Response code: " + responseCode);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    public void closePaymentView(View view) {
-        Web.loadUrl("about:blank");
-        handleManualLoadBalance();
-
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (Web.canGoBack()) {
-            Web.goBack();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-
-    private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
-        if (SelectedIsp.getText().toString().isEmpty()) {
-            Utils.showToast(this, "Select Network");
-            return;
-        }
-        clearFields();
-        if (imageButton.getId() == R.id.nav_buy_btn1) {
-            Phone.requestFocus();
-            SelectedItem.setVisibility(View.VISIBLE);
-            AmountCapture.setVisibility(View.GONE);
-            BuyBtn1.setVisibility(View.GONE);
-            BuyBtn.setVisibility(View.VISIBLE);
-        } else if (imageButton.getId() == R.id.nav_load_btn1) {
-            Phone.requestFocus();
-            SelectedItem.setVisibility(View.GONE);
-            AmountCapture.setVisibility(View.VISIBLE);
-            BuyBtn1.setVisibility(View.VISIBLE);
-            BuyBtn.setVisibility(View.GONE);
-        } else if (imageButton.getId() == R.id.more1) {
-            SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
-            String name = sharedPreferences.getString("name", "");
-            String surname = sharedPreferences.getString("surname", "");
-            String AgentID = sharedPreferences.getString("phone", "");
-            String AgentEmail = sharedPreferences.getString("email", "");
-            String AgentPassword = sharedPreferences.getString("password", "");
-            String AgentName = name + " " + surname;
-
-        }
-        LoadBalance1.setVisibility(View.GONE);
-        LoadBalance.setVisibility(View.VISIBLE);
-
-        defaultColoring(imageButton);
-        imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
-        BackToHome.setVisibility(View.VISIBLE);
-        ISPsLayout.setVisibility(View.GONE);
-        BuyLayout.setVisibility(View.GONE);
-        ItemsLayout.setVisibility(View.GONE);
-        LoadBalanceLayout.setVisibility(View.GONE);
-        WebScree.setVisibility(View.GONE);
-        layoutToDisplay.setVisibility(View.VISIBLE);
-
-
-    }
-
-
     private void adaptors() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, MainActivity.econetItems);
         adapter.setDropDownViewResource(R.layout.spinner_layout);
@@ -563,49 +437,6 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
-
-
-    public void populateHistory(String startDate, String endDate) {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
-        String name = sharedPreferences.getString("name", "");
-        String surname = sharedPreferences.getString("surname", "");
-        String AgentID = sharedPreferences.getString("phone", "");
-        String AgentEmail = sharedPreferences.getString("email", "");
-        String AgentPassword = sharedPreferences.getString("password", "");
-        String AgentName = name + " " + surname;
-
-
-        getStatement(AgentID, AgentName, AgentPassword, AgentEmail, this, startDate, endDate, new StatementCallback() {
-            @Override
-            public void onResult(List<Map<String, Object>> statements) {
-                runOnUiThread(() -> {
-                    if (jobListRecyclerView.getLayoutManager() == null) {
-                        jobListRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                    }
-
-                    if (jobListRecyclerView.getAdapter() != null && jobListRecyclerView.getAdapter() instanceof Statement) {
-                        ((Statement) jobListRecyclerView.getAdapter()).updateStatements(statements);
-                    } else {
-                        jobListRecyclerView.setAdapter(new Statement(Dashboard.this, statements));
-                    }
-                });
-            }
-        });
-    }
-
-
-    public void AlertString(Context context, String message) {
-        new AlertDialog.Builder(context)
-                .setMessage(message)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                })
-                .create()
-                .show();
-    }
-
 
     private void setOnclickListeners() {
         backFromList.setOnClickListener(v -> handleBackFromList());
@@ -720,110 +551,6 @@ public class Dashboard extends AppCompatActivity {
 
     }
 
-
-    public void setISP(String ISP) {
-
-        if (!ISP.equals("Econet")) {
-
-            Utils.showToast(this, "Not yet available");
-            return;
-        }
-        Utils.LoadingLayout(this, this);
-
-        getBalance(ISP);
-        SelectedIsp.setText(ISP);
-        hideLayouts(ItemsLayout, NavIPSBtn);
-        BackToHome.setVisibility(View.VISIBLE);
-        ISPsLayout.setVisibility(View.GONE);
-        ItemsLayout.setVisibility(View.VISIBLE);
-
-    }
-
-    public void getBalance(String ISP) {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    JSONObject res = ApiService.balanceEnquiry(ISP, Utils.getString(Dashboard.this, "profile", "phone"), Dashboard.this);
-                    if (res.getInt("responseCode") == 200) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    getLastTransaction(null);
-                                    String responseString = res.getString("response");
-                                    JSONObject responseJson = new JSONObject(responseString);
-                                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
-                                    JSONArray paramsList = methodResponse.getJSONArray("paramsList");
-                                    JSONObject userObject = paramsList.getJSONObject(0);
-                                    String balance = userObject.getString("decimalBalance");
-                                    getAccount(balance);
-                                    Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    try {
-                                        Utils.showToast(Dashboard.this, res.getString("response"));
-                                    } catch (JSONException ex) {
-                                        throw new RuntimeException(ex);
-                                    }
-                                }
-                            }
-                        });
-
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Utils.showToast(Dashboard.this, res.getString("response"));
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        });
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Utils.showToast(Dashboard.this, "Service Provider Offline");
-                        }
-                    });
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
-    }
-
-    private void getAccount(String bal) {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
-        if (!bal.isEmpty()) {
-            Utils.saveString(Dashboard.this, "profile", "balance", bal);
-        } else {
-            Utils.saveString(Dashboard.this, "profile", "balance", sharedPreferences.getString("balance", ""));
-        }
-
-
-        String name = sharedPreferences.getString("name", "");
-        String surname = sharedPreferences.getString("surname", "");
-        String phone = sharedPreferences.getString("phone", "");
-        String balance = sharedPreferences.getString("balance", "");
-        String updated = sharedPreferences.getString("time", "");
-        String formatedSalutation = "Hello, " + name + " " + surname + " \n" + "Agent ID:  " + phone + "\n";
-        String Balance = balance.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(bal.isEmpty() ? balance : bal)));
-        StatusMessage.setText(formatedSalutation);
-        Utils.setStatusColor(this, (bal.isEmpty() ? balance : bal), statusLight);
-        AvailableBalance.setText(Balance);
-        AmountToLoadSymbol.setText(currencySymbol);
-        currencySymbolInBuy.setText(currencySymbol);
-        clearFields();
-    }
-
     private void logout() {
         Utils.hideSoftKeyboard(Dashboard.this);
         Utils.hideSoftNavBar(Dashboard.this);
@@ -845,147 +572,6 @@ public class Dashboard extends AppCompatActivity {
 
     }
 
-    private void selectDateRange() {
-        showDateDialog(Dashboard.this, this, this);
-    }
-
-
-public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
-    Context themedContext = new ContextThemeWrapper(context, R.style.AppThemes);
-    LinearLayout layout = new LinearLayout(themedContext);
-    layout.setOrientation(LinearLayout.VERTICAL);
-    final EditText startDateInput = new EditText(themedContext);
-    final EditText endDateInput = new EditText(themedContext);
-    startDateInput.setBackgroundResource(R.drawable.edit_text_background);
-    startDateInput.setHint("Select Start Date");
-    startDateInput.setFocusable(false);
-    startDateInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
-    endDateInput.setBackgroundResource(R.drawable.edit_text_background);
-    endDateInput.setHint("Select End Date");
-    endDateInput.setFocusable(false);
-    endDateInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
-
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-    );
-    int marginInDp = 20;
-    int marginInPx = convertDpToPx(context, marginInDp);
-    params.setMargins(marginInPx, 5, marginInPx, 5);
-    startDateInput.setLayoutParams(params);
-    endDateInput.setLayoutParams(params);
-
-    layout.addView(startDateInput);
-    layout.addView(endDateInput);
-
-    final Calendar calendar = Calendar.getInstance();
-    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-
-    final String currentDate = dateFormat.format(calendar.getTime());
-    endDateInput.setText(currentDate);
-
-    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(themedContext)
-            .setTitle("Select Start Date")
-            .setView(layout)
-            .setPositiveButton("OK", (dialog1, which) -> {
-                String start = startDateInput.getText().toString().trim();
-                String end = endDateInput.getText().toString().trim();
-
-
-                if (start.isEmpty()) {
-                    Utils.showToast(themedContext, "Start date must be selected.");
-                } else {
-                    try {
-                        Date startD = dateFormat.parse(start);
-                        Date endD = dateFormat.parse(end);
-
-                        if (startD != null && endD != null) {
-                            if (startD.after(endD)) {
-                                Utils.showToast(themedContext, "Start date cannot be after end date.");
-
-                            } else {
-                                startDate = start;
-                                endDate = end;
-                                populateHistory(start, end);
-                            }
-                        }
-                    } catch (ParseException e) {
-                        Utils.showToast(themedContext, "Invalid date format.");
-                    }
-                }
-            })
-            .setNegativeButton("Cancel", (dialog12, which) -> dialog12.dismiss());
-
-    AlertDialog dialog = dialogBuilder.create();
-    dialog.show();
-
-    Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-    positiveButton.setBackgroundResource(R.drawable.button_background);
-    positiveButton.setTextColor(Color.WHITE);
-    positiveButton.setText("OK");
-
-    Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-    negativeButton.setBackgroundResource(R.drawable.button_background);
-    negativeButton.setTextColor(Color.WHITE);
-    negativeButton.setText("Cancel");
-
-    startDateInput.setOnClickListener(v -> showDatePicker(themedContext, startDateInput, dialog, dateFormat, endDateInput, false));
-
-    new Handler().postDelayed(() -> startDateInput.performClick(), 300);
-
-    endDateInput.setOnClickListener(v -> showDatePicker(themedContext, endDateInput, dialog, dateFormat, startDateInput, true));
-}
-
-    private void showDatePicker(Context context, EditText dateInput, AlertDialog dialog, SimpleDateFormat dateFormat, EditText otherDateInput, boolean isEndDate) {
-        Calendar calendar = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
-            calendar.set(year, month, dayOfMonth);
-            String selectedDate = dateFormat.format(calendar.getTime());
-            dateInput.setText(selectedDate);
-
-            try {
-                Date selected = dateFormat.parse(selectedDate);
-                Date otherDate = dateFormat.parse(otherDateInput.getText().toString());
-
-                if (isEndDate && selected != null && otherDate != null && selected.before(otherDate)) {
-                    otherDateInput.setText(selectedDate);
-                    Utils.showToast(context, "Start date updated to match end date.");
-                } else if (!isEndDate && selected != null && otherDate != null && selected.after(otherDate)) {
-                    otherDateInput.setText(selectedDate);
-                    Utils.showToast(context, "End date updated to match start date.");
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            if (!isEndDate) {
-                dialog.setTitle("Select End Date");
-            }
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1);
-
-        datePickerDialog.setOnShowListener(dialogInterface -> {
-            Button okButton = datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE);
-            if (okButton != null) {
-                okButton.setBackgroundResource(R.drawable.button_background);
-                okButton.setTextColor(Color.WHITE);
-            }
-        });
-
-        datePickerDialog.show();
-    }
-
-    private static int convertDpToPx(Context context, int dp) {
-        float density = context.getResources().getDisplayMetrics().density;
-        return Math.round(dp * density);
-    }
-
-    private static void showToast(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
-
-
     private void getProfile() {
         SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         String name = prefs.getString("name", "");
@@ -1004,6 +590,10 @@ public void showDateDialog(final Context context, final Activity activity, final
         TextView salute = findViewById(R.id.salutation_text);
         salute.setText(builder);
 
+    }
+
+    private void selectDateRange() {
+        showDateDialog(Dashboard.this, this, this);
     }
 
     public void buy() {
@@ -1222,13 +812,589 @@ public void showDateDialog(final Context context, final Activity activity, final
         startActivity(intent);
     }
 
+    public void spinners() {
+        ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedItem = parentView.getItemAtPosition(position).toString();
+                getProducts(new ProductsCallback() {
+                    @Override
+                    public void onProductsLoaded(List<Map<String, Object>> products) {
+                        List<Map<String, Object>> filteredProducts = filterProductsByType(products, selectedItem.equals("WhatsApp") ? "WHATSAPP_BUNDLES" : selectedItem);
+                        ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                        ItemRecyclerView.setAdapter(new RecommendedAd(filteredProducts));
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+    }
+
+    private void handleBackFromList() {
+        BackToHome.setVisibility(View.GONE);
+        Navbar.setVisibility(View.VISIBLE);
+        job_list_screen.setVisibility(View.GONE);
+        AppFrame.setVisibility(View.VISIBLE);
+    }
+
+    private void handleShowMore() {
+        if (SelectedIsp.getText().toString().isEmpty()) {
+            Utils.showToast(this, "Select Network");
+            return;
+        }
+        populateHistory(null, null);
+        Navbar.setVisibility(View.GONE);
+        AppFrame.setVisibility(View.GONE);
+        job_list_screen.setVisibility(View.VISIBLE);
+    }
+
+    private void clearFields() {
+        Phone.setText("");
+        AmountTLoad.setText("0.00");
+        AmountTLoadInBuy.setText("0.00");
+
+    }
+
+    private void handlePaymentResult(String result) {
+        runOnUiThread(() -> {
+            try {
+                JSONObject resultJson = new JSONObject(result);
+                String status = resultJson.getString("status");
+                String message;
+                String transactionId = resultJson.optString("transactionId");
+
+                if ("success".equals(status)) {
+                    message = "Payment successful!";
+
+                    confirmPaymentWithWebhook(transactionId);
+                } else {
+                    message = "Payment failed. Please try again.";
+                }
+
+                Utils.showToast(this, message);
+
+                new Handler().postDelayed(() -> closePaymentView(null), 200);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Utils.showToast(this, "Error processing payment result.");
+            }
+        });
+    }
+
+    private void confirmPaymentWithWebhook(String transactionId) {
+        new Thread(() -> {
+            try {
+                String webhookUrl = "https://your-server.com/webhook";
+                JSONObject payload = new JSONObject();
+                payload.put("status", "successful");
+                payload.put("transactionId", transactionId);
+
+                HttpURLConnection connection = (HttpURLConnection) new URL(webhookUrl).openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+                OutputStream os = connection.getOutputStream();
+                os.write(payload.toString().getBytes());
+                os.flush();
+                os.close();
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+                    Utils.showToast(this, "Webhook response: " + response.toString());
+                } else {
+                    Utils.showToast(this, "Webhook request failed. Response code: " + responseCode);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+    private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
+        if (SelectedIsp.getText().toString().isEmpty()) {
+            Utils.showToast(this, "Select Network");
+            return;
+        }
+        clearFields();
+        if (imageButton.getId() == R.id.nav_buy_btn1) {
+            Phone.requestFocus();
+            SelectedItem.setVisibility(View.VISIBLE);
+            AmountCapture.setVisibility(View.GONE);
+            BuyBtn1.setVisibility(View.GONE);
+            BuyBtn.setVisibility(View.VISIBLE);
+        } else if (imageButton.getId() == R.id.nav_load_btn1) {
+            Phone.requestFocus();
+            SelectedItem.setVisibility(View.GONE);
+            AmountCapture.setVisibility(View.VISIBLE);
+            BuyBtn1.setVisibility(View.VISIBLE);
+            BuyBtn.setVisibility(View.GONE);
+        } else if (imageButton.getId() == R.id.more1) {
+            SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
+            String name = sharedPreferences.getString("name", "");
+            String surname = sharedPreferences.getString("surname", "");
+            String AgentID = sharedPreferences.getString("phone", "");
+            String AgentEmail = sharedPreferences.getString("email", "");
+            String AgentPassword = sharedPreferences.getString("password", "");
+            String AgentName = name + " " + surname;
+
+        }
+        LoadBalance1.setVisibility(View.GONE);
+        LoadBalance.setVisibility(View.VISIBLE);
+
+        defaultColoring(imageButton);
+        imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
+        BackToHome.setVisibility(View.VISIBLE);
+        ISPsLayout.setVisibility(View.GONE);
+        BuyLayout.setVisibility(View.GONE);
+        ItemsLayout.setVisibility(View.GONE);
+        LoadBalanceLayout.setVisibility(View.GONE);
+        WebScree.setVisibility(View.GONE);
+        layoutToDisplay.setVisibility(View.VISIBLE);
+
+
+    }
+    public void populateHistory(String startDate, String endDate) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
+        String name = sharedPreferences.getString("name", "");
+        String surname = sharedPreferences.getString("surname", "");
+        String AgentID = sharedPreferences.getString("phone", "");
+        String AgentEmail = sharedPreferences.getString("email", "");
+        String AgentPassword = sharedPreferences.getString("password", "");
+        String AgentName = name + " " + surname;
+
+
+        getStatement(AgentID, AgentName, AgentPassword, AgentEmail, this, startDate, endDate, new StatementCallback() {
+            @Override
+            public void onResult(List<Map<String, Object>> statements) {
+                runOnUiThread(() -> {
+                    if (jobListRecyclerView.getLayoutManager() == null) {
+                        jobListRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
+                    }
+
+                    if (jobListRecyclerView.getAdapter() != null && jobListRecyclerView.getAdapter() instanceof Statement) {
+                        ((Statement) jobListRecyclerView.getAdapter()).updateStatements(statements);
+                    } else {
+                        jobListRecyclerView.setAdapter(new Statement(Dashboard.this, statements));
+                    }
+                });
+            }
+        });
+    }
+    public void AlertString(Context context, String message) {
+        new AlertDialog.Builder(context)
+                .setMessage(message)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    public void setISP(String ISP) {
+
+        if (!ISP.equals("Econet")) {
+
+            Utils.showToast(this, "Not yet available");
+            return;
+        }
+        Utils.LoadingLayout(this, this);
+
+        getBalance(ISP);
+        SelectedIsp.setText(ISP);
+        hideLayouts(ItemsLayout, NavIPSBtn);
+        BackToHome.setVisibility(View.VISIBLE);
+        ISPsLayout.setVisibility(View.GONE);
+        ItemsLayout.setVisibility(View.VISIBLE);
+
+    }
+
+    public void getBalance(String ISP) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject res = ApiService.balanceEnquiry(ISP, Utils.getString(Dashboard.this, "profile", "phone"), Dashboard.this);
+                    if (res.getInt("responseCode") == 200) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    getLastTransaction(null);
+                                    String responseString = res.getString("response");
+                                    JSONObject responseJson = new JSONObject(responseString);
+                                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                    JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                                    JSONObject userObject = paramsList.getJSONObject(0);
+                                    String balance = userObject.getString("decimalBalance");
+                                    getAccount(balance);
+                                    Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    try {
+                                        Utils.showToast(Dashboard.this, res.getString("response"));
+                                    } catch (JSONException ex) {
+                                        throw new RuntimeException(ex);
+                                    }
+                                }
+                            }
+                        });
+
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Utils.showToast(Dashboard.this, res.getString("response"));
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.showToast(Dashboard.this, "Service Provider Offline");
+                        }
+                    });
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
+
+    private void getAccount(String bal) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        if (!bal.isEmpty()) {
+            Utils.saveString(Dashboard.this, "profile", "balance", bal);
+        } else {
+            Utils.saveString(Dashboard.this, "profile", "balance", sharedPreferences.getString("balance", ""));
+        }
+
+
+        String name = sharedPreferences.getString("name", "");
+        String surname = sharedPreferences.getString("surname", "");
+        String phone = sharedPreferences.getString("phone", "");
+        String balance = sharedPreferences.getString("balance", "");
+        String updated = sharedPreferences.getString("time", "");
+        String formatedSalutation = "Hello, " + name + " " + surname + " \n" + "Agent ID:  " + phone + "\n";
+        String Balance = balance.isEmpty() ? "No Balance to display" : (String.format("Account Balance %s%s", currencySymbol, Utils.FormatAmount(bal.isEmpty() ? balance : bal)));
+        StatusMessage.setText(formatedSalutation);
+        Utils.setStatusColor(this, (bal.isEmpty() ? balance : bal), statusLight);
+        AvailableBalance.setText(Balance);
+        AmountToLoadSymbol.setText(currencySymbol);
+        currencySymbolInBuy.setText(currencySymbol);
+        clearFields();
+    }
+
+    public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
+        Context themedContext = new ContextThemeWrapper(context, R.style.AppThemes);
+        LinearLayout layout = new LinearLayout(themedContext);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText startDateInput = new EditText(themedContext);
+        final EditText endDateInput = new EditText(themedContext);
+
+        startDateInput.setBackgroundResource(R.drawable.edit_text_background);
+        startDateInput.setHint("Select Start Date");
+        startDateInput.setFocusable(false);
+        startDateInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
+
+        endDateInput.setBackgroundResource(R.drawable.edit_text_background);
+        endDateInput.setHint("Select End Date");
+        endDateInput.setFocusable(false);
+        endDateInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_calendar, 0);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        int marginInDp = 20;
+        int marginInPx = convertDpToPx(context, marginInDp);
+        params.setMargins(marginInPx, 5, marginInPx, 5);
+        startDateInput.setLayoutParams(params);
+        endDateInput.setLayoutParams(params);
+
+        layout.addView(startDateInput);
+        layout.addView(endDateInput);
+
+        final Calendar calendar = Calendar.getInstance();
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+
+        final String currentDate = dateFormat.format(calendar.getTime());
+        endDateInput.setText(currentDate);
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(themedContext)
+                .setTitle("Select Start Date")
+                .setView(layout)
+                .setPositiveButton("OK", (dialog1, which) -> {
+                    String start = startDateInput.getText().toString().trim();
+                    String end = endDateInput.getText().toString().trim();
+
+                    if (start.isEmpty()) {
+                        Utils.showToast(themedContext, "Start date must be selected.");
+                    } else {
+                        try {
+                            Date startD = dateFormat.parse(start);
+                            Date endD = dateFormat.parse(end);
+
+                            if (startD != null && endD != null) {
+                                if (startD.after(endD)) {
+                                    Utils.showToast(themedContext, "Start date cannot be after end date.");
+                                } else {
+                                    startDate = start;
+                                    endDate = end;
+                                    populateHistory(start, end);
+                                }
+                            }
+                        } catch (ParseException e) {
+                            Utils.showToast(themedContext, "Invalid date format.");
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog12, which) -> dialog12.dismiss());
+
+        AlertDialog dialog = dialogBuilder.create();
+
+        // Show dialog first, then style the buttons
+        dialog.setOnShowListener(dialogInterface -> {
+            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            positiveButton.setBackgroundResource(R.drawable.button_background);
+            positiveButton.setTextColor(Color.WHITE);
+            positiveButton.setText("OK");
+
+            Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            negativeButton.setBackgroundResource(R.drawable.cancel_button_background);
+            negativeButton.setTextColor(Color.WHITE);
+            negativeButton.setText("Cancel");
+        });
+
+        dialog.show();
+
+        startDateInput.setOnClickListener(v -> showDatePicker(themedContext, startDateInput, dialog, dateFormat, endDateInput, false));
+
+        new Handler().postDelayed(() -> startDateInput.performClick(), 300);
+
+        endDateInput.setOnClickListener(v -> showDatePicker(themedContext, endDateInput, dialog, dateFormat, startDateInput, true));
+    }
+
+    private void showDatePicker(Context context, EditText dateInput, AlertDialog dialog, SimpleDateFormat dateFormat, EditText otherDateInput, boolean isEndDate) {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
+            calendar.set(year, month, dayOfMonth);
+            String selectedDate = dateFormat.format(calendar.getTime());
+            dateInput.setText(selectedDate);
+
+            try {
+                Date selected = dateFormat.parse(selectedDate);
+                Date otherDate = dateFormat.parse(otherDateInput.getText().toString());
+
+                if (isEndDate && selected != null && otherDate != null && selected.before(otherDate)) {
+                    otherDateInput.setText(selectedDate);
+                    Utils.showToast(context, "Start date updated to match end date.");
+                } else if (!isEndDate && selected != null && otherDate != null && selected.after(otherDate)) {
+                    otherDateInput.setText(selectedDate);
+                    Utils.showToast(context, "End date updated to match start date.");
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (!isEndDate) {
+                dialog.setTitle("Select End Date");
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1);
+
+        datePickerDialog.setOnShowListener(dialogInterface -> {
+            Button okButton = datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE);
+            if (okButton != null) {
+                okButton.setBackgroundResource(R.drawable.button_background);
+                okButton.setTextColor(Color.WHITE);
+            }
+        });
+
+        datePickerDialog.show();
+    }
+
+    public void getProducts(ProductsCallback callback) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Map<String, Object>> items = new ArrayList<>();
+                try {
+                    JSONObject catalogRequestResponse = ApiService.catalogRequest();
+                    if (catalogRequestResponse.has("response")) {
+                        String nestedResponseString = catalogRequestResponse.getString("response");
+                        JSONObject nestedResponse = new JSONObject(nestedResponseString);
+                        if (nestedResponse.has("methodResponse")) {
+
+                            JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
+                            for (int i = 0; i < paramsList.length(); i++) {
+                                JSONObject product = paramsList.getJSONObject(i);
+                                Map<String, Object> item = new HashMap<>();
+                                item.put("type", product.getString("productCategory"));
+                                item.put("amount", product.getString("amount"));
+                                item.put("lifeTime", product.getString("validity"));
+                                item.put("price", product.getString("costPrice"));
+                                item.put("num", product.getString("num"));
+                                item.put("productID", product.getString("productID"));
+                                item.put("productDescription", product.getString("productDescription"));
+                                item.put("shortDescription", product.getString("shortDescription"));
+                                item.put("network", product.getString("network"));
+                                item.put("costPrice", product.getString("costPrice"));
+                                item.put("agentSplit", product.getString("agentSplit"));
+                                item.put("providerSplit", product.getString("providerSplit"));
+                                items.add(item);
+                            }
+                        } else {
+                            System.out.println("Error: methodResponse not found in nested response.");
+                        }
+                    } else {
+                        System.out.println("Error: response not found in catalogRequestResponse.");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                new Handler(Looper.getMainLooper()).post(() -> callback.onProductsLoaded(items));
+            }
+        }).start();
+    }
+
+    private static void showToast(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void getStatement(String AgentID, String AgentName, String AgentPassword, String AgentEmail, Context context, String startDate, String endDate, StatementCallback callback) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Map<String, Object>> items = new ArrayList<>();
+                try {
+                    JSONObject catalogRequestResponse = ApiService.statement(
+                            AgentID, AgentName, AgentPassword, AgentEmail, context, startDate, endDate
+                    );
+
+                    if (catalogRequestResponse.has("response")) {
+
+                        String nestedResponseString = catalogRequestResponse.getString("response");
+                        JSONObject nestedResponse = new JSONObject(nestedResponseString);
+
+                        if (nestedResponse.has("methodResponse")) {
+                            JSONObject methodResponse = nestedResponse.getJSONObject("methodResponse");
+
+                            String totalDepositAmount = methodResponse.optString("totalDepositAmount", "0.00");
+                            String totalRechargeAmount = methodResponse.optString("totalRechargeAmount", "0.00");
+
+                            // Update UI on the main thread
+                            if (context instanceof Activity) {
+                                Activity activity = (Activity) context;
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        TextView TotalRecharge = activity.findViewById(R.id.totalRechargeAmount_textView);
+                                        TextView TotalDeposit = activity.findViewById(R.id.totalDepositAmount_textView);
+
+                                        TotalDeposit.setText(currencySymbol + Utils.FormatAmount(totalDepositAmount));
+                                        TotalRecharge.setText(currencySymbol + Utils.FormatAmount(totalRechargeAmount));
+                                    }
+                                });
+                            }
+
+                            // Process list data
+                            JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
+                            for (int i = 0; i < paramsList.length(); i++) {
+                                JSONObject product = paramsList.getJSONObject(i);
+                                Map<String, Object> item = new HashMap<>();
+                                item.put("customerID", product.optString("customerID", ""));
+                                item.put("basketID", product.optString("basketID", ""));
+                                item.put("network", product.optString("network", ""));
+                                item.put("transactionType", product.optString("transactionType", ""));
+                                item.put("productID", product.optString("productID", ""));
+                                item.put("productDescription", product.optString("productDescription", ""));
+                                item.put("productCategory", product.optString("productCategory", ""));
+                                item.put("rechargeAmount", product.optString("rechargeAmount", ""));
+                                item.put("depositAmount", product.optString("DepositAmount", ""));
+                                item.put("providerSerial", product.optString("providerSerial", ""));
+                                item.put("providerReference", product.optString("providerReference", ""));
+                                item.put("providerStatus", product.optString("providerStatus", ""));
+                                item.put("providerStatusCode", product.optString("providerStatusCode", ""));
+                                item.put("currency", product.optString("currency", ""));
+                                item.put("costPrice", product.optString("costPrice", ""));
+                                item.put("agentID", product.optString("agentID", ""));
+                                item.put("agentName", product.optString("agentName", ""));
+                                item.put("entryDate", product.optString("entryDate", ""));
+                                item.put("providerID", product.optString("providerID", ""));
+                                item.put("providerSplit", product.optString("providerSplit", ""));
+                                item.put("decimalBalance", product.optString("decimalBalance", ""));
+                                item.put("providerBalance", product.optString("providerBalance", ""));
+                                item.put("cumulativeBalance", product.optString("cumulativeBalance", ""));
+                                item.put("agentSplit", product.optString("agentSplit", ""));
+                                items.add(item);
+                            }
+                        } else {
+                            System.out.println("Error: methodResponse not found in nested response.");
+                        }
+                    } else {
+                        System.out.println("Error: response not found in catalogRequestResponse.");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    System.out.println("JSON Parsing Error: " +
+                            (e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (callback != null) {
+                    callback.onResult(items);
+                }
+            }
+        }).start();
+    }
+
+    private void defaultColoring(ImageButton icon) {
+        NavBuyBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        NavLaodBalanceBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        NavLaodBalanceBtn1.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
+    }
+
+    public void closePaymentView(View view) {
+        Web.loadUrl("about:blank");
+        handleManualLoadBalance();
+
+
+    }
     public void goToOtherApp(View view) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.example.finance", "com.example.finance.MainActivity"));
         startActivity(intent);
 
     }
-
     public void getLastTransaction(View view) {
 
         new Thread(new Runnable() {
@@ -1324,12 +1490,52 @@ public void showDateDialog(final Context context, final Activity activity, final
             }
         }).start();
     }
-
     public void showManualLoad(View view) {
         Utils.showToast(this, "Manual Deposit funds activated");
         LoadBalance1.setVisibility(View.VISIBLE);
         LoadBalance.setVisibility(View.GONE);
 
+    }
+
+    // Returning Methods
+
+    public String getAppVersion() {
+        try {
+            PackageManager packageManager = getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "Unknown";
+        }
+    }
+
+    public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
+        List<Map<String, Object>> filteredProducts = new ArrayList<>();
+        for (Map<String, Object> product : products) {
+
+            if (product.get("type") != null && product.get("type").toString().toLowerCase().contains(filterType.toLowerCase())) {
+                filteredProducts.add(product);
+            }
+
+        }
+        return filteredProducts;
+    }
+
+    private static int convertDpToPx(Context context, int dp) {
+        float density = context.getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
+    }
+
+
+    // Helper Classes and Interfaces
+
+    public interface ProductsCallback {
+        void onProductsLoaded(List<Map<String, Object>> products);
+    }
+
+    public interface StatementCallback {
+        void onResult(List<Map<String, Object>> statements);
     }
 
     public class RecommendedAd extends RecyclerView.Adapter<RecommendedAd.ViewHolder> {
@@ -1414,6 +1620,7 @@ public void showDateDialog(final Context context, final Activity activity, final
 
         private List<Map<String, Object>> statements;
         private final Context context;
+
         public Statement(Context context, List<Map<String, Object>> statements) {
             this.context = context;
             this.statements = statements != null ? statements : new ArrayList<>();
@@ -1441,7 +1648,7 @@ public void showDateDialog(final Context context, final Activity activity, final
                         String key = entry.getKey();
                         String formattedKey = key.replaceAll("([a-z])([A-Z])", "$1 $2");
                         String capitalizedKey = formattedKey.substring(0, 1).toUpperCase() + formattedKey.substring(1);
-                         detailsBuilder.append("<font color='").append(colorHex).append("'>")
+                        detailsBuilder.append("<font color='").append(colorHex).append("'>")
                                 .append("<small>").append(capitalizedKey).append(":\t</small></font> ")
                                 .append("<small>").append(value).append("</small><br>");
                     }
@@ -1460,6 +1667,7 @@ public void showDateDialog(final Context context, final Activity activity, final
         public int getItemCount() {
             return statements.size();
         }
+
         public void updateStatements(List<Map<String, Object>> newStatements) {
             this.statements = newStatements != null ? newStatements : new ArrayList<>();
             notifyDataSetChanged();
@@ -1478,7 +1686,9 @@ public void showDateDialog(final Context context, final Activity activity, final
                 balance = itemView.findViewById(R.id.cumulativeBalance);
                 amountRow = itemView.findViewById(R.id.amount_row);
                 balanceRow = itemView.findViewById(R.id.balance_row);
-            }public void bind(Map<String, Object> statement) {
+            }
+
+            public void bind(Map<String, Object> statement) {
                 String transactionTypeValue = getValueFromMap(statement, "transactionType", "N/A");
 
                 referenceID.setText(getValueFromMap(statement, "basketID", "N/A"));
@@ -1514,226 +1724,5 @@ public void showDateDialog(final Context context, final Activity activity, final
         }
     }
 
-    public interface StatementCallback {
-        void onResult(List<Map<String, Object>> statements);
-    }
-
-    public static void getStatement(
-            String AgentID, String AgentName, String AgentPassword, String AgentEmail,
-            Context context, String startDate, String endDate,
-            StatementCallback callback) {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Map<String, Object>> items = new ArrayList<>();
-                try {
-                    JSONObject catalogRequestResponse = ApiService.statement(
-                            AgentID, AgentName, AgentPassword, AgentEmail, context, startDate, endDate
-                    );
-
-                    if (catalogRequestResponse.has("response")) {
-
-                        String nestedResponseString = catalogRequestResponse.getString("response");
-                        JSONObject nestedResponse = new JSONObject(nestedResponseString);
-
-                        if (nestedResponse.has("methodResponse")) {
-                            JSONObject methodResponse = nestedResponse.getJSONObject("methodResponse");
-
-                            String totalDepositAmount = methodResponse.optString("totalDepositAmount", "0.00");
-                            String totalRechargeAmount = methodResponse.optString("totalRechargeAmount", "0.00");
-
-                            // Update UI on the main thread
-                            if (context instanceof Activity) {
-                                Activity activity = (Activity) context;
-                                activity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        TextView TotalRecharge = activity.findViewById(R.id.totalRechargeAmount_textView);
-                                        TextView TotalDeposit = activity.findViewById(R.id.totalDepositAmount_textView);
-
-                                        TotalDeposit.setText("Total Deposited : " + currencySymbol +Utils.FormatAmount( totalDepositAmount));
-                                        TotalRecharge.setText("Total Recharge : " + currencySymbol +Utils.FormatAmount( totalRechargeAmount));
-                                    }
-                                });
-                            }
-
-                            // Process list data
-                            JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
-                            for (int i = 0; i < paramsList.length(); i++) {
-                                JSONObject product = paramsList.getJSONObject(i);
-                                Map<String, Object> item = new HashMap<>();
-                                item.put("customerID", product.optString("customerID", ""));
-                                item.put("basketID", product.optString("basketID", ""));
-                                item.put("network", product.optString("network", ""));
-                                item.put("transactionType", product.optString("transactionType", ""));
-                                item.put("productID", product.optString("productID", ""));
-                                item.put("productDescription", product.optString("productDescription", ""));
-                                item.put("productCategory", product.optString("productCategory", ""));
-                                item.put("rechargeAmount", product.optString("rechargeAmount", ""));
-                                item.put("depositAmount", product.optString("DepositAmount", ""));
-                                item.put("providerSerial", product.optString("providerSerial", ""));
-                                item.put("providerReference", product.optString("providerReference", ""));
-                                item.put("providerStatus", product.optString("providerStatus", ""));
-                                item.put("providerStatusCode", product.optString("providerStatusCode", ""));
-                                item.put("currency", product.optString("currency", ""));
-                                item.put("costPrice", product.optString("costPrice", ""));
-                                item.put("agentID", product.optString("agentID", ""));
-                                item.put("agentName", product.optString("agentName", ""));
-                                item.put("entryDate", product.optString("entryDate", ""));
-                                item.put("providerID", product.optString("providerID", ""));
-                                item.put("providerSplit", product.optString("providerSplit", ""));
-                                item.put("decimalBalance", product.optString("decimalBalance", ""));
-                                item.put("providerBalance", product.optString("providerBalance", ""));
-                                item.put("cumulativeBalance", product.optString("cumulativeBalance", ""));
-                                item.put("agentSplit", product.optString("agentSplit", ""));
-                                items.add(item);
-                            }
-                        } else {
-                            System.out.println("Error: methodResponse not found in nested response.");
-                        }
-                    } else {
-                        System.out.println("Error: response not found in catalogRequestResponse.");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    System.out.println("JSON Parsing Error: " +
-                            (e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (callback != null) {
-                    callback.onResult(items);
-                }
-            }
-        }).start();
-    }
-
-
-    public void spinners() {
-        ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selectedItem = parentView.getItemAtPosition(position).toString();
-                getProducts(new ProductsCallback() {
-                    @Override
-                    public void onProductsLoaded(List<Map<String, Object>> products) {
-                        List<Map<String, Object>> filteredProducts = filterProductsByType(products, selectedItem.equals("WhatsApp") ? "WHATSAPP_BUNDLES" : selectedItem);
-                        ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
-                        ItemRecyclerView.setAdapter(new RecommendedAd(filteredProducts));
-                    }
-                });
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
-    }
-
-    public interface ProductsCallback {
-        void onProductsLoaded(List<Map<String, Object>> products);
-    }
-    public void getProducts(ProductsCallback callback) {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Map<String, Object>> items = new ArrayList<>();
-                try {
-                    JSONObject catalogRequestResponse = ApiService.catalogRequest();
-                    if (catalogRequestResponse.has("response")) {
-                        String nestedResponseString = catalogRequestResponse.getString("response");
-                        JSONObject nestedResponse = new JSONObject(nestedResponseString);
-                        if (nestedResponse.has("methodResponse")) {
-
-                            JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
-                            for (int i = 0; i < paramsList.length(); i++) {
-                                JSONObject product = paramsList.getJSONObject(i);
-                                Map<String, Object> item = new HashMap<>();
-                                item.put("type", product.getString("productCategory"));
-                                item.put("amount", product.getString("amount"));
-                                item.put("lifeTime", product.getString("validity"));
-                                item.put("price", product.getString("costPrice"));
-                                item.put("num", product.getString("num"));
-                                item.put("productID", product.getString("productID"));
-                                item.put("productDescription", product.getString("productDescription"));
-                                item.put("shortDescription", product.getString("shortDescription"));
-                                item.put("network", product.getString("network"));
-                                item.put("costPrice", product.getString("costPrice"));
-                                item.put("agentSplit", product.getString("agentSplit"));
-                                item.put("providerSplit", product.getString("providerSplit"));
-                                items.add(item);
-                            }
-                        } else {
-                            System.out.println("Error: methodResponse not found in nested response.");
-                        }
-                    } else {
-                        System.out.println("Error: response not found in catalogRequestResponse.");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                new Handler(Looper.getMainLooper()).post(() -> callback.onProductsLoaded(items));
-            }
-        }).start();
-    }
-    public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
-        List<Map<String, Object>> filteredProducts = new ArrayList<>();
-        for (Map<String, Object> product : products) {
-
-            if (product.get("type") != null && product.get("type").toString().toLowerCase().contains(filterType.toLowerCase())) {
-                filteredProducts.add(product);
-            }
-
-        }
-        return filteredProducts;
-    }
-
-    private void handleBackFromList() {
-        BackToHome.setVisibility(View.GONE);
-        Navbar.setVisibility(View.VISIBLE);
-        job_list_screen.setVisibility(View.GONE);
-        AppFrame.setVisibility(View.VISIBLE);
-    }
-
-    private void handleShowMore() {
-        if (SelectedIsp.getText().toString().isEmpty()) {
-            Utils.showToast(this, "Select Network");
-            return;
-        }
-        populateHistory(null, null);
-        Navbar.setVisibility(View.GONE);
-        AppFrame.setVisibility(View.GONE);
-        job_list_screen.setVisibility(View.VISIBLE);
-    }
-
-    private void defaultColoring(ImageButton icon) {
-        NavBuyBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
-        NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
-        NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
-        NavLaodBalanceBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
-        NavLaodBalanceBtn1.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
-        icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
-    }
-
-    private void clearFields() {
-        Phone.setText("");
-        AmountTLoad.setText("0.00");
-        AmountTLoadInBuy.setText("0.00");
-
-    }
-
-    public String getAppVersion() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return "Unknown";
-        }
-    }
 
 }

@@ -27,7 +27,11 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout landing_page;
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private TextView version ;
-
+    public static String[] econetItems = {
+            "Data",
+            "Voice",
+            "SMS","WhatsApp"
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +70,7 @@ public class MainActivity extends AppCompatActivity {
         landing_page = findViewById(R.id.landing_page);
         version = findViewById(R.id.version);
     }
-
-    public static String[] econetItems = {
-            "Data",
-            "Voice",
-            "SMS","WhatsApp"
-    };
+//    Returning Methods
     public String getAppVersion() {
         try {
             PackageManager packageManager = getPackageManager();

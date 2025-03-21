@@ -51,8 +51,6 @@ public class PayNowPaymentProcessor {
         void onSuccess(PayNowResponse payNowResponse);
         void onFailure(String error);
     }
-
-    // Make PayNowResponse class static
     public static class PayNowResponse {
         private String redirectUrl;
         private boolean isRequestSuccess;

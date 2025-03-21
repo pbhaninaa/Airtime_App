@@ -48,7 +48,7 @@ public class UserManagement extends AppCompatActivity {
     private CheckBox RememberMeCheckBox;
     private ImageView CountryFlag, LoginCountryFlag;
     private FrameLayout backButton;
-//    private TextView version ;
+    //    private TextView version ;
     String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
 
     @Override
@@ -130,7 +130,6 @@ public class UserManagement extends AppCompatActivity {
             rememberMe = isChecked;
         });
     }
-
     private void hideBottomNav() {
         // Hide the bottom navigation bar
         View decorView = getWindow().getDecorView();
@@ -139,8 +138,6 @@ public class UserManagement extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
-
-
     private void initialiseViews() {
 //        version = findViewById(R.id.version_l);
         SignInLayout = findViewById(R.id.login_page);
@@ -176,32 +173,6 @@ public class UserManagement extends AppCompatActivity {
         LoginCountryFlag = findViewById(R.id.login_country_flag);
 
     }
-    public String getAppVersion() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-            return packageInfo.versionName; // Returns the versionName from build.gradle
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return "Unknown"; // Return a default value in case of an error
-        }
-    }
-    private void screenToLoad(int screenToLoad) {
-        if (Utils.RememberMe(this)) {
-            String phone = Utils.getString(this, "savedCredentials", "email");
-            getEmailTextInLogin.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
-            getPasswordTextInLogin.setText(Utils.getString(this, "savedCredentials", "password"));
-            RememberMeCheckBox.setChecked(Utils.RememberMe(this)); // Ensure the checkbox is checked
-        }
-        if (screenToLoad == R.id.create_profile_screen)
-            getProfile();
-
-        SignInLayout.setVisibility(GONE);
-        SignUpLayout.setVisibility(GONE);
-        RegScreen.setVisibility(GONE);
-        ConstraintLayout layout = findViewById(screenToLoad);
-        layout.setVisibility(View.VISIBLE);
-    }
 
     private void setOnclickListeners() {
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
@@ -217,7 +188,7 @@ public class UserManagement extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         });
-        ForgotPasswordBtn.setOnClickListener(v -> Utils.showEmailDialog(this,this));
+        ForgotPasswordBtn.setOnClickListener(v -> Utils.showEmailDialog(this, this));
 
 //        SignUp.setOnClickListener(v -> handleCreateClick());
         CreateAccBtn.setOnClickListener(v -> {
@@ -304,7 +275,7 @@ public class UserManagement extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Utils.showToast(UserManagement.this, e.getMessage().contains("connect")?"Service Provider Offline":e.getMessage());
+                                Utils.showToast(UserManagement.this, e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage());
                             }
                         });
                     } catch (Exception e) {
@@ -322,7 +293,7 @@ public class UserManagement extends AppCompatActivity {
         Utils.triggerHapticFeedback(this);
         String AgentID = getEmailTextInLogin.getText().toString().trim();
         String password = getPasswordTextInLogin.getText().toString().trim();
-Context context = getApplicationContext();
+        Context context = getApplicationContext();
         if (AgentID.isEmpty()) {
             getEmailTextInLogin.setError("AgentID is required");
             return;
@@ -332,7 +303,7 @@ Context context = getApplicationContext();
             getPasswordTextInLogin.setError("Password is required");
             return;
         }
-        Utils.LoadingLayout(this,this);
+        Utils.LoadingLayout(this, this);
 
         new Thread(new Runnable() {
             @Override
@@ -340,7 +311,7 @@ Context context = getApplicationContext();
                 try {
                     String p = LoginCountryCode.getSelectedItem() + AgentID;
 
-                    JSONObject res = ApiService.login(password, p.replace("+", ""),context);
+                    JSONObject res = ApiService.login(password, p.replace("+", ""), context);
 
                     if (res.getInt("responseCode") == 200) {
                         // To handle success and UI updates on the main thread
@@ -391,7 +362,7 @@ Context context = getApplicationContext();
                                     // Navigate to the Dashboard
                                     Intent intent = new Intent(UserManagement.this, Dashboard.class);
                                     startActivity(intent);
-                                    Utils.CloseLoadingLayout(UserManagement.this,UserManagement.this);
+                                    Utils.CloseLoadingLayout(UserManagement.this, UserManagement.this);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -433,7 +404,7 @@ Context context = getApplicationContext();
                         @Override
                         public void run() {
 
-                            Utils.showToast(UserManagement.this, e.getMessage().contains("connect")?"Service Provider Offline":e.getMessage());
+                            Utils.showToast(UserManagement.this, e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage());
 
                         }
                     });
@@ -445,6 +416,25 @@ Context context = getApplicationContext();
 
     }
 
+    public void getProfile() {
+        SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        Firstname.setText(prefs.getString("name", ""));
+        Lastname.setText(prefs.getString("surname", ""));
+        String phone = prefs.getString("phone", "");// Get the selected country code based on the phone number
+        String selectedCode = phone.startsWith("27") ? phone.substring(0, 2) : phone.substring(0, 3);
+        LinearLayout back = findViewById(R.id.back_to_home_from_Profile);
+        back.setVisibility(View.VISIBLE);
+        CountryFlag.setImageResource(phone.startsWith("27") ? R.drawable.za : R.drawable.zw);
+        phoneNumber.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
+        email.setText(prefs.getString("emailAddress", ""));
+        phoneNumber.setShowSoftInputOnFocus(false);
+        phoneNumber.setEnabled(false);
+        CountryCode.setEnabled(false);
+
+        emailConfirmation.setText(prefs.getString("emailAddress", ""));
+        CreateAccBtn.setText("Update Profile");
+
+    }
 
     private void handleShowPassword() {
         Utils.triggerHapticFeedback(this);
@@ -469,40 +459,21 @@ Context context = getApplicationContext();
 
         }
     }
+    private void screenToLoad(int screenToLoad) {
+        if (Utils.RememberMe(this)) {
+            String phone = Utils.getString(this, "savedCredentials", "email");
+            getEmailTextInLogin.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
+            getPasswordTextInLogin.setText(Utils.getString(this, "savedCredentials", "password"));
+            RememberMeCheckBox.setChecked(Utils.RememberMe(this));
+        }
+        if (screenToLoad == R.id.create_profile_screen)
+            getProfile();
 
-    public static List<Country> getCountryList() {
-        List<Country> countryList = new ArrayList<>();
-        countryList.add(new Country("+263", "Zimbabwe", "zw"));
-        countryList.add(new Country("+27", "South Africa", "za"));
-        return countryList;
-    }
-
-    public static List<Country> getZimCode() {
-        List<Country> countryList = new ArrayList<>();
-//        countryList.add(new Country("+27", "South Africa", "za"));
-        countryList.add(new Country("+263", "Zimbabwe", "zw"));
-
-        return countryList;
-    }
-
-    public void getProfile() {
-        SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
-        Firstname.setText(prefs.getString("name", ""));
-        Lastname.setText(prefs.getString("surname", ""));
-        String phone = prefs.getString("phone", "");// Get the selected country code based on the phone number
-        String selectedCode = phone.startsWith("27") ? phone.substring(0, 2) : phone.substring(0, 3);
-        LinearLayout back = findViewById(R.id.back_to_home_from_Profile);
-        back.setVisibility(View.VISIBLE);
-        CountryFlag.setImageResource(phone.startsWith("27") ? R.drawable.za : R.drawable.zw);
-        phoneNumber.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
-        email.setText(prefs.getString("emailAddress", ""));
-        phoneNumber.setShowSoftInputOnFocus(false);
-        phoneNumber.setEnabled(false);
-        CountryCode.setEnabled(false);
-
-        emailConfirmation.setText(prefs.getString("emailAddress", ""));
-        CreateAccBtn.setText("Update Profile");
-
+        SignInLayout.setVisibility(GONE);
+        SignUpLayout.setVisibility(GONE);
+        RegScreen.setVisibility(GONE);
+        ConstraintLayout layout = findViewById(screenToLoad);
+        layout.setVisibility(View.VISIBLE);
     }
 
     private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time, int id, String pass, boolean logged) {
@@ -535,4 +506,31 @@ Context context = getApplicationContext();
         Intent intent = new Intent(UserManagement.this, Dashboard.class);
         startActivity(intent);
     }
+
+    //     Returning Method
+    public static List<Country> getCountryList() {
+        List<Country> countryList = new ArrayList<>();
+        countryList.add(new Country("+263", "Zimbabwe", "zw"));
+        countryList.add(new Country("+27", "South Africa", "za"));
+        return countryList;
+    }
+
+    public static List<Country> getZimCode() {
+        List<Country> countryList = new ArrayList<>();
+        countryList.add(new Country("+263", "Zimbabwe", "zw"));
+
+        return countryList;
+    }
+
+    public String getAppVersion() {
+        try {
+            PackageManager packageManager = getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "Unknown";
+        }
+    }
+
 }

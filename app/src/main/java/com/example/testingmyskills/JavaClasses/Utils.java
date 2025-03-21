@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+
 import com.example.testingmyskills.R;
 import com.google.android.gms.maps.model.Dash;
 
@@ -39,20 +40,27 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+
 import javax.mail.MessagingException;
+
 import android.telephony.TelephonyManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.Manifest;
+
 import androidx.core.app.ActivityCompat;
+
 import java.util.List;
+
 public class Utils {
     public static final String PREF_NAME = "UserPrefs";
     public static final String EMAIL_KEY = "email";
@@ -92,19 +100,21 @@ public class Utils {
 
 
     }
-public static void CloseLoadingLayout(Activity activity, Context context){
-    ConstraintLayout layout = activity.findViewById(R.id.load_layout);
-    ImageView imageView = activity.findViewById(R.id.load_layout_image);
 
-    if (layout == null || imageView == null) {
-        showToast(context, "Error: Unable to find required views!");
-        System.out.println("Error: Views are null!");
-        return;
+    public static void CloseLoadingLayout(Activity activity, Context context) {
+        ConstraintLayout layout = activity.findViewById(R.id.load_layout);
+        ImageView imageView = activity.findViewById(R.id.load_layout_image);
+
+        if (layout == null || imageView == null) {
+            showToast(context, "Error: Unable to find required views!");
+            System.out.println("Error: Views are null!");
+            return;
+        }
+
+        rotateImageView(imageView);
+        layout.setVisibility(View.GONE);
     }
 
-    rotateImageView(imageView);
-    layout.setVisibility(View.GONE);
-}
     public static String getTodayDate() {
         // Get the current date
         Date date = new Date();
@@ -115,7 +125,7 @@ public static void CloseLoadingLayout(Activity activity, Context context){
     }
 
     // Static method for showing email dialog
-    public static void showEmailDialog(final Context context,Activity activity) {
+    public static void showEmailDialog(final Context context, Activity activity) {
         // Create a LinearLayout to hold the EditTexts
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -159,7 +169,7 @@ public static void CloseLoadingLayout(Activity activity, Context context){
                 .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                       LoadingLayout(activity,context);
+                        LoadingLayout(activity, context);
                         final String recipientEmail = emailInput.getText().toString().trim();
                         final String userId = userIdInput.getText().toString().trim();
 
@@ -197,9 +207,9 @@ public static void CloseLoadingLayout(Activity activity, Context context){
                                 @Override
                                 public void onError(String errorMessage) {
                                     // Handle error in retrieving password
-                                    CloseLoadingLayout(activity,context);
+                                    CloseLoadingLayout(activity, context);
 
-                                    showToast(context,   "User Not Found");
+                                    showToast(context, "User Not Found");
                                 }
                             });
                         }
@@ -214,6 +224,7 @@ public static void CloseLoadingLayout(Activity activity, Context context){
                 .create();
         dialog.show();
     }
+
     public static String getIMEI(Context context) {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -226,7 +237,7 @@ public static void CloseLoadingLayout(Activity activity, Context context){
                         return telephonyManager.getImei();
                     } else {
                         // Before Android 10, getDeviceId() works
-                        System.out.print("IMEI : "+telephonyManager.getDeviceId());
+                        System.out.print("IMEI : " + telephonyManager.getDeviceId());
                         return telephonyManager.getDeviceId();
                     }
                 } else {
@@ -235,13 +246,14 @@ public static void CloseLoadingLayout(Activity activity, Context context){
                 }
             } else {
                 // For Android versions below Marshmallow
-                System.out.print("IMEI : "+telephonyManager.getDeviceId());
+                System.out.print("IMEI : " + telephonyManager.getDeviceId());
                 return telephonyManager.getDeviceId();
             }
         }
 
         return null; // Return null if TelephonyManager is unavailable
     }
+
     public static void requestPermissions(Activity activity) {
         // List of permissions to request
         String[] permissions = {
@@ -264,7 +276,8 @@ public static void CloseLoadingLayout(Activity activity, Context context){
             }
         }
     }
-    public static String getDeviceEMEI( Context context) {
+
+    public static String getDeviceEMEI(Context context) {
         // Validate input
         String input = getIMEI(context);
         if (input == null || input.length() <= 7) {
@@ -277,6 +290,7 @@ public static void CloseLoadingLayout(Activity activity, Context context){
 
         return unmaskedPart + maskedPart;
     }
+
     public static String getDeviceDetails(Context context) {
         StringBuilder deviceDetails = new StringBuilder();
 
@@ -357,6 +371,7 @@ public static void CloseLoadingLayout(Activity activity, Context context){
             return "Location permission not granted";
         }
     }
+
     // Static method for resetting password and using callback to return the result
     public static void getPassword(final Context context, String agentId, String agentEmail, final PasswordCallback callback) {
         new Thread(new Runnable() {
@@ -418,6 +433,7 @@ public static void CloseLoadingLayout(Activity activity, Context context){
     // Callback interface for retrieving the password
     public interface PasswordCallback {
         void onPasswordRetrieved(String agentPassword, String agentName);
+
         void onError(String errorMessage);
     }
 
@@ -653,7 +669,6 @@ public static void CloseLoadingLayout(Activity activity, Context context){
 
 
     }
-
 
 
     public static String FormatAmount(String a) {
