@@ -38,6 +38,8 @@ public class HelperClass {
                 jsonResponse.put("response", response.length() > 0 ? response.toString() : "Empty response from server.");
                 System.out.println("Transaction Type: " + transactionType);
                 System.out.println("Request Response: " + jsonResponse);
+                System.out.println("Response : "+jsonResponse);
+
                 return jsonResponse;
             }
         } else {

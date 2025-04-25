@@ -859,11 +859,26 @@ public class Dashboard extends AppCompatActivity {
             Utils.showToast(this, "Select Network");
             return;
         }
-        populateHistory(null, null);
+
+        // Date format
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+
+        // Get current date
+        Calendar calendar = Calendar.getInstance();
+        String endDate = sdf.format(calendar.getTime());
+
+        // Subtract 2 days
+        calendar.add(Calendar.DATE, -2);
+        String startDate = sdf.format(calendar.getTime());
+
+        // Pass to populateHistory
+        populateHistory(startDate, endDate);
+
         Navbar.setVisibility(View.GONE);
         AppFrame.setVisibility(View.GONE);
         job_list_screen.setVisibility(View.VISIBLE);
     }
+
 
     private void clearFields() {
         Phone.setText("");
@@ -1319,14 +1334,18 @@ public class Dashboard extends AppCompatActivity {
 
                     if (catalogRequestResponse.has("response")) {
 
+
                         String nestedResponseString = catalogRequestResponse.getString("response");
                         JSONObject nestedResponse = new JSONObject(nestedResponseString);
 
                         if (nestedResponse.has("methodResponse")) {
+
                             JSONObject methodResponse = nestedResponse.getJSONObject("methodResponse");
 
                             String totalDepositAmount = methodResponse.optString("totalDepositAmount", "0.00");
                             String totalRechargeAmount = methodResponse.optString("totalRechargeAmount", "0.00");
+                            String totalCollectionAmount = methodResponse.optString("totalCashAmount", "0.00");
+                            String totalCommissionAmount = methodResponse.optString("totalAgentSplit", "0.00");
 
                             // Update UI on the main thread
                             if (context instanceof Activity) {
@@ -1337,8 +1356,14 @@ public class Dashboard extends AppCompatActivity {
                                         TextView TotalRecharge = activity.findViewById(R.id.totalRechargeAmount_textView);
                                         TextView TotalDeposit = activity.findViewById(R.id.totalDepositAmount_textView);
 
+                                        TextView TotalCollection = activity.findViewById(R.id.totalCollectionAmount_textView);
+                                        TextView TotalCommission = activity.findViewById(R.id.totalCommissionAmount_textView);
+
                                         TotalDeposit.setText(currencySymbol + Utils.FormatAmount(totalDepositAmount));
                                         TotalRecharge.setText(currencySymbol + Utils.FormatAmount(totalRechargeAmount));
+
+                                        TotalCollection.setText(currencySymbol + Utils.FormatAmount(totalCollectionAmount));
+                                        TotalCommission.setText(currencySymbol + Utils.FormatAmount(totalCommissionAmount));
                                     }
                                 });
                             }

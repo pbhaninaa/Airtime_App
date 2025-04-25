@@ -851,6 +851,7 @@
                         android:text="Cash Amount"
                         android:textColor="@color/gray"
                         android:textSize="@dimen/eighteen" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -928,8 +929,8 @@
                         style="@style/CustomButtonStyle2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Collect"
                         android:onClick="onCollectClick"
+                        android:text="Collect"
                         android:textStyle="bold" />
 
 
@@ -1012,7 +1013,7 @@
                             android:layout_width="30sp"
                             android:layout_height="match_parent"
                             android:layout_gravity="left"
-                            android:layout_weight="1"
+                            android:layout_weight="0.5"
                             android:backgroundTint="@android:color/transparent"
                             android:contentDescription="@string/todo"
                             android:src="@drawable/baseline_keyboard_arrow_left_24"
@@ -1022,7 +1023,7 @@
                             android:id="@+id/list_size"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2"
+                            android:layout_weight="3"
                             android:gravity="center"
                             android:text="Account History"
                             android:textColor="@color/white"
@@ -1034,7 +1035,7 @@
                             android:layout_width="30sp"
                             android:layout_height="22dp"
                             android:layout_gravity="left"
-                            android:layout_weight="1"
+                            android:layout_weight="0.5"
                             android:backgroundTint="@android:color/transparent"
                             android:contentDescription="@string/todo"
                             android:src="@drawable/filter_icon"
@@ -1062,7 +1063,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="left"
-                                android:text="Total Deposit Amount"
+                                android:text="Total Deposit "
                                 android:textColor="@color/white"
                                 android:textStyle="bold" />
 
@@ -1070,7 +1071,22 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="left"
-                                android:text="Total Recharge Amount"
+                                android:text="Total Recharge "
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="left"
+                                android:text="Total Collection "
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="left"
+                                android:text="Total Commission "
                                 android:textColor="@color/white"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -1094,6 +1110,21 @@
 
                             <TextView
                                 android:id="@+id/totalRechargeAmount_textView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="right"
+                                android:text="0.00"
+                                android:textColor="@color/white" />
+
+                            <TextView
+                                android:id="@+id/totalCollectionAmount_textView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="right"
+                                android:text="0.00"
+                                android:textColor="@color/white" />
+                            <TextView
+                                android:id="@+id/totalCommissionAmount_textView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="right"
@@ -1219,8 +1250,8 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
 
                 <ImageButton
@@ -1238,6 +1269,7 @@
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
