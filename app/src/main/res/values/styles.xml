@@ -178,6 +178,23 @@
         <item name="android:textColor">@android:color/white</item> <!-- Set the text color to white -->
     </style>
 
+<!--    Thrive -->
+    <!-- EditText style with gray border -->
+    <style name="thrive_EditText_GrayBorder" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/thrive_edittext_border</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <!-- Black button with white text and 15dp radius -->
+    <style name="thrive_Button_BlackRounded" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/thrive_black_button</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:padding">15dp</item>
+    </style>
+
+
 
 
 </resources>

@@ -111,9 +111,12 @@ public class Utils {
             return;
         }
 
-        rotateImageView(imageView);
-        layout.setVisibility(View.GONE);
+        layout.postDelayed(() -> {
+            rotateImageView(imageView);
+            layout.setVisibility(View.GONE);
+        }, 2000);
     }
+
 
     public static String getTodayDate() {
         // Get the current date

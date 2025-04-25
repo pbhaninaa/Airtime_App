@@ -30,8 +30,8 @@
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
-    <string name="manager_details">Manager\n%s / %s</string>
-    <string name="supervisor_details">Supervisor\n%s / %s</string>
+    <string name="manager_details">Manager\n%s </string>
+    <string name="supervisor_details">Supervisor\n%s </string>
     <string name="salutation"><font color="#FF000000">Hello, 0782141216</font>\n<small><font color="#808080">last updated a minute ago</font></small></string>
 
     <string name="currency_symbol_dollar">$</string>

@@ -108,12 +108,12 @@ import android.view.ContextThemeWrapper;
 
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen, AppFrame, LoadingLayout;
-    private LinearLayout job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
+    private LinearLayout collect_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
-    private TextView version, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
-    private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote;
-    private ImageButton FilterButton, backFromList, NavHomeBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
+    private TextView version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
+    private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
+    private ImageButton FilterButton, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
@@ -148,7 +148,6 @@ public class Dashboard extends AppCompatActivity {
         getBalance(SelectedIsp.getText().toString());
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
-
         AppFrame.setVisibility(View.VISIBLE);
         BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? View.GONE : View.VISIBLE);
         ISPsLayout.setVisibility(View.VISIBLE);
@@ -180,6 +179,11 @@ public class Dashboard extends AppCompatActivity {
 
         AmountTLoad.addTextChangedListener(new CurrencyTextWatcher(AmountTLoad));
         AmountTLoadInBuy.addTextChangedListener(new CurrencyTextWatcher(AmountTLoadInBuy));
+
+        collectAmount.addTextChangedListener(new CurrencyTextWatcher(collectAmount));
+        commissionAmount.addTextChangedListener(new CurrencyTextWatcher(commissionAmount));
+
+
         spinners();
         getAccount("");
         Utils.rotateImageView(load);
@@ -199,7 +203,8 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void initialiseViews() {
-
+        collectAmount = findViewById(R.id.collect_amount);
+        commissionAmount = findViewById(R.id.commission_amount);
 
         LoadingLayout = findViewById(R.id.load_layout);
         LoadingImage = findViewById(R.id.load_layout_image);
@@ -223,6 +228,7 @@ public class Dashboard extends AppCompatActivity {
         AvailableBalance = findViewById(R.id.available_balance);
         StatusMessage = findViewById(R.id.status_message);
         NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
+        NavCollectBtn = findViewById(R.id.nav_collect_layout_btn);
         NavLaodBalanceBtn = findViewById(R.id.nav_load_btn);
         NavLaodBalanceBtn1 = findViewById(R.id.nav_load_btn1);
         NavBuyBtn = findViewById(R.id.nav_buy_btn1);
@@ -233,6 +239,7 @@ public class Dashboard extends AppCompatActivity {
         ISPsLayout = findViewById(R.id.ISP_display_layout);
         BuyLayout = findViewById(R.id.Buying_layout);
         ItemsLayout = findViewById(R.id.Items_display_layout);
+        collect_layout = findViewById(R.id.collect_layout);
 
 
         ItemRecyclerView = findViewById(R.id.Items_recycler_view);
@@ -245,6 +252,9 @@ public class Dashboard extends AppCompatActivity {
         Navbar = findViewById(R.id.navbar);
         SelectedIsp = findViewById(R.id.selected_network_text);
         AmountToLoadSymbol = findViewById(R.id.currency_symbol);
+
+        collect_currency_symbol = findViewById(R.id.collect_currency_symbol);
+        commission_currency_symbol = findViewById(R.id.commission_currency_symbol);
 
         EconetIsp = findViewById(R.id.econetISP);
         TelecelIsp = findViewById(R.id.telecelISP);
@@ -447,6 +457,7 @@ public class Dashboard extends AppCompatActivity {
         Yes.setOnClickListener(v -> handleYes());
         LogoutButton.setOnClickListener(v -> logout());
         NavHomeBtn.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
+        NavCollectBtn.setOnClickListener(v -> hideLayouts(collect_layout, NavCollectBtn));
         NavLaodBalanceBtn.setOnClickListener(v -> hideLayouts(LoadBalanceLayout, NavLaodBalanceBtn));
         NavLaodBalanceBtn1.setOnClickListener(v -> hideLayouts(BuyLayout, NavLaodBalanceBtn1));
         NavIPSBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavIPSBtn));
@@ -541,6 +552,7 @@ public class Dashboard extends AppCompatActivity {
                         @Override
                         public void run() {
                             Utils.showToast(Dashboard.this, "Service Provider Offline");
+                            Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
                         }
                     });
                 } catch (Exception e) {
@@ -661,6 +673,7 @@ public class Dashboard extends AppCompatActivity {
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                             Utils.showToast(Dashboard.this, "Error parsing response data: " + (e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage()));
+                                            Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
                                         }
                                     }
                                 });
@@ -680,6 +693,7 @@ public class Dashboard extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     Utils.showToast(Dashboard.this, (e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage()));
+                                    Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
                                 }
                             });
                         } catch (Exception e) {
@@ -920,6 +934,7 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
+
     private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
         if (SelectedIsp.getText().toString().isEmpty()) {
             Utils.showToast(this, "Select Network");
@@ -963,6 +978,7 @@ public class Dashboard extends AppCompatActivity {
 
 
     }
+
     public void populateHistory(String startDate, String endDate) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         String name = sharedPreferences.getString("name", "");
@@ -990,6 +1006,7 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
+
     public void AlertString(Context context, String message) {
         new AlertDialog.Builder(context)
                 .setMessage(message)
@@ -1072,6 +1089,7 @@ public class Dashboard extends AppCompatActivity {
                         @Override
                         public void run() {
                             Utils.showToast(Dashboard.this, "Service Provider Offline");
+                            Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
                         }
                     });
                 } catch (Exception e) {
@@ -1101,6 +1119,9 @@ public class Dashboard extends AppCompatActivity {
         Utils.setStatusColor(this, (bal.isEmpty() ? balance : bal), statusLight);
         AvailableBalance.setText(Balance);
         AmountToLoadSymbol.setText(currencySymbol);
+
+        commission_currency_symbol.setText(currencySymbol);
+        collect_currency_symbol.setText(currencySymbol);
         currencySymbolInBuy.setText(currencySymbol);
         clearFields();
     }
@@ -1389,12 +1410,14 @@ public class Dashboard extends AppCompatActivity {
 
 
     }
+
     public void goToOtherApp(View view) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.example.finance", "com.example.finance.MainActivity"));
         startActivity(intent);
 
     }
+
     public void getLastTransaction(View view) {
 
         new Thread(new Runnable() {
@@ -1462,6 +1485,7 @@ public class Dashboard extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     runOnUiThread(() -> Utils.showToast(Dashboard.this, "Error parsing response data: " + (e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage())));
+                                    Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
                                 }
 
                             }
@@ -1482,6 +1506,7 @@ public class Dashboard extends AppCompatActivity {
                         @Override
                         public void run() {
                             Utils.showToast(Dashboard.this, (e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage()));
+                            Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
                         }
                     });
                 } catch (Exception e) {
@@ -1490,12 +1515,89 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
+
     public void showManualLoad(View view) {
         Utils.showToast(this, "Manual Deposit funds activated");
         LoadBalance1.setVisibility(View.VISIBLE);
         LoadBalance.setVisibility(View.GONE);
 
     }
+
+    public void onCollectClick(View view) {
+        String collectValue = collectAmount.getText().toString().trim();
+        String commissionValue = commissionAmount.getText().toString().trim();
+
+        if (collectValue.isEmpty() || commissionValue.isEmpty()) {
+            Utils.showToast(this, "Please fill in both amounts");
+            return;
+        }
+
+        try {
+            double collect = Double.parseDouble(collectValue);
+            double commission = Double.parseDouble(commissionValue);
+
+            if (collect == 0.0 || commission == 0.0) {
+                Utils.showToast(this, "Amounts must be greater than 0.00");
+                return;
+            }
+
+            // Proceed with API call in a new thread
+            new Thread(() -> {
+                try {
+                    JSONObject res = ApiService.collectFunds("Econet", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), collectValue.replace(".", ""), commissionValue.replace(".", ""), "840", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), Utils.getString(Dashboard.this, "LoggedUserCredentials", "fullName"), Dashboard.this);
+
+                    if (res.getInt("responseCode") == 200) {
+                        runOnUiThread(() -> {
+                            try {
+                                String responseString = res.getString("response");
+                                JSONObject responseJson = new JSONObject(responseString);
+                                JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                                JSONObject resultObj = paramsList.getJSONObject(0);
+
+                                String balance = resultObj.getString("decimalBalance");
+                                Utils.saveString(Dashboard.this, "profile", "balance", balance);
+                                getAccount(balance);
+                                setISP(SelectedIsp.getText().toString());
+
+                                Navbar.setVisibility(View.VISIBLE);
+                                LoadBalance1.setVisibility(View.GONE);
+                                LoadBalance.setVisibility(View.VISIBLE);
+                                hideLayouts(ItemsLayout, NavIPSBtn);
+                                Utils.showToast(Dashboard.this, "Collection successful");
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Utils.showToast(Dashboard.this, "Invalid response");
+                            }
+                        });
+                    } else {
+                        runOnUiThread(() -> {
+                            try {
+                                Utils.showToast(Dashboard.this, res.getString("response"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> {
+                        Utils.showToast(Dashboard.this, "Service Provider Offline");
+                        Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> Utils.showToast(Dashboard.this, "Something went wrong"));
+                }
+            }).start();
+
+        } catch (NumberFormatException e) {
+            Utils.showToast(this, "Invalid number format");
+        }
+    }
+
 
     // Returning Methods
 
