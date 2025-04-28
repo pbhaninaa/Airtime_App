@@ -923,16 +923,7 @@ public class Dashboard extends AppCompatActivity {
                         String agentName = agent.optString("agentName", "");
                         if (agentName.equals(selectedItem)) {
                             selectedAgentId = agent.optString("agentID", "");
-                            String agentDetails = "ID: " + agent.optString("agentID", "N/A") + "\n"
-                                    + "Name: " + agentName + "\n"
-                                    + "Email: " + agent.optString("agentEmail", "N/A") + "\n"
-                                    + "Entry Date: " + agent.optString("entryDate", "N/A") + "\n"
-                                    + "Last Connect: " + agent.optString("lastConnect", "N/A") + "\n"
-                                    + "Active: " + agent.optString("activation", "N/A") + "\n"
-                                    + "Environment: " + agent.optString("environment", "N/A") + "\n"
-                                    + "Permissions: " + agent.optString("permissions", "N/A");
 
-                            Utils.showToast(Dashboard.this, agentDetails);
                             return;
                         }
                     }
@@ -1648,6 +1639,7 @@ public class Dashboard extends AppCompatActivity {
     public void onCollectClick(View view) {
         String collectValue = collectAmount.getText().toString().trim();
         String commissionValue = commissionAmount.getText().toString().trim();
+        Utils.showToast(this,selectedAgentId);
 
         if (collectValue.isEmpty() || commissionValue.isEmpty() || selectedAgentId.isEmpty()) {
             Utils.showToast(this, "Please fill all fields");
