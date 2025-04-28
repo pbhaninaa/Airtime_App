@@ -927,7 +927,6 @@ public class Dashboard extends AppCompatActivity {
                             return;
                         }
                     }
-                    Utils.showToast(Dashboard.this, "Agent details not found.");
 
                 } catch (Exception e) {
                     e.printStackTrace();
