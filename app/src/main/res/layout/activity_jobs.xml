@@ -922,6 +922,35 @@
                             android:textColorHint="@color/primary_color"
                             android:textSize="@dimen/eighteen" />
                     </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/five"
+                        android:background="@null"
+                        android:inputType="numberDecimal"
+                        android:text="Agents"
+                        android:textColor="@color/gray"
+                        android:textSize="@dimen/eighteen" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/five"
+                        android:background="@drawable/edit_text_background"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/six">
+
+                        <Spinner
+                            android:id="@+id/agents_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/two"
+                            android:hint="Select Agent"
+                            android:gravity="center"
+                            android:textSize="18sp" />
+
+
+                    </LinearLayout>
 
 
                     <Button

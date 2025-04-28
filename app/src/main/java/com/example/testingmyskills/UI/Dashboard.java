@@ -114,7 +114,7 @@ public class Dashboard extends AppCompatActivity {
     private TextView version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
     private ImageButton FilterButton, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
-    private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode;
+    private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
     private boolean show;
@@ -122,7 +122,9 @@ public class Dashboard extends AppCompatActivity {
     private RecyclerView ItemRecyclerView, jobListRecyclerView;
     private int numItems;
     private String totalRechargeAmount, totalDepositAmount;
+    private JSONArray paramList = new JSONArray();
 
+    private String selectedAgentId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,6 +193,7 @@ public class Dashboard extends AppCompatActivity {
         startDate = Utils.getTodayDate();
         endDate = Utils.getTodayDate();
 
+
     }
 
     @Override
@@ -205,6 +208,7 @@ public class Dashboard extends AppCompatActivity {
     private void initialiseViews() {
         collectAmount = findViewById(R.id.collect_amount);
         commissionAmount = findViewById(R.id.commission_amount);
+        Agents = findViewById(R.id.agents_spinner);
 
         LoadingLayout = findViewById(R.id.load_layout);
         LoadingImage = findViewById(R.id.load_layout_image);
@@ -436,7 +440,68 @@ public class Dashboard extends AppCompatActivity {
 
         ItemFilterSpinner.setAdapter(adapter);
         ItemToBuySpinner.setAdapter(adapter);
+
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                List<String> agentNamesList = new ArrayList<>();
+                agentNamesList.add("Select an Agent");
+                try {
+                    paramList = getAgentsParamList(Dashboard.this);
+
+                    for (int i = 0; i < paramList.length(); i++) {
+                        JSONObject agentObject = paramList.getJSONObject(i);
+                        String agentName = agentObject.getString("agentName");
+                        agentNamesList.add(agentName);
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ArrayAdapter<String> adapter1 = new ArrayAdapter<>(Dashboard.this, R.layout.spinner_layout, agentNamesList);
+                            adapter1.setDropDownViewResource(R.layout.spinner_layout);
+                            Agents.setAdapter(adapter1);
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Error fetching agents: " + e.getMessage());
+                }
+            }
+        });
     }
+
+
+    public static JSONArray getAgentsParamList(Context context) throws Exception {
+        JSONObject res = ApiService.getAgents(
+                "Econet",
+                "27782141216",
+                "27782141216",
+                context
+        );
+
+        if (res.has("response")) {
+            String responseString = res.getString("response");
+            JSONObject innerResponse = new JSONObject(responseString);
+            if (innerResponse.has("methodResponse")) {
+                JSONObject methodResponse = innerResponse.getJSONObject("methodResponse");
+                if (methodResponse.has("paramsList")) {
+                    JSONArray paramList = methodResponse.getJSONArray("paramsList");
+                    return paramList;
+                } else {
+                    System.out.println("paramsList key not found in methodResponse");
+                }
+            } else {
+                System.out.println("methodResponse key not found in the response");
+            }
+        } else {
+            System.out.println("response key not found in the main response");
+        }
+        return new JSONArray();
+    }
+
 
     private void recyclerViews() {
         getProducts(new ProductsCallback() {
@@ -827,6 +892,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void spinners() {
+
         ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -845,6 +911,45 @@ public class Dashboard extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
+
+        Agents.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedItem = parentView.getItemAtPosition(position).toString();
+
+                try {
+                    for (int i = 0; i < paramList.length(); i++) {
+                        JSONObject agent = paramList.getJSONObject(i);
+                        String agentName = agent.optString("agentName", "");
+                        if (agentName.equals(selectedItem)) {
+                            selectedAgentId = agent.optString("agentID", "");
+                            String agentDetails = "ID: " + agent.optString("agentID", "N/A") + "\n"
+                                    + "Name: " + agentName + "\n"
+                                    + "Email: " + agent.optString("agentEmail", "N/A") + "\n"
+                                    + "Entry Date: " + agent.optString("entryDate", "N/A") + "\n"
+                                    + "Last Connect: " + agent.optString("lastConnect", "N/A") + "\n"
+                                    + "Active: " + agent.optString("activation", "N/A") + "\n"
+                                    + "Environment: " + agent.optString("environment", "N/A") + "\n"
+                                    + "Permissions: " + agent.optString("permissions", "N/A");
+
+                            Utils.showToast(Dashboard.this, agentDetails);
+                            return;
+                        }
+                    }
+                    Utils.showToast(Dashboard.this, "Agent details not found.");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Utils.showToast(Dashboard.this, "Error retrieving agent details.");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+
+
     }
 
     private void handleBackFromList() {
@@ -860,25 +965,20 @@ public class Dashboard extends AppCompatActivity {
             return;
         }
 
-        // Date format
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
 
-        // Get current date
         Calendar calendar = Calendar.getInstance();
         String endDate = sdf.format(calendar.getTime());
 
-        // Subtract 2 days
         calendar.add(Calendar.DATE, -2);
         String startDate = sdf.format(calendar.getTime());
 
-        // Pass to populateHistory
         populateHistory(startDate, endDate);
 
         Navbar.setVisibility(View.GONE);
         AppFrame.setVisibility(View.GONE);
         job_list_screen.setVisibility(View.VISIBLE);
     }
-
 
     private void clearFields() {
         Phone.setText("");
@@ -1210,7 +1310,6 @@ public class Dashboard extends AppCompatActivity {
 
         AlertDialog dialog = dialogBuilder.create();
 
-        // Show dialog first, then style the buttons
         dialog.setOnShowListener(dialogInterface -> {
             Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             positiveButton.setBackgroundResource(R.drawable.button_background);
@@ -1347,7 +1446,6 @@ public class Dashboard extends AppCompatActivity {
                             String totalCollectionAmount = methodResponse.optString("totalCashAmount", "0.00");
                             String totalCommissionAmount = methodResponse.optString("totalAgentSplit", "0.00");
 
-                            // Update UI on the main thread
                             if (context instanceof Activity) {
                                 Activity activity = (Activity) context;
                                 activity.runOnUiThread(new Runnable() {
@@ -1368,7 +1466,6 @@ public class Dashboard extends AppCompatActivity {
                                 });
                             }
 
-                            // Process list data
                             JSONArray paramsList = nestedResponse.getJSONObject("methodResponse").getJSONArray("paramsList");
                             for (int i = 0; i < paramsList.length(); i++) {
                                 JSONObject product = paramsList.getJSONObject(i);
@@ -1552,10 +1649,11 @@ public class Dashboard extends AppCompatActivity {
         String collectValue = collectAmount.getText().toString().trim();
         String commissionValue = commissionAmount.getText().toString().trim();
 
-        if (collectValue.isEmpty() || commissionValue.isEmpty()) {
-            Utils.showToast(this, "Please fill in both amounts");
+        if (collectValue.isEmpty() || commissionValue.isEmpty() || selectedAgentId.isEmpty()) {
+            Utils.showToast(this, "Please fill all fields");
             return;
         }
+
 
         try {
             double collect = Double.parseDouble(collectValue);
@@ -1565,11 +1663,9 @@ public class Dashboard extends AppCompatActivity {
                 Utils.showToast(this, "Amounts must be greater than 0.00");
                 return;
             }
-
-            // Proceed with API call in a new thread
             new Thread(() -> {
                 try {
-                    JSONObject res = ApiService.collectFunds("Econet", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), collectValue.replace(".", ""), commissionValue.replace(".", ""), "840", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), Utils.getString(Dashboard.this, "LoggedUserCredentials", "fullName"), Dashboard.this);
+                    JSONObject res = ApiService.collectFunds("Econet", selectedAgentId, collectValue.replace(".", ""), commissionValue.replace(".", ""), "840", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), Utils.getString(Dashboard.this, "LoggedUserCredentials", "fullName"), Dashboard.this);
 
                     if (res.getInt("responseCode") == 200) {
                         runOnUiThread(() -> {
@@ -1621,8 +1717,8 @@ public class Dashboard extends AppCompatActivity {
         } catch (NumberFormatException e) {
             Utils.showToast(this, "Invalid number format");
         }
+        selectedAgentId = "";
     }
-
 
     // Returning Methods
 

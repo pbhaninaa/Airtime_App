@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
     public static String[] econetItems = {
             "Data",
             "Voice",
-            "SMS","WhatsApp"
+            "SMS",
+            "WhatsApp dd"
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
