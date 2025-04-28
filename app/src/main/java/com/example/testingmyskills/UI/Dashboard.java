@@ -205,7 +205,6 @@ public class Dashboard extends AppCompatActivity {
         collectAmount = findViewById(R.id.collect_amount);
         commissionAmount = findViewById(R.id.commission_amount);
         Agents = findViewById(R.id.agents_spinner);
-
         LoadingLayout = findViewById(R.id.load_layout);
         LoadingImage = findViewById(R.id.load_layout_image);
         SelectedItem = findViewById(R.id.selected_item);
@@ -213,7 +212,6 @@ public class Dashboard extends AppCompatActivity {
         load = findViewById(R.id.web_view_loading);
         WebScree = findViewById(R.id.web);
         Web = findViewById(R.id.web_view);
-
         job_list_screen = findViewById(R.id.Job_list_screen);
         backFromList = findViewById(R.id.back_btn_from_job_list);
         BuyBtn = findViewById(R.id.btn_buy);
@@ -235,17 +233,13 @@ public class Dashboard extends AppCompatActivity {
         NavProfileBtn = findViewById(R.id.nav_profile_btn1);
         NavIPSBtn = findViewById(R.id.nav_networks_btn1);
         NavMoreBtn = findViewById(R.id.more1);
-
         ISPsLayout = findViewById(R.id.ISP_display_layout);
         BuyLayout = findViewById(R.id.Buying_layout);
         ItemsLayout = findViewById(R.id.Items_display_layout);
         collect_layout = findViewById(R.id.collect_layout);
-
-
         ItemRecyclerView = findViewById(R.id.Items_recycler_view);
         ItemFilterSpinner = findViewById(R.id.items_spinner);
         MoreBtn = findViewById(R.id.More_Items);
-
         ItemToBuySpinner = findViewById(R.id.item_to_buy);
         ItemToBuyText = findViewById(R.id.item_to_buy_text);
 
