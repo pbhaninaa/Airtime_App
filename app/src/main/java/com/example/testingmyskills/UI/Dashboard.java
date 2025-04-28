@@ -892,7 +892,6 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void spinners() {
-
         ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
