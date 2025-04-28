@@ -242,36 +242,29 @@ public class Dashboard extends AppCompatActivity {
         MoreBtn = findViewById(R.id.More_Items);
         ItemToBuySpinner = findViewById(R.id.item_to_buy);
         ItemToBuyText = findViewById(R.id.item_to_buy_text);
-
         Navbar = findViewById(R.id.navbar);
         SelectedIsp = findViewById(R.id.selected_network_text);
         AmountToLoadSymbol = findViewById(R.id.currency_symbol);
-
         collect_currency_symbol = findViewById(R.id.collect_currency_symbol);
         commission_currency_symbol = findViewById(R.id.commission_currency_symbol);
-
         EconetIsp = findViewById(R.id.econetISP);
         TelecelIsp = findViewById(R.id.telecelISP);
         NetoneIsp = findViewById(R.id.netoneISP);
         Phone = findViewById(R.id.mobile_number);
         BackToHome = findViewById(R.id.back_to_home);
-
         SelectedItemType = findViewById(R.id.item_type1);
         SelectedItemPrice = findViewById(R.id.item_price1);
         SelectedItemLifeTime = findViewById(R.id.item_life_time1);
         CountryCode = findViewById(R.id.login_country_codes);
         CountryFlag = findViewById(R.id.login_country_flag);
-
         LoadBalanceLayout = findViewById(R.id.Load_balance_layout);
         LoadBalance = findViewById(R.id.btn_load_balance);
         LoadBalance1 = findViewById(R.id.btn_load_balance1);
         LoadingNote = findViewById(R.id.loading_notes);
         AmountTLoad = findViewById(R.id.loading_amount);
         statusLight = findViewById(R.id.status_light);
-
         currencySymbolInBuy = findViewById(R.id.currency_symbol_in_buy);
         AmountTLoadInBuy = findViewById(R.id.loading_amount_in_buy);
-
     }
     public void showLastTransaction() {
         String last = StatusMessage.getText().toString();
