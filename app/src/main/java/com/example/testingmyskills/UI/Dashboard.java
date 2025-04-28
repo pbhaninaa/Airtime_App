@@ -1639,8 +1639,6 @@ public class Dashboard extends AppCompatActivity {
     public void onCollectClick(View view) {
         String collectValue = collectAmount.getText().toString().trim();
         String commissionValue = commissionAmount.getText().toString().trim();
-        Utils.showToast(this,selectedAgentId);
-
         if (collectValue.isEmpty() || commissionValue.isEmpty() || selectedAgentId.isEmpty()) {
             Utils.showToast(this, "Please fill all fields");
             return;
@@ -1711,9 +1709,7 @@ public class Dashboard extends AppCompatActivity {
         }
         selectedAgentId = "";
     }
-
     // Returning Methods
-
     public String getAppVersion() {
         try {
             PackageManager packageManager = getPackageManager();
