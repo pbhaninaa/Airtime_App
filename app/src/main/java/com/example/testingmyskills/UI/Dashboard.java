@@ -911,7 +911,6 @@ public class Dashboard extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
-
         Agents.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
