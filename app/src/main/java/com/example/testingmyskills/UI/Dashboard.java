@@ -123,9 +123,7 @@ public class Dashboard extends AppCompatActivity {
     private int numItems;
     private String totalRechargeAmount, totalDepositAmount;
     private JSONArray paramList = new JSONArray();
-
     private String selectedAgentId = "";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,7 +193,6 @@ public class Dashboard extends AppCompatActivity {
 
 
     }
-
     @Override
     public void onBackPressed() {
         if (Web.canGoBack()) {
@@ -204,7 +201,6 @@ public class Dashboard extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
     private void initialiseViews() {
         collectAmount = findViewById(R.id.collect_amount);
         commissionAmount = findViewById(R.id.commission_amount);
@@ -283,7 +279,6 @@ public class Dashboard extends AppCompatActivity {
         AmountTLoadInBuy = findViewById(R.id.loading_amount_in_buy);
 
     }
-
     public void showLastTransaction() {
         String last = StatusMessage.getText().toString();
 
@@ -295,7 +290,6 @@ public class Dashboard extends AppCompatActivity {
             Utils.showToast(this, "Last transaction does not match the current time.");
         }
     }
-
     private void handleLoadBalance() {
         String amount = AmountTLoad.getText().toString().trim();
         amount = amount.replaceAll("[^\\d.]", "").replaceAll("[^\\d,]", "");
@@ -362,7 +356,6 @@ public class Dashboard extends AppCompatActivity {
             });
         }).start();
     }
-
     private void handlePayNowPayment() {
         String amountString = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
 
@@ -433,7 +426,6 @@ public class Dashboard extends AppCompatActivity {
         });
 
     }
-
     private void adaptors() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, MainActivity.econetItems);
         adapter.setDropDownViewResource(R.layout.spinner_layout);
@@ -472,8 +464,6 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
-
-
     public static JSONArray getAgentsParamList(Context context) throws Exception {
         JSONObject res = ApiService.getAgents(
                 "Econet",
@@ -501,8 +491,6 @@ public class Dashboard extends AppCompatActivity {
         }
         return new JSONArray();
     }
-
-
     private void recyclerViews() {
         getProducts(new ProductsCallback() {
             @Override
@@ -512,7 +500,6 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
-
     private void setOnclickListeners() {
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
@@ -553,7 +540,6 @@ public class Dashboard extends AppCompatActivity {
         LoadBalance.setOnClickListener(v -> handlePayNowPayment());
         LoadBalance1.setOnClickListener(v -> handleManualLoadBalance());
     }
-
     private void handleManualLoadBalance() {
         String amount = AmountTLoad.getText().toString().trim();
         amount = amount.replaceAll("[^\\d.]", "").replaceAll("[^\\d,]", "");
@@ -627,7 +613,6 @@ public class Dashboard extends AppCompatActivity {
         }).start();
 
     }
-
     private void logout() {
         Utils.hideSoftKeyboard(Dashboard.this);
         Utils.hideSoftNavBar(Dashboard.this);
@@ -635,12 +620,10 @@ public class Dashboard extends AppCompatActivity {
         AppFrame.setVisibility(View.GONE);
         ConfirmationScreen.setVisibility(View.VISIBLE);
     }
-
     private void handleNo() {
         AppFrame.setVisibility(View.VISIBLE);
         ConfirmationScreen.setVisibility(View.GONE);
     }
-
     private void handleYes() {
         Utils.logout(this);
         Intent intent = new Intent(this, UserManagement.class);
@@ -648,7 +631,6 @@ public class Dashboard extends AppCompatActivity {
         startActivity(intent);
 
     }
-
     private void getProfile() {
         SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         String name = prefs.getString("name", "");
@@ -668,11 +650,9 @@ public class Dashboard extends AppCompatActivity {
         salute.setText(builder);
 
     }
-
     private void selectDateRange() {
         showDateDialog(Dashboard.this, this, this);
     }
-
     public void buy() {
         String price = AmountTLoadInBuy.getText().toString().trim().replace(currencySymbol, "");
         String phone = Phone.getText().toString().trim();
@@ -776,7 +756,6 @@ public class Dashboard extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
     private void handleTransaction() {
         String phone = Phone.getText().toString().trim();
         String price = SelectedItemPrice.getText().toString().trim().replace(currencySymbol, "");
@@ -800,8 +779,9 @@ public class Dashboard extends AppCompatActivity {
                     public void run() {
                         try {
                             SharedPreferences sharedPreferences = Dashboard.this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
-                            String name = sharedPreferences.getString("name", "");
-                            String surname = sharedPreferences.getString("surname", "");
+                            SharedPreferences sharedPreference = Dashboard.this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+                            String name = sharedPreference.getString("name", "");
+                            String surname = sharedPreference.getString("surname", "");
                             String agentId = sharedPreferences.getString("phone", "");
                             String agentPassword = sharedPreferences.getString("password", "");
                             String agentName = name + " " + surname;
@@ -884,13 +864,11 @@ public class Dashboard extends AppCompatActivity {
         }
 
     }
-
     public void showProfile() {
         Intent intent = new Intent(this, UserManagement.class);
         intent.putExtra("constraintLayoutId", R.id.create_profile_screen);
         startActivity(intent);
     }
-
     public void spinners() {
         ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -939,14 +917,12 @@ public class Dashboard extends AppCompatActivity {
 
 
     }
-
     private void handleBackFromList() {
         BackToHome.setVisibility(View.GONE);
         Navbar.setVisibility(View.VISIBLE);
         job_list_screen.setVisibility(View.GONE);
         AppFrame.setVisibility(View.VISIBLE);
     }
-
     private void handleShowMore() {
         if (SelectedIsp.getText().toString().isEmpty()) {
             Utils.showToast(this, "Select Network");
@@ -967,14 +943,12 @@ public class Dashboard extends AppCompatActivity {
         AppFrame.setVisibility(View.GONE);
         job_list_screen.setVisibility(View.VISIBLE);
     }
-
     private void clearFields() {
         Phone.setText("");
         AmountTLoad.setText("0.00");
         AmountTLoadInBuy.setText("0.00");
 
     }
-
     private void handlePaymentResult(String result) {
         runOnUiThread(() -> {
             try {
@@ -1000,7 +974,6 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
-
     private void confirmPaymentWithWebhook(String transactionId) {
         new Thread(() -> {
             try {
@@ -1037,7 +1010,6 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
-
     private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
         if (SelectedIsp.getText().toString().isEmpty()) {
             Utils.showToast(this, "Select Network");
@@ -1058,8 +1030,9 @@ public class Dashboard extends AppCompatActivity {
             BuyBtn.setVisibility(View.GONE);
         } else if (imageButton.getId() == R.id.more1) {
             SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
-            String name = sharedPreferences.getString("name", "");
-            String surname = sharedPreferences.getString("surname", "");
+            SharedPreferences sharedPreference = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+            String name = sharedPreference.getString("name", "");
+            String surname = sharedPreference.getString("surname", "");
             String AgentID = sharedPreferences.getString("phone", "");
             String AgentEmail = sharedPreferences.getString("email", "");
             String AgentPassword = sharedPreferences.getString("password", "");
@@ -1081,11 +1054,11 @@ public class Dashboard extends AppCompatActivity {
 
 
     }
-
     public void populateHistory(String startDate, String endDate) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
-        String name = sharedPreferences.getString("name", "");
-        String surname = sharedPreferences.getString("surname", "");
+        SharedPreferences sharedPreference = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        String name = sharedPreference.getString("name", "");
+        String surname = sharedPreference.getString("surname", "");
         String AgentID = sharedPreferences.getString("phone", "");
         String AgentEmail = sharedPreferences.getString("email", "");
         String AgentPassword = sharedPreferences.getString("password", "");
@@ -1109,7 +1082,6 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
-
     public void AlertString(Context context, String message) {
         new AlertDialog.Builder(context)
                 .setMessage(message)
@@ -1121,7 +1093,6 @@ public class Dashboard extends AppCompatActivity {
                 .create()
                 .show();
     }
-
     public void setISP(String ISP) {
 
         if (!ISP.equals("Econet")) {
@@ -1139,7 +1110,6 @@ public class Dashboard extends AppCompatActivity {
         ItemsLayout.setVisibility(View.VISIBLE);
 
     }
-
     public void getBalance(String ISP) {
 
         new Thread(new Runnable() {
@@ -1201,7 +1171,6 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
-
     private void getAccount(String bal) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         if (!bal.isEmpty()) {
@@ -1228,7 +1197,6 @@ public class Dashboard extends AppCompatActivity {
         currencySymbolInBuy.setText(currencySymbol);
         clearFields();
     }
-
     public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
         Context themedContext = new ContextThemeWrapper(context, R.style.AppThemes);
         LinearLayout layout = new LinearLayout(themedContext);
@@ -1318,7 +1286,6 @@ public class Dashboard extends AppCompatActivity {
 
         endDateInput.setOnClickListener(v -> showDatePicker(themedContext, endDateInput, dialog, dateFormat, startDateInput, true));
     }
-
     private void showDatePicker(Context context, EditText dateInput, AlertDialog dialog, SimpleDateFormat dateFormat, EditText otherDateInput, boolean isEndDate) {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
@@ -1358,7 +1325,6 @@ public class Dashboard extends AppCompatActivity {
 
         datePickerDialog.show();
     }
-
     public void getProducts(ProductsCallback callback) {
 
         new Thread(new Runnable() {
@@ -1403,11 +1369,9 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
-
     private static void showToast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
-
     public static void getStatement(String AgentID, String AgentName, String AgentPassword, String AgentEmail, Context context, String startDate, String endDate, StatementCallback callback) {
 
         new Thread(new Runnable() {
@@ -1504,7 +1468,6 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
-
     private void defaultColoring(ImageButton icon) {
         NavBuyBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
@@ -1513,21 +1476,18 @@ public class Dashboard extends AppCompatActivity {
         NavLaodBalanceBtn1.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
     }
-
     public void closePaymentView(View view) {
         Web.loadUrl("about:blank");
         handleManualLoadBalance();
 
 
     }
-
     public void goToOtherApp(View view) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.example.finance", "com.example.finance.MainActivity"));
         startActivity(intent);
 
     }
-
     public void getLastTransaction(View view) {
 
         new Thread(new Runnable() {
@@ -1625,14 +1585,12 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
-
     public void showManualLoad(View view) {
         Utils.showToast(this, "Manual Deposit funds activated");
         LoadBalance1.setVisibility(View.VISIBLE);
         LoadBalance.setVisibility(View.GONE);
 
     }
-
     public void onCollectClick(View view) {
         String collectValue = collectAmount.getText().toString().trim();
         String commissionValue = commissionAmount.getText().toString().trim();
@@ -1650,9 +1608,12 @@ public class Dashboard extends AppCompatActivity {
                 Utils.showToast(this, "Amounts must be greater than 0.00");
                 return;
             }
+            SharedPreferences sharedPreference = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+            String name = sharedPreference.getString("name", "");
+            String surname = sharedPreference.getString("surname", "");
             new Thread(() -> {
                 try {
-                    JSONObject res = ApiService.collectFunds("Econet", selectedAgentId, collectValue.replace(".", ""), commissionValue.replace(".", ""), "840", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), Utils.getString(Dashboard.this, "LoggedUserCredentials", "fullName"), Dashboard.this);
+                    JSONObject res = ApiService.collectFunds("Econet", selectedAgentId, collectValue.replace(".", ""), commissionValue.replace(".", ""), "840", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), name+" "+surname, Dashboard.this);
 
                     if (res.getInt("responseCode") == 200) {
                         runOnUiThread(() -> {
@@ -1673,6 +1634,9 @@ public class Dashboard extends AppCompatActivity {
                                 LoadBalance.setVisibility(View.VISIBLE);
                                 hideLayouts(ItemsLayout, NavIPSBtn);
                                 Utils.showToast(Dashboard.this, "Collection successful");
+
+                                // Now clear selectedAgentId after successful collection
+                                selectedAgentId = "";
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -1701,10 +1665,10 @@ public class Dashboard extends AppCompatActivity {
                 }
             }).start();
 
+
         } catch (NumberFormatException e) {
             Utils.showToast(this, "Invalid number format");
         }
-        selectedAgentId = "";
     }
     // Returning Methods
     public String getAppVersion() {
@@ -1717,7 +1681,6 @@ public class Dashboard extends AppCompatActivity {
             return "Unknown";
         }
     }
-
     public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
         List<Map<String, Object>> filteredProducts = new ArrayList<>();
         for (Map<String, Object> product : products) {
@@ -1729,23 +1692,17 @@ public class Dashboard extends AppCompatActivity {
         }
         return filteredProducts;
     }
-
     private static int convertDpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }
-
-
     // Helper Classes and Interfaces
-
     public interface ProductsCallback {
         void onProductsLoaded(List<Map<String, Object>> products);
     }
-
     public interface StatementCallback {
         void onResult(List<Map<String, Object>> statements);
     }
-
     public class RecommendedAd extends RecyclerView.Adapter<RecommendedAd.ViewHolder> {
 
         private List<Map<String, Object>> jobPosts;
@@ -1823,7 +1780,6 @@ public class Dashboard extends AppCompatActivity {
         }
 
     }
-
     public static class Statement extends RecyclerView.Adapter<Statement.ViewHolder> {
 
         private List<Map<String, Object>> statements;
@@ -1931,6 +1887,5 @@ public class Dashboard extends AppCompatActivity {
             }
         }
     }
-
 
 }
