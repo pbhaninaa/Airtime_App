@@ -837,6 +837,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/fifteen"
                         android:orientation="horizontal">
 
                         <Button
@@ -844,7 +845,7 @@
                             style="@style/CustomButtonStyle2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="5sp"
+                            android:layout_marginEnd="5sp"
                             android:layout_weight="1"
                             android:text="@string/load"
                             android:textStyle="bold" />
@@ -855,10 +856,10 @@
                             style="@style/CustomButtonStyle2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="5sp"
+                            android:layout_marginStart="5sp"
                             android:visibility="gone"
                             android:layout_weight="1"
-                            android:text="Cash TopUp"
+                            android:text="@string/cash"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -882,15 +883,7 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/five"
-                        android:background="@null"
-                        android:inputType="numberDecimal"
-                        android:text="Agents"
-                        android:textColor="@color/gray"
-                        android:textSize="@dimen/eighteen" />
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -1423,30 +1416,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/nav_cash_btn_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/nav_cash_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@android:color/transparent"
-                    android:src="@drawable/money"
-                    app:tint="@color/primary_color" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cash"
-                    android:textColor="@color/primary_color"
-                    android:textStyle="bold" />
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/topUpBtn"

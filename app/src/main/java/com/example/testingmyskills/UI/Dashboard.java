@@ -108,12 +108,12 @@ import android.view.ContextThemeWrapper;
 
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen, AppFrame, LoadingLayout;
-    private LinearLayout nav_cash_btn_layout, collect_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
+    private LinearLayout  collect_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
     private TextView selectedAgentBalance, version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
-    private ImageButton FilterButton, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavCashBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
+    private ImageButton FilterButton, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn,  NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
@@ -236,7 +236,6 @@ public class Dashboard extends AppCompatActivity {
         NavLaodBalanceBtn = findViewById(R.id.nav_load_btn);
         NavLaodBalanceBtn1 = findViewById(R.id.nav_load_btn1);
         NavBuyBtn = findViewById(R.id.nav_buy_btn1);
-        NavCashBtn = findViewById(R.id.nav_cash_btn);
         NavProfileBtn = findViewById(R.id.nav_profile_btn1);
         NavIPSBtn = findViewById(R.id.nav_networks_btn1);
         NavMoreBtn = findViewById(R.id.more1);
@@ -272,7 +271,6 @@ public class Dashboard extends AppCompatActivity {
         statusLight = findViewById(R.id.status_light);
         currencySymbolInBuy = findViewById(R.id.currency_symbol_in_buy);
         AmountTLoadInBuy = findViewById(R.id.loading_amount_in_buy);
-        nav_cash_btn_layout = findViewById(R.id.nav_cash_btn_layout);
         selectedAgentBalance = findViewById(R.id.selected_agents_balance);
 
     }
@@ -515,8 +513,6 @@ public class Dashboard extends AppCompatActivity {
         LogoutButton.setOnClickListener(v -> logout());
         NavHomeBtn.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
         NavCollectBtn.setOnClickListener(v -> hideLayouts(collect_layout, NavCollectBtn));
-//        Phila
-        NavCashBtn.setOnClickListener(v -> hideLayouts(LoadBalanceLayout, NavCashBtn));
         NavLaodBalanceBtn.setOnClickListener(v -> hideLayouts(LoadBalanceLayout, NavLaodBalanceBtn));
         NavLaodBalanceBtn1.setOnClickListener(v -> hideLayouts(BuyLayout, NavLaodBalanceBtn1));
         NavIPSBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavIPSBtn));
@@ -578,6 +574,8 @@ public class Dashboard extends AppCompatActivity {
                                     setISP(SelectedIsp.getText().toString());
                                     Navbar.setVisibility(View.VISIBLE);
                                     hideLayouts(ItemsLayout, NavIPSBtn);
+                                    selectedAgentId1="";
+                                    Agents1.setSelection(0);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -915,7 +913,7 @@ public class Dashboard extends AppCompatActivity {
 
                         if (agentName.equals(selectedItem)) {
                             selectedAgentId = agent.optString("agentID", "");
-                            selectedAgentBalance.setText("Balance :" + currencySymbol + agent.optString("decimalBalance", ""));
+                            selectedAgentBalance.setText("Balance : " + currencySymbol + agent.optString("decimalBalance", "0.00"));
 
                             return;
                         }
@@ -941,8 +939,7 @@ public class Dashboard extends AppCompatActivity {
                         JSONObject agent = paramList.getJSONObject(i);
                         String agentName = agent.optString("agentName", "");
                         if (agentName.equals(selectedItem)) {
-                            selectedAgentBalance.setText("Balance :" + currencySymbol + agent.optString("decimalBalance", ""));
-
+                            selectedAgentBalance.setText("Balance : " + currencySymbol + agent.optString("decimalBalance", "0.00"));
 
                             selectedAgentId1 = agent.optString("agentID", "");
 
@@ -1067,6 +1064,9 @@ public class Dashboard extends AppCompatActivity {
             Utils.showToast(this, "Select Network");
             return;
         }
+        Agents.setSelection(0);
+        Agents1.setSelection(0);
+
         clearFields();
         if (imageButton.getId() == R.id.nav_buy_btn1) {
             Phone.requestFocus();
@@ -1091,13 +1091,6 @@ public class Dashboard extends AppCompatActivity {
             String AgentName = name + " " + surname;
 
         }
-//        if (imageButton.getId() == R.id.nav_cash_btn) {
-//            LoadBalance1.setVisibility(View.VISIBLE);
-//            LoadBalance.setVisibility(View.GONE);
-//        } else if (imageButton.getId() == R.id.nav_load_btn) {
-//            LoadBalance1.setVisibility(View.GONE);
-//            LoadBalance.setVisibility(View.VISIBLE);
-//        }
 
         defaultColoring(imageButton);
         imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
@@ -1541,7 +1534,6 @@ public class Dashboard extends AppCompatActivity {
         NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavLaodBalanceBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
-        NavCashBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavCollectBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavLaodBalanceBtn1.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
@@ -1704,6 +1696,7 @@ public class Dashboard extends AppCompatActivity {
 
                                 // Now clear selectedAgentId after successful collection
                                 selectedAgentId = "";
+                                Agents.setSelection(0);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
