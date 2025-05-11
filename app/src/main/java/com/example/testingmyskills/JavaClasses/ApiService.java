@@ -40,12 +40,12 @@ public class ApiService {
     }
 
     // Deposit Funds Endpoint
-    public static JSONObject depositFunds(String collectorID, String agentID, String depositAmount, String currency, Context context) throws Exception {
+    public static JSONObject depositFunds( String agentID,String collectorID, String depositAmount, String currency, Context context) throws Exception {
         String jsonInputString = "{\"TransactionType\":\"Deposit Funds\"," + "\"AgentID\":\"" + agentID + "\"," + "\"CollectorID\":\"" + collectorID + "\"," + "\"DepositAmount\":\"" + depositAmount.replace(".", "") + "\"," + "\"Currency\":\"" + currency + "\"," + "\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "deposit-funds", jsonInputString);
     }
 
-    public static JSONObject collectFunds(String network, String agentID, String cashAmount, String commissionAmount, String currency, String collectorID, String collectorName, Context context) throws Exception {
+    public static JSONObject collectFunds(            String network, String agentID, String cashAmount, String commissionAmount, String currency, String collectorID, String collectorName, Context context) throws Exception {
         String jsonInputString = "{" + "\"Network\":\"" + network + "\"," + "\"TransactionType\":\"Collect Cash\"," + "\"AgentID\":\"" + agentID + "\"," + "\"CashAmount\":\"" + cashAmount.replace(".", "") + "\"," + "\"CommissionAmount\":\"" + commissionAmount.replace(".", "") + "\"," + "\"Currency\":\"" + currency + "\"," + "\"CollectorID\":\"" + collectorID + "\"," + "\"CollectorName\":\"" + collectorName + "\"" + "}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "collect-funds", jsonInputString);
     }
@@ -82,18 +82,20 @@ public class ApiService {
 
     public static JSONObject resetPassword(String agentID, String email, Context context) throws Exception {
         String jsonInputString = "{ \"TransactionType\":\"Password Reset\", \"AgentID\":\"" + agentID + "\", \"AgentEmail\":\"" + email + "\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
-        System.out.println("Test2");
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "reset-password", jsonInputString);
     }
 
     // Statement Endpoint
     public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail, Context context, String startDate, String endDate) throws Exception {
         // Start building the JSON string
-        StringBuilder jsonInputString = new StringBuilder("{\"TransactionType\":\"Collector Statement\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentEmail\":\"" + agentEmail + "\", \"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"");
+        StringBuilder jsonInputString = new StringBuilder("{\"TransactionType\":\"Collector Statement\", \"AgentID\":\"" + agentID +
+                "\", \"AgentName\":\"" + agentName +                "\", \"AgentPassword\":\"" + agentPassword +                "\", \"AgentEmail\":\"" + agentEmail +                "\", \"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"");
+
         // Add StartDate if it's not null or empty
         if (startDate != null && !startDate.trim().isEmpty()) {
             jsonInputString.append(", \"StartDate\":\"").append(startDate).append("\"");
         }
+
         // Add EndDate if it's not null or empty
         if (endDate != null && !endDate.trim().isEmpty()) {
             jsonInputString.append(", \"EndDate\":\"").append(endDate).append("\"");
