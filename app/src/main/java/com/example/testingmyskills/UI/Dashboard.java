@@ -111,7 +111,7 @@ public class Dashboard extends AppCompatActivity {
     private LinearLayout nav_cash_btn_layout, collect_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
-    private TextView version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
+    private TextView selectedAgentBalance, version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
     private ImageButton FilterButton, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavCashBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
@@ -148,7 +148,7 @@ public class Dashboard extends AppCompatActivity {
 
         SharedPreferences sharedPreference = getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         String role = sharedPreference.getString("role", "Agent");
-        nav_cash_btn_layout.setVisibility(!role.equals("Agent") ? View.VISIBLE : View.GONE);
+        LoadBalance1.setVisibility(!role.equals("Agent") ? View.VISIBLE : View.GONE);
 
 
         AppFrame.setVisibility(View.VISIBLE);
@@ -273,6 +273,8 @@ public class Dashboard extends AppCompatActivity {
         currencySymbolInBuy = findViewById(R.id.currency_symbol_in_buy);
         AmountTLoadInBuy = findViewById(R.id.loading_amount_in_buy);
         nav_cash_btn_layout = findViewById(R.id.nav_cash_btn_layout);
+        selectedAgentBalance = findViewById(R.id.selected_agents_balance);
+
     }
 
     public void showLastTransaction() {
@@ -377,7 +379,7 @@ public class Dashboard extends AppCompatActivity {
         Navbar.setVisibility(View.GONE);
         load.setVisibility(View.VISIBLE);
 
-        PayNowPaymentProcessor.createPayNowOrder(this,selectedAgentId1, "Load balance", amount, new PayNowPaymentProcessor.PayNowCallback() {
+        PayNowPaymentProcessor.createPayNowOrder(this, selectedAgentId1, "Load balance", amount, new PayNowPaymentProcessor.PayNowCallback() {
             @Override
             public void onSuccess(PayNowPaymentProcessor.PayNowResponse payNowResponse) {
                 runOnUiThread(() -> {
@@ -559,7 +561,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    JSONObject res = ApiService.depositFunds(selectedAgentId1,Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), AmountTLoad.getText().toString(), "840", Dashboard.this);
+                    JSONObject res = ApiService.depositFunds(selectedAgentId1, Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), AmountTLoad.getText().toString(), "840", Dashboard.this);
                     if (res.getInt("responseCode") == 200) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -910,8 +912,10 @@ public class Dashboard extends AppCompatActivity {
                     for (int i = 0; i < paramList.length(); i++) {
                         JSONObject agent = paramList.getJSONObject(i);
                         String agentName = agent.optString("agentName", "");
+
                         if (agentName.equals(selectedItem)) {
                             selectedAgentId = agent.optString("agentID", "");
+                            selectedAgentBalance.setText("Balance :" + currencySymbol + agent.optString("decimalBalance", ""));
 
                             return;
                         }
@@ -937,6 +941,9 @@ public class Dashboard extends AppCompatActivity {
                         JSONObject agent = paramList.getJSONObject(i);
                         String agentName = agent.optString("agentName", "");
                         if (agentName.equals(selectedItem)) {
+                            selectedAgentBalance.setText("Balance :" + currencySymbol + agent.optString("decimalBalance", ""));
+
+
                             selectedAgentId1 = agent.optString("agentID", "");
 
                             return;
@@ -1084,13 +1091,13 @@ public class Dashboard extends AppCompatActivity {
             String AgentName = name + " " + surname;
 
         }
-        if (imageButton.getId() == R.id.nav_cash_btn) {
-            LoadBalance1.setVisibility(View.VISIBLE);
-            LoadBalance.setVisibility(View.GONE);
-        } else if (imageButton.getId() == R.id.nav_load_btn) {
-            LoadBalance1.setVisibility(View.GONE);
-            LoadBalance.setVisibility(View.VISIBLE);
-        }
+//        if (imageButton.getId() == R.id.nav_cash_btn) {
+//            LoadBalance1.setVisibility(View.VISIBLE);
+//            LoadBalance.setVisibility(View.GONE);
+//        } else if (imageButton.getId() == R.id.nav_load_btn) {
+//            LoadBalance1.setVisibility(View.GONE);
+//            LoadBalance.setVisibility(View.VISIBLE);
+//        }
 
         defaultColoring(imageButton);
         imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
