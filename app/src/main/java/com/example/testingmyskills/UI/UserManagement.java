@@ -337,6 +337,7 @@ public class UserManagement extends AppCompatActivity {
                                     String agentEmail = userObject.getString("agentEmail");
                                     String statusCode = userObject.getString("statusCode");
                                     String lastConnect = userObject.getString("lastConnect");
+                                    String AgentRole = userObject.getString("permissions");
 
 
                                     // Split agent name into first name and surname
@@ -354,7 +355,7 @@ public class UserManagement extends AppCompatActivity {
 
 
                                     // Save user account details
-                                    saveAccount(firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode), password, true);
+                                    saveAccount(AgentRole,firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode), password, true);
                                     RememberMeCheckBox.setChecked(false);
                                     Utils.hideSoftKeyboard(UserManagement.this);
                                     Utils.hideSoftNavBar(UserManagement.this);
@@ -476,7 +477,7 @@ public class UserManagement extends AppCompatActivity {
         layout.setVisibility(View.VISIBLE);
     }
 
-    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time, int id, String pass, boolean logged) {
+    private void saveAccount(String role, String name, String surname, String phone, String emailAddress, String balance, String time, int id, String pass, boolean logged) {
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("name", name);
@@ -485,7 +486,7 @@ public class UserManagement extends AppCompatActivity {
         editor.putString("time", time);
         editor.putString("emailAddress", emailAddress);
         editor.putString("balance", balance);
-        editor.putString("id", String.valueOf(id));  // Convert the integer to a string
+        editor.putString("id", String.valueOf(id));
         editor.apply();
 
         SharedPreferences sharedPref = getSharedPreferences("LoggedUserCredentials", MODE_PRIVATE);
@@ -496,11 +497,11 @@ public class UserManagement extends AppCompatActivity {
         ed.putString("password", pass);
         ed.putString("email", emailAddress);
         ed.putBoolean("isUserLogged", logged);
+        ed.putString("role", role); // fixed here
 
         ed.apply();
-
-
     }
+
 
     public void backToHome(View view) {
         Intent intent = new Intent(UserManagement.this, Dashboard.class);

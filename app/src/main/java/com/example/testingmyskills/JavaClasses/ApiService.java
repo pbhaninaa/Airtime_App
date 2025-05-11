@@ -11,8 +11,7 @@ public class ApiService {
 
     // Login Endpoint
     public static JSONObject login(String agentPassword, String agentID, Context context) throws Exception {
-
-        String jsonInputString = "{\"TransactionType\":\"Login\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentID\":\"" + agentID + "\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
+        String jsonInputString = "{\"TransactionType\":\"Collector Login\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentID\":\"" + agentID + "\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "login", jsonInputString);
     }
 
@@ -41,22 +40,19 @@ public class ApiService {
     }
 
     // Deposit Funds Endpoint
-    public static JSONObject depositFunds(String agentID, String depositAmount, String currency, Context context) throws Exception {
-        String jsonInputString = "{\"TransactionType\":\"Deposit Funds\", \"AgentID\":\"" + agentID + "\", \"DepositAmount\":\"" + depositAmount.replace(".", "") + "\", \"Currency\":\"" + currency + "\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
+    public static JSONObject depositFunds(String collectorID, String agentID, String depositAmount, String currency, Context context) throws Exception {
+        String jsonInputString = "{\"TransactionType\":\"Deposit Funds\"," + "\"AgentID\":\"" + agentID + "\"," + "\"CollectorID\":\"" + collectorID + "\"," + "\"DepositAmount\":\"" + depositAmount.replace(".", "") + "\"," + "\"Currency\":\"" + currency + "\"," + "\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "deposit-funds", jsonInputString);
     }
 
-    public static JSONObject collectFunds(
-            String network, String agentID, String cashAmount, String commissionAmount, String currency, String collectorID, String collectorName, Context context) throws Exception {
+    public static JSONObject collectFunds(String network, String agentID, String cashAmount, String commissionAmount, String currency, String collectorID, String collectorName, Context context) throws Exception {
         String jsonInputString = "{" + "\"Network\":\"" + network + "\"," + "\"TransactionType\":\"Collect Cash\"," + "\"AgentID\":\"" + agentID + "\"," + "\"CashAmount\":\"" + cashAmount.replace(".", "") + "\"," + "\"CommissionAmount\":\"" + commissionAmount.replace(".", "") + "\"," + "\"Currency\":\"" + currency + "\"," + "\"CollectorID\":\"" + collectorID + "\"," + "\"CollectorName\":\"" + collectorName + "\"" + "}";
-
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "collect-funds", jsonInputString);
     }
 
 
     //Get Agents
     public static JSONObject getAgents(String network, String agentID, String collectorID, Context context) throws Exception {
-
         String jsonInputString = "{" + "\"Network\":\"" + network + "\"," + "\"TransactionType\":\"Retrieve Agents\"," + "\"AgentID\":\"" + agentID + "\"," + "\"CollectorID\":\"" + collectorID + "\"" + "}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "get-agents", jsonInputString);
     }
@@ -93,17 +89,11 @@ public class ApiService {
     // Statement Endpoint
     public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail, Context context, String startDate, String endDate) throws Exception {
         // Start building the JSON string
-        StringBuilder jsonInputString = new StringBuilder("{\"TransactionType\":\"Collector Statement\", \"AgentID\":\"" + agentID +
-                "\", \"AgentName\":\"" + agentName +
-                "\", \"AgentPassword\":\"" + agentPassword +
-                "\", \"AgentEmail\":\"" + agentEmail +
-                "\", \"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"");
-
+        StringBuilder jsonInputString = new StringBuilder("{\"TransactionType\":\"Collector Statement\", \"AgentID\":\"" + agentID + "\", \"AgentName\":\"" + agentName + "\", \"AgentPassword\":\"" + agentPassword + "\", \"AgentEmail\":\"" + agentEmail + "\", \"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"");
         // Add StartDate if it's not null or empty
         if (startDate != null && !startDate.trim().isEmpty()) {
             jsonInputString.append(", \"StartDate\":\"").append(startDate).append("\"");
         }
-
         // Add EndDate if it's not null or empty
         if (endDate != null && !endDate.trim().isEmpty()) {
             jsonInputString.append(", \"EndDate\":\"").append(endDate).append("\"");

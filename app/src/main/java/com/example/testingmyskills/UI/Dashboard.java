@@ -108,13 +108,13 @@ import android.view.ContextThemeWrapper;
 
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen, AppFrame, LoadingLayout;
-    private LinearLayout collect_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
+    private LinearLayout nav_cash_btn_layout, collect_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
     private TextView version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
-    private ImageButton FilterButton, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
-    private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents;
+    private ImageButton FilterButton, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavCashBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
+    private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
     private boolean show;
@@ -124,6 +124,8 @@ public class Dashboard extends AppCompatActivity {
     private String totalRechargeAmount, totalDepositAmount;
     private JSONArray paramList = new JSONArray();
     private String selectedAgentId = "";
+    private String selectedAgentId1 = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,12 +135,7 @@ public class Dashboard extends AppCompatActivity {
         show = true;
         initialiseViews();
 
-// To be removed when top up functionality works
-        LinearLayout topUp;
-        topUp = (LinearLayout) findViewById(R.id.topUpBtn);
 
-        topUp.setVisibility(Utils.getString(this, "savedCredentials", "email").contains("649045091") || Utils.getString(this, "savedCredentials", "email").contains("782141216") ? View.VISIBLE : View.GONE);
-//==========================================
         Utils.hideSoftNavBar(Dashboard.this);
         setOnclickListeners();
         recyclerViews();
@@ -148,6 +145,12 @@ public class Dashboard extends AppCompatActivity {
         getBalance(SelectedIsp.getText().toString());
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
+
+        SharedPreferences sharedPreference = getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
+        String role = sharedPreference.getString("role", "Agent");
+        nav_cash_btn_layout.setVisibility(!role.equals("Agent") ? View.VISIBLE : View.GONE);
+
+
         AppFrame.setVisibility(View.VISIBLE);
         BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? View.GONE : View.VISIBLE);
         ISPsLayout.setVisibility(View.VISIBLE);
@@ -193,6 +196,7 @@ public class Dashboard extends AppCompatActivity {
 
 
     }
+
     @Override
     public void onBackPressed() {
         if (Web.canGoBack()) {
@@ -201,10 +205,12 @@ public class Dashboard extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
     private void initialiseViews() {
         collectAmount = findViewById(R.id.collect_amount);
         commissionAmount = findViewById(R.id.commission_amount);
         Agents = findViewById(R.id.agents_spinner);
+        Agents1 = findViewById(R.id.agents_spinner1);
         LoadingLayout = findViewById(R.id.load_layout);
         LoadingImage = findViewById(R.id.load_layout_image);
         SelectedItem = findViewById(R.id.selected_item);
@@ -230,6 +236,7 @@ public class Dashboard extends AppCompatActivity {
         NavLaodBalanceBtn = findViewById(R.id.nav_load_btn);
         NavLaodBalanceBtn1 = findViewById(R.id.nav_load_btn1);
         NavBuyBtn = findViewById(R.id.nav_buy_btn1);
+        NavCashBtn = findViewById(R.id.nav_cash_btn);
         NavProfileBtn = findViewById(R.id.nav_profile_btn1);
         NavIPSBtn = findViewById(R.id.nav_networks_btn1);
         NavMoreBtn = findViewById(R.id.more1);
@@ -265,7 +272,9 @@ public class Dashboard extends AppCompatActivity {
         statusLight = findViewById(R.id.status_light);
         currencySymbolInBuy = findViewById(R.id.currency_symbol_in_buy);
         AmountTLoadInBuy = findViewById(R.id.loading_amount_in_buy);
+        nav_cash_btn_layout = findViewById(R.id.nav_cash_btn_layout);
     }
+
     public void showLastTransaction() {
         String last = StatusMessage.getText().toString();
 
@@ -277,6 +286,7 @@ public class Dashboard extends AppCompatActivity {
             Utils.showToast(this, "Last transaction does not match the current time.");
         }
     }
+
     private void handleLoadBalance() {
         String amount = AmountTLoad.getText().toString().trim();
         amount = amount.replaceAll("[^\\d.]", "").replaceAll("[^\\d,]", "");
@@ -343,10 +353,11 @@ public class Dashboard extends AppCompatActivity {
             });
         }).start();
     }
+
     private void handlePayNowPayment() {
         String amountString = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
 
-        if (amountString.isEmpty() || amountString.equalsIgnoreCase("0.00")) {
+        if (amountString.isEmpty() || amountString.equalsIgnoreCase("0.00") || selectedAgentId1.isEmpty()) {
             AmountTLoad.setError("Amount is required");
             return;
         }
@@ -366,7 +377,7 @@ public class Dashboard extends AppCompatActivity {
         Navbar.setVisibility(View.GONE);
         load.setVisibility(View.VISIBLE);
 
-        PayNowPaymentProcessor.createPayNowOrder(this, "Load balance", amount, new PayNowPaymentProcessor.PayNowCallback() {
+        PayNowPaymentProcessor.createPayNowOrder(this,selectedAgentId1, "Load balance", amount, new PayNowPaymentProcessor.PayNowCallback() {
             @Override
             public void onSuccess(PayNowPaymentProcessor.PayNowResponse payNowResponse) {
                 runOnUiThread(() -> {
@@ -413,6 +424,7 @@ public class Dashboard extends AppCompatActivity {
         });
 
     }
+
     private void adaptors() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, MainActivity.econetItems);
         adapter.setDropDownViewResource(R.layout.spinner_layout);
@@ -441,6 +453,7 @@ public class Dashboard extends AppCompatActivity {
                             ArrayAdapter<String> adapter1 = new ArrayAdapter<>(Dashboard.this, R.layout.spinner_layout, agentNamesList);
                             adapter1.setDropDownViewResource(R.layout.spinner_layout);
                             Agents.setAdapter(adapter1);
+                            Agents1.setAdapter(adapter1);
                         }
                     });
 
@@ -451,6 +464,7 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
+
     public static JSONArray getAgentsParamList(Context context) throws Exception {
         JSONObject res = ApiService.getAgents(
                 "Econet",
@@ -478,6 +492,7 @@ public class Dashboard extends AppCompatActivity {
         }
         return new JSONArray();
     }
+
     private void recyclerViews() {
         getProducts(new ProductsCallback() {
             @Override
@@ -487,6 +502,7 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
+
     private void setOnclickListeners() {
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
@@ -497,6 +513,8 @@ public class Dashboard extends AppCompatActivity {
         LogoutButton.setOnClickListener(v -> logout());
         NavHomeBtn.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
         NavCollectBtn.setOnClickListener(v -> hideLayouts(collect_layout, NavCollectBtn));
+//        Phila
+        NavCashBtn.setOnClickListener(v -> hideLayouts(LoadBalanceLayout, NavCashBtn));
         NavLaodBalanceBtn.setOnClickListener(v -> hideLayouts(LoadBalanceLayout, NavLaodBalanceBtn));
         NavLaodBalanceBtn1.setOnClickListener(v -> hideLayouts(BuyLayout, NavLaodBalanceBtn1));
         NavIPSBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavIPSBtn));
@@ -523,15 +541,16 @@ public class Dashboard extends AppCompatActivity {
 
             }
         });
-//        LoadBalance.setOnClickListener(v -> handleLoadBalance());
+//      LoadBalance.setOnClickListener(v -> handleLoadBalance());
         LoadBalance.setOnClickListener(v -> handlePayNowPayment());
         LoadBalance1.setOnClickListener(v -> handleManualLoadBalance());
     }
+
     private void handleManualLoadBalance() {
         String amount = AmountTLoad.getText().toString().trim();
         amount = amount.replaceAll("[^\\d.]", "").replaceAll("[^\\d,]", "");
 
-        if (amount.isEmpty() || amount.equalsIgnoreCase("0.00")) {
+        if (amount.isEmpty() || amount.equalsIgnoreCase("0.00") || selectedAgentId1.isEmpty()) {
             AmountTLoad.setError("Amount is required");
             return;
         }
@@ -540,7 +559,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    JSONObject res = ApiService.depositFunds(Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), AmountTLoad.getText().toString(), "840", Dashboard.this);
+                    JSONObject res = ApiService.depositFunds(selectedAgentId1,Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), AmountTLoad.getText().toString(), "840", Dashboard.this);
                     if (res.getInt("responseCode") == 200) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -556,8 +575,6 @@ public class Dashboard extends AppCompatActivity {
                                     getAccount(balance);
                                     setISP(SelectedIsp.getText().toString());
                                     Navbar.setVisibility(View.VISIBLE);
-                                    LoadBalance1.setVisibility(View.GONE);
-                                    LoadBalance.setVisibility(View.VISIBLE);
                                     hideLayouts(ItemsLayout, NavIPSBtn);
 
                                 } catch (JSONException e) {
@@ -600,6 +617,7 @@ public class Dashboard extends AppCompatActivity {
         }).start();
 
     }
+
     private void logout() {
         Utils.hideSoftKeyboard(Dashboard.this);
         Utils.hideSoftNavBar(Dashboard.this);
@@ -607,10 +625,12 @@ public class Dashboard extends AppCompatActivity {
         AppFrame.setVisibility(View.GONE);
         ConfirmationScreen.setVisibility(View.VISIBLE);
     }
+
     private void handleNo() {
         AppFrame.setVisibility(View.VISIBLE);
         ConfirmationScreen.setVisibility(View.GONE);
     }
+
     private void handleYes() {
         Utils.logout(this);
         Intent intent = new Intent(this, UserManagement.class);
@@ -618,6 +638,7 @@ public class Dashboard extends AppCompatActivity {
         startActivity(intent);
 
     }
+
     private void getProfile() {
         SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         String name = prefs.getString("name", "");
@@ -637,9 +658,11 @@ public class Dashboard extends AppCompatActivity {
         salute.setText(builder);
 
     }
+
     private void selectDateRange() {
         showDateDialog(Dashboard.this, this, this);
     }
+
     public void buy() {
         String price = AmountTLoadInBuy.getText().toString().trim().replace(currencySymbol, "");
         String phone = Phone.getText().toString().trim();
@@ -743,6 +766,7 @@ public class Dashboard extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private void handleTransaction() {
         String phone = Phone.getText().toString().trim();
         String price = SelectedItemPrice.getText().toString().trim().replace(currencySymbol, "");
@@ -851,11 +875,13 @@ public class Dashboard extends AppCompatActivity {
         }
 
     }
+
     public void showProfile() {
         Intent intent = new Intent(this, UserManagement.class);
         intent.putExtra("constraintLayoutId", R.id.create_profile_screen);
         startActivity(intent);
     }
+
     public void spinners() {
         ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -901,15 +927,43 @@ public class Dashboard extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
+        Agents1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedItem = parentView.getItemAtPosition(position).toString();
+
+                try {
+                    for (int i = 0; i < paramList.length(); i++) {
+                        JSONObject agent = paramList.getJSONObject(i);
+                        String agentName = agent.optString("agentName", "");
+                        if (agentName.equals(selectedItem)) {
+                            selectedAgentId1 = agent.optString("agentID", "");
+
+                            return;
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Utils.showToast(Dashboard.this, "Error retrieving agent details.");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
 
 
     }
+
     private void handleBackFromList() {
         BackToHome.setVisibility(View.GONE);
         Navbar.setVisibility(View.VISIBLE);
         job_list_screen.setVisibility(View.GONE);
         AppFrame.setVisibility(View.VISIBLE);
     }
+
     private void handleShowMore() {
         if (SelectedIsp.getText().toString().isEmpty()) {
             Utils.showToast(this, "Select Network");
@@ -930,12 +984,14 @@ public class Dashboard extends AppCompatActivity {
         AppFrame.setVisibility(View.GONE);
         job_list_screen.setVisibility(View.VISIBLE);
     }
+
     private void clearFields() {
         Phone.setText("");
         AmountTLoad.setText("0.00");
         AmountTLoadInBuy.setText("0.00");
 
     }
+
     private void handlePaymentResult(String result) {
         runOnUiThread(() -> {
             try {
@@ -961,6 +1017,7 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
+
     private void confirmPaymentWithWebhook(String transactionId) {
         new Thread(() -> {
             try {
@@ -997,6 +1054,7 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
+
     private void hideLayouts(LinearLayout layoutToDisplay, ImageButton imageButton) {
         if (SelectedIsp.getText().toString().isEmpty()) {
             Utils.showToast(this, "Select Network");
@@ -1026,8 +1084,13 @@ public class Dashboard extends AppCompatActivity {
             String AgentName = name + " " + surname;
 
         }
-        LoadBalance1.setVisibility(View.GONE);
-        LoadBalance.setVisibility(View.VISIBLE);
+        if (imageButton.getId() == R.id.nav_cash_btn) {
+            LoadBalance1.setVisibility(View.VISIBLE);
+            LoadBalance.setVisibility(View.GONE);
+        } else if (imageButton.getId() == R.id.nav_load_btn) {
+            LoadBalance1.setVisibility(View.GONE);
+            LoadBalance.setVisibility(View.VISIBLE);
+        }
 
         defaultColoring(imageButton);
         imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
@@ -1041,6 +1104,7 @@ public class Dashboard extends AppCompatActivity {
 
 
     }
+
     public void populateHistory(String startDate, String endDate) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         SharedPreferences sharedPreference = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
@@ -1069,6 +1133,7 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
+
     public void AlertString(Context context, String message) {
         new AlertDialog.Builder(context)
                 .setMessage(message)
@@ -1080,6 +1145,7 @@ public class Dashboard extends AppCompatActivity {
                 .create()
                 .show();
     }
+
     public void setISP(String ISP) {
 
         if (!ISP.equals("Econet")) {
@@ -1097,6 +1163,7 @@ public class Dashboard extends AppCompatActivity {
         ItemsLayout.setVisibility(View.VISIBLE);
 
     }
+
     public void getBalance(String ISP) {
 
         new Thread(new Runnable() {
@@ -1158,6 +1225,7 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
+
     private void getAccount(String bal) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         if (!bal.isEmpty()) {
@@ -1184,6 +1252,7 @@ public class Dashboard extends AppCompatActivity {
         currencySymbolInBuy.setText(currencySymbol);
         clearFields();
     }
+
     public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
         Context themedContext = new ContextThemeWrapper(context, R.style.AppThemes);
         LinearLayout layout = new LinearLayout(themedContext);
@@ -1273,6 +1342,7 @@ public class Dashboard extends AppCompatActivity {
 
         endDateInput.setOnClickListener(v -> showDatePicker(themedContext, endDateInput, dialog, dateFormat, startDateInput, true));
     }
+
     private void showDatePicker(Context context, EditText dateInput, AlertDialog dialog, SimpleDateFormat dateFormat, EditText otherDateInput, boolean isEndDate) {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
@@ -1312,6 +1382,7 @@ public class Dashboard extends AppCompatActivity {
 
         datePickerDialog.show();
     }
+
     public void getProducts(ProductsCallback callback) {
 
         new Thread(new Runnable() {
@@ -1356,9 +1427,11 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
+
     private static void showToast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
+
     public static void getStatement(String AgentID, String AgentName, String AgentPassword, String AgentEmail, Context context, String startDate, String endDate, StatementCallback callback) {
 
         new Thread(new Runnable() {
@@ -1455,26 +1528,32 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
+
     private void defaultColoring(ImageButton icon) {
         NavBuyBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavLaodBalanceBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        NavCashBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        NavCollectBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavLaodBalanceBtn1.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
     }
+
     public void closePaymentView(View view) {
         Web.loadUrl("about:blank");
         handleManualLoadBalance();
 
 
     }
+
     public void goToOtherApp(View view) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.example.finance", "com.example.finance.MainActivity"));
         startActivity(intent);
 
     }
+
     public void getLastTransaction(View view) {
 
         new Thread(new Runnable() {
@@ -1572,12 +1651,8 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
-    public void showManualLoad(View view) {
-        Utils.showToast(this, "Manual Deposit funds activated");
-        LoadBalance1.setVisibility(View.VISIBLE);
-        LoadBalance.setVisibility(View.GONE);
 
-    }
+
     public void onCollectClick(View view) {
         String collectValue = collectAmount.getText().toString().trim();
         String commissionValue = commissionAmount.getText().toString().trim();
@@ -1600,7 +1675,7 @@ public class Dashboard extends AppCompatActivity {
             String surname = sharedPreference.getString("surname", "");
             new Thread(() -> {
                 try {
-                    JSONObject res = ApiService.collectFunds("Econet", selectedAgentId, collectValue.replace(".", ""), commissionValue.replace(".", ""), "840", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), name+" "+surname, Dashboard.this);
+                    JSONObject res = ApiService.collectFunds("Econet", selectedAgentId, collectValue.replace(".", ""), commissionValue.replace(".", ""), "840", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), name + " " + surname, Dashboard.this);
 
                     if (res.getInt("responseCode") == 200) {
                         runOnUiThread(() -> {
@@ -1617,8 +1692,6 @@ public class Dashboard extends AppCompatActivity {
                                 setISP(SelectedIsp.getText().toString());
 
                                 Navbar.setVisibility(View.VISIBLE);
-                                LoadBalance1.setVisibility(View.GONE);
-                                LoadBalance.setVisibility(View.VISIBLE);
                                 hideLayouts(ItemsLayout, NavIPSBtn);
                                 Utils.showToast(Dashboard.this, "Collection successful");
 
@@ -1657,6 +1730,7 @@ public class Dashboard extends AppCompatActivity {
             Utils.showToast(this, "Invalid number format");
         }
     }
+
     // Returning Methods
     public String getAppVersion() {
         try {
@@ -1668,6 +1742,7 @@ public class Dashboard extends AppCompatActivity {
             return "Unknown";
         }
     }
+
     public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
         List<Map<String, Object>> filteredProducts = new ArrayList<>();
         for (Map<String, Object> product : products) {
@@ -1679,17 +1754,21 @@ public class Dashboard extends AppCompatActivity {
         }
         return filteredProducts;
     }
+
     private static int convertDpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }
+
     // Helper Classes and Interfaces
     public interface ProductsCallback {
         void onProductsLoaded(List<Map<String, Object>> products);
     }
+
     public interface StatementCallback {
         void onResult(List<Map<String, Object>> statements);
     }
+
     public class RecommendedAd extends RecyclerView.Adapter<RecommendedAd.ViewHolder> {
 
         private List<Map<String, Object>> jobPosts;
@@ -1767,6 +1846,7 @@ public class Dashboard extends AppCompatActivity {
         }
 
     }
+
     public static class Statement extends RecyclerView.Adapter<Statement.ViewHolder> {
 
         private List<Map<String, Object>> statements;
