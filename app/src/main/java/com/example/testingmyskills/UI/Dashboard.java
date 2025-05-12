@@ -108,12 +108,12 @@ import android.view.ContextThemeWrapper;
 
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen, AppFrame, LoadingLayout;
-    private LinearLayout  collect_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
+    private LinearLayout collect_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
-    private TextView selectedAgentBalance, version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
+    private TextView selectedAgentBalance1,selectedAgentBalance, version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
-    private ImageButton FilterButton, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn,  NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
+    private ImageButton FilterButton, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
@@ -145,7 +145,6 @@ public class Dashboard extends AppCompatActivity {
         getBalance(SelectedIsp.getText().toString());
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
-
         SharedPreferences sharedPreference = getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         String role = sharedPreference.getString("role", "Agent");
         LoadBalance1.setVisibility(!role.equals("Agent") ? View.VISIBLE : View.GONE);
@@ -271,6 +270,7 @@ public class Dashboard extends AppCompatActivity {
         statusLight = findViewById(R.id.status_light);
         currencySymbolInBuy = findViewById(R.id.currency_symbol_in_buy);
         AmountTLoadInBuy = findViewById(R.id.loading_amount_in_buy);
+        selectedAgentBalance1 = findViewById(R.id.selected_agents_balance1);
         selectedAgentBalance = findViewById(R.id.selected_agents_balance);
 
     }
@@ -440,7 +440,8 @@ public class Dashboard extends AppCompatActivity {
                 List<String> agentNamesList = new ArrayList<>();
                 agentNamesList.add("Select an Agent");
                 try {
-                    paramList = getAgentsParamList(Dashboard.this);
+                   String agentId= Utils.getString(Dashboard.this, "savedCredentials", "email");
+                    paramList = getAgentsParamList(agentId,agentId,Dashboard.this);
 
                     for (int i = 0; i < paramList.length(); i++) {
                         JSONObject agentObject = paramList.getJSONObject(i);
@@ -465,11 +466,11 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    public static JSONArray getAgentsParamList(Context context) throws Exception {
+    public static JSONArray getAgentsParamList(String AgentId,String CollectorId,Context context) throws Exception {
         JSONObject res = ApiService.getAgents(
                 "Econet",
-                "27782141216",
-                "27782141216",
+                AgentId,
+                CollectorId,
                 context
         );
 
@@ -574,7 +575,7 @@ public class Dashboard extends AppCompatActivity {
                                     setISP(SelectedIsp.getText().toString());
                                     Navbar.setVisibility(View.VISIBLE);
                                     hideLayouts(ItemsLayout, NavIPSBtn);
-                                    selectedAgentId1="";
+                                    selectedAgentId1 = "";
                                     Agents1.setSelection(0);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -900,64 +901,90 @@ public class Dashboard extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
-        Agents.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        setupAgentSpinner(Agents, selectedAgentBalance1, true);  // For Agents
+        setupAgentSpinner(Agents1, selectedAgentBalance, false); // For Agents1
+
+
+    }
+    private void setupAgentSpinner(AdapterView<?> spinner, TextView balanceView, boolean isFirstAgent) {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String selectedItem = parentView.getItemAtPosition(position).toString();
 
-                try {
-                    for (int i = 0; i < paramList.length(); i++) {
+                for (int i = 0; i < paramList.length(); i++) {
+                    try {
                         JSONObject agent = paramList.getJSONObject(i);
                         String agentName = agent.optString("agentName", "");
 
                         if (agentName.equals(selectedItem)) {
-                            selectedAgentId = agent.optString("agentID", "");
-                            selectedAgentBalance.setText("Balance : " + currencySymbol + agent.optString("decimalBalance", "0.00"));
+                            String agentId = agent.optString("agentID", "");
+
+                            // Save selected agent ID
+                            if (isFirstAgent) {
+                                selectedAgentId = agentId;
+                            } else {
+                                selectedAgentId1 = agentId;
+                            }
+
+                            // Run balance enquiry in background
+                            ExecutorService executor = Executors.newSingleThreadExecutor();
+                            Handler handler = new Handler(Looper.getMainLooper());
+
+                            executor.execute(() -> {
+                                try {
+                                    JSONObject res = ApiService.balanceEnquiry(
+                                            SelectedIsp.getText().toString(),
+                                            agentId,
+                                            Dashboard.this
+                                    );
+
+                                    handler.post(() -> {
+                                        try {
+                                            if (res != null && res.getInt("responseCode") == 200) {
+                                                String responseString = res.getString("response");
+                                                JSONObject responseJson = new JSONObject(responseString);
+                                                JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                                JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+
+                                                if (paramsList.length() > 0) {
+                                                    JSONObject userObject = paramsList.getJSONObject(0);
+                                                    String balance = userObject.getString("decimalBalance");
+                                                    balanceView.setText("Agent Balance : " + currencySymbol + balance);
+                                                } else {
+                                                    Utils.showToast(Dashboard.this, "No balance data found.");
+                                                }
+                                            } else {
+                                                Utils.showToast(Dashboard.this, "No Balance to display");
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            Utils.showToast(Dashboard.this, "Error processing balance response.");
+                                        }
+                                    });
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    handler.post(() -> Utils.showToast(Dashboard.this, "Error retrieving balance."));
+                                }
+                            });
 
                             return;
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Utils.showToast(Dashboard.this, "Error retrieving agent details.");
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Utils.showToast(Dashboard.this, "Error retrieving agent details.");
                 }
+
+                balanceView.setText("");
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
+                // Optional
             }
         });
-        Agents1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selectedItem = parentView.getItemAtPosition(position).toString();
-
-                try {
-                    for (int i = 0; i < paramList.length(); i++) {
-                        JSONObject agent = paramList.getJSONObject(i);
-                        String agentName = agent.optString("agentName", "");
-                        if (agentName.equals(selectedItem)) {
-                            selectedAgentBalance.setText("Balance : " + currencySymbol + agent.optString("decimalBalance", "0.00"));
-
-                            selectedAgentId1 = agent.optString("agentID", "");
-
-                            return;
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Utils.showToast(Dashboard.this, "Error retrieving agent details.");
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
-
-
     }
 
     private void handleBackFromList() {

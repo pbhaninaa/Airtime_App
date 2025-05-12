@@ -765,7 +765,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/five"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -880,8 +881,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/five"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:orientation="vertical">
 
 
 
@@ -997,6 +997,15 @@
                         android:onClick="onCollectClick"
                         android:text="Collect"
                         android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/selected_agents_balance1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fifteen"
+                        android:background="@null"
+                        android:textColor="@color/primary_color"
+                        android:textSize="@dimen/eighteen" />
+
 
 
                 </LinearLayout>
