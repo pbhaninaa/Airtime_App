@@ -576,7 +576,6 @@ public class Dashboard extends AppCompatActivity {
                                     hideLayouts(ItemsLayout, NavIPSBtn);
                                     selectedAgentId1="";
                                     Agents1.setSelection(0);
-
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     try {
