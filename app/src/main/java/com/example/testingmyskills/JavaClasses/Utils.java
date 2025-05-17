@@ -74,17 +74,13 @@ public class Utils {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
     }
-
-
     public static void rotateImageView(ImageView imageView) {
-        // Create an ObjectAnimator to rotate the ImageView
         ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 360f);
-        rotateAnimator.setDuration(1000);  // Duration for one full rotation (in milliseconds)
-        rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);  // Repeat infinitely
-        rotateAnimator.setRepeatMode(ObjectAnimator.RESTART);  // Restart animation after one full rotation
-        rotateAnimator.start();  // Start the animation
+        rotateAnimator.setDuration(1000);
+        rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        rotateAnimator.setRepeatMode(ObjectAnimator.RESTART);
+        rotateAnimator.start();
     }
-
     public static void LoadingLayout(Activity activity, Context context) {
         ConstraintLayout layout = activity.findViewById(R.id.load_layout);
         ImageView imageView = activity.findViewById(R.id.load_layout_image);
@@ -110,7 +106,6 @@ public class Utils {
             System.out.println("Error: Views are null!");
             return;
         }
-
         layout.postDelayed(() -> {
             rotateImageView(imageView);
             layout.setVisibility(View.GONE);
@@ -119,34 +114,24 @@ public class Utils {
 
 
     public static String getTodayDate() {
-        // Get the current date
         Date date = new Date();
-
-        // Format the date into "yyyy/MM/dd"
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         return dateFormat.format(date);
     }
-
-    // Static method for showing email dialog
-    public static void showEmailDialog(final Context context, Activity activity) {
-        // Create a LinearLayout to hold the EditTexts
+   public static void showEmailDialog(final Context context, Activity activity) {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        // Create an EditText for the email input
         final EditText emailInput = new EditText(context);
-        emailInput.setBackgroundResource(R.drawable.edit_text_background); // Set custom background
+        emailInput.setBackgroundResource(R.drawable.edit_text_background);
         emailInput.setHint("Enter email address");
 
-        // Create an EditText for the User ID input
         final EditText userIdInput = new EditText(context);
         userIdInput.setBackgroundResource(R.drawable.edit_text_background);
-        userIdInput.setInputType(InputType.TYPE_CLASS_PHONE); // Allow only numeric input
+        userIdInput.setInputType(InputType.TYPE_CLASS_PHONE);
 
-        // Set the main hint
         userIdInput.setHint("Enter User ID");
-
-        String exampleHint = " (e.g., 263783241537)";
+        String exampleHint = " (e.g., 263123456789)";
         SpannableString spannableString = new SpannableString(userIdInput.getHint() + exampleHint);
         spannableString.setSpan(new RelativeSizeSpan(0.8f), userIdInput.getHint().length(), spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // Set the size of the example
 
@@ -233,44 +218,37 @@ public class Utils {
 
         if (telephonyManager != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                // For Android 6.0 and above, we need to request the permission dynamically.
                 if (context.checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        // From Android 10, the IMEI is accessible via getImei() for each SIM card
                         return telephonyManager.getImei();
                     } else {
-                        // Before Android 10, getDeviceId() works
                         System.out.print("IMEI : " + telephonyManager.getDeviceId());
                         return telephonyManager.getDeviceId();
                     }
                 } else {
-                    // Handle case where permission is not granted
                     return "No Permission";
                 }
             } else {
-                // For Android versions below Marshmallow
                 System.out.print("IMEI : " + telephonyManager.getDeviceId());
                 return telephonyManager.getDeviceId();
             }
         }
 
-        return null; // Return null if TelephonyManager is unavailable
+        return null;
     }
 
     public static void requestPermissions(Activity activity) {
-        // List of permissions to request
         String[] permissions = {
                 Manifest.permission.INTERNET,
                 Manifest.permission.ACCESS_NETWORK_STATE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.READ_PHONE_STATE, // Access phone state
+                Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.VIBRATE,
                 Manifest.permission.SEND_SMS
         };
 
-        // Check and request permissions if needed
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             for (String permission : permissions) {
                 if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -281,42 +259,32 @@ public class Utils {
     }
 
     public static String getDeviceEMEI(Context context) {
-        // Validate input
         String input = getIMEI(context);
         if (input == null || input.length() <= 7) {
-            return input;  // If the string is too short or empty, return it as is
+            return input;
         }
-
-        // Get the unmasked part and replace the rest with asterisks
         String unmaskedPart = input.substring(0, 7);
         String maskedPart = "*".repeat(input.length() - 7);
-
         return unmaskedPart + maskedPart;
     }
 
     public static String getDeviceDetails(Context context) {
         StringBuilder deviceDetails = new StringBuilder();
 
-        // Add greeting
         deviceDetails.append("Dear ").append("Admin").append(",\n");
         deviceDetails.append("The following device has made transactions:\n");
 
-        // Get Device Information
         deviceDetails.append("Device Model: ").append(Build.MODEL).append("\n");
         deviceDetails.append("Manufacturer: ").append(Build.MANUFACTURER).append("\n");
 
-        // TelephonyManager to get IMEI and device details
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-        // Get IMEI (if permission is granted)
         if (telephonyManager != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (context.checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        // For Android 10 and above, use getImei()
                         deviceDetails.append("IMEI NO: ").append(telephonyManager.getImei()).append("\n");
                     } else {
-                        // For Android 9 and below, use getDeviceId()
                         deviceDetails.append("IMEI NO: ").append(telephonyManager.getDeviceId()).append("\n");
                     }
                 } else {
@@ -328,12 +296,9 @@ public class Utils {
         } else {
             deviceDetails.append("IMEI NO: Device not available\n");
         }
-
-        // Add additional device information
         deviceDetails.append("OS Version: ").append(Build.VERSION.RELEASE).append("\n");
         deviceDetails.append("API Level: ").append(Build.VERSION.SDK_INT).append("\n");
 
-        // Get the device's location (actual location as an address)
         String locationInfo = getDeviceLocation(context);
         deviceDetails.append("Device Location: ").append(locationInfo).append("\n");
 
@@ -341,25 +306,20 @@ public class Utils {
     }
 
     private static String getDeviceLocation(Context context) {
-        // Get the LocationManager service
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        // Check if we have location permissions
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            // Get the last known location (assuming high accuracy location provider is available)
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             if (location != null) {
-                // Use Geocoder to convert coordinates into a human-readable address
                 Geocoder geocoder = new Geocoder(context, Locale.getDefault());
                 try {
                     List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                     if (addresses != null && !addresses.isEmpty()) {
                         Address address = addresses.get(0);
-                        // Return the address as a string (e.g., city, state, country)
-                        return address.getAddressLine(0);  // First address line
+                        return address.getAddressLine(0);
                     } else {
                         return "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude();
                     }
@@ -374,8 +334,6 @@ public class Utils {
             return "Location permission not granted";
         }
     }
-
-    // Static method for resetting password and using callback to return the result
     public static void getPassword(final Context context, String agentId, String agentEmail, final PasswordCallback callback) {
         new Thread(new Runnable() {
             @Override

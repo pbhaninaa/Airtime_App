@@ -162,7 +162,7 @@ public class Dashboard extends AppCompatActivity {
 
         CountryCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {       Utils.hideSoftKeyboard(Dashboard.this);
                 Country selectedCountry = (Country) parent.getItemAtPosition(position);
                 String flagName = selectedCountry.getCountryFlag();
                 Phone.requestFocus();
@@ -544,6 +544,25 @@ public class Dashboard extends AppCompatActivity {
         LoadBalance.setOnClickListener(v -> handlePayNowPayment());
         LoadBalance1.setOnClickListener(v -> handleManualLoadBalance());
     }
+    private void showSuccessDialog(final boolean goBack, final Context context, final String title, String body) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(body)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (goBack) {
+                            setISP(SelectedIsp.getText().toString());
+                            Navbar.setVisibility(View.VISIBLE);
+                        } else {
+                            dialog.dismiss();
+                        }
+                    }
+                })
+                .show();
+    }
+
+
 
     private void handleManualLoadBalance() {
         String amount = AmountTLoad.getText().toString().trim();
@@ -564,19 +583,23 @@ public class Dashboard extends AppCompatActivity {
                             @Override
                             public void run() {
                                 try {
+                                    Utils.hideSoftKeyboard(Dashboard.this);
                                     String responseString = res.getString("response");
                                     JSONObject responseJson = new JSONObject(responseString);
                                     JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
                                     JSONArray paramsList = methodResponse.getJSONArray("paramsList");
                                     JSONObject userObject = paramsList.getJSONObject(0);
-                                    String balance = userObject.getString("decimalBalance");
-                                    Utils.saveString(Dashboard.this, "profile", "balance", balance);
-                                    getAccount(balance);
-                                    setISP(SelectedIsp.getText().toString());
+
                                     Navbar.setVisibility(View.VISIBLE);
-                                    hideLayouts(ItemsLayout, NavIPSBtn);
                                     selectedAgentId1 = "";
                                     Agents1.setSelection(0);
+
+                                    showSuccessDialog(
+                                            true,
+                                            Dashboard.this,
+                                            "Transaction Succesfully ",
+                                            "The balance has been successfully credited to the selected agent’s account.");
+
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     try {
@@ -716,11 +739,16 @@ public class Dashboard extends AppCompatActivity {
 
                                             if (!Serial.isEmpty()) {
                                                 Utils.hideSoftKeyboard(Dashboard.this);
-                                                new AlertDialog.Builder(Dashboard.this).setTitle("Transaction was successful").setMessage("Date: " + date + "\n\nRecharge Number: " + CustomerID + "\nRecharge Amount: " + currencySymbol + amount + "\nRecharge Serial: " + Serial).setPositiveButton("OK", null).show();
-                                                hideLayouts(ISPsLayout, NavIPSBtn);
-                                                setISP(SelectedIsp.getText().toString());
                                                 Utils.saveRefs(Dashboard.this, Network, AgentID, CustomerID, basketID);
                                                 getAccount(balance);
+                                                showSuccessDialog(
+                                                        true,
+                                                        Dashboard.this,
+                                                        "Transaction was successful",
+                                                        "Date: " + date + "\n\nRecharge Number: " + CustomerID +
+                                                                "\nRecharge Amount: " + currencySymbol + amount +
+                                                                "\nRecharge Serial: " + Serial);
+
                                             } else {
                                                 Utils.showToast(Dashboard.this, description);
                                             }
@@ -886,10 +914,11 @@ public class Dashboard extends AppCompatActivity {
         ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selectedItem = parentView.getItemAtPosition(position).toString();
+                String selectedItem = parentView.getItemAtPosition(position).toString();       Utils.hideSoftKeyboard(Dashboard.this);
                 getProducts(new ProductsCallback() {
                     @Override
                     public void onProductsLoaded(List<Map<String, Object>> products) {
+                        Utils.hideSoftKeyboard(Dashboard.this);
                         List<Map<String, Object>> filteredProducts = filterProductsByType(products, selectedItem.equals("WhatsApp") ? "WHATSAPP_BUNDLES" : selectedItem);
                         ItemRecyclerView.setLayoutManager(new LinearLayoutManager(Dashboard.this));
                         ItemRecyclerView.setAdapter(new RecommendedAd(filteredProducts));
@@ -911,7 +940,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String selectedItem = parentView.getItemAtPosition(position).toString();
-
+                Utils.hideSoftKeyboard(Dashboard.this);
                 for (int i = 0; i < paramList.length(); i++) {
                     try {
                         JSONObject agent = paramList.getJSONObject(i);
@@ -1714,15 +1743,15 @@ public class Dashboard extends AppCompatActivity {
                                 String balance = resultObj.getString("decimalBalance");
                                 Utils.saveString(Dashboard.this, "profile", "balance", balance);
                                 getAccount(balance);
-                                setISP(SelectedIsp.getText().toString());
-
-                                Navbar.setVisibility(View.VISIBLE);
-                                hideLayouts(ItemsLayout, NavIPSBtn);
-                                Utils.showToast(Dashboard.this, "Collection successful");
-
-                                // Now clear selectedAgentId after successful collection
                                 selectedAgentId = "";
                                 Agents.setSelection(0);
+                                showSuccessDialog(
+                                        true,
+                                        Dashboard.this,
+                                        "Collection Successful",
+                                        "Your transaction has been completed successfully.\nThank you for using our service!"
+                                );
+
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
