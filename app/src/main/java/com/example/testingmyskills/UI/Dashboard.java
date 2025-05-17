@@ -600,7 +600,7 @@ public class Dashboard extends AppCompatActivity {
 
                                     String successMessage = "Date: " + date + "\n\n"
                                             + "Agent Name: " + agentName + "\n"
-                                            + "Topup Amount: $" + balance;
+                                            + "Topup Amount: "+currencySymbol + balance;
 
                                     showSuccessDialog(
                                             true,
@@ -1757,7 +1757,7 @@ public class Dashboard extends AppCompatActivity {
 
                                 String successMessage = "Date: " + date + "\n\n"
                                         + "Agent Name: " + agentName + "\n"
-                                        + "Collected Amount: $" + balance;
+                                        + "Collected Amount: "+currencySymbol + balance;
 
                                 showSuccessDialog(
                                         true,
