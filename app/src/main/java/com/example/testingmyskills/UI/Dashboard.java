@@ -588,17 +588,25 @@ public class Dashboard extends AppCompatActivity {
                                     JSONObject responseJson = new JSONObject(responseString);
                                     JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
                                     JSONArray paramsList = methodResponse.getJSONArray("paramsList");
-                                    JSONObject userObject = paramsList.getJSONObject(0);
 
-                                    Navbar.setVisibility(View.VISIBLE);
+                                    JSONObject responseDetails = paramsList.getJSONObject(0);
+
+                                    String balance = responseDetails.getString("decimalBalance");
+                                    String agentName = responseDetails.getString("agentName");
+                                    String date = responseDetails.getString("entryDate");
+
                                     selectedAgentId1 = "";
                                     Agents1.setSelection(0);
+
+                                    String successMessage = "Date: " + date + "\n\n"
+                                            + "Agent Name: " + agentName + "\n"
+                                            + "Topup Amount: $" + balance;
 
                                     showSuccessDialog(
                                             true,
                                             Dashboard.this,
                                             "Transaction Succesfully ",
-                                            "The balance has been successfully credited to the selected agent’s account.");
+                                            successMessage);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -914,7 +922,7 @@ public class Dashboard extends AppCompatActivity {
         ItemFilterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String selectedItem = parentView.getItemAtPosition(position).toString();       Utils.hideSoftKeyboard(Dashboard.this);
+                String selectedItem = parentView.getItemAtPosition(position).toString();
                 getProducts(new ProductsCallback() {
                     @Override
                     public void onProductsLoaded(List<Map<String, Object>> products) {
@@ -1739,18 +1747,23 @@ public class Dashboard extends AppCompatActivity {
                                 JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
                                 JSONArray paramsList = methodResponse.getJSONArray("paramsList");
                                 JSONObject resultObj = paramsList.getJSONObject(0);
-
-                                String balance = resultObj.getString("decimalBalance");
-                                Utils.saveString(Dashboard.this, "profile", "balance", balance);
-                                getAccount(balance);
                                 selectedAgentId = "";
                                 Agents.setSelection(0);
+
+                                String balance = resultObj.getString("decimalBalance");
+                                String agentName = resultObj.getString("agentName");
+                                String date = resultObj.getString("entryDate");
+
+
+                                String successMessage = "Date: " + date + "\n\n"
+                                        + "Agent Name: " + agentName + "\n"
+                                        + "Collected Amount: $" + balance;
+
                                 showSuccessDialog(
                                         true,
                                         Dashboard.this,
-                                        "Collection Successful",
-                                        "Your transaction has been completed successfully.\nThank you for using our service!"
-                                );
+                                        "Transaction Succesfully ",
+                                        successMessage);
 
 
                             } catch (JSONException e) {
