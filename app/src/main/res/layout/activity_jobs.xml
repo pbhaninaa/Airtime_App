@@ -871,6 +871,20 @@
                         android:textColor="@color/primary_color"
                         android:textSize="@dimen/eighteen" />
 
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TableLayout
+                            android:id="@+id/selected_agents_balance_table"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/fifteen"
+                            android:background="@null"
+                            android:textColor="@color/primary_color"
+                            android:textSize="@dimen/eighteen" />
+                    </ScrollView>
+
 
                 </LinearLayout>
                 <!--collect_layout-->
@@ -1005,24 +1019,19 @@
                         android:textColor="@color/primary_color"
                         android:textSize="@dimen/eighteen" />
 
-                    <!--                    <TextView-->
-                    <!--                        android:id="@+id/selected_agents_balance1"-->
-                    <!--                        android:layout_width="match_parent"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_marginTop="@dimen/fifteen"-->
-                    <!--                        android:background="@null"-->
-                    <!--                        android:textColor="@color/primary_color"-->
-                    <!--                        android:textSize="@dimen/eighteen" />-->
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <!--                    <TextView-->
-                    <!--                        android:id="@+id/selected_agents_balance1"-->
-                    <!--                        android:layout_width="match_parent"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_marginTop="@dimen/fifteen"-->
-                    <!--                        android:background="@null"-->
-                    <!--                        android:textColor="@color/primary_color"-->
-                    <!--                        android:textSize="@dimen/eighteen" />-->
-
+                        <TableLayout
+                            android:id="@+id/selected_agents_balance_table1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/fifteen"
+                            android:background="@null"
+                            android:textColor="@color/primary_color"
+                            android:textSize="@dimen/eighteen" />
+                    </ScrollView>
 
                 </LinearLayout>
                 <!--collect_expectation_layout-->
@@ -1031,21 +1040,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/five"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:gravity="center_horizontal"
+                        android:orientation="horizontal"
                         android:padding="8dp">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:layout_gravity="center"
+                            android:layout_weight="1"
                             android:text="Table Filter"
                             android:textStyle="bold" />
 

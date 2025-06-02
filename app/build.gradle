@@ -6,6 +6,16 @@ android {
     namespace 'com.example.testingmyskills'
     compileSdk 34
 
+    signingConfigs {
+        release {
+            storeFile file("C:\\Users\\philasandeB\\Documents\\mykeystore\\keystore.jks")
+            storePassword project.hasProperty('KEYSTORE_PASSWORD') ? project.getProperty('KEYSTORE_PASSWORD') : ""
+            keyAlias project.hasProperty('KEY_ALIAS') ? project.getProperty('KEY_ALIAS') : ""
+            keyPassword project.hasProperty('KEY_PASSWORD') ? project.getProperty('KEY_PASSWORD') : ""
+        }
+    }
+
+
     defaultConfig {
         applicationId "com.example.testingmyskills"
         minSdk 23
@@ -21,6 +31,7 @@ android {
             buildConfigField "String", "API_BASE_URL", '"http://102.219.85.66:8080/api/"'
         }
         release {
+            signingConfig signingConfigs.release  // Apply signing config here
             buildConfigField "String", "API_BASE_URL", '"https://your-production-api-url.com/api/"'
             minifyEnabled false // Temporarily disabled to check for issues
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

@@ -1,5 +1,6 @@
 package com.example.testingmyskills.UI;
 
+import static android.view.View.GONE;
 import static com.example.testingmyskills.UI.UserManagement.getZimCode;
 
 import android.app.AlertDialog;
@@ -43,6 +44,7 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +61,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,8 +94,6 @@ import java.util.Calendar;
 
 import android.content.ComponentName;
 import android.view.ContextThemeWrapper;
-
-import okhttp3.internal.Util;
 
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen, AppFrame, LoadingLayout;
@@ -146,11 +148,11 @@ public class Dashboard extends AppCompatActivity {
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
         SharedPreferences sharedPreference = getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         String role = sharedPreference.getString("role", "Agent");
-        LoadBalance1.setVisibility(!role.equals("Agent") ? View.VISIBLE : View.GONE);
+        LoadBalance1.setVisibility(!role.equals("Agent") ? View.VISIBLE : GONE);
 
 
         AppFrame.setVisibility(View.VISIBLE);
-        BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? View.GONE : View.VISIBLE);
+        BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? GONE : View.VISIBLE);
         ISPsLayout.setVisibility(View.VISIBLE);
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
@@ -318,7 +320,7 @@ public class Dashboard extends AppCompatActivity {
         });
 
         hideLayouts(WebScree, NavBuyBtn);
-        Navbar.setVisibility(View.GONE);
+        Navbar.setVisibility(GONE);
 
         String finalAmount = amount;
         new Thread(() -> {
@@ -334,7 +336,7 @@ public class Dashboard extends AppCompatActivity {
                         new Handler(Looper.getMainLooper()).postDelayed(() -> {
                             Web.loadUrl(redirectUrl);
 
-                            load.setVisibility(View.GONE);
+                            load.setVisibility(GONE);
                             Web.setVisibility(View.VISIBLE);
                         }, 5000);
                     } else {
@@ -369,7 +371,7 @@ public class Dashboard extends AppCompatActivity {
         }
 
         hideLayouts(WebScree, NavBuyBtn);
-        Navbar.setVisibility(View.GONE);
+        Navbar.setVisibility(GONE);
         load.setVisibility(View.VISIBLE);
 
         PayNowPaymentProcessor.createPayNowOrder(this, selectedAgentId1, "Load balance", amount, new PayNowPaymentProcessor.PayNowCallback() {
@@ -400,10 +402,10 @@ public class Dashboard extends AppCompatActivity {
                         });
 
                         Web.loadUrl(payNowResponse.getRedirectUrl());
-                        load.setVisibility(View.GONE);
+                        load.setVisibility(GONE);
                         Web.setVisibility(View.VISIBLE);
                     } else {
-                        load.setVisibility(View.GONE);
+                        load.setVisibility(GONE);
                         AmountTLoad.setError("Failed to generate payment link");
                     }
                 });
@@ -412,7 +414,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onFailure(String error) {
                 runOnUiThread(() -> {
-                    load.setVisibility(View.GONE);
+                    load.setVisibility(GONE);
                     AmountTLoad.setError("Payment failed: " + error);
                 });
             }
@@ -740,14 +742,14 @@ public class Dashboard extends AppCompatActivity {
     private void logout() {
         Utils.hideSoftKeyboard(Dashboard.this);
         Utils.hideSoftNavBar(Dashboard.this);
-        Navbar.setVisibility(View.GONE);
-        AppFrame.setVisibility(View.GONE);
+        Navbar.setVisibility(GONE);
+        AppFrame.setVisibility(GONE);
         ConfirmationScreen.setVisibility(View.VISIBLE);
     }
 
     private void handleNo() {
         AppFrame.setVisibility(View.VISIBLE);
-        ConfirmationScreen.setVisibility(View.GONE);
+        ConfirmationScreen.setVisibility(GONE);
     }
 
     private void handleYes() {
@@ -1063,13 +1065,15 @@ public class Dashboard extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
-        setupAgentSpinner(Agents, selectedAgentBalance1, true);  // For Agents
-        setupAgentSpinner(Agents1, selectedAgentBalance, false); // For Agents1
+        TableLayout tableLayout1 = findViewById(R.id.selected_agents_balance_table1);
+        TableLayout tableLayout = findViewById(R.id.selected_agents_balance_table);
+        setupAgentSpinner(Agents, selectedAgentBalance1,tableLayout1, true);  // For Agents
+        setupAgentSpinner(Agents1, selectedAgentBalance,tableLayout, false); // For Agents1
 
 
     }
 
-    private void setupAgentSpinner(AdapterView<?> spinner, TextView balanceView, boolean isFirstAgent) {
+    private void setupAgentSpinner(AdapterView<?> spinner, TextView balanceView,TableLayout tableLayout, boolean isFirstAgent) {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -1127,6 +1131,25 @@ public class Dashboard extends AppCompatActivity {
                                                             "Cycle Recharge Value: " + currencySymbol + cycleRechargeValue;
 
                                                     balanceView.setText(displayText);
+                                                    balanceView.setVisibility(GONE);
+
+                                                    // JSON parsing
+                                                    JSONObject userObject1 = paramsList.getJSONObject(0);
+                                                    String decimalBalance1 = userObject1.getString("decimalBalance");
+                                                    String cycleNetCollection1 = userObject1.getString("cycleNetCollection");
+                                                    String cycleTargetCommission1 = userObject1.getString("cycleTargetCommission");
+                                                    String cycleRechargeValue1 = userObject1.getString("cycleRechargeValue");
+
+
+                                                    List<String[]> data = new ArrayList<>();
+                                                    data.add(new String[]{"Agent Balance", currencySymbol + decimalBalance1});
+                                                    data.add(new String[]{"Cycle Net Collection", currencySymbol + cycleNetCollection1});
+                                                    data.add(new String[]{"Cycle Target Commission", currencySymbol + cycleTargetCommission1});
+                                                    data.add(new String[]{"Cycle Recharge Value", currencySymbol + cycleRechargeValue1});
+
+
+                                                    populateTable(data, tableLayout);
+
 
 
 
@@ -1157,6 +1180,7 @@ public class Dashboard extends AppCompatActivity {
                 }
 
                 balanceView.setText("");
+
             }
 
             @Override
@@ -1166,10 +1190,54 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
+    private void populateTable(List<String[]> data, TableLayout tableLayout) {
+        tableLayout.removeAllViews();
+
+        for (String[] row : data) {
+            TableRow tableRow = new TableRow(Dashboard.this);
+            tableRow.setLayoutParams(new TableRow.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT
+            ));
+
+            TextView label = new TextView(Dashboard.this);
+            label.setText(row[0]);
+            label.setTextColor(ContextCompat.getColor(Dashboard.this, R.color.primary_color));
+            label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            label.setPadding(2, 2, 2, 2);
+
+            TableRow.LayoutParams labelParams = new TableRow.LayoutParams(
+                    0, TableRow.LayoutParams.WRAP_CONTENT, 0.8f // 80%
+            );
+            label.setLayoutParams(labelParams);
+
+            TextView value = new TextView(Dashboard.this);
+            value.setText(row[1]);
+            value.setTextColor(ContextCompat.getColor(Dashboard.this, R.color.primary_color));
+            value.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            value.setPadding(2, 2, 2, 2);
+            value.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            value.setGravity(Gravity.END);
+
+            TableRow.LayoutParams valueParams = new TableRow.LayoutParams(
+                    0, TableRow.LayoutParams.WRAP_CONTENT, 0.2f
+            );
+
+            value.setLayoutParams(valueParams);
+
+            tableRow.addView(label);
+            tableRow.addView(value);
+            tableLayout.addView(tableRow);
+        }
+    }
+
+
+
+
     private void handleBackFromList() {
-        BackToHome.setVisibility(View.GONE);
+        BackToHome.setVisibility(GONE);
         Navbar.setVisibility(View.VISIBLE);
-        job_list_screen.setVisibility(View.GONE);
+        job_list_screen.setVisibility(GONE);
         AppFrame.setVisibility(View.VISIBLE);
     }
 
@@ -1189,8 +1257,8 @@ public class Dashboard extends AppCompatActivity {
 
         populateHistory(startDate, endDate);
 
-        Navbar.setVisibility(View.GONE);
-        AppFrame.setVisibility(View.GONE);
+        Navbar.setVisibility(GONE);
+        AppFrame.setVisibility(GONE);
         job_list_screen.setVisibility(View.VISIBLE);
     }
 
@@ -1276,15 +1344,15 @@ public class Dashboard extends AppCompatActivity {
         if (imageButton.getId() == R.id.nav_buy_btn1) {
             Phone.requestFocus();
             SelectedItem.setVisibility(View.VISIBLE);
-            AmountCapture.setVisibility(View.GONE);
-            BuyBtn1.setVisibility(View.GONE);
+            AmountCapture.setVisibility(GONE);
+            BuyBtn1.setVisibility(GONE);
             BuyBtn.setVisibility(View.VISIBLE);
         } else if (imageButton.getId() == R.id.nav_load_btn1) {
             Phone.requestFocus();
-            SelectedItem.setVisibility(View.GONE);
+            SelectedItem.setVisibility(GONE);
             AmountCapture.setVisibility(View.VISIBLE);
             BuyBtn1.setVisibility(View.VISIBLE);
-            BuyBtn.setVisibility(View.GONE);
+            BuyBtn.setVisibility(GONE);
         } else if (imageButton.getId() == R.id.more1) {
             SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
             SharedPreferences sharedPreference = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
@@ -1300,13 +1368,13 @@ public class Dashboard extends AppCompatActivity {
         defaultColoring(imageButton);
         imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
         BackToHome.setVisibility(View.VISIBLE);
-        ISPsLayout.setVisibility(View.GONE);
-        BuyLayout.setVisibility(View.GONE);
-        ItemsLayout.setVisibility(View.GONE);
-        LoadBalanceLayout.setVisibility(View.GONE);
-        WebScree.setVisibility(View.GONE);
-        expected_collection_layout.setVisibility(View.GONE);
-        collect_layout.setVisibility(View.GONE);
+        ISPsLayout.setVisibility(GONE);
+        BuyLayout.setVisibility(GONE);
+        ItemsLayout.setVisibility(GONE);
+        LoadBalanceLayout.setVisibility(GONE);
+        WebScree.setVisibility(GONE);
+        expected_collection_layout.setVisibility(GONE);
+        collect_layout.setVisibility(GONE);
         layoutToDisplay.setVisibility(View.VISIBLE);
 
 
@@ -1370,7 +1438,7 @@ public class Dashboard extends AppCompatActivity {
         SelectedIsp.setText(ISP);
         hideLayouts(ItemsLayout, NavIPSBtn);
         BackToHome.setVisibility(View.VISIBLE);
-        ISPsLayout.setVisibility(View.GONE);
+        ISPsLayout.setVisibility(GONE);
         ItemsLayout.setVisibility(View.VISIBLE);
 
     }
@@ -2054,7 +2122,7 @@ public class Dashboard extends AppCompatActivity {
                     ItemCode = itemCode;
                     Utils.setFieldFocus(Phone, Dashboard.this);
                     if (job_list_screen.getVisibility() == View.VISIBLE) {
-                        job_list_screen.setVisibility(View.GONE);
+                        job_list_screen.setVisibility(GONE);
                         AppFrame.setVisibility(View.VISIBLE);
                         Navbar.setVisibility(View.VISIBLE);
                     }
