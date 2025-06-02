@@ -1,6 +1,5 @@
 package com.example.testingmyskills.UI;
 
-import static com.example.testingmyskills.UI.UserManagement.getCountryList;
 import static com.example.testingmyskills.UI.UserManagement.getZimCode;
 
 import android.app.AlertDialog;
@@ -8,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,13 +23,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Currency;
 import java.util.Iterator;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Consumer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,7 +42,7 @@ import android.os.Looper;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +64,6 @@ import android.widget.Toast;
 
 import com.example.testingmyskills.JavaClasses.ApiService;
 import com.example.testingmyskills.JavaClasses.CurrencyTextWatcher;
-import com.example.testingmyskills.JavaClasses.IveriPaymentProcessor;
 import com.example.testingmyskills.JavaClasses.PayNowPaymentProcessor;
 import com.example.testingmyskills.JavaClasses.MyJavaScriptInterface;
 import com.example.testingmyskills.JavaClasses.Country;
@@ -81,45 +78,35 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import okhttp3.internal.Util;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ContextWrapper;
 import android.view.ContextThemeWrapper;
+
+import okhttp3.internal.Util;
 
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen, AppFrame, LoadingLayout;
-    private LinearLayout collect_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
+    private LinearLayout collect_layout,expected_collection_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
-    private TextView selectedAgentBalance1,selectedAgentBalance, version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
+    private TextView selectedAgentBalance1, selectedAgentBalance, version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
-    private ImageButton FilterButton, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, NavLaodBalanceBtn1, NavLaodBalanceBtn;
+    private ImageButton  backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn,expected_collection, NavLaodBalanceBtn1, NavLaodBalanceBtn;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
-    private boolean show;
+
     static String currencySymbol, ItemCode, startDate, endDate;
-    private RecyclerView ItemRecyclerView, jobListRecyclerView;
+    private RecyclerView ItemRecyclerView, jobListRecyclerView,expected_collection_summary ;
     private int numItems;
     private String totalRechargeAmount, totalDepositAmount;
     private JSONArray paramList = new JSONArray();
@@ -131,17 +118,29 @@ public class Dashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobs);
         Utils.hideSoftNavBar(Dashboard.this);
+
         getProfile();
-        show = true;
+
         initialiseViews();
-
-
-        Utils.hideSoftNavBar(Dashboard.this);
         setOnclickListeners();
         recyclerViews();
         adaptors();
 
         getLastTransaction(null);
+        formLoadEvents();
+
+        addTextWatchers();
+        spinners();
+        getAccount("");
+        Utils.rotateImageView(load);
+
+        startDate = Utils.getTodayDate();
+        endDate = Utils.getTodayDate();
+
+
+    }
+
+    private void formLoadEvents() {
         getBalance(SelectedIsp.getText().toString());
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
@@ -162,7 +161,8 @@ public class Dashboard extends AppCompatActivity {
 
         CountryCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {       Utils.hideSoftKeyboard(Dashboard.this);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Utils.hideSoftKeyboard(Dashboard.this);
                 Country selectedCountry = (Country) parent.getItemAtPosition(position);
                 String flagName = selectedCountry.getCountryFlag();
                 Phone.requestFocus();
@@ -178,21 +178,14 @@ public class Dashboard extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
 
+    private void addTextWatchers() {
         AmountTLoad.addTextChangedListener(new CurrencyTextWatcher(AmountTLoad));
         AmountTLoadInBuy.addTextChangedListener(new CurrencyTextWatcher(AmountTLoadInBuy));
 
         collectAmount.addTextChangedListener(new CurrencyTextWatcher(collectAmount));
         commissionAmount.addTextChangedListener(new CurrencyTextWatcher(commissionAmount));
-
-
-        spinners();
-        getAccount("");
-        Utils.rotateImageView(load);
-
-        startDate = Utils.getTodayDate();
-        endDate = Utils.getTodayDate();
-
 
     }
 
@@ -221,7 +214,6 @@ public class Dashboard extends AppCompatActivity {
         backFromList = findViewById(R.id.back_btn_from_job_list);
         BuyBtn = findViewById(R.id.btn_buy);
         BuyBtn1 = findViewById(R.id.btn_buy_1);
-        FilterButton = findViewById(R.id.filter_button);
         ConfirmationScreen = findViewById(R.id.confirmation_screen);
         Yes = findViewById(R.id.yes);
         No = findViewById(R.id.no);
@@ -229,11 +221,13 @@ public class Dashboard extends AppCompatActivity {
         AppFrame = findViewById(R.id.app_frame);
         LogoutButton = findViewById(R.id.logout_button);
         AvailableBalance = findViewById(R.id.available_balance);
+        expected_collection_summary = findViewById(R.id.expected_collection_summary);
         StatusMessage = findViewById(R.id.status_message);
         NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
         NavCollectBtn = findViewById(R.id.nav_collect_layout_btn);
         NavLaodBalanceBtn = findViewById(R.id.nav_load_btn);
         NavLaodBalanceBtn1 = findViewById(R.id.nav_load_btn1);
+        expected_collection = findViewById(R.id.expected_collection);
         NavBuyBtn = findViewById(R.id.nav_buy_btn1);
         NavProfileBtn = findViewById(R.id.nav_profile_btn1);
         NavIPSBtn = findViewById(R.id.nav_networks_btn1);
@@ -242,6 +236,7 @@ public class Dashboard extends AppCompatActivity {
         BuyLayout = findViewById(R.id.Buying_layout);
         ItemsLayout = findViewById(R.id.Items_display_layout);
         collect_layout = findViewById(R.id.collect_layout);
+        expected_collection_layout = findViewById(R.id.expected_collection_layout);
         ItemRecyclerView = findViewById(R.id.Items_recycler_view);
         ItemFilterSpinner = findViewById(R.id.items_spinner);
         MoreBtn = findViewById(R.id.More_Items);
@@ -440,8 +435,8 @@ public class Dashboard extends AppCompatActivity {
                 List<String> agentNamesList = new ArrayList<>();
                 agentNamesList.add("Select an Agent");
                 try {
-                   String agentId= Utils.getString(Dashboard.this, "savedCredentials", "email");
-                    paramList = getAgentsParamList(agentId,agentId,Dashboard.this);
+                    String agentId = Utils.getString(Dashboard.this, "savedCredentials", "email");
+                    paramList = getAgentsParamList(agentId, agentId, Dashboard.this);
 
                     for (int i = 0; i < paramList.length(); i++) {
                         JSONObject agentObject = paramList.getJSONObject(i);
@@ -466,7 +461,7 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    public static JSONArray getAgentsParamList(String AgentId,String CollectorId,Context context) throws Exception {
+    public static JSONArray getAgentsParamList(String AgentId, String CollectorId, Context context) throws Exception {
         JSONObject res = ApiService.getAgents(
                 "Econet",
                 AgentId,
@@ -508,7 +503,6 @@ public class Dashboard extends AppCompatActivity {
         backFromList.setOnClickListener(v -> handleBackFromList());
         BuyBtn.setOnClickListener(v -> handleTransaction());
         BuyBtn1.setOnClickListener(v -> buy());
-        FilterButton.setOnClickListener(v -> selectDateRange());
         No.setOnClickListener(v -> handleNo());
         Yes.setOnClickListener(v -> handleYes());
         LogoutButton.setOnClickListener(v -> logout());
@@ -518,13 +512,25 @@ public class Dashboard extends AppCompatActivity {
         NavLaodBalanceBtn1.setOnClickListener(v -> hideLayouts(BuyLayout, NavLaodBalanceBtn1));
         NavIPSBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavIPSBtn));
         NavMoreBtn.setOnClickListener(v -> handleShowMore());
-
         NavBuyBtn.setOnClickListener(v -> hideLayouts(BuyLayout, NavBuyBtn));
         MoreBtn.setOnClickListener(v -> handleShowMore());
         NavProfileBtn.setOnClickListener(v -> showProfile());
         EconetIsp.setOnClickListener(v -> setISP("Econet"));
         NetoneIsp.setOnClickListener(v -> setISP("NetOne"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
+        expected_collection.setOnClickListener(v -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+
+            Calendar calendar = Calendar.getInstance();
+            String endDate = sdf.format(calendar.getTime());
+
+            calendar.add(Calendar.DATE, -2);
+            String startDate = sdf.format(calendar.getTime());
+
+            showSummary(startDate, endDate);
+            hideLayouts(expected_collection_layout, expected_collection);
+        });
+
         LogoutButton.setOnLongClickListener(view -> {
             finishAffinity();
             return true;
@@ -544,6 +550,89 @@ public class Dashboard extends AppCompatActivity {
         LoadBalance.setOnClickListener(v -> handlePayNowPayment());
         LoadBalance1.setOnClickListener(v -> handleManualLoadBalance());
     }
+    private void showSummary(String startDate, String endDate) {
+        expected_collection_summary.setLayoutManager(new LinearLayoutManager(this));
+
+        new Thread(() -> {
+            try {
+                String agentId = Utils.getString(Dashboard.this, "savedCredentials", "email");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+
+
+                JSONObject res = ApiService.getCollectorSummary(
+                        "Econet",
+                        agentId,
+                        agentId,
+                        startDate,
+                        endDate
+                );
+
+                if (res.getInt("responseCode") == 200) {
+                    String responseString = res.getString("response");
+                    JSONObject responseJson = new JSONObject(responseString);
+                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                    JSONArray agentsArray = methodResponse.getJSONArray("agents");
+
+                    List<JSONObject> summaries = new ArrayList<>();
+                    for (int i = 0; i < agentsArray.length(); i++) {
+                        summaries.add(agentsArray.getJSONObject(i));
+                    }
+
+                    runOnUiThread(() -> {
+                        RecyclerView.Adapter<RecyclerView.ViewHolder> adapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+                            class SimpleViewHolder extends RecyclerView.ViewHolder {
+                                final TextView name;
+                                final TextView balance;
+                                final TextView deposit;
+
+                                public SimpleViewHolder(View itemView) {
+                                    super(itemView);
+                                    name = itemView.findViewById(R.id.text_name);
+                                    balance = itemView.findViewById(R.id.text_balance);
+                                    deposit = itemView.findViewById(R.id.text_deposit);
+                                }
+                            }
+
+                            @NonNull
+                            @Override
+                            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                                View view = LayoutInflater.from(parent.getContext())
+                                        .inflate(R.layout.item_user_collection, parent, false);
+                                return new SimpleViewHolder(view);
+                            }
+
+                            @Override
+                            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+                                JSONObject agent = summaries.get(position);
+                                SimpleViewHolder vh = (SimpleViewHolder) holder;
+
+                                vh.name.setText(agent.optString("agentName", "N/A"));
+                                vh.balance.setText(currencySymbol + agent.optString("agentBalance", "0"));
+                                vh.deposit.setText(currencySymbol + agent.optString("agentDepositAmount", "0"));
+                            }
+
+                            @Override
+                            public int getItemCount() {
+                                return summaries.size();
+                            }
+                        };
+
+                        expected_collection_summary.setAdapter(adapter);
+                    });
+
+                } else {
+                    runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + res.toString(), Toast.LENGTH_SHORT).show());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
+        }).start();
+    }
+
+
     private void showSuccessDialog(final boolean goBack, final Context context, final String title, String body) {
         new AlertDialog.Builder(context)
                 .setTitle(title)
@@ -561,7 +650,6 @@ public class Dashboard extends AppCompatActivity {
                 })
                 .show();
     }
-
 
 
     private void handleManualLoadBalance() {
@@ -600,7 +688,7 @@ public class Dashboard extends AppCompatActivity {
 
                                     String successMessage = "Date: " + date + "\n\n"
                                             + "Agent Name: " + agentName + "\n"
-                                            + "Topup Amount: "+currencySymbol + balance;
+                                            + "Topup Amount: " + currencySymbol + balance;
 
                                     showSuccessDialog(
                                             true,
@@ -690,23 +778,43 @@ public class Dashboard extends AppCompatActivity {
 
     }
 
-    private void selectDateRange() {
-        showDateDialog(Dashboard.this, this, this);
-    }
+
 
     public void buy() {
-        String price = AmountTLoadInBuy.getText().toString().trim().replace(currencySymbol, "");
         String phone = Phone.getText().toString().trim();
         if (phone.isEmpty()) {
             Phone.setError("Phone is required");
+            Phone.requestFocus();
             return;
         }
-        clearFields();
-        String p = CountryCode.getSelectedItem() + phone;
 
+        String price = AmountTLoadInBuy.getText().toString().trim().replace(currencySymbol, "");
         if (price.equals("0.00")) {
             AmountTLoadInBuy.setError("Price is required");
+            AmountTLoadInBuy.requestFocus();
+            return;
         }
+
+        // Build full phone number with country code
+        String countryCode = String.valueOf(CountryCode.getSelectedItem());
+        String fullPhoneNumber = countryCode + phone;
+
+        String message = "Please confirm that this is your correct phone number:\n\n" +
+                price + "\n\n" + fullPhoneNumber +
+                "\n\nTap OK to continue or Cancel to go back.";
+
+        showConfirmationDialog(this, message, "Yes", "NO", result ->
+        {
+            if (result) {
+                clearFields();
+                buyNumberConfirmed(fullPhoneNumber, price);
+            }
+        });
+    }
+
+    private void buyNumberConfirmed(String phone, String price) {
+
+
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "").replace(",", "").replace("Account Balance", "").trim();
 
         Utils.LoadingLayout(this, this);
@@ -723,7 +831,7 @@ public class Dashboard extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            JSONObject res = ApiService.loadValue(SelectedIsp.getText().toString(), Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), p, price.replace(",", "").replace(".", ""), "Airtime", "Airtime", Dashboard.this);
+                            JSONObject res = ApiService.loadValue(SelectedIsp.getText().toString(), Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), phone, price.replace(",", "").replace(".", ""), "Airtime", "Airtime", Dashboard.this);
                             if (res.getInt("responseCode") == 200) {
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -804,14 +912,31 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void handleTransaction() {
-        String phone = Phone.getText().toString().trim();
-        String price = SelectedItemPrice.getText().toString().trim().replace(currencySymbol, "");
-        if (phone.isEmpty()) {
+        String phoneText = Phone.getText().toString().trim();
+
+        if (phoneText.isEmpty()) {
+            Phone.requestFocus();
             return;
         }
-        clearFields();
-        String p = CountryCode.getSelectedItem() + phone;
 
+        // Step 2: Prepare confirmation message
+        String fullPhoneNumber = CountryCode.getSelectedItem() + phoneText;
+        String message = "Please confirm that this is your correct phone number:\n\n" +
+                fullPhoneNumber + "\n\nTap OK to continue or Cancel to go back.";
+
+        // Step 3: Ask for confirmation
+        showConfirmationDialog(this, message, "Yes", "NO", result -> {
+            if (result) {
+                clearFields(); // Clear only after confirmation
+                numberConfirmed(fullPhoneNumber); // Proceed with the confirmed number
+            }
+        });
+    }
+
+    private void numberConfirmed(String phone) {
+
+
+        String price = SelectedItemPrice.getText().toString().trim().replace(currencySymbol, "");
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "")
                 .replace(",", "")
                 .replace("Account Balance", "")
@@ -837,7 +962,7 @@ public class Dashboard extends AppCompatActivity {
                                     agentId,
                                     agentName,
                                     agentPassword,
-                                    p.replace("+", ""),
+                                    phone.replace("+", ""),
                                     SelectedItemPrice.getText().toString().replace(currencySymbol, "")
                                             .replace(".", ""),
                                     ItemCode,
@@ -943,6 +1068,7 @@ public class Dashboard extends AppCompatActivity {
 
 
     }
+
     private void setupAgentSpinner(AdapterView<?> spinner, TextView balanceView, boolean isFirstAgent) {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -985,9 +1111,25 @@ public class Dashboard extends AppCompatActivity {
                                                 JSONArray paramsList = methodResponse.getJSONArray("paramsList");
 
                                                 if (paramsList.length() > 0) {
+//                                                    JSONObject userObject = paramsList.getJSONObject(0);
                                                     JSONObject userObject = paramsList.getJSONObject(0);
-                                                    String balance = userObject.getString("decimalBalance");
-                                                    balanceView.setText("Agent Balance : " + currencySymbol + balance);
+
+                                                    String decimalBalance = userObject.getString("decimalBalance");
+                                                    String cycleNetCollection = userObject.getString("cycleNetCollection");
+                                                    String cycleTargetCommission = userObject.getString("cycleTargetCommission");
+                                                    String cycleRechargeValue = userObject.getString("cycleRechargeValue");
+
+                                                    balanceView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 28); // 8 pixels
+
+                                                    String displayText = "Agent Balance: " + currencySymbol + decimalBalance + "\n" +
+                                                            "Cycle Net Collection: " + currencySymbol + cycleNetCollection + "\n" +
+                                                            "Cycle Target Commission: " + currencySymbol + cycleTargetCommission + "\n" +
+                                                            "Cycle Recharge Value: " + currencySymbol + cycleRechargeValue;
+
+                                                    balanceView.setText(displayText);
+
+
+
                                                 } else {
                                                     Utils.showToast(Dashboard.this, "No balance data found.");
                                                 }
@@ -1163,6 +1305,8 @@ public class Dashboard extends AppCompatActivity {
         ItemsLayout.setVisibility(View.GONE);
         LoadBalanceLayout.setVisibility(View.GONE);
         WebScree.setVisibility(View.GONE);
+        expected_collection_layout.setVisibility(View.GONE);
+        collect_layout.setVisibility(View.GONE);
         layoutToDisplay.setVisibility(View.VISIBLE);
 
 
@@ -1197,17 +1341,21 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    public void AlertString(Context context, String message) {
+    public void showConfirmationDialog(Context context, String message, String positive, String negative, Consumer<Boolean> callback) {
         new AlertDialog.Builder(context)
                 .setMessage(message)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
+                .setPositiveButton(positive, (dialog, which) -> {
+                    dialog.dismiss();
+                    callback.accept(true);
+                })
+                .setNegativeButton(negative, (dialog, which) -> {
+                    dialog.dismiss();
+                    callback.accept(false);
                 })
                 .create()
                 .show();
     }
+
 
     public void setISP(String ISP) {
 
@@ -1308,6 +1456,7 @@ public class Dashboard extends AppCompatActivity {
         StatusMessage.setText(formatedSalutation);
         Utils.setStatusColor(this, (bal.isEmpty() ? balance : bal), statusLight);
         AvailableBalance.setText(Balance);
+
         AmountToLoadSymbol.setText(currencySymbol);
 
         commission_currency_symbol.setText(currencySymbol);
@@ -1316,7 +1465,7 @@ public class Dashboard extends AppCompatActivity {
         clearFields();
     }
 
-    public void showDateDialog(final Context context, final Activity activity, final Dashboard dashboard) {
+    public void showDateDialog(final Context context) {
         Context themedContext = new ContextThemeWrapper(context, R.style.AppThemes);
         LinearLayout layout = new LinearLayout(themedContext);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -1373,7 +1522,11 @@ public class Dashboard extends AppCompatActivity {
                                 } else {
                                     startDate = start;
                                     endDate = end;
-                                    populateHistory(start, end);
+                                    if (job_list_screen.getVisibility() == View.VISIBLE) {
+                                        populateHistory(start, end);
+                                    }else {
+                                        showSummary(start,end);
+                                    }
                                 }
                             }
                         } catch (ParseException e) {
@@ -1401,7 +1554,7 @@ public class Dashboard extends AppCompatActivity {
 
         startDateInput.setOnClickListener(v -> showDatePicker(themedContext, startDateInput, dialog, dateFormat, endDateInput, false));
 
-        new Handler().postDelayed(() -> startDateInput.performClick(), 300);
+        new Handler().postDelayed(startDateInput::performClick, 300);
 
         endDateInput.setOnClickListener(v -> showDatePicker(themedContext, endDateInput, dialog, dateFormat, startDateInput, true));
     }
@@ -1599,6 +1752,7 @@ public class Dashboard extends AppCompatActivity {
         NavLaodBalanceBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavCollectBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavLaodBalanceBtn1.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        expected_collection.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
     }
 
@@ -1757,7 +1911,7 @@ public class Dashboard extends AppCompatActivity {
 
                                 String successMessage = "Date: " + date + "\n\n"
                                         + "Agent Name: " + agentName + "\n"
-                                        + "Collected Amount: "+currencySymbol + balance;
+                                        + "Collected Amount: " + currencySymbol + balance;
 
                                 showSuccessDialog(
                                         true,
@@ -1826,6 +1980,17 @@ public class Dashboard extends AppCompatActivity {
     private static int convertDpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
+    }
+
+    public void viewCollect(View view) {
+         hideLayouts(collect_layout, NavCollectBtn);
+    }
+
+    public void showManualLoad(View view) {
+    }
+
+    public void selectDateRange(View view) {
+        showDateDialog(Dashboard.this);
     }
 
     // Helper Classes and Interfaces

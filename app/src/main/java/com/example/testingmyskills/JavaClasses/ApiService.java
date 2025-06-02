@@ -84,6 +84,25 @@ public class ApiService {
         String jsonInputString = "{ \"TransactionType\":\"Password Reset\", \"AgentID\":\"" + agentID + "\", \"AgentEmail\":\"" + email + "\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "reset-password", jsonInputString);
     }
+    public static JSONObject getCollectorSummary(
+            String network,
+            String agentID,
+            String collectorID,
+            String startDate,
+            String endDate
+    ) throws Exception {
+        String jsonInputString = "{"
+                + "\"Network\":\"" + network + "\","
+                + "\"TransactionType\":\"Collector Summary\","
+                + "\"AgentID\":\"" + agentID + "\","
+                + "\"CollectorID\":\"" + collectorID + "\","
+                + "\"StartDate\":\"" + startDate + "\","
+                + "\"EndDate\":\"" + endDate + "\""
+                + "}";
+
+        return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "collector_summary", jsonInputString);
+    }
+
 
     // Statement Endpoint
     public static JSONObject statement(String agentID, String agentName, String agentPassword, String agentEmail, Context context, String startDate, String endDate) throws Exception {

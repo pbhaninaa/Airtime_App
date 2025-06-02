@@ -25,6 +25,11 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="expected_collection_summary_text">
+    Agent Name : Philasande Bhani&#10;Decimal Balance : $100.00&#10;Collection Due : $500.00
+</string>
+
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <!-- Strings used for fragments for navigation -->

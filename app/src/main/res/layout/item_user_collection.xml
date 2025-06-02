@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/text_name"
+        android:layout_weight="1.5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/fifteen"
+        android:text="Philasande Bhani" />
+
+    <TextView
+        android:id="@+id/text_balance"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/fifteen"
+        android:gravity="start"
+        android:text="$00.00" />
+
+    <TextView
+        android:id="@+id/text_deposit"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/fifteen"
+        android:gravity="start"
+        android:text="$00.00" />
+</LinearLayout>

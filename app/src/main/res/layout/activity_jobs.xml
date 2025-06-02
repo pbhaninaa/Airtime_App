@@ -236,7 +236,7 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-                <!--   Histry layout this shows the ISPs -->
+                <!--   History layout this shows the ISPs -->
                 <LinearLayout
                     android:id="@+id/history_list"
                     android:layout_width="match_parent"
@@ -272,7 +272,8 @@
                     android:id="@+id/ISP_display_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <ScrollView
                         android:layout_width="match_parent"
@@ -464,7 +465,6 @@
                         android:textStyle="bold"
                         android:visibility="gone" />
                 </LinearLayout>
-
                 <!--   Items_display_layout this shows List of Items after ASP Selection -->
                 <LinearLayout
                     android:id="@+id/Items_display_layout"
@@ -836,8 +836,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/fifteen"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingTop="@dimen/fifteen">
 
                         <Button
                             android:id="@+id/btn_load_balance"
@@ -856,10 +856,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5sp"
-                            android:visibility="gone"
                             android:layout_weight="1"
                             android:text="@string/cash"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone" />
                     </LinearLayout>
 
                     <TextView
@@ -879,9 +879,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/five"
-                    android:visibility="gone"
-                    android:orientation="vertical">
-
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
 
                     <LinearLayout
@@ -996,6 +995,7 @@
                         android:onClick="onCollectClick"
                         android:text="Collect"
                         android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/selected_agents_balance1"
                         android:layout_width="match_parent"
@@ -1005,6 +1005,116 @@
                         android:textColor="@color/primary_color"
                         android:textSize="@dimen/eighteen" />
 
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/selected_agents_balance1"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="@dimen/fifteen"-->
+                    <!--                        android:background="@null"-->
+                    <!--                        android:textColor="@color/primary_color"-->
+                    <!--                        android:textSize="@dimen/eighteen" />-->
+
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/selected_agents_balance1"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="@dimen/fifteen"-->
+                    <!--                        android:background="@null"-->
+                    <!--                        android:textColor="@color/primary_color"-->
+                    <!--                        android:textSize="@dimen/eighteen" />-->
+
+
+                </LinearLayout>
+                <!--collect_expectation_layout-->
+                <LinearLayout
+                    android:id="@+id/expected_collection_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/five"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_horizontal"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:text="Table Filter"
+                            android:textStyle="bold" />
+
+                        <ImageButton
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_weight="0.2"
+                            android:backgroundTint="@android:color/transparent"
+                            android:contentDescription="@string/todo"
+                            android:onClick="selectDateRange"
+                            android:src="@drawable/filter_icon"
+                            app:tint="@color/primary_color" />
+
+                    </LinearLayout>
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/hundred_ten">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/light_gray"
+                                android:orientation="horizontal"
+                                android:padding="8dp">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.5"
+                                    android:text="Agent Name"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="start"
+                                    android:text="Agent Balance"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="start"
+                                    android:text="Deposit Balance"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/expected_collection_summary"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/five"
+                                android:background="@null"
+                                android:text="@string/expected_collection_summary_text"
+                                android:textColor="@color/gray"
+                                android:textSize="@dimen/eighteen" />
+                        </LinearLayout>
+
+                    </ScrollView>
 
 
                 </LinearLayout>
@@ -1111,6 +1221,7 @@
                             android:layout_weight="0.5"
                             android:backgroundTint="@android:color/transparent"
                             android:contentDescription="@string/todo"
+                            android:onClick="selectDateRange"
                             android:src="@drawable/filter_icon"
                             app:tint="@color/back_ground_gray" />
                     </LinearLayout>
@@ -1425,7 +1536,6 @@
             </LinearLayout>
 
 
-
             <LinearLayout
                 android:id="@+id/topUpBtn"
                 android:layout_width="0dp"
@@ -1475,6 +1585,30 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Airtime"
+                    android:textColor="@color/primary_color"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/expected_collection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:src="@drawable/baseline_summarize_24"
+                    app:tint="@color/primary_color" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Report"
                     android:textColor="@color/primary_color"
                     android:textStyle="bold" />
             </LinearLayout>
