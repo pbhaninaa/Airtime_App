@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/text_name"
-        android:layout_weight="1.5"
+        android:layout_weight="2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/primary_color"
@@ -15,21 +15,21 @@
 
     <TextView
         android:id="@+id/text_balance"
-        android:layout_weight="1"
+        android:layout_weight="0.8"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/primary_color"
         android:textSize="@dimen/fifteen"
-        android:gravity="start"
+        android:gravity="end"
         android:text="$00.00" />
 
     <TextView
         android:id="@+id/text_deposit"
-        android:layout_weight="1"
+        android:layout_weight="0.8"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/primary_color"
         android:textSize="@dimen/fifteen"
-        android:gravity="start"
+        android:gravity="end"
         android:text="$00.00" />
 </LinearLayout>

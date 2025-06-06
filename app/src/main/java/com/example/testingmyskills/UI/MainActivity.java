@@ -25,13 +25,12 @@ import java.util.regex.*;
 public class MainActivity extends AppCompatActivity {
     private Button CandidateBtn;
     private ConstraintLayout landing_page;
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
     private TextView version ;
     public static String[] econetItems = {
             "Data",
             "Voice",
             "SMS",
-            "WhatsApp dd"
+            "WhatsApp"
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {

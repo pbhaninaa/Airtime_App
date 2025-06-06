@@ -114,6 +114,7 @@ public class Dashboard extends AppCompatActivity {
     private JSONArray paramList = new JSONArray();
     private String selectedAgentId = "";
     private String selectedAgentId1 = "";
+   private TableLayout tableLayout1, tableLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,7 +270,8 @@ public class Dashboard extends AppCompatActivity {
         AmountTLoadInBuy = findViewById(R.id.loading_amount_in_buy);
         selectedAgentBalance1 = findViewById(R.id.selected_agents_balance1);
         selectedAgentBalance = findViewById(R.id.selected_agents_balance);
-
+       tableLayout1 = findViewById(R.id.selected_agents_balance_table1);
+        tableLayout = findViewById(R.id.selected_agents_balance_table);
     }
 
     public void showLastTransaction() {
@@ -560,7 +562,6 @@ public class Dashboard extends AppCompatActivity {
                 String agentId = Utils.getString(Dashboard.this, "savedCredentials", "email");
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
 
-
                 JSONObject res = ApiService.getCollectorSummary(
                         "Econet",
                         agentId,
@@ -576,9 +577,26 @@ public class Dashboard extends AppCompatActivity {
                     JSONArray agentsArray = methodResponse.getJSONArray("agents");
 
                     List<JSONObject> summaries = new ArrayList<>();
+                    double totalBalance = 0;
+                    double totalDeposit = 0;
+
                     for (int i = 0; i < agentsArray.length(); i++) {
-                        summaries.add(agentsArray.getJSONObject(i));
+                        JSONObject agent = agentsArray.getJSONObject(i);
+
+                        totalBalance += agent.optDouble("agentBalance", 0);
+                        totalDeposit += agent.optDouble("agentDepositAmount", 0);
+
+                        summaries.add(agent);
                     }
+
+                    if (!summaries.isEmpty()) {
+                        JSONObject totalRow = new JSONObject();
+                        totalRow.put("isTotal", true);
+                        totalRow.put("totalBalance", totalBalance);
+                        totalRow.put("totalDeposit", totalDeposit);
+                        summaries.add(totalRow);
+                    }
+
 
                     runOnUiThread(() -> {
                         RecyclerView.Adapter<RecyclerView.ViewHolder> adapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -609,9 +627,15 @@ public class Dashboard extends AppCompatActivity {
                                 JSONObject agent = summaries.get(position);
                                 SimpleViewHolder vh = (SimpleViewHolder) holder;
 
-                                vh.name.setText(agent.optString("agentName", "N/A"));
-                                vh.balance.setText(currencySymbol + agent.optString("agentBalance", "0"));
-                                vh.deposit.setText(currencySymbol + agent.optString("agentDepositAmount", "0"));
+                                if (agent.optBoolean("isTotal", false)) {
+                                    vh.name.setText("Total");
+                                    vh.balance.setText(currencySymbol + String.format("%.2f", agent.optDouble("totalBalance", 0)));
+                                    vh.deposit.setText(currencySymbol + String.format("%.2f", agent.optDouble("totalDeposit", 0)));
+                                } else {
+                                    vh.name.setText(agent.optString("agentName", "N/A"));
+                                    vh.balance.setText(currencySymbol + agent.optString("agentBalance", "0"));
+                                    vh.deposit.setText(currencySymbol + agent.optString("agentDepositAmount", "0"));
+                                }
                             }
 
                             @Override
@@ -632,6 +656,7 @@ public class Dashboard extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
             }
         }).start();
+
     }
 
 
@@ -1065,8 +1090,7 @@ public class Dashboard extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
-        TableLayout tableLayout1 = findViewById(R.id.selected_agents_balance_table1);
-        TableLayout tableLayout = findViewById(R.id.selected_agents_balance_table);
+
         setupAgentSpinner(Agents, selectedAgentBalance1,tableLayout1, true);  // For Agents
         setupAgentSpinner(Agents1, selectedAgentBalance,tableLayout, false); // For Agents1
 
@@ -1143,10 +1167,10 @@ public class Dashboard extends AppCompatActivity {
 
                                                     List<String[]> data = new ArrayList<>();
                                                     data.add(new String[]{"Agent Balance", currencySymbol + decimalBalance1});
+                                                    data.add(new String[]{"", ""});
                                                     data.add(new String[]{"Cycle Net Collection", currencySymbol + cycleNetCollection1});
                                                     data.add(new String[]{"Cycle Target Commission", currencySymbol + cycleTargetCommission1});
                                                     data.add(new String[]{"Cycle Recharge Value", currencySymbol + cycleRechargeValue1});
-
 
                                                     populateTable(data, tableLayout);
 
@@ -1337,6 +1361,9 @@ public class Dashboard extends AppCompatActivity {
             Utils.showToast(this, "Select Network");
             return;
         }
+        // Remove all rows
+        tableLayout1.removeAllViews();
+        tableLayout.removeAllViews();
         Agents.setSelection(0);
         Agents1.setSelection(0);
 
