@@ -91,6 +91,25 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">20sp</item>
     </style>
+    <style name="navBtn">
+
+        <!-- Width and Height -->
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <!-- Weight & Gravity -->
+        <item name="android:layout_weight">2</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+
+        <!-- Margins -->
+        <item name="android:layout_marginStart">@dimen/ten</item>
+        <item name="android:layout_marginEnd">@dimen/ten</item>
+
+        <!-- Orientation -->
+        <item name="android:orientation">vertical</item>
+    </style>
+
 
     <style name="CancelButton" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/white_box_with_shadow</item>

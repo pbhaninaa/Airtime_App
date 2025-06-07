@@ -211,6 +211,9 @@
     <dimen name="hundred_ninety_eight">198dp</dimen>
     <dimen name="hundred_ninety_nine">199dp</dimen>
     <dimen name="two_hundred">200dp</dimen>
+    <dimen name="two_hundred_fifty">250dp</dimen>
+    <dimen name="three_hundred">300dp</dimen>
+    <dimen name="three_hundred_fifty">350dp</dimen>
     <dimen name="four_hundred">400dp</dimen>
     <dimen name="four_hundred_1">401dp</dimen>
     <dimen name="four_hundred_2">402dp</dimen>

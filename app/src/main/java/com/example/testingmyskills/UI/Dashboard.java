@@ -1,6 +1,7 @@
 package com.example.testingmyskills.UI;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.example.testingmyskills.UI.UserManagement.getZimCode;
 
 import android.app.AlertDialog;
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,11 +45,14 @@ import android.os.Looper;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -97,24 +102,24 @@ import android.view.ContextThemeWrapper;
 
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen, AppFrame, LoadingLayout;
-    private LinearLayout collect_layout,expected_collection_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
+    private LinearLayout userSummaryLayout,adminLayout, collect_layout, expected_collection_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
     private TextView selectedAgentBalance1, selectedAgentBalance, version, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
-    private ImageButton  backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn,expected_collection, NavLaodBalanceBtn1, NavLaodBalanceBtn;
+    private ImageButton NavAdminBtn, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, expected_collection, NavLaodBalanceBtn1, NavLaodBalanceBtn;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
 
     static String currencySymbol, ItemCode, startDate, endDate;
-    private RecyclerView ItemRecyclerView, jobListRecyclerView,expected_collection_summary ;
+    private RecyclerView ItemRecyclerView, jobListRecyclerView, expected_collection_summary,expected_collection_summary1, total_expected_collection_summary;
     private int numItems;
     private String totalRechargeAmount, totalDepositAmount;
     private JSONArray paramList = new JSONArray();
     private String selectedAgentId = "";
     private String selectedAgentId1 = "";
-   private TableLayout tableLayout1, tableLayout;
+    private TableLayout tableLayout1, tableLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +144,47 @@ public class Dashboard extends AppCompatActivity {
 
         startDate = Utils.getTodayDate();
         endDate = Utils.getTodayDate();
+        setNavBaeToDisplayOnly4Buttons();
+        underConstruction(adminLayout);
+        underConstruction(userSummaryLayout);
+
+    }
+
+    private void underConstruction(LinearLayout layout) {
+        View underConstruction = getLayoutInflater().inflate(R.layout.under_construction, layout, false);
+
+        // Now find the TextView from the inflated view
+        TextView blinkingText = underConstruction.findViewById(R.id.blinking_text);
+
+        // Start blink animation
+        Animation blink = AnimationUtils.loadAnimation(this, R.anim.blink);
+        blinkingText.startAnimation(blink);
+
+        // Add the view to the layout
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        params.gravity = Gravity.CENTER;
+
+        layout.addView(underConstruction, params);
+    }
+
+
+    private void setNavBaeToDisplayOnly4Buttons() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+
+        int buttonWidth = (int) (screenWidth / 4.5);
+
+        LinearLayout navLayout = findViewById(R.id.nav_layout);
+
+        for (int i = 0; i < navLayout.getChildCount(); i++) {
+            View navBtn = navLayout.getChildAt(i);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(buttonWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+            navBtn.setLayoutParams(params);
+        }
 
 
     }
@@ -149,12 +195,12 @@ public class Dashboard extends AppCompatActivity {
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
         SharedPreferences sharedPreference = getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         String role = sharedPreference.getString("role", "Agent");
-        LoadBalance1.setVisibility(!role.equals("Agent") ? View.VISIBLE : GONE);
+        LoadBalance1.setVisibility(!role.equals("Agent") ? VISIBLE : GONE);
 
 
-        AppFrame.setVisibility(View.VISIBLE);
-        BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? GONE : View.VISIBLE);
-        ISPsLayout.setVisibility(View.VISIBLE);
+        AppFrame.setVisibility(VISIBLE);
+        BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? GONE : VISIBLE);
+        ISPsLayout.setVisibility(VISIBLE);
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
 
@@ -225,9 +271,12 @@ public class Dashboard extends AppCompatActivity {
         LogoutButton = findViewById(R.id.logout_button);
         AvailableBalance = findViewById(R.id.available_balance);
         expected_collection_summary = findViewById(R.id.expected_collection_summary);
+        expected_collection_summary1 = findViewById(R.id.expected_collection_summary1);
+        total_expected_collection_summary = findViewById(R.id.total_expected_collection_summary);
         StatusMessage = findViewById(R.id.status_message);
         NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
         NavCollectBtn = findViewById(R.id.nav_collect_layout_btn);
+        NavAdminBtn = findViewById(R.id.nav_admin_btn1);
         NavLaodBalanceBtn = findViewById(R.id.nav_load_btn);
         NavLaodBalanceBtn1 = findViewById(R.id.nav_load_btn1);
         expected_collection = findViewById(R.id.expected_collection);
@@ -239,6 +288,8 @@ public class Dashboard extends AppCompatActivity {
         BuyLayout = findViewById(R.id.Buying_layout);
         ItemsLayout = findViewById(R.id.Items_display_layout);
         collect_layout = findViewById(R.id.collect_layout);
+        adminLayout = findViewById(R.id.admin_layout);
+        userSummaryLayout = findViewById(R.id.user_summary_layout);
         expected_collection_layout = findViewById(R.id.expected_collection_layout);
         ItemRecyclerView = findViewById(R.id.Items_recycler_view);
         ItemFilterSpinner = findViewById(R.id.items_spinner);
@@ -270,7 +321,7 @@ public class Dashboard extends AppCompatActivity {
         AmountTLoadInBuy = findViewById(R.id.loading_amount_in_buy);
         selectedAgentBalance1 = findViewById(R.id.selected_agents_balance1);
         selectedAgentBalance = findViewById(R.id.selected_agents_balance);
-       tableLayout1 = findViewById(R.id.selected_agents_balance_table1);
+        tableLayout1 = findViewById(R.id.selected_agents_balance_table1);
         tableLayout = findViewById(R.id.selected_agents_balance_table);
     }
 
@@ -339,7 +390,7 @@ public class Dashboard extends AppCompatActivity {
                             Web.loadUrl(redirectUrl);
 
                             load.setVisibility(GONE);
-                            Web.setVisibility(View.VISIBLE);
+                            Web.setVisibility(VISIBLE);
                         }, 5000);
                     } else {
                         Utils.showToast(this, "Failed to get redirect URL.");
@@ -374,7 +425,7 @@ public class Dashboard extends AppCompatActivity {
 
         hideLayouts(WebScree, NavBuyBtn);
         Navbar.setVisibility(GONE);
-        load.setVisibility(View.VISIBLE);
+        load.setVisibility(VISIBLE);
 
         PayNowPaymentProcessor.createPayNowOrder(this, selectedAgentId1, "Load balance", amount, new PayNowPaymentProcessor.PayNowCallback() {
             @Override
@@ -405,7 +456,7 @@ public class Dashboard extends AppCompatActivity {
 
                         Web.loadUrl(payNowResponse.getRedirectUrl());
                         load.setVisibility(GONE);
-                        Web.setVisibility(View.VISIBLE);
+                        Web.setVisibility(VISIBLE);
                     } else {
                         load.setVisibility(GONE);
                         AmountTLoad.setError("Failed to generate payment link");
@@ -512,6 +563,7 @@ public class Dashboard extends AppCompatActivity {
         LogoutButton.setOnClickListener(v -> logout());
         NavHomeBtn.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
         NavCollectBtn.setOnClickListener(v -> hideLayouts(collect_layout, NavCollectBtn));
+        NavAdminBtn.setOnClickListener(v -> hideLayouts(adminLayout, NavAdminBtn));
         NavLaodBalanceBtn.setOnClickListener(v -> hideLayouts(LoadBalanceLayout, NavLaodBalanceBtn));
         NavLaodBalanceBtn1.setOnClickListener(v -> hideLayouts(BuyLayout, NavLaodBalanceBtn1));
         NavIPSBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavIPSBtn));
@@ -542,8 +594,8 @@ public class Dashboard extends AppCompatActivity {
         BackToHome.setOnClickListener(v -> {
             Utils.hideSoftKeyboard(Dashboard.this);
 
-            Navbar.setVisibility(View.VISIBLE);
-            if (ItemsLayout.getVisibility() == View.VISIBLE) {
+            Navbar.setVisibility(VISIBLE);
+            if (ItemsLayout.getVisibility() == VISIBLE) {
                 hideLayouts(ISPsLayout, NavHomeBtn);
             } else {
                 hideLayouts(ItemsLayout, NavHomeBtn);
@@ -554,8 +606,11 @@ public class Dashboard extends AppCompatActivity {
         LoadBalance.setOnClickListener(v -> handlePayNowPayment());
         LoadBalance1.setOnClickListener(v -> handleManualLoadBalance());
     }
+
     private void showSummary(String startDate, String endDate) {
         expected_collection_summary.setLayoutManager(new LinearLayoutManager(this));
+        expected_collection_summary1.setLayoutManager(new LinearLayoutManager(this));
+        total_expected_collection_summary.setLayoutManager(new LinearLayoutManager(this));
 
         new Thread(() -> {
             try {
@@ -577,74 +632,55 @@ public class Dashboard extends AppCompatActivity {
                     JSONArray agentsArray = methodResponse.getJSONArray("agents");
 
                     List<JSONObject> summaries = new ArrayList<>();
+                    List<JSONObject> summaries1 = new ArrayList<>();
+                    List<JSONObject> total_summaries = new ArrayList<>();
                     double totalBalance = 0;
                     double totalDeposit = 0;
 
                     for (int i = 0; i < agentsArray.length(); i++) {
                         JSONObject agent = agentsArray.getJSONObject(i);
 
-                        totalBalance += agent.optDouble("agentBalance", 0);
-                        totalDeposit += agent.optDouble("agentDepositAmount", 0);
+                        totalBalance += agent.optDouble("agentCumulativeBalance", 0);
+                        totalDeposit += agent.optDouble("agentRechargeAmount", 0);
 
                         summaries.add(agent);
                     }
+                    for (int i = 0; i < agentsArray.length(); i++) {
+                        JSONObject agent = agentsArray.getJSONObject(i);
+                        JSONObject summaryItem = new JSONObject();
 
-                    if (!summaries.isEmpty()) {
-                        JSONObject totalRow = new JSONObject();
-                        totalRow.put("isTotal", true);
-                        totalRow.put("totalBalance", totalBalance);
-                        totalRow.put("totalDeposit", totalDeposit);
-                        summaries.add(totalRow);
+                        summaryItem.put("date", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())); // or actual date if available
+                        summaryItem.put("deposit", agent.optDouble("agentDepositAmount", 0));
+                        summaryItem.put("recharge", agent.optDouble("agentRechargeAmount", 0));
+                        summaryItem.put("collection", agent.optDouble("agentCashAmount", 0));
+                        summaryItem.put("commission", agent.optDouble("agentCommissionAmount", 0));
+
+                        summaries1.add(summaryItem);
                     }
 
 
+                    // Total summary row
+                    JSONObject totalRow = new JSONObject();
+                    totalRow.put("agentName", "Total");
+                    totalRow.put("agentCumulativeBalance", totalBalance);
+                    totalRow.put("agentRechargeAmount", totalDeposit);
+                    total_summaries.add(totalRow);
+
                     runOnUiThread(() -> {
-                        RecyclerView.Adapter<RecyclerView.ViewHolder> adapter = new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                        total_expected_collection_summary.setVisibility(summaries.size() > 1 ? VISIBLE : GONE);
+                        // Normal adapter for agents
+                        expected_collection_summary.setAdapter(
+                                new CollectionSummaryAdapter(summaries, currencySymbol, false)
+                        );
 
-                            class SimpleViewHolder extends RecyclerView.ViewHolder {
-                                final TextView name;
-                                final TextView balance;
-                                final TextView deposit;
+                        expected_collection_summary1.setAdapter(
+                                new CollectionSummaryAdapter1(summaries1, currencySymbol, false)
+                        );
 
-                                public SimpleViewHolder(View itemView) {
-                                    super(itemView);
-                                    name = itemView.findViewById(R.id.text_name);
-                                    balance = itemView.findViewById(R.id.text_balance);
-                                    deposit = itemView.findViewById(R.id.text_deposit);
-                                }
-                            }
-
-                            @NonNull
-                            @Override
-                            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                                View view = LayoutInflater.from(parent.getContext())
-                                        .inflate(R.layout.item_user_collection, parent, false);
-                                return new SimpleViewHolder(view);
-                            }
-
-                            @Override
-                            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                                JSONObject agent = summaries.get(position);
-                                SimpleViewHolder vh = (SimpleViewHolder) holder;
-
-                                if (agent.optBoolean("isTotal", false)) {
-                                    vh.name.setText("Total");
-                                    vh.balance.setText(currencySymbol + String.format("%.2f", agent.optDouble("totalBalance", 0)));
-                                    vh.deposit.setText(currencySymbol + String.format("%.2f", agent.optDouble("totalDeposit", 0)));
-                                } else {
-                                    vh.name.setText(agent.optString("agentName", "N/A"));
-                                    vh.balance.setText(currencySymbol + agent.optString("agentBalance", "0"));
-                                    vh.deposit.setText(currencySymbol + agent.optString("agentDepositAmount", "0"));
-                                }
-                            }
-
-                            @Override
-                            public int getItemCount() {
-                                return summaries.size();
-                            }
-                        };
-
-                        expected_collection_summary.setAdapter(adapter);
+                        // Bold adapter for total summary
+                        total_expected_collection_summary.setAdapter(
+                                new CollectionSummaryAdapter(total_summaries, currencySymbol, true)
+                        );
                     });
 
                 } else {
@@ -656,7 +692,130 @@ public class Dashboard extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
             }
         }).start();
+    }
 
+    class CollectionSummaryAdapter extends RecyclerView.Adapter<CollectionSummaryAdapter.SimpleViewHolder> {
+
+        private final List<JSONObject> data;
+        private final String currencySymbol;
+        private final boolean isBold;
+
+        public CollectionSummaryAdapter(List<JSONObject> data, String currencySymbol, boolean isBold) {
+            this.data = data;
+            this.currencySymbol = currencySymbol;
+            this.isBold = isBold;
+        }
+
+        class SimpleViewHolder extends RecyclerView.ViewHolder {
+            final TextView name;
+            final TextView balance;
+            final TextView deposit;
+
+            public SimpleViewHolder(View itemView) {
+                super(itemView);
+                name = itemView.findViewById(R.id.text_name);
+                balance = itemView.findViewById(R.id.text_balance);
+                deposit = itemView.findViewById(R.id.text_deposit);
+            }
+        }
+
+        @NonNull
+        @Override
+        public SimpleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_user_collection, parent, false);
+            return new SimpleViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull SimpleViewHolder holder, int position) {
+            JSONObject agent = data.get(position);
+            String agentName = agent.optString("agentName", "N/A");
+
+            holder.name.setText(agentName);
+            holder.balance.setText(currencySymbol + String.format("%.2f", agent.optDouble("agentCumulativeBalance", 0)));
+            holder.deposit.setText(currencySymbol + String.format("%.2f", agent.optDouble("agentRechargeAmount", 0)));
+
+            // Apply bold styling if needed
+            int style = isBold ? Typeface.BOLD : Typeface.NORMAL;
+            holder.name.setTypeface(null, style);
+            holder.balance.setTypeface(null, style);
+            holder.deposit.setTypeface(null, style);
+
+            // Set click listener on name
+            holder.name.setOnClickListener(v -> {
+                if (!"Total".equalsIgnoreCase(agentName)) {
+                   hideLayouts(userSummaryLayout,expected_collection);
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return data.size();
+        }
+    }
+    class CollectionSummaryAdapter1 extends RecyclerView.Adapter<CollectionSummaryAdapter1.SimpleViewHolder> {
+
+        private final List<JSONObject> data;
+        private final String currencySymbol;
+        private final boolean isBold;
+
+        public CollectionSummaryAdapter1(List<JSONObject> data, String currencySymbol, boolean isBold) {
+            this.data = data;
+            this.currencySymbol = currencySymbol;
+            this.isBold = isBold;
+        }
+
+        class SimpleViewHolder extends RecyclerView.ViewHolder {
+            final TextView date, deposit, recharge, collection, commission;
+
+            public SimpleViewHolder(View itemView) {
+                super(itemView);
+                date = itemView.findViewById(R.id.text_date);
+                deposit = itemView.findViewById(R.id.text_deposit);
+                recharge = itemView.findViewById(R.id.text_recharge);
+                collection = itemView.findViewById(R.id.text_collection);
+                commission = itemView.findViewById(R.id.text_commission);
+            }
+        }
+
+        @NonNull
+        @Override
+        public SimpleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.summary_layout, parent, false);
+            return new SimpleViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull SimpleViewHolder holder, int position) {
+            JSONObject item = data.get(position);
+
+            String date = item.optString("date", "-");
+            double deposit = item.optDouble("agentDepositAmount", 0);
+            double recharge = item.optDouble("agentRechargeAmount", 0);
+            double collection = item.optDouble("agentCashAmount", 0);
+            double commission = item.optDouble("agentCommissionAmount", 0);
+
+            holder.date.setText(date);
+            holder.deposit.setText(currencySymbol + String.format("%.2f", deposit));
+            holder.recharge.setText(currencySymbol + String.format("%.2f", recharge));
+            holder.collection.setText(currencySymbol + String.format("%.2f", collection));
+            holder.commission.setText(currencySymbol + String.format("%.2f", commission));
+
+            int style = isBold ? Typeface.BOLD : Typeface.NORMAL;
+            holder.date.setTypeface(null, style);
+            holder.deposit.setTypeface(null, style);
+            holder.recharge.setTypeface(null, style);
+            holder.collection.setTypeface(null, style);
+            holder.commission.setTypeface(null, style);
+        }
+
+        @Override
+        public int getItemCount() {
+            return data.size();
+        }
     }
 
 
@@ -669,7 +828,7 @@ public class Dashboard extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (goBack) {
                             setISP(SelectedIsp.getText().toString());
-                            Navbar.setVisibility(View.VISIBLE);
+                            Navbar.setVisibility(VISIBLE);
                         } else {
                             dialog.dismiss();
                         }
@@ -769,11 +928,11 @@ public class Dashboard extends AppCompatActivity {
         Utils.hideSoftNavBar(Dashboard.this);
         Navbar.setVisibility(GONE);
         AppFrame.setVisibility(GONE);
-        ConfirmationScreen.setVisibility(View.VISIBLE);
+        ConfirmationScreen.setVisibility(VISIBLE);
     }
 
     private void handleNo() {
-        AppFrame.setVisibility(View.VISIBLE);
+        AppFrame.setVisibility(VISIBLE);
         ConfirmationScreen.setVisibility(GONE);
     }
 
@@ -804,7 +963,6 @@ public class Dashboard extends AppCompatActivity {
         salute.setText(builder);
 
     }
-
 
 
     public void buy() {
@@ -1091,13 +1249,13 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        setupAgentSpinner(Agents, selectedAgentBalance1,tableLayout1, true);  // For Agents
-        setupAgentSpinner(Agents1, selectedAgentBalance,tableLayout, false); // For Agents1
+        setupAgentSpinner(Agents, selectedAgentBalance1, tableLayout1, true);  // For Agents
+        setupAgentSpinner(Agents1, selectedAgentBalance, tableLayout, false); // For Agents1
 
 
     }
 
-    private void setupAgentSpinner(AdapterView<?> spinner, TextView balanceView,TableLayout tableLayout, boolean isFirstAgent) {
+    private void setupAgentSpinner(AdapterView<?> spinner, TextView balanceView, TableLayout tableLayout, boolean isFirstAgent) {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -1173,8 +1331,6 @@ public class Dashboard extends AppCompatActivity {
                                                     data.add(new String[]{"Cycle Recharge Value", currencySymbol + cycleRechargeValue1});
 
                                                     populateTable(data, tableLayout);
-
-
 
 
                                                 } else {
@@ -1256,13 +1412,11 @@ public class Dashboard extends AppCompatActivity {
     }
 
 
-
-
     private void handleBackFromList() {
         BackToHome.setVisibility(GONE);
-        Navbar.setVisibility(View.VISIBLE);
+        Navbar.setVisibility(VISIBLE);
         job_list_screen.setVisibility(GONE);
-        AppFrame.setVisibility(View.VISIBLE);
+        AppFrame.setVisibility(VISIBLE);
     }
 
     private void handleShowMore() {
@@ -1283,7 +1437,7 @@ public class Dashboard extends AppCompatActivity {
 
         Navbar.setVisibility(GONE);
         AppFrame.setVisibility(GONE);
-        job_list_screen.setVisibility(View.VISIBLE);
+        job_list_screen.setVisibility(VISIBLE);
     }
 
     private void clearFields() {
@@ -1370,15 +1524,15 @@ public class Dashboard extends AppCompatActivity {
         clearFields();
         if (imageButton.getId() == R.id.nav_buy_btn1) {
             Phone.requestFocus();
-            SelectedItem.setVisibility(View.VISIBLE);
+            SelectedItem.setVisibility(VISIBLE);
             AmountCapture.setVisibility(GONE);
             BuyBtn1.setVisibility(GONE);
-            BuyBtn.setVisibility(View.VISIBLE);
+            BuyBtn.setVisibility(VISIBLE);
         } else if (imageButton.getId() == R.id.nav_load_btn1) {
             Phone.requestFocus();
             SelectedItem.setVisibility(GONE);
-            AmountCapture.setVisibility(View.VISIBLE);
-            BuyBtn1.setVisibility(View.VISIBLE);
+            AmountCapture.setVisibility(VISIBLE);
+            BuyBtn1.setVisibility(VISIBLE);
             BuyBtn.setVisibility(GONE);
         } else if (imageButton.getId() == R.id.more1) {
             SharedPreferences sharedPreferences = this.getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
@@ -1394,7 +1548,7 @@ public class Dashboard extends AppCompatActivity {
 
         defaultColoring(imageButton);
         imageButton.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
-        BackToHome.setVisibility(View.VISIBLE);
+        BackToHome.setVisibility(VISIBLE);
         ISPsLayout.setVisibility(GONE);
         BuyLayout.setVisibility(GONE);
         ItemsLayout.setVisibility(GONE);
@@ -1402,7 +1556,9 @@ public class Dashboard extends AppCompatActivity {
         WebScree.setVisibility(GONE);
         expected_collection_layout.setVisibility(GONE);
         collect_layout.setVisibility(GONE);
-        layoutToDisplay.setVisibility(View.VISIBLE);
+        adminLayout.setVisibility(GONE);
+        userSummaryLayout.setVisibility(GONE);
+        layoutToDisplay.setVisibility(VISIBLE);
 
 
     }
@@ -1464,9 +1620,9 @@ public class Dashboard extends AppCompatActivity {
         getBalance(ISP);
         SelectedIsp.setText(ISP);
         hideLayouts(ItemsLayout, NavIPSBtn);
-        BackToHome.setVisibility(View.VISIBLE);
+        BackToHome.setVisibility(VISIBLE);
         ISPsLayout.setVisibility(GONE);
-        ItemsLayout.setVisibility(View.VISIBLE);
+        ItemsLayout.setVisibility(VISIBLE);
 
     }
 
@@ -1617,10 +1773,10 @@ public class Dashboard extends AppCompatActivity {
                                 } else {
                                     startDate = start;
                                     endDate = end;
-                                    if (job_list_screen.getVisibility() == View.VISIBLE) {
+                                    if (job_list_screen.getVisibility() == VISIBLE) {
                                         populateHistory(start, end);
-                                    }else {
-                                        showSummary(start,end);
+                                    } else {
+                                        showSummary(start, end);
                                     }
                                 }
                             }
@@ -1846,6 +2002,7 @@ public class Dashboard extends AppCompatActivity {
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavLaodBalanceBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavCollectBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        NavAdminBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavLaodBalanceBtn1.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         expected_collection.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
@@ -2077,9 +2234,6 @@ public class Dashboard extends AppCompatActivity {
         return Math.round(dp * density);
     }
 
-    public void viewCollect(View view) {
-         hideLayouts(collect_layout, NavCollectBtn);
-    }
 
     public void showManualLoad(View view) {
     }
@@ -2148,10 +2302,10 @@ public class Dashboard extends AppCompatActivity {
                     SelectedItemPrice.setText(String.format("%s%s", currencySymbol, price));
                     ItemCode = itemCode;
                     Utils.setFieldFocus(Phone, Dashboard.this);
-                    if (job_list_screen.getVisibility() == View.VISIBLE) {
+                    if (job_list_screen.getVisibility() == VISIBLE) {
                         job_list_screen.setVisibility(GONE);
-                        AppFrame.setVisibility(View.VISIBLE);
-                        Navbar.setVisibility(View.VISIBLE);
+                        AppFrame.setVisibility(VISIBLE);
+                        Navbar.setVisibility(VISIBLE);
                     }
 
                     hideLayouts(BuyLayout, NavBuyBtn);

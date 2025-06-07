@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
+
+    <TextView
+        android:id="@+id/text_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:layout_margin="8dp"
+        android:textColor="@color/primary_color"
+        android:textSize="15sp" />
+
+    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
+
+    <TextView
+        android:id="@+id/text_deposit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:textColor="@color/primary_color"
+        android:textSize="15sp" />
+
+    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
+
+    <TextView
+        android:id="@+id/text_recharge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:textColor="@color/primary_color"
+        android:textSize="15sp" />
+
+    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
+
+    <TextView
+        android:id="@+id/text_collection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:textColor="@color/primary_color"
+        android:textSize="15sp" />
+
+    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
+
+    <TextView
+        android:id="@+id/text_commission"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:textColor="@color/primary_color"
+        android:textSize="15sp" />
+    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
+
+</LinearLayout>
