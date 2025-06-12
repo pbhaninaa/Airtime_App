@@ -2,31 +2,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
-    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
-
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
     <TextView
         android:id="@+id/text_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.2"
+        android:layout_weight="0.7"
         android:layout_margin="8dp"
         android:textColor="@color/primary_color"
-        android:textSize="15sp" />
+        android:textSize="@dimen/twelve"
+        />
 
-    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
-
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
     <TextView
         android:id="@+id/text_deposit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0.9"
         android:layout_margin="8dp"
         android:gravity="center"
         android:textColor="@color/primary_color"
-        android:textSize="15sp" />
+        android:textSize="@dimen/twelve"
+        />
 
-    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
-
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
     <TextView
         android:id="@+id/text_recharge"
         android:layout_width="0dp"
@@ -35,10 +43,13 @@
         android:layout_margin="8dp"
         android:gravity="center"
         android:textColor="@color/primary_color"
-        android:textSize="15sp" />
+        android:textSize="@dimen/twelve"
+        />
 
-    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
-
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
     <TextView
         android:id="@+id/text_collection"
         android:layout_width="0dp"
@@ -47,19 +58,25 @@
         android:layout_margin="8dp"
         android:gravity="center"
         android:textColor="@color/primary_color"
-        android:textSize="15sp" />
+        android:textSize="@dimen/twelve"
+        />
 
-    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
-
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
     <TextView
         android:id="@+id/text_commission"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_margin="8dp"
-        android:gravity="center"
+        android:gravity="end"
         android:textColor="@color/primary_color"
-        android:textSize="15sp" />
-    <View android:layout_width="2sp" android:layout_height="match_parent" android:background="@color/light_blue" />
-
+        android:textSize="@dimen/twelve"
+        />
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
 </LinearLayout>

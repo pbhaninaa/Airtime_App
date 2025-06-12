@@ -84,16 +84,30 @@ public class ApiService {
         String jsonInputString = "{ \"TransactionType\":\"Password Reset\", \"AgentID\":\"" + agentID + "\", \"AgentEmail\":\"" + email + "\",\"DeviceID\":\"" + Utils.getDeviceEMEI(context) + "\"}";
         return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "reset-password", jsonInputString);
     }
+    public static JSONObject getCollectorStatement(String agentID, String network, String startDate, String endDate) throws Exception {
+        String jsonInputString = "{"
+                + "\"Network\":\"" + network + "\","
+                + "\"TransactionType\":\"Collector Statement\","
+                + "\"AgentID\":\"" + agentID + "\","
+                + "\"StartDate\":\"" + startDate + "\","
+                + "\"EndDate\":\"" + endDate + "\""
+                + "}";
+
+        return HelperClass.sendPostRequest(BuildConfig.API_BASE_URL + "collector-statement", jsonInputString);
+    }
+
     public static JSONObject getCollectorSummary(
             String network,
             String agentID,
+            String transactionType,
             String collectorID,
             String startDate,
             String endDate
+
     ) throws Exception {
         String jsonInputString = "{"
                 + "\"Network\":\"" + network + "\","
-                + "\"TransactionType\":\"Collector Summary\","
+                + "\"TransactionType\":\""+transactionType+"\","
                 + "\"AgentID\":\"" + agentID + "\","
                 + "\"CollectorID\":\"" + collectorID + "\","
                 + "\"StartDate\":\"" + startDate + "\","
