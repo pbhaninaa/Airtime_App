@@ -632,21 +632,24 @@ public class Dashboard extends AppCompatActivity {
 
                     List<JSONObject> summaries = new ArrayList<>();
                     List<JSONObject> total_summaries = new ArrayList<>();
-                    double totalBalance = 0;
-                    double totalDeposit = 0;
 
                     for (int i = 0; i < agentsArray.length(); i++) {
                         JSONObject agent = agentsArray.getJSONObject(i);
-                        totalBalance += agent.optDouble("agentRechargeAmount", 0);
-                        totalDeposit += agent.optDouble("agentCumulativeBalance", 0);
                         summaries.add(agent);
                     }
 
                     // Total summary row
                     JSONObject totalRow = new JSONObject();
                     totalRow.put("agentName", "Total");
-                    totalRow.put("agentCumulativeBalance", totalDeposit);
-                    totalRow.put("agentRechargeAmount", totalBalance);
+                    totalRow.put("agentCommissionAmount",
+                            Double.parseDouble(methodResponse.getString("totalCommissionAmount").replace(",", "")));
+
+                    totalRow.put("agentRechargeAmount",
+                            Double.parseDouble(methodResponse.getString("totalRechargeAmount").replace(",", "")));
+
+                    totalRow.put("agentCumulativeBalance",
+                            Double.parseDouble(methodResponse.getString("totalCumulativeBalance").replace(",", "")));
+
                     total_summaries.add(totalRow);
 
                     runOnUiThread(() -> {
@@ -687,12 +690,14 @@ public class Dashboard extends AppCompatActivity {
 
         class SimpleViewHolder extends RecyclerView.ViewHolder {
             final TextView name;
+            final TextView collect;
             final TextView balance;
             final TextView deposit;
 
             public SimpleViewHolder(View itemView) {
                 super(itemView);
                 name = itemView.findViewById(R.id.text_name);
+                collect = itemView.findViewById(R.id.collect_amount);
                 balance = itemView.findViewById(R.id.text_balance);
                 deposit = itemView.findViewById(R.id.text_deposit);
             }
@@ -712,8 +717,9 @@ public class Dashboard extends AppCompatActivity {
             String agentName = agent.optString("agentName", "N/A");
 
             holder.name.setText(agentName);
-            holder.balance.setText(currencySymbol + String.format("%.2f", agent.optDouble("agentRechargeAmount", 0)));
-            holder.deposit.setText(currencySymbol + String.format("%.2f", agent.optDouble("agentCumulativeBalance", 0)));
+            holder.collect.setText(currencySymbol + String.format("%.2f", agent.optDouble("agentCommissionAmount", 0)));
+            holder.balance.setText(currencySymbol + String.format("%.2f", agent.optDouble("agentRechargeAmount", 01)));
+            holder.deposit.setText(currencySymbol + String.format("%.2f", agent.optDouble("agentCumulativeBalance", 01)));
 
             // Apply bold styling if needed
             int style = isBold ? Typeface.BOLD : Typeface.NORMAL;
@@ -721,6 +727,7 @@ public class Dashboard extends AppCompatActivity {
 
 
             holder.name.setTypeface(null, style);
+            holder.collect.setTypeface(null, style);
             holder.balance.setTypeface(null, style);
             holder.deposit.setTypeface(null, style);
 
@@ -734,15 +741,15 @@ public class Dashboard extends AppCompatActivity {
 
             // Set click listener on name
             holder.name.setOnClickListener(v -> {
+                Utils.LoadingLayout(Dashboard.this, Dashboard.this);
 
-                if (!"Total".equalsIgnoreCase(agentName)) {
                     TextView selectedAgent = findViewById(R.id.selectedName);
                     TextView dateRange = findViewById(R.id.selectedDateRange);
                     selectedAgent.setText(agentName);
                     dateRange.setText(String.format("%s - %s", startDate, endDate));
                     hideLayouts(userSummaryLayout, expected_collection);
                     populateSelectedUserList(agent.optString("agentID", "0"));
-                }
+
             });
         }
 
@@ -796,11 +803,7 @@ public class Dashboard extends AppCompatActivity {
 
                         summaries.add(summaryItem);
                     }
-
-                    double finalAgentA = agentA;
-                    double finalCashA = cashA;
-                    double finalRechargeA = rechargeA;
-                    double finalDepositA = depositA;
+                double finalDepositA = depositA;double finalAgentA = agentA;  double finalCashA = cashA;double finalRechargeA = rechargeA;
                     runOnUiThread(() -> {
                         // Set up the RecyclerView adapter
                         expected_collection_summary1.setAdapter(
@@ -903,6 +906,7 @@ public class Dashboard extends AppCompatActivity {
             holder.recharge.setTypeface(null, style);
             holder.collection.setTypeface(null, style);
             holder.commission.setTypeface(null, style);
+            Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
         }
 
         @Override
@@ -1390,7 +1394,6 @@ public class Dashboard extends AppCompatActivity {
                                                 JSONArray paramsList = methodResponse.getJSONArray("paramsList");
 
                                                 if (paramsList.length() > 0) {
-//                                                    JSONObject userObject = paramsList.getJSONObject(0);
                                                     JSONObject userObject = paramsList.getJSONObject(0);
 
                                                     String decimalBalance = userObject.getString("decimalBalance");
