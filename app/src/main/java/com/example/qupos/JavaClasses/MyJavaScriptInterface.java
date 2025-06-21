@@ -1,4 +1,4 @@
-package com.example.testingmyskills.JavaClasses;
+package com.example.qupos.JavaClasses;
 
 import android.app.Activity;
 import android.webkit.JavascriptInterface;

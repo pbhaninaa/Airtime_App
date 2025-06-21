@@ -1,4 +1,4 @@
-package com.example.testingmyskills.Dao;
+package com.example.qupos.Dao;
 
 import org.json.JSONObject;
 

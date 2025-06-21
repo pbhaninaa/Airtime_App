@@ -1,4 +1,4 @@
-package com.example.testingmyskills.JavaClasses;
+package com.example.qupos.JavaClasses;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -31,8 +31,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class Communication {

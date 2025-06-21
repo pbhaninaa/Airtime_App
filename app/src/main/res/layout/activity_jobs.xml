@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/back_ground_gray"
-    tools:context="com.example.testingmyskills.UI.Dashboard"
+    tools:context="qupos.UI.Dashboard"
     tools:ignore="RtlHardcoded,RtlSymmetry,SpUsage,UselessParent">
     <!--    app_frame -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -894,11 +894,11 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/five"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -1017,14 +1017,7 @@
                                 android:text="Collect"
                                 android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/selected_agents_balance1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/fifteen"
-                                android:background="@null"
-                                android:textColor="@color/primary_color"
-                                android:textSize="@dimen/eighteen" />
+
                         </LinearLayout>
                     </ScrollView>
 
@@ -1063,7 +1056,7 @@
                     android:layout_marginTop="@dimen/five"
                     android:layout_marginBottom="@dimen/seven"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"

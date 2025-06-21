@@ -1,9 +1,9 @@
-package com.example.testingmyskills.JavaClasses;
+package com.example.qupos.JavaClasses;
 
 import android.content.Context;
 
-import com.example.testingmyskills.BuildConfig;
-import com.example.testingmyskills.Dao.HelperClass;
+import com.example.qupos.BuildConfig;
+import com.example.qupos.Dao.HelperClass;
 
 import org.json.JSONObject;
 

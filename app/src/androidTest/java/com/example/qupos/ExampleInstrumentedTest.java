@@ -1,4 +1,4 @@
-package com.example.testingmyskills;
+package com.example.qupos;
 
 import android.content.Context;
 
@@ -24,6 +24,6 @@ public class ExampleInstrumentedTest {
         Context appContext = ApplicationProvider.getApplicationContext();
 
         // Verify the package name of the app under test
-        assertEquals("com.example.testingmyskills", appContext.getPackageName());
+        assertEquals("com.example.za.co.qupos", appContext.getPackageName());
     }
 }

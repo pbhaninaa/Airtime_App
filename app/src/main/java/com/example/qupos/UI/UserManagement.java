@@ -1,4 +1,4 @@
-package com.example.testingmyskills.UI;
+package com.example.qupos.UI;
 
 import static android.view.View.GONE;
 
@@ -26,10 +26,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.testingmyskills.JavaClasses.ApiService;
-import com.example.testingmyskills.JavaClasses.Country;
-import com.example.testingmyskills.R;
-import com.example.testingmyskills.JavaClasses.Utils;
+import com.example.qupos.JavaClasses.ApiService;
+import com.example.qupos.JavaClasses.Country;
+import com.example.qupos.R;
+import com.example.qupos.JavaClasses.Utils;
 
 import org.json.*;
 

@@ -1,4 +1,4 @@
-package com.example.testingmyskills.JavaClasses;
+package com.example.qupos.JavaClasses;
 
 public class PayNowResponse {
     private String redirectUrl;

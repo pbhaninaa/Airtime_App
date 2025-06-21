@@ -1,8 +1,8 @@
-package com.example.testingmyskills.UI;
+package com.example.qupos.UI;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.example.testingmyskills.UI.UserManagement.getZimCode;
+import static com.example.qupos.UI.UserManagement.getZimCode;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -73,14 +73,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.testingmyskills.JavaClasses.ApiService;
-import com.example.testingmyskills.JavaClasses.CurrencyTextWatcher;
-import com.example.testingmyskills.JavaClasses.PayNowPaymentProcessor;
-import com.example.testingmyskills.JavaClasses.MyJavaScriptInterface;
-import com.example.testingmyskills.JavaClasses.Country;
-import com.example.testingmyskills.JavaClasses.PaymentProcessor;
-import com.example.testingmyskills.R;
-import com.example.testingmyskills.JavaClasses.Utils;
+import com.example.qupos.JavaClasses.ApiService;
+import com.example.qupos.JavaClasses.CurrencyTextWatcher;
+import com.example.qupos.JavaClasses.PayNowPaymentProcessor;
+import com.example.qupos.JavaClasses.MyJavaScriptInterface;
+import com.example.qupos.JavaClasses.Country;
+import com.example.qupos.JavaClasses.PaymentProcessor;
+import com.example.qupos.R;
+import com.example.qupos.JavaClasses.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -319,7 +319,6 @@ public class Dashboard extends AppCompatActivity {
         statusLight = findViewById(R.id.status_light);
         currencySymbolInBuy = findViewById(R.id.currency_symbol_in_buy);
         AmountTLoadInBuy = findViewById(R.id.loading_amount_in_buy);
-        selectedAgentBalance1 = findViewById(R.id.selected_agents_balance1);
         selectedAgentBalance = findViewById(R.id.selected_agents_balance);
         tableLayout1 = findViewById(R.id.selected_agents_balance_table1);
         tableLayout = findViewById(R.id.selected_agents_balance_table);
@@ -415,9 +414,9 @@ public class Dashboard extends AppCompatActivity {
         Utils.hideSoftKeyboard(Dashboard.this);
 
 
-        String message = "Please confirm details:\n\n"
-                + selectedAgentId1 + "\n\n"
-                + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n\n"
+        String message = "Please confirm details:\n"
+                +"ID: " + selectedAgentId1 + "\n"
+                + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n"
 
                 + "Tap OK to continue or Cancel";
 
@@ -972,9 +971,9 @@ public class Dashboard extends AppCompatActivity {
             AmountTLoad.setError("Amount is required");
             return;
         }
-        String message = "Please confirm details:\n\n"
-                + selectedAgentId1 + "\n\n"
-                + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n\n"
+        String message = "Please confirm details:\n"
+                +"ID: " + selectedAgentId1 + "\n"
+                + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n"
 
                 + "Tap OK to continue or Cancel";
 
@@ -1122,9 +1121,9 @@ public class Dashboard extends AppCompatActivity {
         String countryCode = String.valueOf(CountryCode.getSelectedItem());
         String fullPhoneNumber = countryCode + phone;
 
-        String message = "Please confirm details:\n\n" +
-                AmountTLoadInBuy.getText().toString() + "\n\n" + fullPhoneNumber +
-                "\n\nTap OK to continue or Cancel";
+        String message = "Please confirm details:\n" +
+                AmountTLoadInBuy.getText().toString() + "\n" + "ID: " +fullPhoneNumber +
+                "\nTap OK to continue or Cancel";
 
         showConfirmationDialog(this, message, "OK", "Cancel", result ->
         {
@@ -1245,8 +1244,8 @@ public class Dashboard extends AppCompatActivity {
 
         // Step 2: Prepare confirmation message
         String fullPhoneNumber = CountryCode.getSelectedItem() + phoneText;
-        String message = "Please confirm details:\n\n" +
-                fullPhoneNumber + "\n\nTap OK to continue or Cancel";
+        String message = "Please confirm details:\n" +
+                "ID: " +fullPhoneNumber + "\nTap OK to continue or Cancel";
 
         // Step 3: Ask for confirmation
         showConfirmationDialog(this, message, "OK", "Cancel", result -> {
@@ -1388,13 +1387,13 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        setupAgentSpinner(Agents, selectedAgentBalance1, tableLayout1, true);  // For Agents
-        setupAgentSpinner(Agents1, selectedAgentBalance, tableLayout, false); // For Agents1
+        setupAgentSpinner(Agents, tableLayout1, true);
+        setupAgentSpinner(Agents1, tableLayout, false); // For Agents1
 
 
     }
 
-    private void setupAgentSpinner(AdapterView<?> spinner, TextView balanceView, TableLayout tableLayout, boolean isFirstAgent) {
+    private void setupAgentSpinner(AdapterView<?> spinner, TableLayout tableLayout, boolean isFirstAgent) {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -1408,14 +1407,12 @@ public class Dashboard extends AppCompatActivity {
                         if (agentName.equals(selectedItem)) {
                             String agentId = agent.optString("agentID", "");
 
-                            // Save selected agent ID
                             if (isFirstAgent) {
                                 selectedAgentId = agentId;
                             } else {
                                 selectedAgentId1 = agentId;
                             }
 
-                            // Run balance enquiry in background
                             ExecutorService executor = Executors.newSingleThreadExecutor();
                             Handler handler = new Handler(Looper.getMainLooper());
 
@@ -1429,6 +1426,7 @@ public class Dashboard extends AppCompatActivity {
 
                                     handler.post(() -> {
                                         try {
+
                                             if (res != null && res.getInt("responseCode") == 200) {
                                                 String responseString = res.getString("response");
                                                 JSONObject responseJson = new JSONObject(responseString);
@@ -1436,29 +1434,12 @@ public class Dashboard extends AppCompatActivity {
                                                 JSONArray paramsList = methodResponse.getJSONArray("paramsList");
 
                                                 if (paramsList.length() > 0) {
-                                                    JSONObject userObject = paramsList.getJSONObject(0);
-
-                                                    String decimalBalance = userObject.getString("decimalBalance");
-                                                    String cycleNetCollection = userObject.getString("cycleNetCollection");
-                                                    String cycleTargetCommission = userObject.getString("cycleTargetCommission");
-                                                    String cycleRechargeValue = userObject.getString("cycleRechargeValue");
-
-                                                    balanceView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 28); // 8 pixels
-
-                                                    String displayText = "Agent Balance: " + currencySymbol + decimalBalance + "\n" +
-                                                            "Cycle Net Collection: " + currencySymbol + cycleNetCollection + "\n" +
-                                                            "Cycle Target Commission: " + currencySymbol + cycleTargetCommission + "\n" +
-                                                            "Cycle Recharge Value: " + currencySymbol + cycleRechargeValue;
-
-                                                    balanceView.setText(displayText);
-                                                    balanceView.setVisibility(GONE);
-
-                                                    // JSON parsing
                                                     JSONObject userObject1 = paramsList.getJSONObject(0);
                                                     String decimalBalance1 = userObject1.getString("decimalBalance");
                                                     String cycleNetCollection1 = userObject1.getString("cycleNetCollection");
                                                     String cycleTargetCommission1 = userObject1.getString("cycleTargetCommission");
                                                     String cycleRechargeValue1 = userObject1.getString("cycleRechargeValue");
+                                                    String cycleDepositValue = userObject1.getString("cycleDepositValue");
 
 
                                                     List<String[]> data = new ArrayList<>();
@@ -1466,10 +1447,10 @@ public class Dashboard extends AppCompatActivity {
                                                     data.add(new String[]{"", ""});
                                                     data.add(new String[]{"Cycle Net Collection", currencySymbol + cycleNetCollection1});
                                                     data.add(new String[]{"Cycle Target Commission", currencySymbol + cycleTargetCommission1});
+                                                    data.add(new String[]{"Cycle TopUp", currencySymbol + cycleDepositValue});
                                                     data.add(new String[]{"Cycle Recharge Value", currencySymbol + cycleRechargeValue1});
 
                                                     populateTable(data, tableLayout);
-
 
                                                 } else {
                                                     Utils.showToast(Dashboard.this, "No balance data found.");
@@ -1497,7 +1478,6 @@ public class Dashboard extends AppCompatActivity {
                     }
                 }
 
-                balanceView.setText("");
 
             }
 
@@ -1534,7 +1514,7 @@ public class Dashboard extends AppCompatActivity {
             value.setTextColor(ContextCompat.getColor(Dashboard.this, R.color.primary_color));
             value.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
             value.setPadding(2, 2, 2, 2);
-            value. setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            value.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
             value.setGravity(Gravity.END);
 
             TableRow.LayoutParams valueParams = new TableRow.LayoutParams(
@@ -2291,10 +2271,10 @@ public class Dashboard extends AppCompatActivity {
         }
         String fullPhoneNumber = "+" + selectedAgentId;
 
-        String message = "Please confirm details:\n\n"
-                + fullPhoneNumber + "\n\n"
+        String message = "Please confirm details:\n"
+                + "ID: " +fullPhoneNumber + "\n"
                 + "Collection: " + currencySymbol + collectValue + "\n"
-                + "Commission: " + currencySymbol + commissionValue + "\n\n"
+                + "Commission: " + currencySymbol + commissionValue + "\n"
                 + "Tap OK to continue or Cancel ";
 
 

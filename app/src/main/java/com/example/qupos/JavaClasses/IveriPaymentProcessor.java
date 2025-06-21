@@ -1,4 +1,4 @@
-package com.example.testingmyskills.JavaClasses;
+package com.example.qupos.JavaClasses;
 
 import java.io.BufferedReader;
 import java.io.OutputStream;

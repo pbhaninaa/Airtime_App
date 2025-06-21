@@ -1,4 +1,4 @@
-package com.example.testingmyskills.JavaClasses;
+package com.example.qupos.JavaClasses;
 
 import android.content.Context;
 import android.util.Log;
@@ -19,9 +19,9 @@ public class PayNowPaymentProcessor {
     public static void createPayNowOrder(Context context,String selectedAgentId, String item, double price, PayNowCallback callback) {
         executorService.execute(() -> {
             try {
-                String paynowApiKey = context.getString(com.example.testingmyskills.R.string.paynow_api_key);
-                String paynowCode = context.getString(com.example.testingmyskills.R.string.paynow_code);
-                String userEmail = context.getString(com.example.testingmyskills.R.string.paynow_user_email);
+                String paynowApiKey = context.getString(com.example.qupos.R.string.paynow_api_key);
+                String paynowCode = context.getString(com.example.qupos.R.string.paynow_code);
+                String userEmail = context.getString(com.example.qupos.R.string.paynow_user_email);
 
                 Paynow paynow = new Paynow(paynowCode, paynowApiKey);
 

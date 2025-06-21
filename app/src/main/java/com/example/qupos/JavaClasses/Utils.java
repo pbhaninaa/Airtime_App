@@ -1,4 +1,4 @@
-package com.example.testingmyskills.JavaClasses;
+package com.example.qupos.JavaClasses;
 
 
 import static android.content.Context.MODE_PRIVATE;
@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.Editable;
@@ -33,8 +32,7 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
-import com.example.testingmyskills.R;
-import com.google.android.gms.maps.model.Dash;
+import com.example.qupos.R;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -47,8 +45,6 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
-
-import javax.mail.MessagingException;
 
 import android.telephony.TelephonyManager;
 import android.location.Address;

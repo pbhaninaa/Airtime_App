@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/back_ground_gray"
     android:gravity="center"
-    tools:context="com.example.testingmyskills.UI.MainActivity">
+    tools:context="qupos.UI.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/landing_page"

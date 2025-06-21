@@ -1,4 +1,4 @@
-package com.example.testingmyskills;
+package com.example.qupos;
 
 import org.junit.Test;
 

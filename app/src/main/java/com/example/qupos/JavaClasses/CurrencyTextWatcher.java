@@ -1,12 +1,10 @@
-package com.example.testingmyskills.JavaClasses;
+package com.example.qupos.JavaClasses;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 public class CurrencyTextWatcher implements TextWatcher {
     private final EditText editText;
