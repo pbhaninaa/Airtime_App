@@ -1,18 +1,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
     <string name="BASE_URL">http://102.219.85.66:8080/api/</string>
     <string name="app_name">Qupos </string>
-
+<!-- Yoco -->
     <string name="yoco_api_key">sk_test_dea075a7DLboMlz54fc40f18d415</string>
     <string name="yoco_failureUrl">"https://payments.yoco.com/api/checkouts"</string>
     <string name="successRedirectUrl">"testingmyskills://payment-success"</string>
-
+<!-- Iveri -->
     <string name="iveri_api_key">b80321c4-5c5b-4176-9eb4-2e8bf0c712fb</string>
     <string name="iveri_failureUrl">"https://portal.host.iveri.com/Lite/Fail"</string>
     <string name="iveri_tryLaterUrl">"https://portal.host.iveri.com/Lite/TryLater"</string>
     <string name="iveri_errorUrl">"https://portal.host.iveri.com/Lite/Error"</string>
     <string name="iveri_aseUrl">"https://portal.host.iveri.com/Lite/Authorise.aspx"</string>
-
-
+<!-- Pay now -->
+    <string name="paynow_api_key">"91d4e027-e3de-482a-9a8f-a821cb2e9569"</string>
+    <string name="paynow_code">"20200"</string>
+    <string name="paynow_user_email">"lewistiyago26@gmail.com"</string>
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -23,13 +25,18 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="expected_collection_summary_text">
+    Agent Name : Philasande Bhani&#10;Decimal Balance : $100.00&#10;Collection Due : $500.00
+</string>
+
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
-    <string name="manager_details">Manager\n%s / %s</string>
-    <string name="supervisor_details">Supervisor\n%s / %s</string>
+    <string name="manager_details">Manager\n%s </string>
+    <string name="supervisor_details">Supervisor\n%s </string>
     <string name="salutation"><font color="#FF000000">Hello, 0782141216</font>\n<small><font color="#808080">last updated a minute ago</font></small></string>
 
     <string name="currency_symbol_dollar">$</string>
@@ -299,7 +306,7 @@
     <string name="_100gb">100GB</string>
     <string name="price">Price</string>
     <string name="buy">Buy</string>
-    <string name="load">TopUp</string>
+    <string name="load">Topup</string>
     <string name="econet">Econet</string>
     <string name="telnet">Telnet</string>
     <string name="netone">Netone</string>

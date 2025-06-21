@@ -9,31 +9,57 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.example.testingmyskills.R;
+import com.google.android.gms.maps.model.Dash;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
+import javax.mail.MessagingException;
+
+import android.telephony.TelephonyManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.Manifest;
+
+import androidx.core.app.ActivityCompat;
+
+import java.util.List;
 
 public class Utils {
     public static final String PREF_NAME = "UserPrefs";
@@ -48,71 +74,92 @@ public class Utils {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
     }
-
     public static void rotateImageView(ImageView imageView) {
-        // Create an ObjectAnimator to rotate the ImageView
         ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 360f);
-        rotateAnimator.setDuration(1000);  // Duration for one full rotation (in milliseconds)
-        rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);  // Repeat infinitely
-        rotateAnimator.setRepeatMode(ObjectAnimator.RESTART);  // Restart animation after one full rotation
-        rotateAnimator.start();  // Start the animation
+        rotateAnimator.setDuration(1000);
+        rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        rotateAnimator.setRepeatMode(ObjectAnimator.RESTART);
+        rotateAnimator.start();
+    }
+    public static void LoadingLayout(Activity activity, Context context) {
+        ConstraintLayout layout = activity.findViewById(R.id.load_layout);
+        ImageView imageView = activity.findViewById(R.id.load_layout_image);
+
+        if (layout == null || imageView == null) {
+            showToast(context, "Error: Unable to find required views!");
+            System.out.println("Error: Views are null!");
+            return;
+        }
+
+        rotateImageView(imageView);
+        layout.setVisibility(View.VISIBLE);
+
+
     }
 
-    public static void showEmailDialog(Context context) {
-        // Create a LinearLayout to hold the EditTexts
+    public static void CloseLoadingLayout(Activity activity, Context context) {
+        ConstraintLayout layout = activity.findViewById(R.id.load_layout);
+        ImageView imageView = activity.findViewById(R.id.load_layout_image);
+
+        if (layout == null || imageView == null) {
+            showToast(context, "Error: Unable to find required views!");
+            System.out.println("Error: Views are null!");
+            return;
+        }
+        layout.postDelayed(() -> {
+            rotateImageView(imageView);
+            layout.setVisibility(View.GONE);
+        }, 2000);
+    }
+
+
+    public static String getTodayDate() {
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        return dateFormat.format(date);
+    }
+   public static void showEmailDialog(final Context context, Activity activity) {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        // Create an EditText for the email input
         final EditText emailInput = new EditText(context);
-        emailInput.setBackgroundResource(R.drawable.edit_text_background); // Set custom background
+        emailInput.setBackgroundResource(R.drawable.edit_text_background);
         emailInput.setHint("Enter email address");
 
-        // Create an EditText for the User ID input
         final EditText userIdInput = new EditText(context);
         userIdInput.setBackgroundResource(R.drawable.edit_text_background);
-        userIdInput.setInputType(InputType.TYPE_CLASS_PHONE); // Allow only numeric input
+        userIdInput.setInputType(InputType.TYPE_CLASS_PHONE);
 
-// Set the main hint
         userIdInput.setHint("Enter User ID");
-
-// Create a smaller text example for the hint
-        String exampleHint = " (e.g., 263783241537)";
+        String exampleHint = " (e.g., 263123456789)";
         SpannableString spannableString = new SpannableString(userIdInput.getHint() + exampleHint);
         spannableString.setSpan(new RelativeSizeSpan(0.8f), userIdInput.getHint().length(), spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // Set the size of the example
 
-        userIdInput.setHint(spannableString); // Set the combined hint with the example
+        userIdInput.setHint(spannableString);
 
-        // Set margin for both EditTexts
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        // Use the Utils method to convert dp to px for margins
-        int marginInDp = 20; // 50dp margin
-        int marginInPx = Utils.convertDpToPx(context, marginInDp); // Convert dp to pixels
+        int marginInDp = 20;
+        int marginInPx = convertDpToPx(context, marginInDp);
         params.setMargins(marginInPx, 5, marginInPx, 5);
-
-        // Apply margins to both EditTexts
         emailInput.setLayoutParams(params);
         userIdInput.setLayoutParams(params);
-
-        // Add both EditTexts to the LinearLayout
         layout.addView(emailInput);
         layout.addView(userIdInput);
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("Send Email")
-                .setMessage("Please enter your email address and User ID:")
-                .setView(layout) // Set the layout containing the EditTexts
+                .setMessage("Enter Email Address and AgentID:")
+                .setView(layout)
                 .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String recipientEmail = emailInput.getText().toString().trim();
-                        String userId = userIdInput.getText().toString().trim(); // Get the User ID
-
-                        String recipientPassword = "Philas@12345"; // Replace this with the actual password
+                        LoadingLayout(activity, context);
+                        final String recipientEmail = emailInput.getText().toString().trim();
+                        final String userId = userIdInput.getText().toString().trim();
 
                         if (recipientEmail.isEmpty() && userId.isEmpty()) {
                             showToast(context, "Email and User ID cannot be empty.");
@@ -125,19 +172,37 @@ public class Utils {
                         } else if (!isValidUserId(userId)) {
                             showToast(context, "User ID must include a valid country code and cannot start with 0.");
                         } else {
-                            // Send the email including the User ID in the body
-                            try {
-                                Communication.sendEmail(context, recipientEmail, recipientPassword);
-                                showToast(context, "Email sent successfully!");
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
-                            }
+                            // Call getPassword to retrieve the agent password asynchronously
+                            getPassword(context, userId, recipientEmail, new PasswordCallback() {
+                                @Override
+                                public void onPasswordRetrieved(String agentPassword, String agentName) {
+                                    try {
+                                        if (Communication.sendEmailsInSMTP(recipientEmail, agentName, agentPassword)) {
+                                            Utils.showToast(context, "Email sent successfully.");
+                                        } else {
+                                            Utils.showToast(context, "Failed to send email.");
+                                        }
+
+                                        CloseLoadingLayout(activity, context);
+
+                                    } catch (Exception e) {  // Change to general Exception
+                                        e.printStackTrace();
+                                        CloseLoadingLayout(activity, context);
+                                        Utils.showToast(context, "Error sending email: " + e.getMessage());
+                                    }
+                                }
+
+                                @Override
+                                public void onError(String errorMessage) {
+                                    // Handle error in retrieving password
+                                    CloseLoadingLayout(activity, context);
+
+                                    showToast(context, "User Not Found");
+                                }
+                            });
                         }
                     }
-
                 })
-
-
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -146,6 +211,191 @@ public class Utils {
                 })
                 .create();
         dialog.show();
+    }
+
+    public static String getIMEI(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        if (telephonyManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (context.checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        return telephonyManager.getImei();
+                    } else {
+                        System.out.print("IMEI : " + telephonyManager.getDeviceId());
+                        return telephonyManager.getDeviceId();
+                    }
+                } else {
+                    return "No Permission";
+                }
+            } else {
+                System.out.print("IMEI : " + telephonyManager.getDeviceId());
+                return telephonyManager.getDeviceId();
+            }
+        }
+
+        return null;
+    }
+
+    public static void requestPermissions(Activity activity) {
+        String[] permissions = {
+                Manifest.permission.INTERNET,
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.VIBRATE,
+                Manifest.permission.SEND_SMS
+        };
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity, new String[]{permission}, 0);
+                }
+            }
+        }
+    }
+
+    public static String getDeviceEMEI(Context context) {
+        String input = getIMEI(context);
+        if (input == null || input.length() <= 7) {
+            return input;
+        }
+        String unmaskedPart = input.substring(0, 7);
+        String maskedPart = "*".repeat(input.length() - 7);
+        return unmaskedPart + maskedPart;
+    }
+
+    public static String getDeviceDetails(Context context) {
+        StringBuilder deviceDetails = new StringBuilder();
+
+        deviceDetails.append("Dear ").append("Admin").append(",\n");
+        deviceDetails.append("The following device has made transactions:\n");
+
+        deviceDetails.append("Device Model: ").append(Build.MODEL).append("\n");
+        deviceDetails.append("Manufacturer: ").append(Build.MANUFACTURER).append("\n");
+
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        if (telephonyManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (context.checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        deviceDetails.append("IMEI NO: ").append(telephonyManager.getImei()).append("\n");
+                    } else {
+                        deviceDetails.append("IMEI NO: ").append(telephonyManager.getDeviceId()).append("\n");
+                    }
+                } else {
+                    deviceDetails.append("IMEI NO: Permission not granted\n");
+                }
+            } else {
+                deviceDetails.append("IMEI NO: ").append(telephonyManager.getDeviceId()).append("\n");
+            }
+        } else {
+            deviceDetails.append("IMEI NO: Device not available\n");
+        }
+        deviceDetails.append("OS Version: ").append(Build.VERSION.RELEASE).append("\n");
+        deviceDetails.append("API Level: ").append(Build.VERSION.SDK_INT).append("\n");
+
+        String locationInfo = getDeviceLocation(context);
+        deviceDetails.append("Device Location: ").append(locationInfo).append("\n");
+
+        return deviceDetails.toString();
+    }
+
+    private static String getDeviceLocation(Context context) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if (location != null) {
+                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    if (addresses != null && !addresses.isEmpty()) {
+                        Address address = addresses.get(0);
+                        return address.getAddressLine(0);
+                    } else {
+                        return "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return "Unable to get location address";
+                }
+            } else {
+                return "Location not available";
+            }
+        } else {
+            return "Location permission not granted";
+        }
+    }
+    public static void getPassword(final Context context, String agentId, String agentEmail, final PasswordCallback callback) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject res = ApiService.resetPassword(agentId, agentEmail, context);
+
+                    if (res.getInt("responseCode") == 200) {
+                        // To handle success and UI updates on the main thread
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    String responseString = res.getString("response");
+                                    System.out.println("Success: " + responseString);
+                                    JSONObject responseJson = new JSONObject(responseString);
+                                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                    JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                                    JSONObject userObject = paramsList.getJSONObject(0);
+
+                                    String agentPassword = userObject.getString("agentPassword");
+                                    String agentName = userObject.getString("agentName");
+
+                                    callback.onPasswordRetrieved(agentPassword, agentName);  // Return the result through callback
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    callback.onError("Error parsing response.");
+                                }
+                            }
+                        });
+                    } else {
+                        // Handle error response on UI thread
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(res.toString());  // Pass error message to callback
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // Handle IOException on UI thread
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(e.getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    callback.onError("An unexpected error occurred.");
+                }
+            }
+        }).start();
+    }
+
+    // Callback interface for retrieving the password
+    public interface PasswordCallback {
+        void onPasswordRetrieved(String agentPassword, String agentName);
+
+        void onError(String errorMessage);
     }
 
     public static void showSMSDialog(Context context) {
@@ -228,6 +478,36 @@ public class Utils {
         return (int) (dp * scale + 0.5f);
     }
 
+    public static void setCaps(EditText editText) {
+        editText.addTextChangedListener(new TextWatcher() {
+            private boolean isUpdating = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!isUpdating) {
+                    isUpdating = true;
+                    String text = s.toString();
+                    if (!text.isEmpty() && Character.isLowerCase(text.charAt(0))) {
+                        // Capitalize the first letter
+                        String updatedText = Character.toUpperCase(text.charAt(0)) + text.substring(1);
+                        editText.setText(updatedText);
+                        editText.setSelection(updatedText.length()); // Move cursor to the end
+                    }
+                    isUpdating = false;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed
+            }
+        });
+    }
 
     public static void triggerHapticFeedback(Context context) {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -351,19 +631,66 @@ public class Utils {
 
     }
 
+
     public static String FormatAmount(String a) {
-        String amountString = a.replace(",", "");
+        // Handle locale-specific decimal and grouping separators
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.getDefault());
+        char decimalSeparator = symbols.getDecimalSeparator();
+        char groupingSeparator = symbols.getGroupingSeparator();
+
+        // Remove grouping separators (e.g., commas in US or periods in some European countries)
+        String amountString = a.replace(String.valueOf(groupingSeparator), "");
+
+        // Replace the decimal separator (e.g., comma for some locales) with a period for parsing
+        amountString = amountString.replace(decimalSeparator, '.');
+
+        if (a.contains(String.valueOf(decimalSeparator))) {
+            // If there's a decimal separator in the original string, return the formatted input
+            return a;
+        }
+
         try {
             double parsedAmount = Double.parseDouble(amountString);
+
+            // Round to two decimal places
             double amountConverted = Math.round(parsedAmount * 100.00) / 100.00;
-            // Format the double value with commas separating every three digits before the decimal point and two decimal places
-            DecimalFormat decimalFormat = new DecimalFormat("#,###,###,##0.00");
+
+            // Create a DecimalFormat instance for the output with the current locale
+            DecimalFormat decimalFormat = new DecimalFormat("#,###,###,##0.00", symbols);
+
+            // Format the double value and return it
             return decimalFormat.format(amountConverted);
         } catch (NumberFormatException e) {
             System.out.println(amountString);
             return "NaN"; // Indicate that the input could not be parsed
         }
     }
+
+    public static void setFieldFocus(EditText field, Context context) {
+        // Request focus for the field
+        field.requestFocus();
+
+        // Get the InputMethodManager system service
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Show the soft keyboard
+        if (imm != null) {
+            imm.showSoftInput(field, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    public static void hideSoftKeyboard(Context context) {
+        // Get the InputMethodManager system service
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Get the current window token
+        View view = ((Activity) context).getCurrentFocus();
+
+        if (imm != null && view != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
 
     public static void saveRefs(Context context, String network, String agentID, String customerID, String referenceID) {
         SharedPreferences sharedPref = context.getSharedPreferences("LastTransactionRefs", MODE_PRIVATE);
@@ -409,11 +736,11 @@ public class Utils {
         statusLight.setImageResource(R.drawable.round_conners_background);
 
         // Set appropriate colors based on the remaining balance
-        if (balance > 3000) {
+        if (balance > 50.00) {
             statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.lime)); // Green color
-        } else if (balance > 2000) {
+        } else if (balance > 30.00) {
             statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.gold)); // Yellow color
-        } else if (balance > 1000) {
+        } else if (balance > 20.00) {
             statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.orange)); // Orange color
         } else {
             statusLight.setColorFilter(ContextCompat.getColor(activity, R.color.red)); // Red color

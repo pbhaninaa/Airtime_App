@@ -109,6 +109,7 @@
 
     <!-- Repeat the same structure for all other key-value pairs -->
     <LinearLayout
+        android:id="@+id/amount_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -131,6 +132,7 @@
             android:textColor="@color/black" />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/balance_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -152,6 +154,7 @@
             android:text="2000"
             android:textColor="@color/black" />
     </LinearLayout>
+
 
     <!-- Continue for other fields like providerSerial, providerReference, etc. -->
 <View

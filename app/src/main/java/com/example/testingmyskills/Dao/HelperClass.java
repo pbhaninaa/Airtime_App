@@ -26,7 +26,6 @@ public class HelperClass {
         }
         int responseCode = conn.getResponseCode();
         System.out.println("Parameters : "+jsonInputString);
-        System.out.println("Response Code: " + responseCode);
         if (responseCode == HttpURLConnection.HTTP_OK) {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 StringBuilder response = new StringBuilder();
@@ -39,6 +38,8 @@ public class HelperClass {
                 jsonResponse.put("response", response.length() > 0 ? response.toString() : "Empty response from server.");
                 System.out.println("Transaction Type: " + transactionType);
                 System.out.println("Request Response: " + jsonResponse);
+                System.out.println("Response : "+jsonResponse);
+
                 return jsonResponse;
             }
         } else {

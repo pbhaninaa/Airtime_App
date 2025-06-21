@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
+    <TextView
+        android:id="@+id/text_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_weight="1.8"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/twelve"
+        tools:ignore="SpUsage" />
+
+
+
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
+
+    <TextView
+        android:id="@+id/text_balance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.8"
+        android:gravity="end"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/twelve"
+        android:layout_marginEnd="@dimen/eight"
+
+        tools:ignore="SpUsage" />
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
+    <TextView
+        android:id="@+id/collect_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="end"
+        android:layout_marginEnd="@dimen/eight"
+        android:layout_weight="0.8"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/twelve"
+        tools:ignore="SpUsage" />
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
+
+    <TextView
+        android:id="@+id/text_deposit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/eight"
+        android:layout_weight="0.8"
+        android:gravity="end"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/twelve"
+        tools:ignore="SpUsage" />
+
+    <View
+        android:layout_width="2sp"
+        android:layout_height="match_parent"
+        android:background="@drawable/spacer_background" />
+
+</LinearLayout>

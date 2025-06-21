@@ -4,12 +4,12 @@ import static android.view.View.GONE;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -48,6 +48,7 @@ public class UserManagement extends AppCompatActivity {
     private CheckBox RememberMeCheckBox;
     private ImageView CountryFlag, LoginCountryFlag;
     private FrameLayout backButton;
+    //    private TextView version ;
     String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
 
     @Override
@@ -60,7 +61,9 @@ public class UserManagement extends AppCompatActivity {
         gotData = false;
         initialiseViews();
         setOnclickListeners();
-
+        Utils.setCaps(Firstname);
+        Utils.setCaps(Lastname);
+//        version.setText("Version : "+getAppVersion());
         int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.login_page);
         screenToLoad(constraintLayoutId);
 
@@ -79,6 +82,7 @@ public class UserManagement extends AppCompatActivity {
                 hideBottomNav();
                 Country selectedCountry = (Country) parent.getItemAtPosition(position);
                 String flagName = selectedCountry.getCountryFlag();
+                phoneNumber.requestFocus();
                 // Get the resource ID of the drawable dynamically
                 int flagResourceId = getResources().getIdentifier(flagName, "drawable", getPackageName());
                 // Set the ImageView with the corresponding flag
@@ -126,7 +130,6 @@ public class UserManagement extends AppCompatActivity {
             rememberMe = isChecked;
         });
     }
-
     private void hideBottomNav() {
         // Hide the bottom navigation bar
         View decorView = getWindow().getDecorView();
@@ -135,9 +138,8 @@ public class UserManagement extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
-
-
     private void initialiseViews() {
+//        version = findViewById(R.id.version_l);
         SignInLayout = findViewById(R.id.login_page);
         getEmailTextInLogin = findViewById(R.id.email_in_login_page);
         getPasswordTextInLogin = findViewById(R.id.password_in_login_page);
@@ -172,23 +174,6 @@ public class UserManagement extends AppCompatActivity {
 
     }
 
-    private void screenToLoad(int screenToLoad) {
-        if (Utils.RememberMe(this)) {
-            String phone = Utils.getString(this, "savedCredentials", "email");
-            getEmailTextInLogin.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
-            getPasswordTextInLogin.setText(Utils.getString(this, "savedCredentials", "password"));
-            RememberMeCheckBox.setChecked(Utils.RememberMe(this)); // Ensure the checkbox is checked
-        }
-        if (screenToLoad == R.id.create_profile_screen)
-            getProfile();
-
-        SignInLayout.setVisibility(GONE);
-        SignUpLayout.setVisibility(GONE);
-        RegScreen.setVisibility(GONE);
-        ConstraintLayout layout = findViewById(screenToLoad);
-        layout.setVisibility(View.VISIBLE);
-    }
-
     private void setOnclickListeners() {
         RegisterBtn.setOnClickListener(v -> handleRegisterClick());
         ShowPasswordInLogin.setOnClickListener(v -> handleShowPassword());
@@ -203,11 +188,13 @@ public class UserManagement extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         });
-        ForgotPasswordBtn.setOnClickListener(v -> Utils.showEmailDialog(this));
+        ForgotPasswordBtn.setOnClickListener(v -> Utils.showEmailDialog(this, this));
+
 //        SignUp.setOnClickListener(v -> handleCreateClick());
         CreateAccBtn.setOnClickListener(v -> {
             try {
-                Utils.triggerHapticFeedback(this);
+
+
                 handleAccCreation();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -233,6 +220,7 @@ public class UserManagement extends AppCompatActivity {
         String phone = phoneNumber.getText().toString().trim();
         String emailAddress = email.getText().toString().trim();
         String pass = password.getText().toString().trim();
+        Context context = getApplicationContext();
         if (name.isEmpty() || surname.isEmpty() || phone.isEmpty() ||
                 emailAddress.isEmpty() || pass.isEmpty()) {
             Utils.showToast(this, "Please fill all the fields");
@@ -243,12 +231,18 @@ public class UserManagement extends AppCompatActivity {
             Utils.showToast(this, "Incorrect mobile number");
             phoneNumber.requestFocus();
         } else {
+            Utils.triggerHapticFeedback(this);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         String p = CountryCode.getSelectedItem() + phone;
-                        JSONObject res = ApiService.register(name + " " + surname, pass, p.replace("+", ""), emailAddress);
+                        JSONObject res = ApiService.register(
+                                name + " " + surname,
+                                pass,
+                                p.replace("+", ""),
+                                emailAddress,
+                                context);
 
                         if (res.getInt("responseCode") == 200) {
                             // To handle success and UI updates on the main thread
@@ -281,7 +275,7 @@ public class UserManagement extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Utils.showToast(UserManagement.this, "Error: " + e.getMessage());
+                                Utils.showToast(UserManagement.this, e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage());
                             }
                         });
                     } catch (Exception e) {
@@ -295,10 +289,11 @@ public class UserManagement extends AppCompatActivity {
     }
 
     private void handleSignIn() throws Exception {
+
         Utils.triggerHapticFeedback(this);
         String AgentID = getEmailTextInLogin.getText().toString().trim();
         String password = getPasswordTextInLogin.getText().toString().trim();
-
+        Context context = getApplicationContext();
         if (AgentID.isEmpty()) {
             getEmailTextInLogin.setError("AgentID is required");
             return;
@@ -308,13 +303,15 @@ public class UserManagement extends AppCompatActivity {
             getPasswordTextInLogin.setError("Password is required");
             return;
         }
+        Utils.LoadingLayout(this, this);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    String p = CountryCode.getSelectedItem() + AgentID;
-                    JSONObject res = ApiService.login(password, p.replace("+", ""));
+                    String p = LoginCountryCode.getSelectedItem() + AgentID;
+
+                    JSONObject res = ApiService.login(password, p.replace("+", ""), context);
 
                     if (res.getInt("responseCode") == 200) {
                         // To handle success and UI updates on the main thread
@@ -336,10 +333,11 @@ public class UserManagement extends AppCompatActivity {
 
                                     String agentID = userObject.getString("agentID");
                                     String agentName = userObject.getString("agentName");
-                                    String balance = userObject.getString("balance");
+                                    String balance = userObject.getString("decimalBalance");
                                     String agentEmail = userObject.getString("agentEmail");
                                     String statusCode = userObject.getString("statusCode");
                                     String lastConnect = userObject.getString("lastConnect");
+                                    String AgentRole = userObject.getString("permissions");
 
 
                                     // Split agent name into first name and surname
@@ -357,11 +355,15 @@ public class UserManagement extends AppCompatActivity {
 
 
                                     // Save user account details
-                                    saveAccount(firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode), password, true);
+                                    saveAccount(AgentRole,firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode), password, true);
                                     RememberMeCheckBox.setChecked(false);
+                                    Utils.hideSoftKeyboard(UserManagement.this);
+                                    Utils.hideSoftNavBar(UserManagement.this);
+
                                     // Navigate to the Dashboard
                                     Intent intent = new Intent(UserManagement.this, Dashboard.class);
                                     startActivity(intent);
+                                    Utils.CloseLoadingLayout(UserManagement.this, UserManagement.this);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -402,7 +404,9 @@ public class UserManagement extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Utils.showToast(UserManagement.this, "Error: " + e.getMessage());
+
+                            Utils.showToast(UserManagement.this, e.getMessage().contains("connect") ? "Service Provider Offline" : e.getMessage());
+
                         }
                     });
                 } catch (Exception e) {
@@ -410,6 +414,26 @@ public class UserManagement extends AppCompatActivity {
                 }
             }
         }).start();
+
+    }
+
+    public void getProfile() {
+        SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+        Firstname.setText(prefs.getString("name", ""));
+        Lastname.setText(prefs.getString("surname", ""));
+        String phone = prefs.getString("phone", "");// Get the selected country code based on the phone number
+        String selectedCode = phone.startsWith("27") ? phone.substring(0, 2) : phone.substring(0, 3);
+        LinearLayout back = findViewById(R.id.back_to_home_from_Profile);
+        back.setVisibility(View.VISIBLE);
+        CountryFlag.setImageResource(phone.startsWith("27") ? R.drawable.za : R.drawable.zw);
+        phoneNumber.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
+        email.setText(prefs.getString("emailAddress", ""));
+        phoneNumber.setShowSoftInputOnFocus(false);
+        phoneNumber.setEnabled(false);
+        CountryCode.setEnabled(false);
+
+        emailConfirmation.setText(prefs.getString("emailAddress", ""));
+        CreateAccBtn.setText("Update Profile");
 
     }
 
@@ -436,36 +460,24 @@ public class UserManagement extends AppCompatActivity {
 
         }
     }
+    private void screenToLoad(int screenToLoad) {
+        if (Utils.RememberMe(this)) {
+            String phone = Utils.getString(this, "savedCredentials", "email");
+            getEmailTextInLogin.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
+            getPasswordTextInLogin.setText(Utils.getString(this, "savedCredentials", "password"));
+            RememberMeCheckBox.setChecked(Utils.RememberMe(this));
+        }
+        if (screenToLoad == R.id.create_profile_screen)
+            getProfile();
 
-    public static List<Country> getCountryList() {
-        List<Country> countryList = new ArrayList<>();
-        countryList.add(new Country("+27", "South Africa", "za"));
-        countryList.add(new Country("+263", "Zimbabwe", "zw"));
-
-        return countryList;
+        SignInLayout.setVisibility(GONE);
+        SignUpLayout.setVisibility(GONE);
+        RegScreen.setVisibility(GONE);
+        ConstraintLayout layout = findViewById(screenToLoad);
+        layout.setVisibility(View.VISIBLE);
     }
 
-    public void getProfile() {
-        SharedPreferences prefs = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
-        Firstname.setText(prefs.getString("name", ""));
-        Lastname.setText(prefs.getString("surname", ""));
-        String phone = prefs.getString("phone", "");// Get the selected country code based on the phone number
-        String selectedCode = phone.startsWith("27") ? phone.substring(0, 2) : phone.substring(0, 3);
-        LinearLayout back= findViewById(R.id.back_to_home_from_Profile);
-        back.setVisibility(View.VISIBLE);
-        CountryFlag.setImageResource(phone.startsWith("27") ? R.drawable.za : R.drawable.zw);
-        phoneNumber.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
-        email.setText(prefs.getString("emailAddress", ""));
-        phoneNumber.setShowSoftInputOnFocus(false);
-        phoneNumber.setEnabled(false);
-        CountryCode.setEnabled(false);
-
-        emailConfirmation.setText(prefs.getString("emailAddress", ""));
-        CreateAccBtn.setText("Update Profile");
-
-    }
-
-    private void saveAccount(String name, String surname, String phone, String emailAddress, String balance, String time, int id, String pass, boolean logged) {
+    private void saveAccount(String role, String name, String surname, String phone, String emailAddress, String balance, String time, int id, String pass, boolean logged) {
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("name", name);
@@ -474,7 +486,7 @@ public class UserManagement extends AppCompatActivity {
         editor.putString("time", time);
         editor.putString("emailAddress", emailAddress);
         editor.putString("balance", balance);
-        editor.putString("id", String.valueOf(id));  // Convert the integer to a string
+        editor.putString("id", String.valueOf(id));
         editor.apply();
 
         SharedPreferences sharedPref = getSharedPreferences("LoggedUserCredentials", MODE_PRIVATE);
@@ -485,14 +497,41 @@ public class UserManagement extends AppCompatActivity {
         ed.putString("password", pass);
         ed.putString("email", emailAddress);
         ed.putBoolean("isUserLogged", logged);
+        ed.putString("role", role); // fixed here
 
         ed.apply();
-
-
     }
+
 
     public void backToHome(View view) {
         Intent intent = new Intent(UserManagement.this, Dashboard.class);
         startActivity(intent);
     }
+
+    //     Returning Method
+    public static List<Country> getCountryList() {
+        List<Country> countryList = new ArrayList<>();
+        countryList.add(new Country("+263", "Zimbabwe", "zw"));
+        countryList.add(new Country("+27", "South Africa", "za"));
+        return countryList;
+    }
+
+    public static List<Country> getZimCode() {
+        List<Country> countryList = new ArrayList<>();
+        countryList.add(new Country("+263", "Zimbabwe", "zw"));
+
+        return countryList;
+    }
+
+    public String getAppVersion() {
+        try {
+            PackageManager packageManager = getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "Unknown";
+        }
+    }
+
 }

@@ -13,14 +13,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+
+import android.os.Handler;
+import android.os.Looper;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 public class Communication {
     private static final String API_KEY = "6c3afe2c49b9577c76173a5b89cdf8a3"; // Be cautious with hardcoding this
-    private static final String SECRET_KEY = "d02384dbbc4ec9787de3235aaa9c2736"; // Same as above
+    private static final String SECRET_KEY = "d02384dbbc4ec9787de3235aaa9c2736";
 
-    public static void sendEmail(Context context, String email, String password) throws JSONException {
+    public static void sendEmailInEmailV31(Context context, String email, String password, String agentName) throws JSONException {
         SharedPreferences sharedPreferences = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
         String name = sharedPreferences.getString("name", "");
 
@@ -31,15 +50,16 @@ public class Communication {
                 .property(Emailv31.MESSAGES, new JSONArray()
                         .put(new JSONObject()
                                 .put(Emailv31.Message.FROM, new JSONObject()
-                                        .put("Email", "kwazibhani@gmail.com")
-                                        .put("Name", "Philasande Bhani"))
+//                                        .put(Emailv31.Message.FROM, new JSONObject()
+                                        .put("Email", "quposadmin@qupos.com")  // Replace this with your new email address
+                                        .put("Name", "Qupos Admin"))
                                 .put(Emailv31.Message.TO, new JSONArray()
                                         .put(new JSONObject()
                                                 .put("Email", email)
                                                 .put("Name", name)))
                                 .put(Emailv31.Message.SUBJECT, "Requested App Password.")
                                 .put(Emailv31.Message.TEXTPART, "My first Mailjet email")
-                                .put(Emailv31.Message.HTMLPART, "<h3>Dear " + name + ",<br/> your app password is as follows!</h3><br />Password: " + password + "\n Try not to forget it next time")));
+                                .put(Emailv31.Message.HTMLPART, "<h4>Dear " + agentName + ",<br/> your app password is below!</h4>" + password)));
 
         // Use ExecutorService for asynchronous task
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -59,7 +79,68 @@ public class Communication {
             }
         });
     }
-    public static void sendSMS(Context context, String phoneNumber,  String message) {
+
+    public static boolean sendEmailsInSMTP(String recipientEmail, String agentName, String agentPassword) {
+        String host = "smtp.gmail.com";
+        final String fromEmail = "quposreports@gmail.com";
+        final String password = "nporpwlqawpzslgk";  // Replace with secure storage
+        int port = 587;
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", String.valueOf(port));
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        try {
+            // Use Callable to return a boolean value
+            Future<Boolean> future = executorService.submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() {
+                    try {
+                        Session session = Session.getInstance(properties, new Authenticator() {
+                            @Override
+                            protected PasswordAuthentication getPasswordAuthentication() {
+                                return new PasswordAuthentication(fromEmail, password);
+                            }
+                        });
+
+                        MimeMessage message = new MimeMessage(session);
+                        message.setFrom(new InternetAddress(fromEmail));
+                        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
+                        message.setSubject("Requested App Password.");
+                        message.setText("Dear " + agentName + ",\nYour app password is below!\n" + agentPassword);
+
+                        Transport.send(message);
+
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            System.out.println("Email sent successfully to " + recipientEmail);
+                        });
+
+                        return true;  // Email sent successfully
+
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            System.out.println("Failed to send email to " + recipientEmail);
+                        });
+                        return false;  // Email failed
+                    }
+                }
+            });
+
+            boolean result = future.get();  // Wait for execution and get result
+            executorService.shutdown();
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            executorService.shutdown();
+            return false;
+        }
+    }public static void sendSMS(Context context, String phoneNumber, String message) {
         // Ensure the phone number is valid
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             // Get SmsManager instance
