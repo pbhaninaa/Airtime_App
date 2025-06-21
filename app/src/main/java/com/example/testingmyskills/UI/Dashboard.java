@@ -104,10 +104,10 @@ import android.view.ContextThemeWrapper;
 
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen, AppFrame, LoadingLayout;
-    private LinearLayout userSummaryLayout,adminLayout, collect_layout, expected_collection_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
+    private LinearLayout userSummaryLayout, adminLayout, collect_layout, expected_collection_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
-    private TextView selectedAgentBalance1, selectedAgentBalance,  commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
+    private TextView selectedAgentBalance1, selectedAgentBalance, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
     private ImageButton NavAdminBtn, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, expected_collection, NavLaodBalanceBtn1, NavLaodBalanceBtn;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
@@ -115,7 +115,7 @@ public class Dashboard extends AppCompatActivity {
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
 
     static String currencySymbol, ItemCode, startDate, endDate;
-    private RecyclerView ItemRecyclerView, jobListRecyclerView, expected_collection_summary,expected_collection_summary1, total_expected_collection_summary;
+    private RecyclerView ItemRecyclerView, jobListRecyclerView, expected_collection_summary, expected_collection_summary1, total_expected_collection_summary;
 
     private JSONArray paramList = new JSONArray();
     private String selectedAgentId = "";
@@ -414,65 +414,76 @@ public class Dashboard extends AppCompatActivity {
 
         Utils.hideSoftKeyboard(Dashboard.this);
 
-        double amount = 0.0;
-        try {
-            amount = Double.parseDouble(amountString);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            AmountTLoad.setError("Invalid amount");
-            return;
-        }
 
-        hideLayouts(WebScree, NavBuyBtn);
-        Navbar.setVisibility(GONE);
-        load.setVisibility(VISIBLE);
+        String message = "Please confirm details:\n\n"
+                + selectedAgentId1 + "\n\n"
+                + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n\n"
 
-        PayNowPaymentProcessor.createPayNowOrder(this, selectedAgentId1, "Load balance", amount, new PayNowPaymentProcessor.PayNowCallback() {
-            @Override
-            public void onSuccess(PayNowPaymentProcessor.PayNowResponse payNowResponse) {
-                runOnUiThread(() -> {
-                    if (payNowResponse != null && payNowResponse.getRedirectUrl() != null) {
-                        Web.getSettings().setJavaScriptEnabled(true);
-                        Web.getSettings().setDomStorageEnabled(true);
-                        Web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+                + "Tap OK to continue or Cancel";
 
-                        Web.setWebViewClient(new WebViewClient() {
-                            @Override
-                            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                                String url = request.getUrl().toString();
 
-                                if (url.contains("payment-success")) {
-                                    String transactionId = Uri.parse(url).getQueryParameter("transactionId");
-                                    handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
-                                    return true;
-                                } else if (url.contains("payment-failure")) {
-                                    handlePaymentResult("{\"status\": \"failure\"}");
-                                    return true;
-                                }
-                                view.loadUrl(url);
-                                return false;
+        showConfirmationDialog(this, message, "OK", "Cancel", result ->
+        {
+            if (result) {
+                double amount = 0.0;
+                try {
+                    amount = Double.parseDouble(amountString);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    AmountTLoad.setError("Invalid amount");
+                    return;
+                }
+                hideLayouts(WebScree, NavBuyBtn);
+                Navbar.setVisibility(GONE);
+                load.setVisibility(VISIBLE);
+
+                PayNowPaymentProcessor.createPayNowOrder(this, selectedAgentId1, "Load balance", amount, new PayNowPaymentProcessor.PayNowCallback() {
+                    @Override
+                    public void onSuccess(PayNowPaymentProcessor.PayNowResponse payNowResponse) {
+                        runOnUiThread(() -> {
+                            if (payNowResponse != null && payNowResponse.getRedirectUrl() != null) {
+                                Web.getSettings().setJavaScriptEnabled(true);
+                                Web.getSettings().setDomStorageEnabled(true);
+                                Web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+
+                                Web.setWebViewClient(new WebViewClient() {
+                                    @Override
+                                    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                                        String url = request.getUrl().toString();
+
+                                        if (url.contains("payment-success")) {
+                                            String transactionId = Uri.parse(url).getQueryParameter("transactionId");
+                                            handlePaymentResult("{\"status\": \"success\", \"transactionId\": \"" + transactionId + "\"}");
+                                            return true;
+                                        } else if (url.contains("payment-failure")) {
+                                            handlePaymentResult("{\"status\": \"failure\"}");
+                                            return true;
+                                        }
+                                        view.loadUrl(url);
+                                        return false;
+                                    }
+                                });
+
+                                Web.loadUrl(payNowResponse.getRedirectUrl());
+                                load.setVisibility(GONE);
+                                Web.setVisibility(VISIBLE);
+                            } else {
+                                load.setVisibility(GONE);
+                                AmountTLoad.setError("Failed to generate payment link");
                             }
                         });
+                    }
 
-                        Web.loadUrl(payNowResponse.getRedirectUrl());
-                        load.setVisibility(GONE);
-                        Web.setVisibility(VISIBLE);
-                    } else {
-                        load.setVisibility(GONE);
-                        AmountTLoad.setError("Failed to generate payment link");
+                    @Override
+                    public void onFailure(String error) {
+                        runOnUiThread(() -> {
+                            load.setVisibility(GONE);
+                            AmountTLoad.setError("Payment failed: " + error);
+                        });
                     }
                 });
             }
-
-            @Override
-            public void onFailure(String error) {
-                runOnUiThread(() -> {
-                    load.setVisibility(GONE);
-                    AmountTLoad.setError("Payment failed: " + error);
-                });
-            }
         });
-
     }
 
     private void adaptors() {
@@ -623,7 +634,6 @@ public class Dashboard extends AppCompatActivity {
                 );
 
 
-
                 if (res.getInt("responseCode") == 200) {
                     String responseString = res.getString("response");
                     JSONObject responseJson = new JSONObject(responseString);
@@ -639,18 +649,33 @@ public class Dashboard extends AppCompatActivity {
                     }
 
                     // Total summary row
+
                     JSONObject totalRow = new JSONObject();
                     totalRow.put("agentName", "Total");
-                    totalRow.put("agentCommissionAmount",
-                            Double.parseDouble(methodResponse.getString("totalCommissionAmount").replace(",", "")));
-
                     totalRow.put("agentRechargeAmount",
-                            Double.parseDouble(methodResponse.getString("totalRechargeAmount").replace(",", "")));
+                            Double
+                                    .parseDouble(methodResponse
+                                            .getString("totalRechargeAmount")
+                                            .replace(",", "")));
 
+                    totalRow.put("targetCollection",
+                            Double
+                                    .parseDouble(methodResponse
+                                            .getString("totalTargetCollection")
+                                            .replace(",", "")));
+
+
+//                    totalRow.put("agentCumulativeBalance",
+//                            Double.parseDouble(methodResponse
+//                                    .getString("totalCumulativeBalance")
+//                                    .replace(",", "")));
                     totalRow.put("agentCumulativeBalance",
-                            Double.parseDouble(methodResponse.getString("totalCumulativeBalance").replace(",", "")));
+                            Double.parseDouble("0.00"));
 
                     total_summaries.add(totalRow);
+                    TextView total = findViewById(R.id.float_amount);
+                    total.setText(String.format("%s %s%s", "Econet Float:", currencySymbol, methodResponse.getString("totalCumulativeBalance").replace(",", "")));
+
 
                     runOnUiThread(() -> {
                         total_expected_collection_summary.setVisibility(summaries.size() > 1 ? VISIBLE : GONE);
@@ -711,19 +736,18 @@ public class Dashboard extends AppCompatActivity {
             return new SimpleViewHolder(view);
         }
 
+        @SuppressLint("DefaultLocale")
         @Override
         public void onBindViewHolder(@NonNull SimpleViewHolder holder, int position) {
             JSONObject agent = data.get(position);
             String agentName = agent.optString("agentName", "N/A");
-
             holder.name.setText(agentName);
-            holder.collect.setText(currencySymbol + String.format("%.2f", agent.optDouble("agentCommissionAmount", 0)));
-            holder.balance.setText(currencySymbol + String.format("%.2f", agent.optDouble("agentRechargeAmount", 01)));
-            holder.deposit.setText(currencySymbol + String.format("%.2f", agent.optDouble("agentCumulativeBalance", 01)));
+            holder.collect.setText(String.format("%.2f", agent.optDouble("targetCollection", 0)));
+            holder.balance.setText(String.format("%.2f", agent.optDouble("agentRechargeAmount", 01)));
+            holder.deposit.setText(String.format("%.2f", agent.optDouble("agentCumulativeBalance", 01)));
 
             // Apply bold styling if needed
             int style = isBold ? Typeface.BOLD : Typeface.NORMAL;
-
 
 
             holder.name.setTypeface(null, style);
@@ -743,12 +767,12 @@ public class Dashboard extends AppCompatActivity {
             holder.name.setOnClickListener(v -> {
                 Utils.LoadingLayout(Dashboard.this, Dashboard.this);
 
-                    TextView selectedAgent = findViewById(R.id.selectedName);
-                    TextView dateRange = findViewById(R.id.selectedDateRange);
-                    selectedAgent.setText(agentName);
-                    dateRange.setText(String.format("%s - %s", startDate, endDate));
-                    hideLayouts(userSummaryLayout, expected_collection);
-                    populateSelectedUserList(agent.optString("agentID", "0"));
+                TextView selectedAgent = findViewById(R.id.selectedName);
+                TextView dateRange = findViewById(R.id.selectedDateRange);
+                selectedAgent.setText(agentName);
+                dateRange.setText(String.format("%s - %s", startDate, endDate));
+                hideLayouts(userSummaryLayout, expected_collection);
+                populateSelectedUserList(agent.optString("agentID", "0"));
 
             });
         }
@@ -759,6 +783,7 @@ public class Dashboard extends AppCompatActivity {
             return data.size();
         }
     }
+
     @SuppressLint("SetTextI18n")
     public void populateSelectedUserList(String agentId) {
         new Thread(() -> {
@@ -803,7 +828,10 @@ public class Dashboard extends AppCompatActivity {
 
                         summaries.add(summaryItem);
                     }
-                double finalDepositA = depositA;double finalAgentA = agentA;  double finalCashA = cashA;double finalRechargeA = rechargeA;
+                    double finalDepositA = depositA;
+                    double finalAgentA = agentA;
+                    double finalCashA = cashA;
+                    double finalRechargeA = rechargeA;
                     runOnUiThread(() -> {
                         // Set up the RecyclerView adapter
                         expected_collection_summary1.setAdapter(
@@ -815,17 +843,18 @@ public class Dashboard extends AppCompatActivity {
                                 collection_total = findViewById(R.id.collection_total),
                                 recharge_total = findViewById(R.id.recharge_total),
                                 deposit_total = findViewById(R.id.deposit_total);
-                        LinearLayout totalsLayout=findViewById(R.id.summary_total);
+                        LinearLayout totalsLayout = findViewById(R.id.summary_total);
 
                         // Format the totals nicely
                         NumberFormat formatter = NumberFormat.getNumberInstance(Locale.US);
                         formatter.setMinimumFractionDigits(2);
                         formatter.setMaximumFractionDigits(2);
 
-                        commission_total.setText(currencySymbol + formatter.format(finalAgentA));
-                        collection_total.setText(currencySymbol + formatter.format(finalCashA));
-                        recharge_total.setText(currencySymbol + formatter.format(finalRechargeA));
-                        deposit_total.setText(currencySymbol + formatter.format(finalDepositA));
+                        commission_total.setText(String.format("%.2f", finalAgentA));
+                        collection_total.setText(String.format("%.2f", finalCashA));
+                        recharge_total.setText(String.format("%.2f", finalRechargeA));
+                        deposit_total.setText(String.format("%.2f", finalDepositA));
+
                         totalsLayout.setVisibility(VISIBLE);
                     });
 
@@ -895,10 +924,10 @@ public class Dashboard extends AppCompatActivity {
 
             holder.date.setText(timeOnly);
 
-            holder.deposit.setText(currencySymbol + String.format("%.2f", deposit));
-            holder.recharge.setText(currencySymbol + String.format("%.2f", recharge));
-            holder.collection.setText(currencySymbol + String.format("%.2f", collection));
-            holder.commission.setText(currencySymbol + String.format("%.2f", commission));
+            holder.deposit.setText("" + String.format("%.2f", deposit));
+            holder.recharge.setText("" + String.format("%.2f", recharge));
+            holder.collection.setText("" + String.format("%.2f", collection));
+            holder.commission.setText("" + String.format("%.2f", commission));
 
             int style = isBold ? Typeface.BOLD : Typeface.NORMAL;
             holder.date.setTypeface(null, style);
@@ -943,80 +972,92 @@ public class Dashboard extends AppCompatActivity {
             AmountTLoad.setError("Amount is required");
             return;
         }
+        String message = "Please confirm details:\n\n"
+                + selectedAgentId1 + "\n\n"
+                + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n\n"
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    JSONObject res = ApiService.depositFunds(selectedAgentId1, Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), AmountTLoad.getText().toString(), "840", Dashboard.this);
-                    if (res.getInt("responseCode") == 200) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Utils.hideSoftKeyboard(Dashboard.this);
-                                    String responseString = res.getString("response");
-                                    JSONObject responseJson = new JSONObject(responseString);
-                                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
-                                    JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                + "Tap OK to continue or Cancel";
 
-                                    JSONObject responseDetails = paramsList.getJSONObject(0);
 
-                                    String balance = responseDetails.getString("decimalBalance");
-                                    String agentName = responseDetails.getString("agentName");
-                                    String date = responseDetails.getString("entryDate");
+        showConfirmationDialog(this, message, "OK", "Cancel", result ->
+        {
+            if (result) {
 
-                                    selectedAgentId1 = "";
-                                    Agents1.setSelection(0);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject res = ApiService.depositFunds(selectedAgentId1, Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), AmountTLoad.getText().toString(), "840", Dashboard.this);
+                            if (res.getInt("responseCode") == 200) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Utils.hideSoftKeyboard(Dashboard.this);
+                                            String responseString = res.getString("response");
+                                            JSONObject responseJson = new JSONObject(responseString);
+                                            JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                            JSONArray paramsList = methodResponse.getJSONArray("paramsList");
 
-                                    String successMessage = "Date: " + date + "\n\n"
-                                            + "Agent Name: " + agentName + "\n"
-                                            + "Topup Amount: " + currencySymbol + balance;
+                                            JSONObject responseDetails = paramsList.getJSONObject(0);
 
-                                    showSuccessDialog(
-                                            true,
-                                            Dashboard.this,
-                                            "Transaction Succesfully ",
-                                            successMessage);
+                                            String balance = responseDetails.getString("decimalBalance");
+                                            String agentName = responseDetails.getString("agentName");
+                                            String date = responseDetails.getString("entryDate");
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    try {
-                                        Utils.showToast(Dashboard.this, res.getString("response"));
-                                    } catch (JSONException ex) {
-                                        throw new RuntimeException(ex);
+                                            selectedAgentId1 = "";
+                                            Agents1.setSelection(0);
+
+                                            String successMessage = "Date: " + date + "\n\n"
+                                                    + "Agent Name: " + agentName + "\n"
+                                                    + "Topup Amount: " + currencySymbol + balance;
+
+                                            showSuccessDialog(
+                                                    true,
+                                                    Dashboard.this,
+                                                    "Transaction Succesfully ",
+                                                    successMessage);
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            try {
+                                                Utils.showToast(Dashboard.this, res.getString("response"));
+                                            } catch (JSONException ex) {
+                                                throw new RuntimeException(ex);
+                                            }
+                                        }
                                     }
-                                }
-                            }
-                        });
+                                });
 
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Utils.showToast(Dashboard.this, res.getString("response"));
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
+                            } else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Utils.showToast(Dashboard.this, res.getString("response"));
+                                        } catch (JSONException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                });
                             }
-                        });
-                    }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Utils.showToast(Dashboard.this, "Service Provider Offline");
-                            Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Utils.showToast(Dashboard.this, "Service Provider Offline");
+                                    Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
+                                }
+                            });
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
                         }
-                    });
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                    }
+                }).start();
             }
-        }).start();
+        });
 
     }
 
@@ -1077,15 +1118,15 @@ public class Dashboard extends AppCompatActivity {
             return;
         }
 
-        // Build full phone number with country code
+
         String countryCode = String.valueOf(CountryCode.getSelectedItem());
         String fullPhoneNumber = countryCode + phone;
 
-        String message = "Please confirm that this is your correct phone number:\n\n" +
-                price + "\n\n" + fullPhoneNumber +
-                "\n\nTap OK to continue or Cancel to go back.";
+        String message = "Please confirm details:\n\n" +
+                AmountTLoadInBuy.getText().toString() + "\n\n" + fullPhoneNumber +
+                "\n\nTap OK to continue or Cancel";
 
-        showConfirmationDialog(this, message, "Yes", "NO", result ->
+        showConfirmationDialog(this, message, "OK", "Cancel", result ->
         {
             if (result) {
                 clearFields();
@@ -1093,6 +1134,7 @@ public class Dashboard extends AppCompatActivity {
             }
         });
     }
+
 
     private void buyNumberConfirmed(String phone, String price) {
 
@@ -1203,11 +1245,11 @@ public class Dashboard extends AppCompatActivity {
 
         // Step 2: Prepare confirmation message
         String fullPhoneNumber = CountryCode.getSelectedItem() + phoneText;
-        String message = "Please confirm that this is your correct phone number:\n\n" +
-                fullPhoneNumber + "\n\nTap OK to continue or Cancel to go back.";
+        String message = "Please confirm details:\n\n" +
+                fullPhoneNumber + "\n\nTap OK to continue or Cancel";
 
         // Step 3: Ask for confirmation
-        showConfirmationDialog(this, message, "Yes", "NO", result -> {
+        showConfirmationDialog(this, message, "OK", "Cancel", result -> {
             if (result) {
                 clearFields(); // Clear only after confirmation
                 numberConfirmed(fullPhoneNumber); // Proceed with the confirmed number
@@ -1492,7 +1534,7 @@ public class Dashboard extends AppCompatActivity {
             value.setTextColor(ContextCompat.getColor(Dashboard.this, R.color.primary_color));
             value.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
             value.setPadding(2, 2, 2, 2);
-            value.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            value. setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
             value.setGravity(Gravity.END);
 
             TableRow.LayoutParams valueParams = new TableRow.LayoutParams(
@@ -1689,18 +1731,41 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void showConfirmationDialog(Context context, String message, String positive, String negative, Consumer<Boolean> callback) {
-        new AlertDialog.Builder(context)
+        AlertDialog dialog = new AlertDialog.Builder(context)
                 .setMessage(message)
-                .setPositiveButton(positive, (dialog, which) -> {
-                    dialog.dismiss();
+                .setPositiveButton(positive, (d, which) -> {
+                    d.dismiss();
                     callback.accept(true);
                 })
-                .setNegativeButton(negative, (dialog, which) -> {
-                    dialog.dismiss();
+                .setNegativeButton(negative, (d, which) -> {
+                    d.dismiss();
                     callback.accept(false);
                 })
-                .create()
-                .show();
+                .create();
+
+        dialog.setOnShowListener(d -> {
+            Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+
+            // Set fixed text colors only — no background
+            int primaryColor = ContextCompat.getColor(context, R.color.primary_color);
+            int vodacomColor = ContextCompat.getColor(context, R.color.vodacom_color);
+            int black = ContextCompat.getColor(context, R.color.black);
+
+            positiveButton.setTextColor(primaryColor);
+            negativeButton.setTextColor(vodacomColor);
+            TextView messageView = dialog.findViewById(android.R.id.message);
+            messageView.setTextColor(black);
+        });
+
+        // Set dialog background only
+        if (dialog.getWindow() != null) {
+
+            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.edit_text_background));
+        }
+
+
+        dialog.show();
     }
 
 
@@ -2224,81 +2289,95 @@ public class Dashboard extends AppCompatActivity {
             Utils.showToast(this, "Please fill all fields");
             return;
         }
+        String fullPhoneNumber = "+" + selectedAgentId;
+
+        String message = "Please confirm details:\n\n"
+                + fullPhoneNumber + "\n\n"
+                + "Collection: " + currencySymbol + collectValue + "\n"
+                + "Commission: " + currencySymbol + commissionValue + "\n\n"
+                + "Tap OK to continue or Cancel ";
 
 
-        try {
-            double collect = Double.parseDouble(collectValue);
-            double commission = Double.parseDouble(commissionValue);
+        showConfirmationDialog(this, message, "OK", "Cancel", result ->
+        {
+            if (result) {
 
-            if (collect == 0.0 || commission == 0.0) {
-                Utils.showToast(this, "Amounts must be greater than 0.00");
-                return;
-            }
-            SharedPreferences sharedPreference = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
-            String name = sharedPreference.getString("name", "");
-            String surname = sharedPreference.getString("surname", "");
-            new Thread(() -> {
+
                 try {
-                    JSONObject res = ApiService.collectFunds("Econet", selectedAgentId, collectValue.replace(".", ""), commissionValue.replace(".", ""), "840", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), name + " " + surname, Dashboard.this);
+                    double collect = Double.parseDouble(collectValue);
+                    double commission = Double.parseDouble(commissionValue);
 
-                    if (res.getInt("responseCode") == 200) {
-                        runOnUiThread(() -> {
-                            try {
-                                String responseString = res.getString("response");
-                                JSONObject responseJson = new JSONObject(responseString);
-                                JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
-                                JSONArray paramsList = methodResponse.getJSONArray("paramsList");
-                                JSONObject resultObj = paramsList.getJSONObject(0);
-                                selectedAgentId = "";
-                                Agents.setSelection(0);
-
-                                String balance = resultObj.getString("decimalBalance");
-                                String agentName = resultObj.getString("agentName");
-                                String date = resultObj.getString("entryDate");
-
-
-                                String successMessage = "Date: " + date + "\n\n"
-                                        + "Agent Name: " + agentName + "\n"
-                                        + "Collected Amount: " + currencySymbol + balance;
-
-                                showSuccessDialog(
-                                        true,
-                                        Dashboard.this,
-                                        "Transaction Succesfully ",
-                                        successMessage);
-
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Utils.showToast(Dashboard.this, "Invalid response");
-                            }
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            try {
-                                Utils.showToast(Dashboard.this, res.getString("response"));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        });
+                    if (collect == 0.0 || commission == 0.0) {
+                        Utils.showToast(this, "Amounts must be greater than 0.00");
+                        return;
                     }
+                    SharedPreferences sharedPreference = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+                    String name = sharedPreference.getString("name", "");
+                    String surname = sharedPreference.getString("surname", "");
+                    new Thread(() -> {
+                        try {
+                            JSONObject res = ApiService.collectFunds("Econet", selectedAgentId, collectValue.replace(".", ""), commissionValue.replace(".", ""), "840", Utils.getString(Dashboard.this, "LoggedUserCredentials", "phone"), name + " " + surname, Dashboard.this);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> {
-                        Utils.showToast(Dashboard.this, "Service Provider Offline");
-                        Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> Utils.showToast(Dashboard.this, "Something went wrong"));
+                            if (res.getInt("responseCode") == 200) {
+                                runOnUiThread(() -> {
+                                    try {
+                                        String responseString = res.getString("response");
+                                        JSONObject responseJson = new JSONObject(responseString);
+                                        JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                                        JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                                        JSONObject resultObj = paramsList.getJSONObject(0);
+                                        selectedAgentId = "";
+                                        Agents.setSelection(0);
+
+                                        String balance = resultObj.getString("decimalBalance");
+                                        String agentName = resultObj.getString("agentName");
+                                        String date = resultObj.getString("entryDate");
+
+
+                                        String successMessage = "Date: " + date + "\n\n"
+                                                + "Agent Name: " + agentName + "\n"
+                                                + "Collected Amount: " + currencySymbol + balance;
+
+                                        showSuccessDialog(
+                                                true,
+                                                Dashboard.this,
+                                                "Transaction Succesfully ",
+                                                successMessage);
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        Utils.showToast(Dashboard.this, "Invalid response");
+                                    }
+                                });
+                            } else {
+                                runOnUiThread(() -> {
+                                    try {
+                                        Utils.showToast(Dashboard.this, res.getString("response"));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            runOnUiThread(() -> {
+                                Utils.showToast(Dashboard.this, "Service Provider Offline");
+                                Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            runOnUiThread(() -> Utils.showToast(Dashboard.this, "Something went wrong"));
+                        }
+                    }).start();
+
+
+                } catch (NumberFormatException e) {
+                    Utils.showToast(this, "Invalid number format");
                 }
-            }).start();
-
-
-        } catch (NumberFormatException e) {
-            Utils.showToast(this, "Invalid number format");
-        }
+            }
+        });
     }
 
     // Returning Methods
