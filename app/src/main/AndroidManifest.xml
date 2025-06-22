@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.testingmyskills">
+    package="za.co.qupos">
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -33,7 +33,7 @@
 
         <!-- Main Activity -->
         <activity
-            android:name="com.example.testingmyskills.UI.MainActivity"
+            android:name="com.example.qupos.UI.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,10 +53,10 @@
 
         <!-- Other Activities -->
         <activity
-            android:name="com.example.testingmyskills.UI.Dashboard"
+            android:name="com.example.qupos.UI.Dashboard"
             android:windowSoftInputMode="adjustPan"
             android:exported="false" />
-        <activity android:name="com.example.testingmyskills.UI.UserManagement" />
+        <activity android:name="com.example.qupos.UI.UserManagement" />
 
     </application>
 </manifest>
