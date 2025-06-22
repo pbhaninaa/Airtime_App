@@ -672,7 +672,7 @@ public class Dashboard extends AppCompatActivity {
 
                     total_summaries.add(totalRow);
                     TextView total = findViewById(R.id.float_amount);
-                    total.setText(String.format("%s %s%s", "Econet Float:", currencySymbol, methodResponse.getString("totalCumulativeBalance").replace(",", "")));
+                    total.setText(String.format("%s %s%s", "Econet Float :", currencySymbol, methodResponse.getString("totalCumulativeBalance").replace(",", "")));
 
 
                     runOnUiThread(() -> {
