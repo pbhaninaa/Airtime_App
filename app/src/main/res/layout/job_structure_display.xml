@@ -22,21 +22,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_weight="0.1"
+            android:layout_weight="1"
             android:gravity="left"
             android:orientation="vertical"
-            android:paddingTop="5sp"
-            android:paddingBottom="5sp"
-            android:paddingStart="20sp"
-            >
+            android:paddingStart="20sp">
 
             <TextView
                 android:id="@+id/ite_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="100 GB Data"
-                android:textColor="@color/primary_color"
-                android:textStyle="bold" />
+                android:textColor="@color/primary_color" />
 
             <TextView
                 android:id="@+id/item_life_time"
@@ -47,14 +43,18 @@
 
         </LinearLayout>
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingTop="5sp"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_weight="3"
+            android:gravity="right"
+            android:orientation="vertical"
+            android:paddingStart="10sp">
            <TextView
                android:id="@+id/item_price"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:padding="5sp"
                android:text="R 350.00"
                android:textColor="@color/black"
                android:textSize="15sp" />

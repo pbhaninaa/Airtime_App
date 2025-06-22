@@ -414,8 +414,8 @@ public class Dashboard extends AppCompatActivity {
         Utils.hideSoftKeyboard(Dashboard.this);
 
 
-        String message = "Please confirm details:\n"
-                +"ID: " + selectedAgentId1 + "\n"
+        String message = "Please confirm details:\n\n"
+                + "ID: " + selectedAgentId1 + "\n"
                 + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n"
 
                 + "Tap OK to continue or Cancel";
@@ -618,6 +618,7 @@ public class Dashboard extends AppCompatActivity {
         expected_collection_summary.setLayoutManager(new LinearLayoutManager(this));
         expected_collection_summary1.setLayoutManager(new LinearLayoutManager(this));
         total_expected_collection_summary.setLayoutManager(new LinearLayoutManager(this));
+        Utils.LoadingLayout(this, this);
 
         new Thread(() -> {
             try {
@@ -632,7 +633,7 @@ public class Dashboard extends AppCompatActivity {
                         endDate
                 );
 
-
+                Utils.CloseLoadingLayout(this, this);
                 if (res.getInt("responseCode") == 200) {
                     String responseString = res.getString("response");
                     JSONObject responseJson = new JSONObject(responseString);
@@ -664,12 +665,10 @@ public class Dashboard extends AppCompatActivity {
                                             .replace(",", "")));
 
 
-//                    totalRow.put("agentCumulativeBalance",
-//                            Double.parseDouble(methodResponse
-//                                    .getString("totalCumulativeBalance")
-//                                    .replace(",", "")));
                     totalRow.put("agentCumulativeBalance",
-                            Double.parseDouble("0.00"));
+                            Double.parseDouble(methodResponse
+                                    .getString("totalCumulativeBalance")
+                                    .replace(",", "")));
 
                     total_summaries.add(totalRow);
                     TextView total = findViewById(R.id.float_amount);
@@ -971,8 +970,8 @@ public class Dashboard extends AppCompatActivity {
             AmountTLoad.setError("Amount is required");
             return;
         }
-        String message = "Please confirm details:\n"
-                +"ID: " + selectedAgentId1 + "\n"
+        String message = "Please confirm details:\n\n"
+                + "ID: " + selectedAgentId1 + "\n"
                 + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n"
 
                 + "Tap OK to continue or Cancel";
@@ -1121,8 +1120,8 @@ public class Dashboard extends AppCompatActivity {
         String countryCode = String.valueOf(CountryCode.getSelectedItem());
         String fullPhoneNumber = countryCode + phone;
 
-        String message = "Please confirm details:\n" +
-                AmountTLoadInBuy.getText().toString() + "\n" + "ID: " +fullPhoneNumber +
+        String message = "Please confirm details:\n\n" +
+                AmountTLoadInBuy.getText().toString() + "\n" + "ID: " + fullPhoneNumber +
                 "\nTap OK to continue or Cancel";
 
         showConfirmationDialog(this, message, "OK", "Cancel", result ->
@@ -1244,8 +1243,8 @@ public class Dashboard extends AppCompatActivity {
 
         // Step 2: Prepare confirmation message
         String fullPhoneNumber = CountryCode.getSelectedItem() + phoneText;
-        String message = "Please confirm details:\n" +
-                "ID: " +fullPhoneNumber + "\nTap OK to continue or Cancel";
+        String message = "Please confirm details:\n\n" +
+                "ID: " + fullPhoneNumber + "\nTap OK to continue or Cancel";
 
         // Step 3: Ask for confirmation
         showConfirmationDialog(this, message, "OK", "Cancel", result -> {
@@ -1446,7 +1445,7 @@ public class Dashboard extends AppCompatActivity {
                                                     data.add(new String[]{"Agent Balance", currencySymbol + decimalBalance1});
                                                     data.add(new String[]{"", ""});
                                                     data.add(new String[]{"Cycle Net Collection", currencySymbol + cycleNetCollection1});
-                                                    data.add(new String[]{"Cycle Target Commission", currencySymbol + cycleTargetCommission1});
+                                                    data.add(new String[]{"Agent Commission", currencySymbol + cycleTargetCommission1});
                                                     data.add(new String[]{"Cycle TopUp", currencySymbol + cycleDepositValue});
                                                     data.add(new String[]{"Cycle Recharge Value", currencySymbol + cycleRechargeValue1});
 
@@ -2271,8 +2270,8 @@ public class Dashboard extends AppCompatActivity {
         }
         String fullPhoneNumber = "+" + selectedAgentId;
 
-        String message = "Please confirm details:\n"
-                + "ID: " +fullPhoneNumber + "\n"
+        String message = "Please confirm details:\n\n"
+                + "ID: " + fullPhoneNumber + "\n"
                 + "Collection: " + currencySymbol + collectValue + "\n"
                 + "Commission: " + currencySymbol + commissionValue + "\n"
                 + "Tap OK to continue or Cancel ";
