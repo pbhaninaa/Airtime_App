@@ -109,7 +109,12 @@ public class Dashboard extends AppCompatActivity {
     private WebView Web;
     private TextView selectedAgentBalance1, selectedAgentBalance, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
-    private ImageButton NavAdminBtn, backFromList, NavHomeBtn, NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn, NavMoreBtn, expected_collection, NavLaodBalanceBtn1, NavLaodBalanceBtn;
+    private ImageButton NavAdminBtn, backFromList, NavHomeBtn,
+            NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn,
+            NavMoreBtn, expected_collection, NavLoadBalanceBtn1, NavLoadBalanceBtn;
+    private LinearLayout NavAdminBtnLayout, backFromListLayout, NavHomeBtnLayout,
+            NavCollectBtnLayout, NavBuyBtnLayout, NavProfileBtnLayout, NavIPSBtnLayout,
+            NavMoreBtnLayout, expected_collectionLayout, NavLoadBalanceBtn1Layout, NavLoadBalanceBtnLayout;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
@@ -147,6 +152,32 @@ public class Dashboard extends AppCompatActivity {
         endDate = Utils.getTodayDate();
         setNavBaeToDisplayOnly4Buttons();
         underConstruction(adminLayout);
+
+    }
+
+    public void adminRights(String role) {
+
+        NavCollectBtnLayout.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
+        expected_collectionLayout.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+        NavAdminBtnLayout.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
+        TableLayout t = findViewById(R.id.selected_agents_balance_table);
+        TableLayout t1 = findViewById(R.id.selected_agents_balance_table1);
+        t.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+        t1.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+
+     /*
+        NavBuyBtnLayout.setVisibility(GONE);
+        NavProfileBtnLayout .setVisibility(GONE);
+        NavIPSBtnLayout .setVisibility(GONE);
+        NavMoreBtnLayout .setVisibility(GONE);
+        NavLoadBalanceBtn1Layout .setVisibility(GONE);
+        NavLoadBalanceBtnLayout.setVisibility(GONE);
+        backFromListLayout.setVisibility(GONE);
+        NavHomeBtnLayout.setVisibility(GONE);
+      */
+    }
+
+    public void agentRights() {
 
     }
 
@@ -196,6 +227,7 @@ public class Dashboard extends AppCompatActivity {
         SharedPreferences sharedPreference = getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
         String role = sharedPreference.getString("role", "Agent");
         LoadBalance1.setVisibility(!role.equals("Agent") ? VISIBLE : GONE);
+        adminRights(role);
 
 
         AppFrame.setVisibility(VISIBLE);
@@ -277,8 +309,8 @@ public class Dashboard extends AppCompatActivity {
         NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
         NavCollectBtn = findViewById(R.id.nav_collect_layout_btn);
         NavAdminBtn = findViewById(R.id.nav_admin_btn1);
-        NavLaodBalanceBtn = findViewById(R.id.nav_load_btn);
-        NavLaodBalanceBtn1 = findViewById(R.id.nav_load_btn1);
+        NavLoadBalanceBtn = findViewById(R.id.nav_load_btn);
+        NavLoadBalanceBtn1 = findViewById(R.id.nav_load_btn1);
         expected_collection = findViewById(R.id.expected_collection);
         NavBuyBtn = findViewById(R.id.nav_buy_btn1);
         NavProfileBtn = findViewById(R.id.nav_profile_btn1);
@@ -322,6 +354,19 @@ public class Dashboard extends AppCompatActivity {
         selectedAgentBalance = findViewById(R.id.selected_agents_balance);
         tableLayout1 = findViewById(R.id.selected_agents_balance_table1);
         tableLayout = findViewById(R.id.selected_agents_balance_table);
+
+//        =====================================
+        NavAdminBtnLayout = findViewById(R.id.nav_admin_btn1_layout);
+        backFromListLayout = findViewById(R.id.nav_networks_btn1_layout);
+        NavHomeBtnLayout = findViewById(R.id.nav_dash_board_btn1_layout);
+        NavCollectBtnLayout = findViewById(R.id.nav_collect_layout_btn_layout);
+        NavBuyBtnLayout = findViewById(R.id.nav_buy_btn1_layout);
+        NavProfileBtnLayout = findViewById(R.id.nav_profile_btn1_layout);
+//        NavIPSBtnLayout = findViewById(R.id.nav_dash_board_btn1_layout);
+        NavMoreBtnLayout = findViewById(R.id.more1_layout);
+        expected_collectionLayout = findViewById(R.id.nav_expected_collection_layout);
+        NavLoadBalanceBtn1Layout = findViewById(R.id.nav_load_btn1_layout);
+        NavLoadBalanceBtnLayout = findViewById(R.id.nav_load_btn_layout);
     }
 
     public void showLastTransaction() {
@@ -574,8 +619,8 @@ public class Dashboard extends AppCompatActivity {
         NavHomeBtn.setOnClickListener(v -> hideLayouts(ISPsLayout, NavHomeBtn));
         NavCollectBtn.setOnClickListener(v -> hideLayouts(collect_layout, NavCollectBtn));
         NavAdminBtn.setOnClickListener(v -> hideLayouts(adminLayout, NavAdminBtn));
-        NavLaodBalanceBtn.setOnClickListener(v -> hideLayouts(LoadBalanceLayout, NavLaodBalanceBtn));
-        NavLaodBalanceBtn1.setOnClickListener(v -> hideLayouts(BuyLayout, NavLaodBalanceBtn1));
+        NavLoadBalanceBtn.setOnClickListener(v -> hideLayouts(LoadBalanceLayout, NavLoadBalanceBtn));
+        NavLoadBalanceBtn1.setOnClickListener(v -> hideLayouts(BuyLayout, NavLoadBalanceBtn1));
         NavIPSBtn.setOnClickListener(v -> hideLayouts(ItemsLayout, NavIPSBtn));
         NavMoreBtn.setOnClickListener(v -> handleShowMore());
         NavBuyBtn.setOnClickListener(v -> hideLayouts(BuyLayout, NavBuyBtn));
@@ -2140,10 +2185,10 @@ public class Dashboard extends AppCompatActivity {
         NavBuyBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavIPSBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
-        NavLaodBalanceBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        NavLoadBalanceBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavCollectBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavAdminBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
-        NavLaodBalanceBtn1.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        NavLoadBalanceBtn1.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         expected_collection.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         icon.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
     }
