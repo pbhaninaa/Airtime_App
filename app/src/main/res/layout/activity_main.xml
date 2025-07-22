@@ -29,12 +29,12 @@
                 android:padding="20dp">
 
                 <ImageView
+                    android:id="@+id/app_logo"
                     android:layout_width="match_parent"
                     android:layout_height="500sp"
                     android:layout_gravity="center"
-                    android:paddingLeft="@dimen/thirty"
-                    android:paddingRight="@dimen/thirty"
-                    android:src="@drawable/app_logo" />
+                    android:padding="@dimen/fifty"
+                    android:src="@drawable/qupos_app_logo" />
 
                 <TextView
                     android:layout_width="match_parent"

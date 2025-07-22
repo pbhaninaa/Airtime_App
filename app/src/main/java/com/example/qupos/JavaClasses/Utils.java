@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -95,6 +96,11 @@ public class Utils {
 
         pm.setComponentEnabledSetting(new ComponentName(packageName, aliasToEnable),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+    }
+    public static String getApplicationName(Context context) {
+        ApplicationInfo applicationInfo = context.getApplicationInfo();
+        int stringId = applicationInfo.labelRes;
+        return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
     }
 
     public static void hideSoftNavBar(Activity activity) {

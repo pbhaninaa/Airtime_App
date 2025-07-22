@@ -1,90 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--Purple theme-->
-    <!--            <color name="primary_color">#461584</color>-->
-    <!--            <color name="secondary_color">#8e64c4</color>-->
-    <!--            <color name="tertiary_color">#FF9370DB</color>-->
-    <!--Red theme-->
-    <!--            <color name="primary_color">#FF800000</color>-->
-    <!--            <color name="secondary_color">#FF8B0000</color>-->
-    <!--            <color name="tertiary_color">#FFFF0000</color>-->
-
-    <!--Blue and Gray theme-->
-    <!--        <color name="primary_color">#2d3688</color>-->
-    <!--        <color name="secondary_color">#a6a6a6</color>-->
-    <!--        <color name="tertiary_color">#ffffff</color>-->
-
-    <!--pink theme-->
-    <!--        <color name="primary_color">#f94687</color>-->
-    <!--        <color name="secondary_color">#3f9ae0</color>-->
-    <!--        <color name="tertiary_color">#ffe8cc</color>-->
-
-    <!--pink theme-->
-    <!--      <color name="primary_color">#a6a6a6</color>-->
-    <!--         <color name="secondary_color">#2d3688</color>-->
-    <!--         <color name="tertiary_color">#FFCCCCCC</color>-->
 
 
-    <!--    &lt;!&ndash; Theme 1: Warm Colors &ndash;&gt;-->
-    <!--        <color name="primary_color">#FF800000</color>-->
-    <!--        <color name="secondary_color">#FFFFA500</color>-->
-    <!--        <color name="tertiary_color">#FFFFC0CB</color>-->
-
-    <!--    &lt;!&ndash; Theme 2: Cool Colors &ndash;&gt;-->
-    <!--    <color name="primary_color">#FF0000FF</color>-->
-    <!--    <color name="secondary_color">#FF00FFFF</color>-->
-    <!--    <color name="tertiary_color">#FF98FB98</color>-->
-
-    <!--    &lt;!&ndash; Theme 3: Earthy Tones &ndash;&gt;-->
-<!--        <color name="primary_color">#FF800080</color>-->
-<!--        <color name="secondary_color">#FFD2B48C</color>-->
-<!--        <color name="tertiary_color">#FFD3D3D3</color>-->
-
-    <!--    &lt;!&ndash; Theme 4: Bold and Vibrant &ndash;&gt;-->
-<!--        <color name="primary_color">#FFFF69B4</color>-->
-<!--        <color name="secondary_color">#FF00FF00</color>-->
-<!--        <color name="tertiary_color">#FF7B68EE</color>-->
-
-    <!--    &lt;!&ndash; Theme 5: Classic Monochrome &ndash;&gt;-->
-    <!--    <color name="primary_color">#FF000000</color>-->
-    <!--    <color name="secondary_color">#FFFFFFFF</color>-->
-    <!--    <color name="tertiary_color">#FF808080</color>-->
-
-    <!--    &lt;!&ndash; Theme 6: Oceanic Blues &ndash;&gt; Lewis-->
+    <!--     Qupos theme-->
     <color name="primary_color">#FF000080</color>
     <color name="secondary_color">#FF000080</color>
     <color name="tertiary_color">#FF87CEFA</color>
 
-    <!--    &lt;!&ndash; Theme 7: Natural Greens &ndash;&gt;-->
-<!--            <color name="primary_color">#FF006400</color>-->
-<!--            <color name="secondary_color">#FF90EE90</color>-->
-<!--            <color name="tertiary_color">#FF3CB371</color>-->
 
 
-    <!-- Cell C Theme -->
-<!--            <color name="primary_color">#FF6600</color>-->
-<!--            <color name="secondary_color">#000000</color>-->
-<!--            <color name="tertiary_color">#FFFFFF</color>-->
-
-    <!-- Cell C Theme -->
-<!--        <color name="primary_color">#fea734</color>-->
-<!--        <color name="secondary_color">#FF000080</color>-->
-<!--        <color name="tertiary_color">#FFFFFF</color>-->
-
-    <!-- MTN Theme -->
-<!--                <color name="primary_color">#FFCC00</color>-->
-<!--                <color name="secondary_color">#0033A0</color>-->
-<!--                <color name="tertiary_color">#FFFFFF</color>-->
-
-    <!--        &lt;!&ndash; Vodacom Theme &ndash;&gt;-->
-<!--            <color name="primary_color">#E60000</color>-->
-<!--            <color name="secondary_color">#FFFFFF</color>-->
-<!--            <color name="tertiary_color">#000000</color>-->
-
-    <!--    <color name="mtn_color">#FDDE55</color>-->
-<!--        <color name="vodacom_color">#FA7070</color>-->
-<!--        <color name="cellc_color">#FFBB70</color>-->
-<!--        <color name="econet_color">#03AED2</color>-->
+    <!-- Primary Rabtel Colors -->
+<!--    <color name="primary_color">#D80027</color> &lt;!&ndash; Bold red &ndash;&gt;-->
+<!--    <color name="secondary_color">#B0001B</color> &lt;!&ndash; Darker shade of red &ndash;&gt;-->
+<!--    <color name="tertiary_color">#FFFFFF</color> &lt;!&ndash; White accent &ndash;&gt;-->
 
     <color name="isp_background_color1">#FFFFEB3B</color>
     <color name="isp_background_color2">#FFF44336</color>
@@ -158,5 +86,87 @@
     <color name="dark_slate_blue">#FF483D8B</color>
     <color name="dark_slate_gray">#FF2F4F4F</color>
     <!-- Add more colors as needed -->
+    <!--Purple theme-->
+    <!--            <color name="primary_color">#461584</color>-->
+    <!--            <color name="secondary_color">#8e64c4</color>-->
+    <!--            <color name="tertiary_color">#FF9370DB</color>-->
+    <!--Red theme-->
+    <!--            <color name="primary_color">#FF800000</color>-->
+    <!--            <color name="secondary_color">#FF8B0000</color>-->
+    <!--            <color name="tertiary_color">#FFFF0000</color>-->
 
+    <!--Blue and Gray theme-->
+    <!--        <color name="primary_color">#2d3688</color>-->
+    <!--        <color name="secondary_color">#a6a6a6</color>-->
+    <!--        <color name="tertiary_color">#ffffff</color>-->
+
+    <!--pink theme-->
+    <!--        <color name="primary_color">#f94687</color>-->
+    <!--        <color name="secondary_color">#3f9ae0</color>-->
+    <!--        <color name="tertiary_color">#ffe8cc</color>-->
+
+    <!--pink theme-->
+    <!--      <color name="primary_color">#a6a6a6</color>-->
+    <!--         <color name="secondary_color">#2d3688</color>-->
+    <!--         <color name="tertiary_color">#FFCCCCCC</color>-->
+
+
+    <!--    &lt;!&ndash; Theme 1: Warm Colors &ndash;&gt;-->
+    <!--        <color name="primary_color">#FF800000</color>-->
+    <!--        <color name="secondary_color">#FFFFA500</color>-->
+    <!--        <color name="tertiary_color">#FFFFC0CB</color>-->
+
+    <!--    &lt;!&ndash; Theme 2: Cool Colors &ndash;&gt;-->
+    <!--    <color name="primary_color">#FF0000FF</color>-->
+    <!--    <color name="secondary_color">#FF00FFFF</color>-->
+    <!--    <color name="tertiary_color">#FF98FB98</color>-->
+
+    <!--    &lt;!&ndash; Theme 3: Earthy Tones &ndash;&gt;-->
+    <!--        <color name="primary_color">#FF800080</color>-->
+    <!--        <color name="secondary_color">#FFD2B48C</color>-->
+    <!--        <color name="tertiary_color">#FFD3D3D3</color>-->
+
+    <!--    &lt;!&ndash; Theme 4: Bold and Vibrant &ndash;&gt;-->
+    <!--        <color name="primary_color">#FFFF69B4</color>-->
+    <!--        <color name="secondary_color">#FF00FF00</color>-->
+    <!--        <color name="tertiary_color">#FF7B68EE</color>-->
+
+    <!--    &lt;!&ndash; Theme 5: Classic Monochrome &ndash;&gt;-->
+    <!--    <color name="primary_color">#FF000000</color>-->
+    <!--    <color name="secondary_color">#FFFFFFFF</color>-->
+    <!--    <color name="tertiary_color">#FF808080</color>-->
+
+    <!--    &lt;!&ndash; Theme 6: Oceanic Blues &ndash;&gt; Lewis-->
+
+
+    <!--    &lt;!&ndash; Theme 7: Natural Greens &ndash;&gt;-->
+    <!--            <color name="primary_color">#FF006400</color>-->
+    <!--            <color name="secondary_color">#FF90EE90</color>-->
+    <!--            <color name="tertiary_color">#FF3CB371</color>-->
+
+
+    <!-- Cell C Theme -->
+    <!--            <color name="primary_color">#FF6600</color>-->
+    <!--            <color name="secondary_color">#000000</color>-->
+    <!--            <color name="tertiary_color">#FFFFFF</color>-->
+
+    <!-- Cell C Theme -->
+    <!--        <color name="primary_color">#fea734</color>-->
+    <!--        <color name="secondary_color">#FF000080</color>-->
+    <!--        <color name="tertiary_color">#FFFFFF</color>-->
+
+    <!-- MTN Theme -->
+    <!--                <color name="primary_color">#FFCC00</color>-->
+    <!--                <color name="secondary_color">#0033A0</color>-->
+    <!--                <color name="tertiary_color">#FFFFFF</color>-->
+
+    <!--        &lt;!&ndash; Vodacom Theme &ndash;&gt;-->
+    <!--            <color name="primary_color">#E60000</color>-->
+    <!--            <color name="secondary_color">#FFFFFF</color>-->
+    <!--            <color name="tertiary_color">#000000</color>-->
+
+    <!--    <color name="mtn_color">#FDDE55</color>-->
+    <!--        <color name="vodacom_color">#FA7070</color>-->
+    <!--        <color name="cellc_color">#FFBB70</color>-->
+    <!--        <color name="econet_color">#03AED2</color>-->
 </resources>

@@ -102,19 +102,22 @@ import java.util.Calendar;
 import android.content.ComponentName;
 import android.view.ContextThemeWrapper;
 
+import okhttp3.internal.Util;
+
 public class Dashboard extends AppCompatActivity {
     private ConstraintLayout ConfirmationScreen, AppFrame, LoadingLayout;
     private LinearLayout userSummaryLayout, adminLayout, collect_layout, expected_collection_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
+    private ImageView App_logo_in_balance_display;
     private TextView selectedAgentBalance1, selectedAgentBalance, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
     private ImageButton NavAdminBtn, backFromList, NavHomeBtn,
             NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn,
             NavMoreBtn, expected_collection, NavLoadBalanceBtn1, NavLoadBalanceBtn;
-    private LinearLayout NavAdminBtnLayout, backFromListLayout, NavHomeBtnLayout,
-            NavCollectBtnLayout, NavBuyBtnLayout, NavProfileBtnLayout, NavIPSBtnLayout,
-            NavMoreBtnLayout, expected_collectionLayout, NavLoadBalanceBtn1Layout, NavLoadBalanceBtnLayout;
+    private LinearLayout AdminNavBtn, backFromListLayout, HomeNavBtn,
+            CollectNavBtn, BuyNavBtn, ProfileNavBtn,
+            MoreNavBtn, SummaryNavBtn, DirectBuyNavBtn, TopUpNavBtn;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
     private ImageView statusLight, CountryFlag, load, LoadingImage;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
@@ -125,7 +128,7 @@ public class Dashboard extends AppCompatActivity {
     private JSONArray paramList = new JSONArray();
     private String selectedAgentId = "";
     private String selectedAgentId1 = "";
-    private TableLayout tableLayout1, tableLayout;
+    private TableLayout selectedUserBalanceTextView, selectedUserBalanceTextView1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,36 +155,66 @@ public class Dashboard extends AppCompatActivity {
         endDate = Utils.getTodayDate();
         setNavBaeToDisplayOnly4Buttons();
         underConstruction(adminLayout);
-
+        appBranding();
+        showNavbar();
     }
+    public void appBranding() {
+        // Get the app name
+        String appName = getString(R.string.app_name);
 
+        ImageView logo_in_balance_display = findViewById(R.id.logo_in_balance_display);
+        ImageView logo_in_tenant_select = findViewById(R.id.logo_in_tenant_select);
+
+        // Match and set logos
+        if ("Qupos".equalsIgnoreCase(appName)) {
+            logo_in_balance_display.setImageResource(R.drawable.icon_logo);
+            logo_in_tenant_select.setImageResource(R.drawable.qupos_app_logo);
+        } else {
+            logo_in_balance_display.setImageResource(R.drawable.rebtel_app_logo);
+            logo_in_tenant_select.setImageResource(R.drawable.rebtel_icon_logo);
+        }
+    }
     public void adminRights(String role) {
-        TableLayout t = findViewById(R.id.selected_agents_balance_table);
-        TableLayout t1 = findViewById(R.id.selected_agents_balance_table1);
-        t.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
-        t1.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+        selectedUserBalanceTextView.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+        selectedUserBalanceTextView1.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+        CollectNavBtn.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
+        AdminNavBtn.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
 
-
-        NavCollectBtnLayout.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
-        expected_collectionLayout.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
-        NavAdminBtnLayout.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
-
-
-
-       /* NavBuyBtnLayout.setVisibility(GONE);
-        NavProfileBtnLayout .setVisibility(GONE);
-        NavIPSBtnLayout .setVisibility(GONE);
-        NavMoreBtnLayout .setVisibility(GONE);
-        NavLoadBalanceBtn1Layout .setVisibility(GONE);
-        NavLoadBalanceBtnLayout.setVisibility(GONE);
+       /*
+        BuyNavBtn.setVisibility(GONE);
+        SummaryNavBtn.setVisibility(GONE);
+        ProfileNavBtn .setVisibility(GONE);
+        MoreNavBtn .setVisibility(GONE);
+        DirectBuyNavBtn .setVisibility(GONE);
+        TopUpNavBtn.setVisibility(GONE);
         backFromListLayout.setVisibility(GONE);
-        NavHomeBtnLayout.setVisibility(GONE);*/
+        HomeNavBtn.setVisibility(GONE);
+        */
 
     }
 
-    public void agentRights() {
 
+
+    public void showNavbar() {
+        if (CollectNavBtn.getVisibility() != View.VISIBLE &&
+                SummaryNavBtn.getVisibility() != View.VISIBLE &&
+                AdminNavBtn.getVisibility() != View.VISIBLE &&
+                BuyNavBtn.getVisibility() != View.VISIBLE &&
+                ProfileNavBtn.getVisibility() != View.VISIBLE &&
+                MoreNavBtn.getVisibility() != View.VISIBLE &&
+                DirectBuyNavBtn.getVisibility() != View.VISIBLE &&
+                TopUpNavBtn.getVisibility() != View.VISIBLE &&
+                backFromListLayout.getVisibility() != View.VISIBLE &&
+                HomeNavBtn.getVisibility() != View.VISIBLE) {
+
+            // All are not visible; hide the navbar
+            Navbar.setVisibility(View.GONE);
+        } else {
+            // At least one is visible; show the navbar
+            Navbar.setVisibility(View.VISIBLE);
+        }
     }
+
 
     private void underConstruction(LinearLayout layout) {
         View underConstruction = getLayoutInflater().inflate(R.layout.under_construction, layout, false);
@@ -354,22 +387,21 @@ public class Dashboard extends AppCompatActivity {
         currencySymbolInBuy = findViewById(R.id.currency_symbol_in_buy);
         AmountTLoadInBuy = findViewById(R.id.loading_amount_in_buy);
         selectedAgentBalance = findViewById(R.id.selected_agents_balance);
-        tableLayout1 = findViewById(R.id.selected_agents_balance_table1);
-        tableLayout = findViewById(R.id.selected_agents_balance_table);
+        selectedUserBalanceTextView1 = findViewById(R.id.selected_agents_balance_table1);
+        selectedUserBalanceTextView = findViewById(R.id.selected_agents_balance_table);
 
 //        =====================================
 
-        NavAdminBtnLayout = findViewById(R.id.nav_admin_btn1_layout);
+        AdminNavBtn = findViewById(R.id.nav_admin_btn1_layout);
         backFromListLayout = findViewById(R.id.nav_networks_btn1_layout);
-        NavHomeBtnLayout = findViewById(R.id.nav_dash_board_btn1_layout);
-        NavCollectBtnLayout = findViewById(R.id.nav_collect_layout_btn_layout);
-        NavBuyBtnLayout = findViewById(R.id.nav_buy_btn1_layout);
-        NavProfileBtnLayout = findViewById(R.id.nav_profile_btn1_layout);
-//      NavIPSBtnLayout = findViewById(R.id.nav_dash_board_btn1_layout);
-        NavMoreBtnLayout = findViewById(R.id.more1_layout);
-        expected_collectionLayout = findViewById(R.id.nav_expected_collection_layout);
-        NavLoadBalanceBtn1Layout = findViewById(R.id.nav_load_btn1_layout);
-        NavLoadBalanceBtnLayout = findViewById(R.id.nav_load_btn_layout);
+        HomeNavBtn = findViewById(R.id.nav_dash_board_btn1_layout);
+        CollectNavBtn = findViewById(R.id.nav_collect_layout_btn_layout);
+        BuyNavBtn = findViewById(R.id.nav_buy_btn1_layout);
+        ProfileNavBtn = findViewById(R.id.nav_profile_btn1_layout);
+        MoreNavBtn = findViewById(R.id.more1_layout);
+        SummaryNavBtn = findViewById(R.id.nav_expected_collection_layout);
+        DirectBuyNavBtn = findViewById(R.id.nav_load_btn1_layout);
+        TopUpNavBtn = findViewById(R.id.nav_load_btn_layout);
     }
 
     public void showLastTransaction() {
@@ -454,10 +486,16 @@ public class Dashboard extends AppCompatActivity {
     private void handlePayNowPayment() {
         String amountString = AmountTLoad.getText().toString().trim().replaceAll("[^\\d.]", "");
 
+//
         if (amountString.isEmpty() || amountString.equalsIgnoreCase("0.00") || selectedAgentId1.isEmpty()) {
-            AmountTLoad.setError("Amount is required");
+            if (selectedAgentId1.isEmpty()) {
+                Utils.showToast(this,"Please select an agent");
+            } else {
+                AmountTLoad.setError("Amount is required");
+            }
             return;
         }
+
 
         Utils.hideSoftKeyboard(Dashboard.this);
 
@@ -546,7 +584,10 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void run() {
                 List<String> agentNamesList = new ArrayList<>();
+                SharedPreferences sharedPreference = getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
+                String role = sharedPreference.getString("role", "Agent");
                 agentNamesList.add("Select an Agent");
+
                 try {
                     String agentId = Utils.getString(Dashboard.this, "savedCredentials", "email");
                     paramList = getAgentsParamList(agentId, agentId, Dashboard.this);
@@ -1014,10 +1055,16 @@ public class Dashboard extends AppCompatActivity {
         String amount = AmountTLoad.getText().toString().trim();
         amount = amount.replaceAll("[^\\d.]", "").replaceAll("[^\\d,]", "");
 
+
         if (amount.isEmpty() || amount.equalsIgnoreCase("0.00") || selectedAgentId1.isEmpty()) {
-            AmountTLoad.setError("Amount is required");
+            if (selectedAgentId1.isEmpty()) {
+                Utils.showToast(this,"Please select an agent");
+            } else {
+                AmountTLoad.setError("Amount is required");
+            }
             return;
         }
+
         String message = "Please confirm details:\n\n"
                 + "ID: " + selectedAgentId1 + "\n"
                 + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n"
@@ -1183,8 +1230,6 @@ public class Dashboard extends AppCompatActivity {
 
 
     private void buyNumberConfirmed(String phone, String price) {
-
-
         String balanceStr = AvailableBalance.getText().toString().replace(currencySymbol, "").replace(",", "").replace("Account Balance", "").trim();
 
         Utils.LoadingLayout(this, this);
@@ -1434,8 +1479,8 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        setupAgentSpinner(Agents, tableLayout1, true);
-        setupAgentSpinner(Agents1, tableLayout, false); // For Agents1
+        setupAgentSpinner(Agents, selectedUserBalanceTextView1, true);
+        setupAgentSpinner(Agents1, selectedUserBalanceTextView, false); // For Agents1
 
 
     }
@@ -1681,8 +1726,8 @@ public class Dashboard extends AppCompatActivity {
             return;
         }
         // Remove all rows
-        tableLayout1.removeAllViews();
-        tableLayout.removeAllViews();
+        selectedUserBalanceTextView1.removeAllViews();
+        selectedUserBalanceTextView.removeAllViews();
         Agents.setSelection(0);
         Agents1.setSelection(0);
 

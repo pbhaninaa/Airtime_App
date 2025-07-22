@@ -63,6 +63,7 @@ public class UserManagement extends AppCompatActivity {
         setOnclickListeners();
         Utils.setCaps(Firstname);
         Utils.setCaps(Lastname);
+        appBranding();
 //        version.setText("Version : "+getAppVersion());
         int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.login_page);
         screenToLoad(constraintLayoutId);
@@ -129,6 +130,20 @@ public class UserManagement extends AppCompatActivity {
         RememberMeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             rememberMe = isChecked;
         });
+
+    }
+    public void appBranding() {
+        String appName = getString(R.string.app_name);
+        ImageView logo_in_login_page = findViewById(R.id.app_logo_in_login);
+        ImageView app_logo_in_sign_up = findViewById(R.id.app_logo_in_sign_up);
+        // Match and set logos
+        if ("Qupos".equalsIgnoreCase(appName)) {
+            logo_in_login_page.setImageResource(R.drawable.illustration);
+            app_logo_in_sign_up.setImageResource(R.drawable.illustration);
+        } else {
+           logo_in_login_page.setImageResource(R.drawable.rebtel_app_logo);
+            app_logo_in_sign_up.setImageResource(R.drawable.rebtel_app_logo);
+        }
     }
     private void hideBottomNav() {
         // Hide the bottom navigation bar
@@ -331,6 +346,7 @@ public class UserManagement extends AppCompatActivity {
                                     JSONObject userObject = paramsList.getJSONObject(0);
 
 
+                                    String tenant = userObject.getString("profile");
                                     String agentID = userObject.getString("agentID");
                                     String agentName = userObject.getString("agentName");
                                     String balance = userObject.getString("decimalBalance");
@@ -355,7 +371,7 @@ public class UserManagement extends AppCompatActivity {
 
 
                                     // Save user account details
-                                    saveAccount(AgentRole,firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode), password, true);
+                                    saveAccount(tenant,AgentRole,firstName, surname, agentID, agentEmail, balance, lastConnect, Integer.parseInt(statusCode), password, true);
                                     RememberMeCheckBox.setChecked(false);
                                     Utils.hideSoftKeyboard(UserManagement.this);
                                     Utils.hideSoftNavBar(UserManagement.this);
@@ -477,7 +493,7 @@ public class UserManagement extends AppCompatActivity {
         layout.setVisibility(View.VISIBLE);
     }
 
-    private void saveAccount(String role, String name, String surname, String phone, String emailAddress, String balance, String time, int id, String pass, boolean logged) {
+    private void saveAccount(String tenant, String role, String name, String surname, String phone, String emailAddress, String balance, String time, int id, String pass, boolean logged) {
         SharedPreferences sharedPreferences = getSharedPreferences("profile", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("name", name);
@@ -497,7 +513,8 @@ public class UserManagement extends AppCompatActivity {
         ed.putString("password", pass);
         ed.putString("email", emailAddress);
         ed.putBoolean("isUserLogged", logged);
-        ed.putString("role", role); // fixed here
+        ed.putString("tenant", tenant);
+        ed.putString("role", role);
 
         ed.apply();
     }

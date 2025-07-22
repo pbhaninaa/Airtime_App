@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
     <string name="BASE_URL">http://102.219.85.66:8080/api/</string>
-    <string name="app_name">Qupos </string>
+<!--    Currently we have Rebtel and Qupos -->
+    <string name="app_name">Rebtel </string>
 <!-- Yoco -->
     <string name="yoco_api_key">sk_test_dea075a7DLboMlz54fc40f18d415</string>
     <string name="yoco_failureUrl">"https://payments.yoco.com/api/checkouts"</string>
@@ -341,4 +342,6 @@
     <string name="_123_">123</string>
     <string name="providers">Providers</string>
     <string name="airtime">Airtime</string>
+    <string name="welcome_">Welcome</string>
+    <string name="we_appreciate_your_visit">we appreciate your visit.</string>
 </resources>

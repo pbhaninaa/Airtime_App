@@ -179,25 +179,22 @@
                             android:background="@drawable/banner_background"
                             android:baselineAligned="false"
                             android:gravity="center"
-                            android:paddingStart="15sp"
-                            android:paddingEnd="15sp"
-                            android:paddingBottom="5sp"
-                            android:src="@drawable/logo">
-
+                            android:paddingBottom="10sp"
+                            android:weightSum="3">
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="11"
+                                android:layout_weight="2.5"
                                 android:gravity="center"
                                 android:orientation="vertical"
-                                android:paddingStart="@dimen/sixteen">
+                                android:paddingStart="@dimen/five">
 
                                 <TextView
                                     android:id="@+id/available_balance"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="left"
-                                    android:text="Welcome to Qpos"
+                                    android:text="@string/welcome_"
                                     android:textColor="@color/white"
                                     android:textSize="18sp"
                                     android:textStyle="bold" />
@@ -207,65 +204,23 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="left"
-                                    android:text="we appreciate your visit."
+                                    android:text="@string/we_appreciate_your_visit"
                                     android:textColor="@color/white"
                                     android:textSize="12sp" />
                             </LinearLayout>
-
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                            <ImageView
+                                android:id="@+id/logo_in_balance_display"
+                                android:layout_width="80sp"
+                                android:layout_height="80sp"
+                                android:background="@drawable/rounded_with_white_background"
+                                android:backgroundTint="@android:color/transparent"
+                                android:contentDescription="@string/todo"
                                 android:gravity="center"
-                                android:orientation="vertical">
-
-                                <ImageView
-                                    android:layout_width="80sp"
-                                    android:layout_height="80sp"
-                                    android:layout_gravity="center"
-                                    android:layout_marginRight="@dimen/five"
-                                    android:layout_marginBottom="@dimen/five"
-                                    android:contentDescription="TODO"
-                                    android:gravity="center"
-                                    android:onClick="getLastTransaction"
-                                    android:src="@drawable/illustration" />
-
-                            </RelativeLayout>
-
+                                android:onClick="getLastTransaction"
+                                android:src="@drawable/illustration" />
 
                         </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-                <!--   History layout this shows the ISPs -->
-                <LinearLayout
-                    android:id="@+id/history_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-
-                    <ScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/five"
-                        android:layout_marginBottom="@dimen/fifty">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/History_Items_recycler_view"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-
-                                android:clipToPadding="false"
-                                android:scrollbars="vertical"
-                                app:layout_constraintTop_toBottomOf="@id/sign_up_page" />
-                        </LinearLayout>
-                    </ScrollView>
                 </LinearLayout>
                 <!--   ISP_display_layout this shows the ISPs-->
                 <LinearLayout
@@ -331,10 +286,12 @@
                                         android:padding="5sp">
 
                                         <ImageView
+                                            android:id="@+id/logo_in_tenant_select"
                                             android:layout_width="100sp"
                                             android:layout_height="80sp"
                                             android:onClick="goToOtherApp"
-                                            android:src="@drawable/app_logo" />
+                                            android:src="@drawable/qupos_app_logo" />
+
 
                                         <!--                                        <TextView-->
                                         <!--                                            android:layout_width="wrap_content"-->
@@ -421,6 +378,37 @@
                                 </LinearLayout>
 
                             </LinearLayout>
+                        </LinearLayout>
+                    </ScrollView>
+                </LinearLayout>
+                <!--   History layout this shows the ISPs -->
+                <LinearLayout
+                    android:id="@+id/history_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/five"
+                        android:layout_marginBottom="@dimen/fifty">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/History_Items_recycler_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+
+                                android:clipToPadding="false"
+                                android:scrollbars="vertical"
+                                app:layout_constraintTop_toBottomOf="@id/sign_up_page" />
                         </LinearLayout>
                     </ScrollView>
                 </LinearLayout>
@@ -764,7 +752,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/five"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -894,7 +882,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/five"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <ScrollView
                         android:layout_width="match_parent"
@@ -1161,7 +1149,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                                android:gravity="end"
+                            android:gravity="end"
                             android:paddingEnd="@dimen/five"
                             android:text="Agent"
                             android:textColor="@color/primary_color"
