@@ -1696,6 +1696,7 @@
                 <!--                Airtime-->
 
                 <LinearLayout
+                    android:id="@+id/nav_load_btn1_layout"
                     style="@style/navBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -1720,6 +1721,7 @@
                 <!--                Summary-->
 
                 <LinearLayout
+                    android:id="@+id/nav_expected_collection_layout"
                     style="@style/navBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -1743,6 +1745,7 @@
                 <!--                Collection-->
 
                 <LinearLayout
+                    android:id="@+id/nav_collect_layout_btn_layout"
                     style="@style/navBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -1766,6 +1769,7 @@
                 <!--                TopUp-->
 
                 <LinearLayout
+                    android:id="@+id/nav_load_btn_layout"
                     style="@style/navBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -1790,6 +1794,7 @@
                 <!--                Catalog Hidden-->
 
                 <LinearLayout
+                    android:id="@+id/nav_networks_btn1_layout"
                     style="@style/navBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -1813,6 +1818,7 @@
                 <!--                History-->
 
                 <LinearLayout
+                    android:id="@+id/more1_layout"
                     style="@style/navBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -1835,6 +1841,7 @@
                 <!--                Buy Hidden-->
 
                 <LinearLayout
+                    android:id="@+id/nav_buy_btn1_layout"
                     style="@style/navBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -1859,6 +1866,7 @@
                 <!--                Profile-->
 
                 <LinearLayout
+                    android:id="@+id/nav_profile_btn1_layout"
                     style="@style/navBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -1881,6 +1889,7 @@
                 <!--                Profile-->
 
                 <LinearLayout
+                    android:id="@+id/nav_admin_btn1_layout"
                     style="@style/navBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -1903,6 +1912,7 @@
 
                 <!--                Home Hidden-->
                 <LinearLayout
+                    android:id="@+id/nav_dash_board_btn1_layout"
                     style="@style/navBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

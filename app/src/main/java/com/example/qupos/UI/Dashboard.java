@@ -156,25 +156,27 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void adminRights(String role) {
-
-        NavCollectBtnLayout.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
-        expected_collectionLayout.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
-        NavAdminBtnLayout.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
         TableLayout t = findViewById(R.id.selected_agents_balance_table);
         TableLayout t1 = findViewById(R.id.selected_agents_balance_table1);
         t.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
         t1.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
 
-     /*
-        NavBuyBtnLayout.setVisibility(GONE);
+
+        NavCollectBtnLayout.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
+        expected_collectionLayout.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+        NavAdminBtnLayout.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
+
+
+
+       /* NavBuyBtnLayout.setVisibility(GONE);
         NavProfileBtnLayout .setVisibility(GONE);
         NavIPSBtnLayout .setVisibility(GONE);
         NavMoreBtnLayout .setVisibility(GONE);
         NavLoadBalanceBtn1Layout .setVisibility(GONE);
         NavLoadBalanceBtnLayout.setVisibility(GONE);
         backFromListLayout.setVisibility(GONE);
-        NavHomeBtnLayout.setVisibility(GONE);
-      */
+        NavHomeBtnLayout.setVisibility(GONE);*/
+
     }
 
     public void agentRights() {
@@ -356,13 +358,14 @@ public class Dashboard extends AppCompatActivity {
         tableLayout = findViewById(R.id.selected_agents_balance_table);
 
 //        =====================================
+
         NavAdminBtnLayout = findViewById(R.id.nav_admin_btn1_layout);
         backFromListLayout = findViewById(R.id.nav_networks_btn1_layout);
         NavHomeBtnLayout = findViewById(R.id.nav_dash_board_btn1_layout);
         NavCollectBtnLayout = findViewById(R.id.nav_collect_layout_btn_layout);
         NavBuyBtnLayout = findViewById(R.id.nav_buy_btn1_layout);
         NavProfileBtnLayout = findViewById(R.id.nav_profile_btn1_layout);
-//        NavIPSBtnLayout = findViewById(R.id.nav_dash_board_btn1_layout);
+//      NavIPSBtnLayout = findViewById(R.id.nav_dash_board_btn1_layout);
         NavMoreBtnLayout = findViewById(R.id.more1_layout);
         expected_collectionLayout = findViewById(R.id.nav_expected_collection_layout);
         NavLoadBalanceBtn1Layout = findViewById(R.id.nav_load_btn1_layout);
