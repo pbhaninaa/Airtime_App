@@ -137,12 +137,13 @@
                             android:orientation="vertical">
 
                             <ImageView
+                                android:id="@+id/app_logo_in_login"
                                 android:layout_width="80sp"
                                 android:layout_height="80sp"
                                 android:layout_gravity="center"
                                 android:layout_marginRight="@dimen/five"
                                 android:layout_marginBottom="@dimen/five"
-                                android:contentDescription="TODO"
+                                android:contentDescription="@string/todo"
                                 android:gravity="center"
                                 android:src="@drawable/illustration" />
 
@@ -648,6 +649,8 @@
                             android:orientation="vertical">
 
                             <ImageView
+                                android:id="@+id/app_logo_in_sign_up"
+
                                 android:layout_width="80sp"
                                 android:layout_height="80sp"
                                 android:layout_gravity="center"

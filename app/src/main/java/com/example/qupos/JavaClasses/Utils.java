@@ -6,9 +6,11 @@ import static android.content.Context.MODE_PRIVATE;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -62,6 +64,44 @@ public class Utils {
     public static final String EMAIL_KEY = "email";
     public static final String PASSWORD_KEY = "password";
     private static final String REMEMBER_ME = "rememberMe";
+    public static void switchAppIcon(Context context, String brand) {
+        PackageManager pm = context.getPackageManager();
+
+        String packageName = context.getPackageName();
+        String defaultAlias = packageName + ".DefaultIconAlias";
+        String brandAAlias = packageName + ".BrandAIconAlias";
+        String brandBAlias = packageName + ".BrandBIconAlias";
+
+        // Disable all icons first
+        pm.setComponentEnabledSetting(new ComponentName(packageName, defaultAlias),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+        pm.setComponentEnabledSetting(new ComponentName(packageName, brandAAlias),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+        pm.setComponentEnabledSetting(new ComponentName(packageName, brandBAlias),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+
+        // Enable selected one
+        String aliasToEnable;
+        switch (brand.toLowerCase()) {
+            case "brand_a":
+                aliasToEnable = brandAAlias;
+                break;
+            case "brand_b":
+                aliasToEnable = brandBAlias;
+                break;
+            default:
+                aliasToEnable = defaultAlias;
+                break;
+        }
+
+        pm.setComponentEnabledSetting(new ComponentName(packageName, aliasToEnable),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+    }
+    public static String getApplicationName(Context context) {
+        ApplicationInfo applicationInfo = context.getApplicationInfo();
+        int stringId = applicationInfo.labelRes;
+        return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
+    }
 
     public static void hideSoftNavBar(Activity activity) {
         View decorView = activity.getWindow().getDecorView();

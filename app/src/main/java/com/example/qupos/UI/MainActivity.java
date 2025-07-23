@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.qupos.JavaClasses.Utils;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         Utils.requestPermissions(this);
         initialiseViews();
         Utils.hideSoftNavBar(this);
-
+        appBranding();
 //        String version = getAppVersion();
         version.setText("Version : "+getAppVersion());
         if (isUserLogged(this)) {
@@ -43,8 +44,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setOnclickListeners();
-    }
 
+    }
+    public void appBranding() {
+        // Get the app name
+        String appName = getString(R.string.app_name);
+        ImageView app_logo = findViewById(R.id.app_logo);
+
+        // Match and set logos
+        if ("Qupos".equalsIgnoreCase(appName)) {
+            app_logo.setImageResource(R.drawable.qupos_app_logo);
+        } else {
+            app_logo.setImageResource(R.drawable.rebtel_icon_logo);
+        }
+    }
     private void setOnclickListeners() {
         CandidateBtn.setOnClickListener(v -> handleCompanyClick());
     }
