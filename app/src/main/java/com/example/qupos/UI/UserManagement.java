@@ -36,6 +36,8 @@ import org.json.*;
 import java.io.IOException;
 import java.util.*;
 
+import okhttp3.internal.Util;
+
 //8QGGLHPVSQ3TFEX7QLTCRU2Y
 public class UserManagement extends AppCompatActivity {
     private ConstraintLayout SignUpLayout, RegScreen, SignInLayout;
@@ -345,7 +347,6 @@ public class UserManagement extends AppCompatActivity {
                                     JSONArray paramsList = methodResponse.getJSONArray("paramsList");
                                     JSONObject userObject = paramsList.getJSONObject(0);
 
-
                                     String tenant = userObject.getString("profile");
                                     String agentID = userObject.getString("agentID");
                                     String agentName = userObject.getString("agentName");
@@ -354,6 +355,9 @@ public class UserManagement extends AppCompatActivity {
                                     String statusCode = userObject.getString("statusCode");
                                     String lastConnect = userObject.getString("lastConnect");
                                     String AgentRole = userObject.getString("permissions");
+
+
+
 
 
                                     // Split agent name into first name and surname
@@ -368,6 +372,7 @@ public class UserManagement extends AppCompatActivity {
                                     Utils.saveAutoFillPermission(UserManagement.this, rememberMe);
                                     Utils.saveString(UserManagement.this, "savedCredentials", "email", agentID);
                                     Utils.saveString(UserManagement.this, "savedCredentials", "password", password);
+                                    Utils.saveString(UserManagement.this, "savedCredentials", "agentName", agentName);
 
 
                                     // Save user account details
@@ -375,6 +380,7 @@ public class UserManagement extends AppCompatActivity {
                                     RememberMeCheckBox.setChecked(false);
                                     Utils.hideSoftKeyboard(UserManagement.this);
                                     Utils.hideSoftNavBar(UserManagement.this);
+
 
                                     // Navigate to the Dashboard
                                     Intent intent = new Intent(UserManagement.this, Dashboard.class);

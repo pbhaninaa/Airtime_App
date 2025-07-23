@@ -3,16 +3,16 @@
 
 
     <!--     Qupos theme-->
-    <color name="primary_color">#FF000080</color>
-    <color name="secondary_color">#FF000080</color>
-    <color name="tertiary_color">#FF87CEFA</color>
+<!--    <color name="primary_color">#FF000080</color>-->
+<!--    <color name="secondary_color">#FF000080</color>-->
+<!--    <color name="tertiary_color">#FF87CEFA</color>-->
 
 
 
     <!-- Primary Rabtel Colors -->
-<!--    <color name="primary_color">#D80027</color> &lt;!&ndash; Bold red &ndash;&gt;-->
-<!--    <color name="secondary_color">#B0001B</color> &lt;!&ndash; Darker shade of red &ndash;&gt;-->
-<!--    <color name="tertiary_color">#FFFFFF</color> &lt;!&ndash; White accent &ndash;&gt;-->
+    <color name="primary_color">#D80021</color> <!-- Bold red -->
+    <color name="secondary_color">#B0001B</color> <!-- Darker shade of red -->
+    <color name="tertiary_color">#FFFFFF</color> <!-- White accent -->
 
     <color name="isp_background_color1">#FFFFEB3B</color>
     <color name="isp_background_color2">#FFF44336</color>

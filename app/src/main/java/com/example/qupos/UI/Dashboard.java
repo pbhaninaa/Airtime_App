@@ -585,14 +585,19 @@ public class Dashboard extends AppCompatActivity {
             public void run() {
                 List<String> agentNamesList = new ArrayList<>();
                 SharedPreferences sharedPreference = getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
-                String role = sharedPreference.getString("role", "Agent");
-                agentNamesList.add("Select an Agent");
+                String role = sharedPreference.getString("role", "");
+                String currentAgentName = Utils.getString(Dashboard.this, "savedCredentials", "agentName");
+                String currentAgentId = Utils.getString(Dashboard.this, "savedCredentials", "email");
+                agentNamesList.add(role.equalsIgnoreCase("agent") ? currentAgentName : "Select an Agent");
+                selectedAgentId1 = role.equalsIgnoreCase("agent")?currentAgentId:"";
+
 
                 try {
                     String agentId = Utils.getString(Dashboard.this, "savedCredentials", "email");
+
                     paramList = getAgentsParamList(agentId, agentId, Dashboard.this);
 
-                    for (int i = 0; i < paramList.length(); i++) {
+                  if(!role.equalsIgnoreCase("agent"))  for (int i = 0; i < paramList.length(); i++) {
                         JSONObject agentObject = paramList.getJSONObject(i);
                         String agentName = agentObject.getString("agentName");
                         agentNamesList.add(agentName);
