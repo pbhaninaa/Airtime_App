@@ -228,7 +228,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <ScrollView
                         android:layout_width="match_parent"
@@ -1045,7 +1045,7 @@
                     android:layout_marginTop="@dimen/five"
                     android:layout_marginBottom="@dimen/seven"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -1058,6 +1058,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="start"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/select_date_range"
                             android:textColor="@color/primary_color"
                             android:textSize="@dimen/fifteen"
                             android:textStyle="bold" />
@@ -1066,11 +1068,27 @@
                             android:id="@+id/selectedDateRange"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
                             android:layout_weight="1"
                             android:gravity="end"
                             android:textColor="@color/primary_color"
                             android:textSize="@dimen/fifteen"
                             android:textStyle="bold" />
+
+
+                        <ImageButton
+                            android:id="@+id/cashier_filter"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_weight="0.2"
+                            android:backgroundTint="@android:color/transparent"
+                            android:contentDescription="@string/todo"
+                            android:onClick="selectDateRange"
+                            android:src="@drawable/filter_icon"
+                            app:tint="@color/primary_color"
+                            android:visibility="visible"/>
+
 
                     </LinearLayout>
 
@@ -1727,6 +1745,29 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Summary"
+                        android:textColor="@color/primary_color"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <!--                Statement-->
+
+                <LinearLayout
+                    android:id="@+id/nav_agent_statement_layout"
+                    style="@style/navBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/nav_agent_statement"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:src="@drawable/baseline_summarize_24"
+                        app:tint="@color/primary_color" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Statement"
                         android:textColor="@color/primary_color"
                         android:textStyle="bold" />
                 </LinearLayout>

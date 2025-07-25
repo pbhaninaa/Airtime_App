@@ -113,13 +113,13 @@ public class Dashboard extends AppCompatActivity {
     private TextView selectedAgentBalance1, selectedAgentBalance, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
     private ImageButton NavAdminBtn, backFromList, NavHomeBtn,
-            NavCollectBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn,
+            NavCollectBtn, NavStatementBtn, NavBuyBtn, NavProfileBtn, NavIPSBtn,
             NavMoreBtn, expected_collection, NavLoadBalanceBtn1, NavLoadBalanceBtn;
     private LinearLayout AdminNavBtn, backFromListLayout, HomeNavBtn,
             CollectNavBtn, BuyNavBtn, ProfileNavBtn,
-            MoreNavBtn, SummaryNavBtn, DirectBuyNavBtn, TopUpNavBtn;
+            MoreNavBtn, SummaryNavBtn, StatementNavBtn, DirectBuyNavBtn, TopUpNavBtn;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
-    private ImageView statusLight, CountryFlag, load, LoadingImage;
+    private ImageView statusLight, CountryFlag, load, LoadingImage,cashier_filter;
     private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
 
     static String currencySymbol, ItemCode, startDate, endDate;
@@ -157,7 +157,11 @@ public class Dashboard extends AppCompatActivity {
         underConstruction(adminLayout);
         appBranding();
         showNavbar();
+        expected_collection_summary.setLayoutManager(new LinearLayoutManager(this));
+        expected_collection_summary1.setLayoutManager(new LinearLayoutManager(this));
+        total_expected_collection_summary.setLayoutManager(new LinearLayoutManager(this));
     }
+
     public void appBranding() {
         // Get the app name
         String appName = getString(R.string.app_name);
@@ -174,15 +178,22 @@ public class Dashboard extends AppCompatActivity {
             logo_in_tenant_select.setImageResource(R.drawable.rebtel_red_logo);
         }
     }
+
     public void adminRights(String role) {
-        selectedUserBalanceTextView.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
-        selectedUserBalanceTextView1.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+
+
         CollectNavBtn.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
         AdminNavBtn.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
+        SummaryNavBtn.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
+
+        selectedUserBalanceTextView.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+        selectedUserBalanceTextView1.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+
+        StatementNavBtn.setVisibility(role.equalsIgnoreCase("Cashier") ? VISIBLE : GONE);
+        cashier_filter.setVisibility(role.equalsIgnoreCase("Cashier") ? VISIBLE : GONE);
 
        /*
         BuyNavBtn.setVisibility(GONE);
-        SummaryNavBtn.setVisibility(GONE);
         ProfileNavBtn .setVisibility(GONE);
         MoreNavBtn .setVisibility(GONE);
         DirectBuyNavBtn .setVisibility(GONE);
@@ -194,10 +205,10 @@ public class Dashboard extends AppCompatActivity {
     }
 
 
-
     public void showNavbar() {
         if (CollectNavBtn.getVisibility() != View.VISIBLE &&
                 SummaryNavBtn.getVisibility() != View.VISIBLE &&
+                StatementNavBtn.getVisibility() != View.VISIBLE &&
                 AdminNavBtn.getVisibility() != View.VISIBLE &&
                 BuyNavBtn.getVisibility() != View.VISIBLE &&
                 ProfileNavBtn.getVisibility() != View.VISIBLE &&
@@ -343,6 +354,7 @@ public class Dashboard extends AppCompatActivity {
         StatusMessage = findViewById(R.id.status_message);
         NavHomeBtn = findViewById(R.id.nav_dash_board_btn1);
         NavCollectBtn = findViewById(R.id.nav_collect_layout_btn);
+        NavStatementBtn = findViewById(R.id.nav_agent_statement);
         NavAdminBtn = findViewById(R.id.nav_admin_btn1);
         NavLoadBalanceBtn = findViewById(R.id.nav_load_btn);
         NavLoadBalanceBtn1 = findViewById(R.id.nav_load_btn1);
@@ -400,8 +412,11 @@ public class Dashboard extends AppCompatActivity {
         ProfileNavBtn = findViewById(R.id.nav_profile_btn1_layout);
         MoreNavBtn = findViewById(R.id.more1_layout);
         SummaryNavBtn = findViewById(R.id.nav_expected_collection_layout);
+        StatementNavBtn = findViewById(R.id.nav_agent_statement_layout);
         DirectBuyNavBtn = findViewById(R.id.nav_load_btn1_layout);
         TopUpNavBtn = findViewById(R.id.nav_load_btn_layout);
+
+        cashier_filter= findViewById(R.id.cashier_filter);
     }
 
     public void showLastTransaction() {
@@ -489,7 +504,7 @@ public class Dashboard extends AppCompatActivity {
 //
         if (amountString.isEmpty() || amountString.equalsIgnoreCase("0.00") || selectedAgentId1.isEmpty()) {
             if (selectedAgentId1.isEmpty()) {
-                Utils.showToast(this,"Please select an agent");
+                Utils.showToast(this, "Please select an agent");
             } else {
                 AmountTLoad.setError("Amount is required");
             }
@@ -589,7 +604,7 @@ public class Dashboard extends AppCompatActivity {
                 String currentAgentName = Utils.getString(Dashboard.this, "savedCredentials", "agentName");
                 String currentAgentId = Utils.getString(Dashboard.this, "savedCredentials", "email");
                 agentNamesList.add(role.equalsIgnoreCase("agent") ? currentAgentName : "Select an Agent");
-                selectedAgentId1 = role.equalsIgnoreCase("agent")?currentAgentId:"";
+                selectedAgentId1 = role.equalsIgnoreCase("agent") ? currentAgentId : "";
 
 
                 try {
@@ -597,11 +612,12 @@ public class Dashboard extends AppCompatActivity {
 
                     paramList = getAgentsParamList(agentId, agentId, Dashboard.this);
 
-                  if(!role.equalsIgnoreCase("agent"))  for (int i = 0; i < paramList.length(); i++) {
-                        JSONObject agentObject = paramList.getJSONObject(i);
-                        String agentName = agentObject.getString("agentName");
-                        agentNamesList.add(agentName);
-                    }
+                    if (!role.equalsIgnoreCase("agent"))
+                        for (int i = 0; i < paramList.length(); i++) {
+                            JSONObject agentObject = paramList.getJSONObject(i);
+                            String agentName = agentObject.getString("agentName");
+                            agentNamesList.add(agentName);
+                        }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -678,6 +694,14 @@ public class Dashboard extends AppCompatActivity {
         EconetIsp.setOnClickListener(v -> setISP("Econet"));
         NetoneIsp.setOnClickListener(v -> setISP("NetOne"));
         TelecelIsp.setOnClickListener(v -> setISP("Telecel"));
+        NavStatementBtn.setOnClickListener(v -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+
+            SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
+            String phone = sharedPreferences.getString("phone", "");
+            hideLayouts(userSummaryLayout, NavStatementBtn);
+            populateSelectedUserList(phone);
+        });
         expected_collection.setOnClickListener(v -> {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
 
@@ -709,9 +733,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void showSummary(String startDate, String endDate) {
-        expected_collection_summary.setLayoutManager(new LinearLayoutManager(this));
-        expected_collection_summary1.setLayoutManager(new LinearLayoutManager(this));
-        total_expected_collection_summary.setLayoutManager(new LinearLayoutManager(this));
+
         Utils.LoadingLayout(this, this);
 
         new Thread(() -> {
@@ -907,6 +929,7 @@ public class Dashboard extends AppCompatActivity {
                         double cash = agent.optDouble("cashAmount", 0);
                         double commission = agent.optDouble("agentSplit", 0);
 
+
                         depositA += deposit;
                         rechargeA += recharge;
                         cashA += cash;
@@ -920,6 +943,7 @@ public class Dashboard extends AppCompatActivity {
 
                         summaries.add(summaryItem);
                     }
+
                     double finalDepositA = depositA;
                     double finalAgentA = agentA;
                     double finalCashA = cashA;
@@ -960,6 +984,7 @@ public class Dashboard extends AppCompatActivity {
             }
         }).start();
     }
+
 
     class CollectionSummaryAdapter1 extends RecyclerView.Adapter<CollectionSummaryAdapter1.SimpleViewHolder> {
 
@@ -1063,7 +1088,7 @@ public class Dashboard extends AppCompatActivity {
 
         if (amount.isEmpty() || amount.equalsIgnoreCase("0.00") || selectedAgentId1.isEmpty()) {
             if (selectedAgentId1.isEmpty()) {
-                Utils.showToast(this,"Please select an agent");
+                Utils.showToast(this, "Please select an agent");
             } else {
                 AmountTLoad.setError("Amount is required");
             }
@@ -2015,6 +2040,8 @@ public class Dashboard extends AppCompatActivity {
                                         populateHistory(start, end);
                                     } else {
                                         showSummary(start, end);
+                                        SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE); String phone = sharedPreferences.getString("phone", "");
+                                        populateSelectedUserList(phone);
                                     }
                                 }
                             }
@@ -2240,6 +2267,7 @@ public class Dashboard extends AppCompatActivity {
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavLoadBalanceBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavCollectBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
+        NavStatementBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavAdminBtn.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         NavLoadBalanceBtn1.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
         expected_collection.setColorFilter(ContextCompat.getColor(this, R.color.primary_color), PorterDuff.Mode.SRC_IN);
