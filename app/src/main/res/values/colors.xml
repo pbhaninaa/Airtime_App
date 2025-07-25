@@ -8,9 +8,8 @@
 <!--    <color name="tertiary_color">#FF87CEFA</color>-->
 
 
-
     <!-- Primary Rabtel Colors -->
-    <color name="primary_color">#D80021</color> <!-- Bold red -->
+    <color name="primary_color">#e3232c</color> <!-- Bold red -->
     <color name="secondary_color">#B0001B</color> <!-- Darker shade of red -->
     <color name="tertiary_color">#FFFFFF</color> <!-- White accent -->
 
