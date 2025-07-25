@@ -140,11 +140,11 @@ public class UserManagement extends AppCompatActivity {
         ImageView app_logo_in_sign_up = findViewById(R.id.app_logo_in_sign_up);
         // Match and set logos
         if ("Qupos".equalsIgnoreCase(appName)) {
-            logo_in_login_page.setImageResource(R.drawable.illustration);
-            app_logo_in_sign_up.setImageResource(R.drawable.illustration);
+            logo_in_login_page.setImageResource(R.drawable.qupos_app_logo);
+            app_logo_in_sign_up.setImageResource(R.drawable.qupos_app_logo);
         } else {
-           logo_in_login_page.setImageResource(R.drawable.rebtel_app_logo);
-            app_logo_in_sign_up.setImageResource(R.drawable.rebtel_app_logo);
+           logo_in_login_page.setImageResource(R.drawable.rebtel_name);
+            app_logo_in_sign_up.setImageResource(R.drawable.rebtel_name);
         }
     }
     private void hideBottomNav() {

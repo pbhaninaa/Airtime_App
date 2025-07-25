@@ -170,8 +170,8 @@ public class Dashboard extends AppCompatActivity {
             logo_in_balance_display.setImageResource(R.drawable.icon_logo);
             logo_in_tenant_select.setImageResource(R.drawable.qupos_app_logo);
         } else {
-            logo_in_balance_display.setImageResource(R.drawable.rebtel_app_logo);
-            logo_in_tenant_select.setImageResource(R.drawable.rebtel_icon_logo);
+            logo_in_balance_display.setImageResource(R.drawable.rebtel_red_logo);
+            logo_in_tenant_select.setImageResource(R.drawable.rebtel_red_logo);
         }
     }
     public void adminRights(String role) {
