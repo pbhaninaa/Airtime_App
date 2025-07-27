@@ -177,7 +177,7 @@ public class Dashboard extends AppCompatActivity {
             logo_in_balance_display.setImageResource(R.drawable.rebtel_red_logo);
             logo_in_tenant_select.setImageResource(R.drawable.rebtel_red_logo);
         }else{
-            logo_in_balance_display.setImageResource(R.drawable.keshapp_logo_bb);
+            logo_in_balance_display.setImageResource(R.drawable.icon_with_no_bg);
             logo_in_tenant_select.setImageResource(R.drawable.keshapp1_removebg_preview);
         }
     }
@@ -520,7 +520,7 @@ public class Dashboard extends AppCompatActivity {
 
 
         String message = "Please confirm details:\n\n"
-                + "Cell: " + selectedAgentId1 + "\n"
+                + "Number: " + selectedAgentId1 + "\n"
                 + "Amount: " + currencySymbol + AmountTLoad.getText().toString() ;
 
 
@@ -1098,7 +1098,7 @@ public class Dashboard extends AppCompatActivity {
         }
 
         String message = "Please confirm details:\n\n"
-                + "Cell: " + selectedAgentId1 + "\n"
+                + "Number: " + selectedAgentId1 + "\n"
                 + "Amount: " + currencySymbol + AmountTLoad.getText().toString() ;
 
 
@@ -1246,7 +1246,7 @@ public class Dashboard extends AppCompatActivity {
         String fullPhoneNumber = countryCode + phone;
 
         String message = "Please confirm details:\n\n" +
-                AmountTLoadInBuy.getText().toString() + "\n" + "Cell: " + fullPhoneNumber ;
+                AmountTLoadInBuy.getText().toString() + "\n" + "Number: " + fullPhoneNumber ;
 
         showConfirmationDialog(this, message, "OK", "Cancel", result ->
         {
@@ -1366,7 +1366,7 @@ public class Dashboard extends AppCompatActivity {
         // Step 2: Prepare confirmation message
         String fullPhoneNumber = CountryCode.getSelectedItem() + phoneText;
         String message = "Please confirm details:\n\n" +
-                "Cell: " + fullPhoneNumber ;
+                "Number: " + fullPhoneNumber ;
 
         // Step 3: Ask for confirmation
         showConfirmationDialog(this, message, "OK", "Cancel", result -> {
@@ -2396,7 +2396,7 @@ public class Dashboard extends AppCompatActivity {
         String fullPhoneNumber = "+" + selectedAgentId;
 
         String message = "Please confirm details:\n\n"
-                + "Cell: " + fullPhoneNumber + "\n"
+                + "Number: " + fullPhoneNumber + "\n"
                 + "Collection: " + currencySymbol + collectValue + "\n"
                 + "Commission: " + currencySymbol + commissionValue ;
 
