@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
     <string name="BASE_URL">http://102.219.85.66:8080/api/</string>
-<!--    Currently we have Rebtel and Qupos -->
-    <string name="app_name">Rebtel</string>
+<!--    Currently we have Rebtel, KeshApp and Qupos -->
+    <string name="app_name">KeshApp</string>
 <!-- Yoco -->
     <string name="yoco_api_key">sk_test_dea075a7DLboMlz54fc40f18d415</string>
     <string name="yoco_failureUrl">"https://payments.yoco.com/api/checkouts"</string>

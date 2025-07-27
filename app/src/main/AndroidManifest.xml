@@ -22,14 +22,14 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:usesCleartextTraffic="true"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/rebtel_icon_logo"
+        android:icon="@drawable/keshapp_icon"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/rebtel_icon_logo"
+        android:roundIcon="@drawable/keshapp_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppTheme"
         tools:targetApi="31">
-
-        <!-- Main Activity -->
+<!--        rebtel_app_logo  qupos_app_logo keshapp_icon-->
+        <!-- Main Activity   -->
         <activity
             android:name="com.example.qupos.UI.MainActivity"
             android:exported="true">

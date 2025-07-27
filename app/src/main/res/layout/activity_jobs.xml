@@ -222,6 +222,7 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
+<!--                =======================================================================================================================     -->
                 <!--   ISP_display_layout this shows the ISPs-->
                 <LinearLayout
                     android:id="@+id/ISP_display_layout"
@@ -753,7 +754,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/five"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -840,15 +841,14 @@
 
 
                         <Button
-                            android:id="@+id/btn_load_balance1"
+                            android:id="@+id/btn_load_balance_by_cash"
                             style="@style/CustomButtonStyle2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5sp"
                             android:layout_weight="1"
                             android:text="@string/cash"
-                            android:textStyle="bold"
-                            android:visibility="gone" />
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <TextView
@@ -1045,7 +1045,7 @@
                     android:layout_marginTop="@dimen/five"
                     android:layout_marginBottom="@dimen/seven"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
