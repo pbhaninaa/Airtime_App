@@ -177,7 +177,7 @@ public class Dashboard extends AppCompatActivity {
             logo_in_balance_display.setImageResource(R.drawable.rebtel_red_logo);
             logo_in_tenant_select.setImageResource(R.drawable.rebtel_red_logo);
         }else{
-            logo_in_balance_display.setImageResource(R.drawable.icon_with_no_bg);
+            logo_in_balance_display.setImageResource(R.drawable.keshapp_icon_with_no_bg);
             logo_in_tenant_select.setImageResource(R.drawable.keshapp1_removebg_preview);
         }
     }

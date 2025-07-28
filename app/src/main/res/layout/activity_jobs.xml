@@ -217,7 +217,7 @@
                                 android:contentDescription="@string/todo"
                                 android:gravity="center"
                                 android:onClick="getLastTransaction"
-                                android:src="@drawable/illustration" />
+                                android:src="@drawable/keshapp_icon_with_no_bg" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -229,7 +229,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <ScrollView
                         android:layout_width="match_parent"

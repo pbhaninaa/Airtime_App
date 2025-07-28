@@ -38,7 +38,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="5dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -113,7 +114,7 @@
                             android:layout_gravity="center"
                             android:contentDescription="@string/todo"
                             android:gravity="center"
-                            android:src="@drawable/rebtel_name"/>
+                            android:src="@drawable/keshapp_logo"/>
 
                         <!--                        <LinearLayout-->
                         <!--                            android:layout_width="wrap_content"-->
@@ -335,202 +336,13 @@
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--    sign_up_page -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/sign_up_page"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBaseline_toBottomOf="parent"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/todo"
-                    android:padding="@dimen/fifty"
-                    android:src="@drawable/icon_logo" />
-
-
-                <!--                <LinearLayout-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_marginTop="4sp"-->
-                <!--                    android:orientation="horizontal">-->
-
-                <!--                    <TextView-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:clickable="true"-->
-                <!--                        android:contextClickable="true"-->
-                <!--                        android:focusable="true"-->
-                <!--                        android:padding="@dimen/ten"-->
-                <!--                        android:text="@string/register"-->
-                <!--                        android:textColor="@color/primary_color"-->
-                <!--                        android:textSize="25sp"-->
-                <!--                        android:textStyle="bold" />-->
-
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/sign_up_btn"-->
-                <!--                        android:layout_width="wrap_content"-->
-                <!--                        android:layout_height="wrap_content"-->
-                <!--                        android:padding="@dimen/ten"-->
-                <!--                        android:text="@string/sign_in"-->
-                <!--                        android:textColor="@color/light_gray"-->
-                <!--                        android:textSize="25sp"-->
-                <!--                        android:textStyle="bold" />-->
-
-
-                <!--                </LinearLayout>-->
-
-
-                <EditText
-                    android:id="@+id/email_in_register_page"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/five"
-                    android:autofillHints="none"
-                    android:background="@drawable/edit_text_background"
-                    android:hint="@string/john_gmail_com"
-                    android:inputType="textEmailAddress"
-                    android:padding="@dimen/eighteen"
-                    android:textColor="@color/primary_color"
-                    android:textColorHint="@color/light_gray" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20sp"
-                    android:background="@drawable/edit_text_background"
-                    android:orientation="horizontal"
-                    android:padding="5sp">
-
-                    <EditText
-                        android:id="@+id/password_in_register_page"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:autofillHints="none"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/password"
-                        android:inputType="textPassword"
-                        android:padding="12sp"
-                        android:textColor="@color/primary_color"
-                        android:textColorHint="@color/light_gray" />
-
-                    <ImageButton
-                        android:id="@+id/show_password_in_register_page"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="end"
-                        android:layout_weight="1"
-                        android:backgroundTint="@android:color/transparent"
-                        android:contentDescription="@string/todo"
-                        android:src="@drawable/open_eye"
-                        app:tint="@color/light_gray" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20sp"
-                    android:background="@drawable/edit_text_background"
-                    android:orientation="horizontal"
-                    android:padding="5sp">
-
-                    <EditText
-                        android:id="@+id/confirm_password_in_register_page"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:autofillHints="none"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/password"
-                        android:inputType="textPassword"
-                        android:padding="12sp"
-                        android:textColor="@color/primary_color"
-                        android:textColorHint="@color/light_gray" />
-
-                    <ImageButton
-                        android:id="@+id/show_confirm_password_in_register_page"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="end"
-                        android:layout_weight="1"
-                        android:backgroundTint="@android:color/transparent"
-                        android:contentDescription="@string/todo"
-                        android:src="@drawable/open_eye"
-                        app:tint="@color/light_gray" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20sp"
-                    android:layout_marginTop="20sp"
-                    android:gravity="center"
-                    android:text="@string/by_tap_sign_up_button_you_accept_n_terms_and_privacy_this_app"
-                    android:textColor="@color/primary_color" />
-
-                <Button
-                    android:id="@+id/create_account"
-                    style="@style/CustomButtonStyle2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/create_account"
-                    android:textStyle="bold" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="-6dp"
-                android:gravity="center"
-                android:orientation="vertical">
-
-
-                <View
-                    style="@style/CustomButtonStyle2"
-                    android:layout_width="@dimen/two_hundred"
-                    android:layout_height="@dimen/ten"
-                    android:layout_marginBottom="@dimen/twenty"
-                    android:background="@color/gold_yellow" />
-
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
     <!--    create_profile_screen -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/create_profile_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -553,7 +365,8 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
                     android:gravity="left"
-                    android:onClick="backToHome"   android:visibility="gone"
+                    android:onClick="backToHome"
+                    android:visibility="gone"
                     android:orientation="vertical"
                     tools:ignore="RtlHardcoded">
 
@@ -637,7 +450,7 @@
                                 android:layout_gravity="center"
                                 android:contentDescription="@string/todo"
                                 android:gravity="center"
-                                android:src="@drawable/rebtel_name"/>
+                                android:src="@drawable/keshapp_logo"/>
 
 
                     </LinearLayout>
@@ -855,6 +668,195 @@
                     android:layout_width="@dimen/two_hundred"
                     android:layout_height="@dimen/ten"
                     android:layout_marginBottom="20sp"
+                    android:background="@color/gold_yellow" />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--    sign_up_page -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sign_up_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBaseline_toBottomOf="parent"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/todo"
+                    android:padding="@dimen/fifty"
+                    android:src="@drawable/icon_logo" />
+
+
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginTop="4sp"-->
+                <!--                    android:orientation="horizontal">-->
+
+                <!--                    <TextView-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:clickable="true"-->
+                <!--                        android:contextClickable="true"-->
+                <!--                        android:focusable="true"-->
+                <!--                        android:padding="@dimen/ten"-->
+                <!--                        android:text="@string/register"-->
+                <!--                        android:textColor="@color/primary_color"-->
+                <!--                        android:textSize="25sp"-->
+                <!--                        android:textStyle="bold" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/sign_up_btn"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:padding="@dimen/ten"-->
+                <!--                        android:text="@string/sign_in"-->
+                <!--                        android:textColor="@color/light_gray"-->
+                <!--                        android:textSize="25sp"-->
+                <!--                        android:textStyle="bold" />-->
+
+
+                <!--                </LinearLayout>-->
+
+
+                <EditText
+                    android:id="@+id/email_in_register_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/five"
+                    android:autofillHints="none"
+                    android:background="@drawable/edit_text_background"
+                    android:hint="@string/john_gmail_com"
+                    android:inputType="textEmailAddress"
+                    android:padding="@dimen/eighteen"
+                    android:textColor="@color/primary_color"
+                    android:textColorHint="@color/light_gray" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:background="@drawable/edit_text_background"
+                    android:orientation="horizontal"
+                    android:padding="5sp">
+
+                    <EditText
+                        android:id="@+id/password_in_register_page"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints="none"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/password"
+                        android:inputType="textPassword"
+                        android:padding="12sp"
+                        android:textColor="@color/primary_color"
+                        android:textColorHint="@color/light_gray" />
+
+                    <ImageButton
+                        android:id="@+id/show_password_in_register_page"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:layout_weight="1"
+                        android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/todo"
+                        android:src="@drawable/open_eye"
+                        app:tint="@color/light_gray" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:background="@drawable/edit_text_background"
+                    android:orientation="horizontal"
+                    android:padding="5sp">
+
+                    <EditText
+                        android:id="@+id/confirm_password_in_register_page"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:autofillHints="none"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/password"
+                        android:inputType="textPassword"
+                        android:padding="12sp"
+                        android:textColor="@color/primary_color"
+                        android:textColorHint="@color/light_gray" />
+
+                    <ImageButton
+                        android:id="@+id/show_confirm_password_in_register_page"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:layout_weight="1"
+                        android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/todo"
+                        android:src="@drawable/open_eye"
+                        app:tint="@color/light_gray" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20sp"
+                    android:layout_marginTop="20sp"
+                    android:gravity="center"
+                    android:text="@string/by_tap_sign_up_button_you_accept_n_terms_and_privacy_this_app"
+                    android:textColor="@color/primary_color" />
+
+                <Button
+                    android:id="@+id/create_account"
+                    style="@style/CustomButtonStyle2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/create_account"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="-6dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <View
+                    style="@style/CustomButtonStyle2"
+                    android:layout_width="@dimen/two_hundred"
+                    android:layout_height="@dimen/ten"
+                    android:layout_marginBottom="@dimen/twenty"
                     android:background="@color/gold_yellow" />
 
 
