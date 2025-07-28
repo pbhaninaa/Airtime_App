@@ -217,11 +217,12 @@
                                 android:contentDescription="@string/todo"
                                 android:gravity="center"
                                 android:onClick="getLastTransaction"
-                                android:src="@drawable/illustration" />
+                                android:src="@drawable/keshapp_icon_with_no_bg" />
 
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
+<!--                =======================================================================================================================     -->
                 <!--   ISP_display_layout this shows the ISPs-->
                 <LinearLayout
                     android:id="@+id/ISP_display_layout"
@@ -262,8 +263,8 @@
                                         android:padding="10sp">
 
                                         <ImageView
-                                            android:layout_width="100sp"
-                                            android:layout_height="80sp"
+                                            android:layout_width="110sp"
+                                            android:layout_height="85sp"
                                             android:src="@drawable/econet_png" />
 
 
@@ -273,33 +274,34 @@
                                         android:layout_width="5sp"
                                         android:layout_height="match_parent"
                                         android:layout_margin="2sp" />
-
-
                                     <LinearLayout
-                                        android:id="@+id/netoneISP"
                                         android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="match_parent"
                                         android:layout_weight="2"
                                         android:background="@drawable/rounded_with_white_background"
                                         android:gravity="center"
+                                        android:onClick="goToOtherApp"
                                         android:orientation="vertical"
-                                        android:padding="10sp">
+                                        android:padding="5sp">
 
                                         <ImageView
-                                            android:layout_width="100sp"
-                                            android:layout_height="80sp"
-                                            android:src="@drawable/netone_icon" />
+                                            android:id="@+id/logo_in_tenant_select"
+                                            android:layout_width="110sp"
+                                            android:layout_height="85sp"
+                                            android:onClick="goToOtherApp"
+                                            android:src="@drawable/keshapp1_removebg_preview" />
+
 
                                         <!--                                        <TextView-->
                                         <!--                                            android:layout_width="wrap_content"-->
                                         <!--                                            android:layout_height="wrap_content"-->
                                         <!--                                            android:gravity="center"-->
-                                        <!--                                            android:text="@string/netone"-->
+                                        <!--                                            android:text="Telecel"-->
                                         <!--                                            android:textColor="@color/primary_color"-->
                                         <!--                                            android:textSize="18sp" />-->
-
-
                                     </LinearLayout>
+
+
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -318,31 +320,29 @@
                                     android:layout_marginBottom="9sp"
                                     android:orientation="horizontal">
                                     <LinearLayout
+                                        android:id="@+id/netoneISP"
                                         android:layout_width="0dp"
-                                        android:layout_height="match_parent"
+                                        android:layout_height="wrap_content"
                                         android:layout_weight="2"
                                         android:background="@drawable/rounded_with_white_background"
                                         android:gravity="center"
-                                        android:onClick="goToOtherApp"
                                         android:orientation="vertical"
-                                        android:visibility="invisible"
-                                        android:padding="5sp">
+                                        android:padding="10sp">
 
                                         <ImageView
-                                            android:id="@+id/logo_in_tenant_select"
-                                            android:layout_width="100sp"
-                                            android:layout_height="80sp"
-                                            android:onClick="goToOtherApp"
-                                            android:src="@drawable/qupos_app_logo" />
-
+                                            android:layout_width="match_parent"
+                                            android:layout_height="85sp"
+                                            android:src="@drawable/netone_icon" />
 
                                         <!--                                        <TextView-->
                                         <!--                                            android:layout_width="wrap_content"-->
                                         <!--                                            android:layout_height="wrap_content"-->
                                         <!--                                            android:gravity="center"-->
-                                        <!--                                            android:text="Telecel"-->
+                                        <!--                                            android:text="@string/netone"-->
                                         <!--                                            android:textColor="@color/primary_color"-->
                                         <!--                                            android:textSize="18sp" />-->
+
+
                                     </LinearLayout>
 
 
@@ -362,7 +362,7 @@
                                         android:padding="10sp">
 
                                         <ImageView
-                                            android:layout_width="100sp"
+                                            android:layout_width="match_parent"
                                             android:layout_height="80sp"
                                             android:src="@drawable/telecet_png" />
 
@@ -840,15 +840,14 @@
 
 
                         <Button
-                            android:id="@+id/btn_load_balance1"
+                            android:id="@+id/btn_load_balance_by_cash"
                             style="@style/CustomButtonStyle2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5sp"
                             android:layout_weight="1"
                             android:text="@string/cash"
-                            android:textStyle="bold"
-                            android:visibility="gone" />
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <TextView
@@ -1045,7 +1044,7 @@
                     android:layout_marginTop="@dimen/five"
                     android:layout_marginBottom="@dimen/seven"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"

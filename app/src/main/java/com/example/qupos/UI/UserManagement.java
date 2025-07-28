@@ -1,6 +1,7 @@
 package com.example.qupos.UI;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -49,6 +50,7 @@ public class UserManagement extends AppCompatActivity {
     private Spinner languagesSpinner, CountryCode, LoginCountryCode;
     private CheckBox RememberMeCheckBox;
     private ImageView CountryFlag, LoginCountryFlag;
+    private LinearLayout back;
     private FrameLayout backButton;
     //    private TextView version ;
     String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
@@ -142,9 +144,12 @@ public class UserManagement extends AppCompatActivity {
         if ("Qupos".equalsIgnoreCase(appName)) {
             logo_in_login_page.setImageResource(R.drawable.qupos_app_logo);
             app_logo_in_sign_up.setImageResource(R.drawable.qupos_app_logo);
-        } else {
-           logo_in_login_page.setImageResource(R.drawable.rebtel_name);
+        }else if ("Rebtel".equalsIgnoreCase(appName)) {
+            logo_in_login_page.setImageResource(R.drawable.rebtel_name);
             app_logo_in_sign_up.setImageResource(R.drawable.rebtel_name);
+        }else{
+            logo_in_login_page.setImageResource(R.drawable.keshapp_logo);
+            app_logo_in_sign_up.setImageResource(R.drawable.keshapp_logo);
         }
     }
     private void hideBottomNav() {
@@ -188,6 +193,7 @@ public class UserManagement extends AppCompatActivity {
         CountryFlag = findViewById(R.id.country_flag);
         LoginCountryCode = findViewById(R.id.login_country_codes);
         LoginCountryFlag = findViewById(R.id.login_country_flag);
+        back = findViewById(R.id.back_to_home_from_Profile);
 
     }
 
@@ -221,14 +227,14 @@ public class UserManagement extends AppCompatActivity {
 
     private void handleRegisterClick() {
         Utils.triggerHapticFeedback(this);
-        RegScreen.setVisibility(View.VISIBLE);
+        RegScreen.setVisibility(VISIBLE);
         SignInLayout.setVisibility(GONE);
     }
 
     private void handleBack() {
         Utils.triggerHapticFeedback(this);
         RegScreen.setVisibility(GONE);
-        SignInLayout.setVisibility(View.VISIBLE);
+        SignInLayout.setVisibility(VISIBLE);
     }
 
     private void handleAccCreation() throws Exception {
@@ -268,7 +274,7 @@ public class UserManagement extends AppCompatActivity {
                                 public void run() {
                                     // Registration was successful
                                     RegScreen.setVisibility(GONE);
-                                    SignInLayout.setVisibility(View.VISIBLE);
+                                    SignInLayout.setVisibility(VISIBLE);
 
                                     getEmailTextInLogin.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
                                     getPasswordTextInLogin.setText(pass);
@@ -445,8 +451,7 @@ public class UserManagement extends AppCompatActivity {
         Lastname.setText(prefs.getString("surname", ""));
         String phone = prefs.getString("phone", "");// Get the selected country code based on the phone number
         String selectedCode = phone.startsWith("27") ? phone.substring(0, 2) : phone.substring(0, 3);
-        LinearLayout back = findViewById(R.id.back_to_home_from_Profile);
-        back.setVisibility(View.VISIBLE);
+
         CountryFlag.setImageResource(phone.startsWith("27") ? R.drawable.za : R.drawable.zw);
         phoneNumber.setText(phone.startsWith("27") ? phone.substring(2) : phone.startsWith("26") ? phone.substring(3) : phone);
         email.setText(prefs.getString("emailAddress", ""));
@@ -456,7 +461,7 @@ public class UserManagement extends AppCompatActivity {
 
         emailConfirmation.setText(prefs.getString("emailAddress", ""));
         CreateAccBtn.setText("Update Profile");
-
+        back.setVisibility(Firstname.getText().toString().isEmpty() ?GONE:VISIBLE);
     }
 
     private void handleShowPassword() {
@@ -496,7 +501,7 @@ public class UserManagement extends AppCompatActivity {
         SignUpLayout.setVisibility(GONE);
         RegScreen.setVisibility(GONE);
         ConstraintLayout layout = findViewById(screenToLoad);
-        layout.setVisibility(View.VISIBLE);
+        layout.setVisibility(VISIBLE);
     }
 
     private void saveAccount(String tenant, String role, String name, String surname, String phone, String emailAddress, String balance, String time, int id, String pass, boolean logged) {

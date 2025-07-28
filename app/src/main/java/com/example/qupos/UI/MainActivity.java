@@ -54,8 +54,11 @@ public class MainActivity extends AppCompatActivity {
         // Match and set logos
         if ("Qupos".equalsIgnoreCase(appName)) {
             app_logo.setImageResource(R.drawable.qupos_app_logo);
-        } else {
+        } else if ("Rebtel".equalsIgnoreCase(appName)) {
             app_logo.setImageResource(R.drawable.rebtel_icon_logo);
+            app_logo.setImageResource(R.drawable.rebtel_icon_logo);
+        }else{
+            app_logo.setImageResource(R.drawable.keshapp1_removebg_preview);
         }
     }
     private void setOnclickListeners() {

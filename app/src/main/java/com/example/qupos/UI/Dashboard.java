@@ -120,7 +120,7 @@ public class Dashboard extends AppCompatActivity {
             MoreNavBtn, SummaryNavBtn, StatementNavBtn, DirectBuyNavBtn, TopUpNavBtn;
     private Spinner ItemFilterSpinner, ItemToBuySpinner, CountryCode, Agents, Agents1;
     private ImageView statusLight, CountryFlag, load, LoadingImage,cashier_filter;
-    private Button BuyBtn, BuyBtn1, Yes, No, LoadBalance1, LoadBalance;
+    private Button BuyBtn, BuyBtn1, Yes, No, LoadBalanceByCash, LoadBalance;
 
     static String currencySymbol, ItemCode, startDate, endDate;
     private RecyclerView ItemRecyclerView, jobListRecyclerView, expected_collection_summary, expected_collection_summary1, total_expected_collection_summary;
@@ -173,13 +173,19 @@ public class Dashboard extends AppCompatActivity {
         if ("Qupos".equalsIgnoreCase(appName)) {
             logo_in_balance_display.setImageResource(R.drawable.icon_logo);
             logo_in_tenant_select.setImageResource(R.drawable.qupos_app_logo);
-        } else {
+        } else if ("Rebtel".equalsIgnoreCase(appName)) {
             logo_in_balance_display.setImageResource(R.drawable.rebtel_red_logo);
             logo_in_tenant_select.setImageResource(R.drawable.rebtel_red_logo);
+        }else{
+            logo_in_balance_display.setImageResource(R.drawable.keshapp_icon_with_no_bg);
+            logo_in_tenant_select.setImageResource(R.drawable.keshapp1_removebg_preview);
         }
     }
 
-    public void adminRights(String role) {
+    public void adminRights() {
+        SharedPreferences sharedPreference = getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
+        String role = sharedPreference.getString("role", "Agent");
+
 
 
         CollectNavBtn.setVisibility(role.equalsIgnoreCase("Admin") ? VISIBLE : GONE);
@@ -188,6 +194,7 @@ public class Dashboard extends AppCompatActivity {
 
         selectedUserBalanceTextView.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
         selectedUserBalanceTextView1.setVisibility(role.equalsIgnoreCase("Agent") ? GONE : VISIBLE);
+        LoadBalanceByCash.setVisibility(role.equalsIgnoreCase("Agent") ?GONE  : VISIBLE);
 
         StatementNavBtn.setVisibility(role.equalsIgnoreCase("Cashier") ? VISIBLE : GONE);
         cashier_filter.setVisibility(role.equalsIgnoreCase("Cashier") ? VISIBLE : GONE);
@@ -270,10 +277,7 @@ public class Dashboard extends AppCompatActivity {
         getBalance(SelectedIsp.getText().toString());
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         currencySymbol = sharedPreferences.getString("currency_symbol", getString(R.string.default_currency_symbol));
-        SharedPreferences sharedPreference = getSharedPreferences("LoggedUserCredentials", Context.MODE_PRIVATE);
-        String role = sharedPreference.getString("role", "Agent");
-        LoadBalance1.setVisibility(!role.equals("Agent") ? VISIBLE : GONE);
-        adminRights(role);
+        adminRights();
 
 
         AppFrame.setVisibility(VISIBLE);
@@ -392,7 +396,7 @@ public class Dashboard extends AppCompatActivity {
         CountryFlag = findViewById(R.id.login_country_flag);
         LoadBalanceLayout = findViewById(R.id.Load_balance_layout);
         LoadBalance = findViewById(R.id.btn_load_balance);
-        LoadBalance1 = findViewById(R.id.btn_load_balance1);
+        LoadBalanceByCash = findViewById(R.id.btn_load_balance_by_cash);
         LoadingNote = findViewById(R.id.loading_notes);
         AmountTLoad = findViewById(R.id.loading_amount);
         statusLight = findViewById(R.id.status_light);
@@ -516,10 +520,8 @@ public class Dashboard extends AppCompatActivity {
 
 
         String message = "Please confirm details:\n\n"
-                + "ID: " + selectedAgentId1 + "\n"
-                + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n"
-
-                + "Tap OK to continue or Cancel";
+                + "Number: " + selectedAgentId1 + "\n"
+                + "Amount: " + currencySymbol + AmountTLoad.getText().toString() ;
 
 
         showConfirmationDialog(this, message, "OK", "Cancel", result ->
@@ -729,7 +731,7 @@ public class Dashboard extends AppCompatActivity {
         });
 //      LoadBalance.setOnClickListener(v -> handleLoadBalance());
         LoadBalance.setOnClickListener(v -> handlePayNowPayment());
-        LoadBalance1.setOnClickListener(v -> handleManualLoadBalance());
+        LoadBalanceByCash.setOnClickListener(v -> handleManualLoadBalance());
     }
 
     private void showSummary(String startDate, String endDate) {
@@ -1096,10 +1098,8 @@ public class Dashboard extends AppCompatActivity {
         }
 
         String message = "Please confirm details:\n\n"
-                + "ID: " + selectedAgentId1 + "\n"
-                + "Amount: " + currencySymbol + AmountTLoad.getText().toString() + "\n"
-
-                + "Tap OK to continue or Cancel";
+                + "Number: " + selectedAgentId1 + "\n"
+                + "Amount: " + currencySymbol + AmountTLoad.getText().toString() ;
 
 
         showConfirmationDialog(this, message, "OK", "Cancel", result ->
@@ -1246,8 +1246,7 @@ public class Dashboard extends AppCompatActivity {
         String fullPhoneNumber = countryCode + phone;
 
         String message = "Please confirm details:\n\n" +
-                AmountTLoadInBuy.getText().toString() + "\n" + "ID: " + fullPhoneNumber +
-                "\nTap OK to continue or Cancel";
+                AmountTLoadInBuy.getText().toString() + "\n" + "Number: " + fullPhoneNumber ;
 
         showConfirmationDialog(this, message, "OK", "Cancel", result ->
         {
@@ -1367,7 +1366,7 @@ public class Dashboard extends AppCompatActivity {
         // Step 2: Prepare confirmation message
         String fullPhoneNumber = CountryCode.getSelectedItem() + phoneText;
         String message = "Please confirm details:\n\n" +
-                "ID: " + fullPhoneNumber + "\nTap OK to continue or Cancel";
+                "Number: " + fullPhoneNumber ;
 
         // Step 3: Ask for confirmation
         showConfirmationDialog(this, message, "OK", "Cancel", result -> {
@@ -2397,10 +2396,9 @@ public class Dashboard extends AppCompatActivity {
         String fullPhoneNumber = "+" + selectedAgentId;
 
         String message = "Please confirm details:\n\n"
-                + "ID: " + fullPhoneNumber + "\n"
+                + "Number: " + fullPhoneNumber + "\n"
                 + "Collection: " + currencySymbol + collectValue + "\n"
-                + "Commission: " + currencySymbol + commissionValue + "\n"
-                + "Tap OK to continue or Cancel ";
+                + "Commission: " + currencySymbol + commissionValue ;
 
 
         showConfirmationDialog(this, message, "OK", "Cancel", result ->

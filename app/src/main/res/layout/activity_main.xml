@@ -34,7 +34,7 @@
                     android:layout_height="500sp"
                     android:layout_gravity="center"
                     android:padding="@dimen/fifty"
-                    android:src="@drawable/qupos_app_logo" />
+                    android:src="@drawable/keshapp_full_logo" />
 
                 <TextView
                     android:layout_width="match_parent"
