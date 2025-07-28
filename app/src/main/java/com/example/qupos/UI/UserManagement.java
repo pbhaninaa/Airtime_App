@@ -45,13 +45,12 @@ public class UserManagement extends AppCompatActivity {
     private EditText getEmailTextInLogin, password, getPasswordTextInLogin, Firstname, Lastname, phoneNumber, email, emailConfirmation, getPasswordTextInRegister, getConfirmPasswordTextInRegister, getEmailTextInRegister;
     private ImageButton ShowConformPasswordInRegister, ShowPasswordInRegister, ShowPasswordInLogin;
     private TextView ForgotPasswordBtn, SignUpBtn, RegisterBtn;
-    private boolean showPassword, rememberMe, gotData;
+    private boolean showPassword, rememberMe;
     private Button SignUp, SignInBtn, CreateAccBtn;
     private Spinner languagesSpinner, CountryCode, LoginCountryCode;
     private CheckBox RememberMeCheckBox;
     private ImageView CountryFlag, LoginCountryFlag;
     private LinearLayout back;
-    private FrameLayout backButton;
     //    private TextView version ;
     String[] values = {"Select home language", "IsiXhosa", "IsiZulu", "Tswana", "IsiPedi", "Ndebele", "English"};
 
@@ -62,12 +61,12 @@ public class UserManagement extends AppCompatActivity {
         Utils.hideSoftNavBar(UserManagement.this);
         showPassword = false;
         rememberMe = false;
-        gotData = false;
         initialiseViews();
         setOnclickListeners();
         Utils.setCaps(Firstname);
         Utils.setCaps(Lastname);
         appBranding();
+        displayAppVersion();
 //        version.setText("Version : "+getAppVersion());
         int constraintLayoutId = getIntent().getIntExtra("constraintLayoutId", R.id.login_page);
         screenToLoad(constraintLayoutId);
@@ -551,14 +550,19 @@ public class UserManagement extends AppCompatActivity {
         return countryList;
     }
 
-    public String getAppVersion() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return "Unknown";
+    private void displayAppVersion() {
+        TextView versionTextView = findViewById(R.id.version);
+        TextView versionTextView_ = findViewById(R.id.version_);
+        if (versionTextView != null) {
+            try {
+                String versionName = getPackageManager()
+                        .getPackageInfo(getPackageName(), 0).versionName;
+                versionTextView.setText("Version " + versionName);
+                versionTextView_.setText("Version " + versionName);
+            } catch (PackageManager.NameNotFoundException e) {
+                versionTextView.setText("Version Unknown");
+                versionTextView_.setText("Version Unknown");
+            }
         }
     }
 

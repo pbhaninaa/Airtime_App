@@ -2,92 +2,87 @@ package com.example.qupos.UI;
 
 import static com.example.qupos.JavaClasses.Utils.isUserLogged;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.qupos.JavaClasses.Utils;
 import com.example.qupos.R;
 
 public class MainActivity extends AppCompatActivity {
-    private Button CandidateBtn;
-    private ConstraintLayout landing_page;
-    private TextView version ;
-    public static String[] econetItems = {
-            "Data",
-            "Voice",
-            "SMS",
-            "WhatsApp"
+
+    private Button continueButton;
+    private ImageView logoImageView;
+
+    public static final String[] ECONET_ITEMS = {
+            "Data", "Voice", "SMS", "WhatsApp"
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);Utils.hideSoftNavBar(this);
-        Utils.requestPermissions(this);
-        initialiseViews();
+        setContentView(R.layout.activity_main);
+
         Utils.hideSoftNavBar(this);
-        appBranding();
-//        String version = getAppVersion();
-        version.setText("Version : "+getAppVersion());
+        Utils.requestPermissions(this);
+
+        initializeViews();
+        setAppBranding();
+
         if (isUserLogged(this)) {
-            Intent intent = new Intent(MainActivity.this, Dashboard.class);
-            startActivity(intent);
-        } else {
-            landing_page.setVisibility(View.VISIBLE);
+            navigateToDashboard();
+            return; // Skip setting click listeners if user is already logged in
         }
 
-        setOnclickListeners();
-
+        setClickListeners();
     }
-    public void appBranding() {
-        // Get the app name
+
+    private void initializeViews() {
+        continueButton = findViewById(R.id.candidate_btn);
+        logoImageView = findViewById(R.id.app_logo);
+    }
+
+    private void setClickListeners() {
+        if (continueButton != null) {
+            continueButton.setOnClickListener(view -> {
+                Utils.triggerHapticFeedback(this);
+                navigateToUserManagement();
+            });
+        }
+    }
+
+    private void setAppBranding() {
         String appName = getString(R.string.app_name);
-        ImageView app_logo = findViewById(R.id.app_logo);
+        if (logoImageView == null) return;
 
-        // Match and set logos
-        if ("Qupos".equalsIgnoreCase(appName)) {
-            app_logo.setImageResource(R.drawable.qupos_app_logo);
-        } else if ("Rebtel".equalsIgnoreCase(appName)) {
-            app_logo.setImageResource(R.drawable.rebtel_icon_logo);
-            app_logo.setImageResource(R.drawable.rebtel_icon_logo);
-        }else{
-            app_logo.setImageResource(R.drawable.keshapp1_removebg_preview);
+        switch (appName.toLowerCase()) {
+            case "qupos":
+                logoImageView.setImageResource(R.drawable.qupos_app_logo);
+                break;
+            case "rebtel":
+                logoImageView.setImageResource(R.drawable.rebtel_icon_logo);
+                break;
+            default:
+                logoImageView.setImageResource(R.drawable.keshapp_full_logo);
+                break;
         }
     }
-    private void setOnclickListeners() {
-        CandidateBtn.setOnClickListener(v -> handleCompanyClick());
+
+
+
+    private void navigateToDashboard() {
+        startActivity(new Intent(this, Dashboard.class));
+        finish(); // Optional: close MainActivity
     }
 
-    private void handleCompanyClick() {
-        Utils.triggerHapticFeedback(this);
-        Intent intent = new Intent(MainActivity.this, UserManagement.class);
+    private void navigateToUserManagement() {
+        Intent intent = new Intent(this, UserManagement.class);
         intent.putExtra("constraintLayoutId", R.id.login_page);
         startActivity(intent);
-
-
-    }
-
-    private void initialiseViews() {
-        CandidateBtn = findViewById(R.id.candidate_btn);
-        landing_page = findViewById(R.id.landing_page);
-        version = findViewById(R.id.version);
-    }
-//    Returning Methods
-    public String getAppVersion() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-            return packageInfo.versionName; // Returns the versionName from build.gradle
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return "Unknown"; // Return a default value in case of an error
-        }
     }
 }

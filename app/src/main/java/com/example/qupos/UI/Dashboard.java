@@ -8,7 +8,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -109,7 +108,6 @@ public class Dashboard extends AppCompatActivity {
     private LinearLayout userSummaryLayout, adminLayout, collect_layout, expected_collection_layout, job_list_screen, SelectedItem, AmountCapture, WebScree, Navbar, ItemsLayout, ISPsLayout, BuyLayout, EconetIsp, TelecelIsp, NetoneIsp, LoadBalanceLayout;
     private FrameLayout LogoutButton, BackToHome;
     private WebView Web;
-    private ImageView App_logo_in_balance_display;
     private TextView selectedAgentBalance1, selectedAgentBalance, commission_currency_symbol, collect_currency_symbol, currencySymbolInBuy, AmountToLoadSymbol, SelectedIsp, AvailableBalance, StatusMessage, MoreBtn, ItemToBuyText, SelectedItemType, SelectedItemPrice, SelectedItemLifeTime;
     private EditText Phone, AmountTLoad, AmountTLoadInBuy, LoadingNote, commissionAmount, collectAmount;
     private ImageButton NavAdminBtn, backFromList, NavHomeBtn,
@@ -177,7 +175,7 @@ public class Dashboard extends AppCompatActivity {
             logo_in_balance_display.setImageResource(R.drawable.rebtel_red_logo);
             logo_in_tenant_select.setImageResource(R.drawable.rebtel_red_logo);
         }else{
-            logo_in_balance_display.setImageResource(R.drawable.keshapp_icon_with_no_bg);
+            logo_in_balance_display.setImageResource(R.drawable.keshapp_full_logo);
             logo_in_tenant_select.setImageResource(R.drawable.keshapp1_removebg_preview);
         }
     }
@@ -283,6 +281,7 @@ public class Dashboard extends AppCompatActivity {
         AppFrame.setVisibility(VISIBLE);
         BackToHome.setVisibility(SelectedIsp.getText().toString().isEmpty() ? GONE : VISIBLE);
         ISPsLayout.setVisibility(VISIBLE);
+        displayAppVersion();
         NavHomeBtn.setColorFilter(ContextCompat.getColor(this, R.color.gold_yellow), PorterDuff.Mode.SRC_IN);
 
 
@@ -589,7 +588,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void adaptors() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, MainActivity.econetItems);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, MainActivity.ECONET_ITEMS );
         adapter.setDropDownViewResource(R.layout.spinner_layout);
 
         ItemFilterSpinner.setAdapter(adapter);
@@ -719,6 +718,7 @@ public class Dashboard extends AppCompatActivity {
             return true;
         });
         BackToHome.setOnClickListener(v -> {
+            displayAppVersion();
             Utils.hideSoftKeyboard(Dashboard.this);
 
             Navbar.setVisibility(VISIBLE);
@@ -1873,7 +1873,6 @@ public class Dashboard extends AppCompatActivity {
     public void setISP(String ISP) {
 
         if (!ISP.equals("Econet")) {
-
             Utils.showToast(this, "Not yet available");
             return;
         }
@@ -2483,17 +2482,7 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    // Returning Methods
-    public String getAppVersion() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return "Unknown";
-        }
-    }
+
 
     public List<Map<String, Object>> filterProductsByType(List<Map<String, Object>> products, String filterType) {
         List<Map<String, Object>> filteredProducts = new ArrayList<>();
@@ -2714,5 +2703,16 @@ public class Dashboard extends AppCompatActivity {
             }
         }
     }
-
+    private void displayAppVersion() {
+        TextView versionTextView = findViewById(R.id.selected_network_text);
+        if (versionTextView != null) {
+            try {
+                String versionName = getPackageManager()
+                        .getPackageInfo(getPackageName(), 0).versionName;
+                versionTextView.setText("Version " + versionName);
+            } catch (PackageManager.NameNotFoundException e) {
+                versionTextView.setText("Version Unknown");
+            }
+        }
+    }
 }

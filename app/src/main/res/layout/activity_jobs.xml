@@ -217,7 +217,7 @@
                                 android:contentDescription="@string/todo"
                                 android:gravity="center"
                                 android:onClick="getLastTransaction"
-                                android:src="@drawable/keshapp_icon_with_no_bg" />
+                                android:src="@drawable/keshapp_full_logo" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -275,51 +275,6 @@
                                         android:layout_height="match_parent"
                                         android:layout_margin="2sp" />
                                     <LinearLayout
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="2"
-                                        android:background="@drawable/rounded_with_white_background"
-                                        android:gravity="center"
-                                        android:onClick="goToOtherApp"
-                                        android:orientation="vertical"
-                                        android:padding="5sp">
-
-                                        <ImageView
-                                            android:id="@+id/logo_in_tenant_select"
-                                            android:layout_width="110sp"
-                                            android:layout_height="85sp"
-                                            android:onClick="goToOtherApp"
-                                            android:src="@drawable/keshapp1_removebg_preview" />
-
-
-                                        <!--                                        <TextView-->
-                                        <!--                                            android:layout_width="wrap_content"-->
-                                        <!--                                            android:layout_height="wrap_content"-->
-                                        <!--                                            android:gravity="center"-->
-                                        <!--                                            android:text="Telecel"-->
-                                        <!--                                            android:textColor="@color/primary_color"-->
-                                        <!--                                            android:textSize="18sp" />-->
-                                    </LinearLayout>
-
-
-                                </LinearLayout>
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="7sp" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="9sp"
-                                    android:orientation="horizontal">
-                                    <LinearLayout
                                         android:id="@+id/netoneISP"
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
@@ -346,6 +301,52 @@
                                     </LinearLayout>
 
 
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="7sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="9sp"
+                                    android:orientation="horizontal">
+
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="2"
+                                        android:background="@drawable/rounded_with_white_background"
+                                        android:gravity="center"
+                                        android:onClick="goToOtherApp"
+                                        android:orientation="vertical"
+                                        android:visibility="invisible"
+                                        android:padding="5sp">
+
+                                        <ImageView
+                                            android:id="@+id/logo_in_tenant_select"
+                                            android:layout_width="110sp"
+                                            android:layout_height="85sp"
+                                            android:onClick="goToOtherApp"
+                                            android:src="@drawable/keshapp1_removebg_preview" />
+
+
+                                        <!--                                        <TextView-->
+                                        <!--                                            android:layout_width="wrap_content"-->
+                                        <!--                                            android:layout_height="wrap_content"-->
+                                        <!--                                            android:gravity="center"-->
+                                        <!--                                            android:text="Telecel"-->
+                                        <!--                                            android:textColor="@color/primary_color"-->
+                                        <!--                                            android:textSize="18sp" />-->
+                                    </LinearLayout>
                                     <View
                                         android:layout_width="5sp"
                                         android:layout_height="match_parent"

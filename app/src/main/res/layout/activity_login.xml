@@ -39,7 +39,7 @@
         android:layout_height="match_parent"
         android:elevation="5dp"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -75,17 +75,18 @@
                         android:paddingEnd="@dimen/thirty"
                         android:paddingBottom="@dimen/three">
 
-                        <ImageView
-                            android:layout_width="15sp"
-                            android:layout_height="15sp"
-                            android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/five"
-                            android:background="@drawable/round_conners_background"
-                            android:backgroundTint="@color/primary_color"
-                            android:contentDescription="@string/todo"
-                            android:gravity="center" />
+<!--                        <ImageView-->
+<!--                            android:layout_width="15sp"-->
+<!--                            android:layout_height="15sp"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:layout_marginRight="@dimen/five"-->
+<!--                            android:background="@drawable/round_conners_background"-->
+<!--                            android:backgroundTint="@color/primary_color"-->
+<!--                            android:contentDescription="@string/todo"-->
+<!--                            android:gravity="center" />-->
 
                         <TextView
+                            android:id="@+id/version_"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/eight"
@@ -342,7 +343,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -408,18 +409,18 @@
                         android:paddingEnd="@dimen/thirty"
                         android:paddingBottom="@dimen/three">
 
-                        <ImageView
-                            android:layout_width="15sp"
-                            android:layout_height="15sp"
-                            android:layout_gravity="center"
-                            android:layout_marginRight="@dimen/five"
-                            android:background="@drawable/round_conners_background"
-                            android:backgroundTint="@color/primary_color"
-                            android:contentDescription="@string/todo"
-                            android:gravity="center" />
+<!--                        <ImageView-->
+<!--                            android:layout_width="15sp"-->
+<!--                            android:layout_height="15sp"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:layout_marginRight="@dimen/five"-->
+<!--                            android:background="@drawable/round_conners_background"-->
+<!--                            android:backgroundTint="@color/primary_color"-->
+<!--                            android:contentDescription="@string/todo"-->
+<!--                            android:gravity="center" />-->
 
                         <TextView
-                            android:id="@+id/selected_network_text"
+                            android:id="@+id/version"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/eight"
