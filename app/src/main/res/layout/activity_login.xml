@@ -105,7 +105,7 @@
                         android:paddingStart="15sp"
                         android:paddingEnd="15sp"
                         android:paddingBottom="15sp"
-                        android:src="@drawable/logo">
+                        android:src="@drawable/keshapp_logo">
 
                         <ImageView
                             android:id="@+id/app_logo_in_login"
@@ -441,7 +441,7 @@
                             android:paddingStart="15sp"
                             android:paddingEnd="15sp"
                             android:paddingBottom="15sp"
-                            android:src="@drawable/logo">
+                            android:src="@drawable/keshapp_logo">
 
                             <ImageView
                                 android:id="@+id/app_logo_in_sign_up"

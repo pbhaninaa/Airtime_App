@@ -148,8 +148,8 @@ public class UserManagement extends AppCompatActivity {
             logo_in_login_page.setImageResource(R.drawable.rebtel_name);
             app_logo_in_sign_up.setImageResource(R.drawable.rebtel_name);
         }else{
-            logo_in_login_page.setImageResource(R.drawable.keshapp_logo_bb);
-            app_logo_in_sign_up.setImageResource(R.drawable.keshapp_logo_bb);
+            logo_in_login_page.setImageResource(R.drawable.keshapp_logo);
+            app_logo_in_sign_up.setImageResource(R.drawable.keshapp_logo);
         }
     }
     private void hideBottomNav() {
