@@ -332,7 +332,7 @@
 
                                         <ImageView
                                             android:id="@+id/logo_in_tenant_select"
-                                            android:layout_width="110sp"
+                                            android:layout_width="150sp"
                                             android:layout_height="85sp"
                                             android:onClick="goToOtherApp"
                                             android:src="@drawable/keshapp_logo_" />
