@@ -229,13 +229,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/five"
-                        android:layout_marginBottom="@dimen/fifty">
+                       >
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -328,7 +328,6 @@
                                         android:gravity="center"
                                         android:onClick="goToOtherApp"
                                         android:orientation="vertical"
-                                        android:visibility="invisible"
                                         android:padding="5sp">
 
                                         <ImageView
@@ -336,7 +335,7 @@
                                             android:layout_width="110sp"
                                             android:layout_height="85sp"
                                             android:onClick="goToOtherApp"
-                                            android:src="@drawable/keshapp1_removebg_preview" />
+                                            android:src="@drawable/keshapp_logo_" />
 
 
                                         <!--                                        <TextView-->
@@ -381,7 +380,9 @@
 
                             </LinearLayout>
                         </LinearLayout>
+
                     </ScrollView>
+
                 </LinearLayout>
                 <!--   History layout this shows the ISPs -->
                 <LinearLayout
