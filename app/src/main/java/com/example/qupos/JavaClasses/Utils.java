@@ -59,12 +59,19 @@ import android.Manifest;
 import androidx.core.app.ActivityCompat;
 
 import java.util.List;
-
+import java.net.URI;
 public class Utils {
     public static final String PREF_NAME = "UserPrefs";
     public static final String EMAIL_KEY = "email";
     public static final String PASSWORD_KEY = "password";
+
     private static final String REMEMBER_ME = "rememberMe";
+
+    /**
+     *
+     * @param context
+     * @param brand
+     */
     public static void switchAppIcon(Context context, String brand) {
         PackageManager pm = context.getPackageManager();
 
@@ -98,12 +105,22 @@ public class Utils {
         pm.setComponentEnabledSetting(new ComponentName(packageName, aliasToEnable),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
     }
+
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static String getApplicationName(Context context) {
         ApplicationInfo applicationInfo = context.getApplicationInfo();
         int stringId = applicationInfo.labelRes;
         return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
     }
 
+    /**
+     *
+     * @param activity
+     */
     public static void hideSoftNavBar(Activity activity) {
         View decorView = activity.getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -111,6 +128,11 @@ public class Utils {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
     }
+
+    /**
+     *
+     * @param imageView
+     */
     public static void rotateImageView(ImageView imageView) {
         ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 360f);
         rotateAnimator.setDuration(1000);
@@ -118,6 +140,12 @@ public class Utils {
         rotateAnimator.setRepeatMode(ObjectAnimator.RESTART);
         rotateAnimator.start();
     }
+
+    /**
+     *
+     * @param activity
+     * @param context
+     */
     public static void LoadingLayout(Activity activity, Context context) {
         ConstraintLayout layout = activity.findViewById(R.id.load_layout);
         ImageView imageView = activity.findViewById(R.id.load_layout_image);
@@ -134,6 +162,11 @@ public class Utils {
 
     }
 
+    /**
+     *
+     * @param activity
+     * @param context
+     */
     public static void CloseLoadingLayout(Activity activity, Context context) {
         ConstraintLayout layout = activity.findViewById(R.id.load_layout);
         ImageView imageView = activity.findViewById(R.id.load_layout_image);
@@ -149,12 +182,21 @@ public class Utils {
         }, 2000);
     }
 
-
+    /**
+     *
+     * @return
+     */
     public static String getTodayDate() {
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         return dateFormat.format(date);
     }
+
+    /**
+     *
+     * @param context
+     * @param activity
+     */
    public static void showEmailDialog(final Context context, Activity activity) {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -250,6 +292,11 @@ public class Utils {
         dialog.show();
     }
 
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static String getIMEI(Context context) {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -274,6 +321,10 @@ public class Utils {
         return null;
     }
 
+    /**
+     *
+     * @param activity
+     */
     public static void requestPermissions(Activity activity) {
         String[] permissions = {
                 Manifest.permission.INTERNET,
@@ -295,6 +346,11 @@ public class Utils {
         }
     }
 
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static String getDeviceEMEI(Context context) {
         String input = getIMEI(context);
         if (input == null || input.length() <= 7) {
@@ -305,6 +361,11 @@ public class Utils {
         return unmaskedPart + maskedPart;
     }
 
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static String getDeviceDetails(Context context) {
         StringBuilder deviceDetails = new StringBuilder();
 
@@ -342,6 +403,11 @@ public class Utils {
         return deviceDetails.toString();
     }
 
+    /**
+     *
+     * @param context
+     * @return
+     */
     private static String getDeviceLocation(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -371,6 +437,14 @@ public class Utils {
             return "Location permission not granted";
         }
     }
+
+    /**
+     *
+     * @param context
+     * @param agentId
+     * @param agentEmail
+     * @param callback
+     */
     public static void getPassword(final Context context, String agentId, String agentEmail, final PasswordCallback callback) {
         new Thread(new Runnable() {
             @Override
@@ -435,6 +509,10 @@ public class Utils {
         void onError(String errorMessage);
     }
 
+    /**
+     *
+     * @param context
+     */
     public static void showSMSDialog(Context context) {
         // Create a LinearLayout to hold the EditTexts
         LinearLayout layout = new LinearLayout(context);
@@ -504,17 +582,32 @@ public class Utils {
         dialog.show();
     }
 
+    /**
+     *
+     * @param phoneNumber
+     * @return
+     */
     private static boolean isValidPhoneNumber(String phoneNumber) {
         // Example validation for phone number (basic check for length and if it starts with a country code)
         return phoneNumber.matches("^\\+?[1-9][0-9]{7,14}$"); // Simple regex for international phone numbers
     }
 
+    /**
+     *
+     * @param context
+     * @param dp
+     * @return
+     */
 
     public static int convertDpToPx(Context context, int dp) {
         float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
 
+    /**
+     *
+     * @param editText
+     */
     public static void setCaps(EditText editText) {
         editText.addTextChangedListener(new TextWatcher() {
             private boolean isUpdating = false;
@@ -546,6 +639,10 @@ public class Utils {
         });
     }
 
+    /**
+     *
+     * @param context
+     */
     public static void triggerHapticFeedback(Context context) {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -562,6 +659,11 @@ public class Utils {
         }
     }
 
+    /**
+     *
+     * @param context
+     * @param message
+     */
 
     public static void showToast(Context context, String message) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -576,6 +678,11 @@ public class Utils {
         toast.show();
     }
 
+    /**
+     *
+     * @param context
+     * @param message
+     */
     public static void success(Context context, String message) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.custom_toast, null);
@@ -598,11 +705,32 @@ public class Utils {
      * @return A sanitized error message.
      */
     public static String sanitizeErrorMessage(String errorMessage) {
-        if (errorMessage.contains(BuildConfig.API_BASE_URL)) {
-            return "A connection error occurred. Please try again later.";
+        try {
+            URI uri = new URI(BuildConfig.API_BASE_URL);
+            String host = uri.getHost();
+            int port = uri.getPort();
+
+            if ((host != null && errorMessage.contains(host)) ||
+                    (port != -1 && errorMessage.contains(":" + port))) {
+                return "A connection error occurred. Please try again later.";
+            }
+        } catch (Exception ignored) {
+            if (errorMessage.contains("102.219.85.66")) {
+                return "A connection error occurred. Please try again later.";
+            }
         }
+
         return errorMessage;
     }
+
+
+
+    /**
+     *
+     * @param context
+     * @param email
+     * @param password
+     */
     // Function to save email and password to SharedPreferences
     public static void saveCredentials(Context context, String email, String password) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
@@ -612,6 +740,11 @@ public class Utils {
         editor.apply();
     }
 
+    /**
+     *
+     * @param context
+     * @param rememberMe
+     */
     public static void saveAutoFillPermission(Context context, boolean rememberMe) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -620,16 +753,32 @@ public class Utils {
     }
 
     // Function to get email from SharedPreferences
+
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static String getEmail(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         return prefs.getString(EMAIL_KEY, "");
     }
 
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static boolean RememberMe(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         return prefs.getBoolean(REMEMBER_ME, false);
     }
 
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static boolean isUserLogged(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("LoggedUserCredentials", MODE_PRIVATE);
         return prefs.getBoolean("isUserLogged", false);
@@ -637,17 +786,38 @@ public class Utils {
 
 
     // Function to get password from SharedPreferences
+
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static String getPassword(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         return prefs.getString(PASSWORD_KEY, "");
     }
 
     // Function to get password from SharedPreferences
+
+    /**
+     *
+     * @param context
+     * @param Pref_name
+     * @param Pref_Key
+     * @return
+     */
     public static String getString(Context context, String Pref_name, String Pref_Key) {
         SharedPreferences prefs = context.getSharedPreferences(Pref_name, MODE_PRIVATE);
         return prefs.getString(Pref_Key, "");
     }
 
+    /**
+     *
+     * @param context
+     * @param Pref_name
+     * @param Pref_Key
+     * @param Value
+     */
     public static void saveString(Context context, String Pref_name, String Pref_Key, String Value) {
         SharedPreferences prefs = context.getSharedPreferences(Pref_name, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -655,6 +825,10 @@ public class Utils {
         editor.apply();
     }
 
+    /**
+     *
+     * @param context
+     */
     public static void logout(Context context) {
 //        SharedPreferences sharedPreferences = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
 //        SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -679,6 +853,11 @@ public class Utils {
 
     }
 
+    /**
+     *
+     * @param a
+     * @return
+     */
 
     public static String FormatAmount(String a) {
         // Handle locale-specific decimal and grouping separators
@@ -714,6 +893,11 @@ public class Utils {
         }
     }
 
+    /**
+     *
+     * @param field
+     * @param context
+     */
     public static void setFieldFocus(EditText field, Context context) {
         // Request focus for the field
         field.requestFocus();
@@ -727,6 +911,10 @@ public class Utils {
         }
     }
 
+    /**
+     *
+     * @param context
+     */
     public static void hideSoftKeyboard(Context context) {
         // Get the InputMethodManager system service
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -739,6 +927,14 @@ public class Utils {
         }
     }
 
+    /**
+     *
+     * @param context
+     * @param network
+     * @param agentID
+     * @param customerID
+     * @param referenceID
+     */
 
     public static void saveRefs(Context context, String network, String agentID, String customerID, String referenceID) {
         SharedPreferences sharedPref = context.getSharedPreferences("LastTransactionRefs", MODE_PRIVATE);
@@ -750,6 +946,11 @@ public class Utils {
         ed.apply();
     }
 
+    /**
+     *
+     * @param email
+     * @return
+     */
     public static boolean isValidEmail(String email) {
         // Email regex pattern to validate email format
         String emailPattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
@@ -758,10 +959,21 @@ public class Utils {
         return email.matches(emailPattern);
     }
 
+    /**
+     *
+     * @param userId
+     * @return
+     */
     private static boolean isValidUserId(String userId) {
         return userId.matches("^(\\d{1,3})([1-9][0-9]{7,9})$");
     }
 
+    /**
+     *
+     * @param activity
+     * @param bal
+     * @param statusLight
+     */
 
     public static void setStatusColor(Activity activity, String bal, ImageView statusLight) {
 
@@ -795,6 +1007,10 @@ public class Utils {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public static String ref() {
         String strWorkstationNum = "1"; // Example workstation number
 

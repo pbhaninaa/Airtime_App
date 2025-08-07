@@ -748,7 +748,7 @@ public class Dashboard extends AppCompatActivity {
                         "Collector Summary",
                         agentId,
                         startDate,
-                        endDate,Dashboard.this
+                        endDate
                 );
 
                 Utils.CloseLoadingLayout(this, this);
@@ -910,7 +910,7 @@ public class Dashboard extends AppCompatActivity {
                         "Collector Statement",
                         agentId,
                         startDate,
-                        endDate, Dashboard.this
+                        endDate
                 );
 
                 if (res.getInt("responseCode") == 200) {
@@ -2120,7 +2120,7 @@ public class Dashboard extends AppCompatActivity {
             public void run() {
                 List<Map<String, Object>> items = new ArrayList<>();
                 try {
-                    JSONObject catalogRequestResponse = ApiService.catalogRequest(Dashboard.this);
+                    JSONObject catalogRequestResponse = ApiService.catalogRequest();
                     if (catalogRequestResponse.has("response")) {
                         String nestedResponseString = catalogRequestResponse.getString("response");
                         JSONObject nestedResponse = new JSONObject(nestedResponseString);

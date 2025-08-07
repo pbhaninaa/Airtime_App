@@ -406,7 +406,7 @@ public class UserManagement extends AppCompatActivity {
                                         JSONObject userObject = paramsList.getJSONObject(0);
                                         String status = userObject.getString("status");
 
-                                        Utils.showToast(UserManagement.this, status);
+                                        Utils.showToast(UserManagement.this,Utils.sanitizeErrorMessage( status));
                                     } catch (JSONException ex) {
                                         throw new RuntimeException(ex);
                                     }
