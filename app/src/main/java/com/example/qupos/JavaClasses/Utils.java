@@ -719,7 +719,6 @@ public class Utils {
                 return "A connection error occurred. Please try again later.";
             }
         }
-
         return errorMessage;
     }
 
