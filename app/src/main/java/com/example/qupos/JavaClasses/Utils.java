@@ -34,6 +34,7 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.example.qupos.BuildConfig;
 import com.example.qupos.R;
 
 import java.io.IOException;
@@ -590,7 +591,18 @@ public class Utils {
         toast.setView(layout);
         toast.show();
     }
-
+    /**
+     * Removes or masks the server URL from error messages to avoid exposing server details.
+     *
+     * @param errorMessage The original error message.
+     * @return A sanitized error message.
+     */
+    public static String sanitizeErrorMessage(String errorMessage) {
+        if (errorMessage.contains(BuildConfig.API_BASE_URL)) {
+            return "A connection error occurred. Please try again later.";
+        }
+        return errorMessage;
+    }
     // Function to save email and password to SharedPreferences
     public static void saveCredentials(Context context, String email, String password) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE);

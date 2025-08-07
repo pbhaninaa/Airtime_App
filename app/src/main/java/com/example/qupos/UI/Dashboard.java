@@ -748,7 +748,7 @@ public class Dashboard extends AppCompatActivity {
                         "Collector Summary",
                         agentId,
                         startDate,
-                        endDate
+                        endDate,Dashboard.this
                 );
 
                 Utils.CloseLoadingLayout(this, this);
@@ -806,12 +806,12 @@ public class Dashboard extends AppCompatActivity {
                     });
 
                 } else {
-                    runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + res.toString(), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + Utils.sanitizeErrorMessage(res.toString()), Toast.LENGTH_SHORT).show());
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + Utils.sanitizeErrorMessage(e.getMessage()), Toast.LENGTH_LONG).show());
             }
         }).start();
     }
@@ -910,7 +910,7 @@ public class Dashboard extends AppCompatActivity {
                         "Collector Statement",
                         agentId,
                         startDate,
-                        endDate
+                        endDate, Dashboard.this
                 );
 
                 if (res.getInt("responseCode") == 200) {
@@ -977,12 +977,12 @@ public class Dashboard extends AppCompatActivity {
                     });
 
                 } else {
-                    runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + res.toString(), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " +Utils.sanitizeErrorMessage( res.toString()), Toast.LENGTH_SHORT).show());
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(Dashboard.this, "Error: " + Utils.sanitizeErrorMessage(e.getMessage()), Toast.LENGTH_LONG).show());
             }
         }).start();
     }
@@ -1461,7 +1461,7 @@ public class Dashboard extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Utils.showToast(Dashboard.this, "Error: " + e.getMessage());
+                                    Utils.showToast(Dashboard.this, "Error: " + Utils.sanitizeErrorMessage(e.getMessage()));
                                 }
                             });
                         } catch (Exception e) {
@@ -2120,7 +2120,7 @@ public class Dashboard extends AppCompatActivity {
             public void run() {
                 List<Map<String, Object>> items = new ArrayList<>();
                 try {
-                    JSONObject catalogRequestResponse = ApiService.catalogRequest();
+                    JSONObject catalogRequestResponse = ApiService.catalogRequest(Dashboard.this);
                     if (catalogRequestResponse.has("response")) {
                         String nestedResponseString = catalogRequestResponse.getString("response");
                         JSONObject nestedResponse = new JSONObject(nestedResponseString);

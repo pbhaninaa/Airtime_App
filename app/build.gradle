@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
 }
 
+import groovy.xml.XmlSlurper
+
 android {
     namespace 'com.example.qupos'
     compileSdk 34
@@ -15,14 +17,12 @@ android {
         }
     }
 
-
     defaultConfig {
         applicationId "za.co.qupos"
         minSdk 23
         targetSdk 34
         versionCode 1
-        versionName "1.0"
-
+        versionName "1.0.0" // ✅ Must be a string literal for auto-increment to work
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -31,9 +31,9 @@ android {
             buildConfigField "String", "API_BASE_URL", '"http://102.219.85.66:8080/api/"'
         }
         release {
-            signingConfig signingConfigs.release  // Apply signing config here
+            signingConfig signingConfigs.release
             buildConfigField "String", "API_BASE_URL", '"https://your-production-api-url.com/api/"'
-            minifyEnabled false // Temporarily disabled to check for issues
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -52,35 +52,52 @@ android {
         exclude 'META-INF/NOTICE.md'
         exclude 'META-INF/LICENSE.md'
     }
-}
 
-configurations.all {
-    resolutionStrategy {
-        force 'junit:junit:4.13.2'
+    // ✅ Rename APK file using app_name from strings.xml
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def buildType = variant.buildType.name
+            def versionName = variant.versionName
+            def versionCode = variant.versionCode
+
+            // Read <string name="app_name"> from strings.xml
+            def stringsFile = file("src/main/res/values/strings.xml")
+            def appName = "DefaultAppName"
+
+            if (stringsFile.exists()) {
+                def strings = new XmlSlurper().parse(stringsFile)
+                def nameNode = strings.string.find { it.@name == 'app_name' }
+                if (nameNode != null) {
+                    appName = nameNode.text()
+                }
+            }
+
+            def sanitizedAppName = appName.replaceAll("[^a-zA-Z0-9_\\-]", "_")
+            output.outputFileName = "${sanitizedAppName}.apk"
+
+        }
     }
 }
 
-// Increment version name logic
-import java.util.regex.Pattern
-
+// ✅ Auto-increment versionName (x.y.z) before release build
 def incrementVersionName() {
     File buildFile = file('build.gradle')
     def content = buildFile.text
 
-    def versionPattern = /versionName\s+"(\d+\.\d+\.\d+)"/
-    def matcher = Pattern.compile(versionPattern).matcher(content)
+    def versionPattern = /versionName\s+"(\d+)\.(\d+)\.(\d+)"/
+    def matcher = versionPattern.matcher(content)
 
     if (matcher.find()) {
-        String currentVersion = matcher.group(1)
-        def parts = currentVersion.split("\\.")
-        int major = Integer.parseInt(parts[0])
-        int minor = Integer.parseInt(parts[1])
-        int patch = Integer.parseInt(parts[2])
+        int major = matcher.group(1).toInteger()
+        int minor = matcher.group(2).toInteger()
+        int patch = matcher.group(3).toInteger()
 
-        // Increment the minor version (0.1)
-        minor += 1
-
-        // Adjust major and minor versions if needed
+        // Increment patch version
+        patch += 1
+        if (patch >= 10) {
+            patch = 0
+            minor += 1
+        }
         if (minor >= 10) {
             minor = 0
             major += 1
@@ -89,13 +106,13 @@ def incrementVersionName() {
         String newVersion = "$major.$minor.$patch"
         content = content.replaceFirst(versionPattern, "versionName \"$newVersion\"")
         buildFile.write(content)
-        println "Version updated to: $newVersion"
+        println "✅ Version updated to: $newVersion"
     } else {
-        println "Version name not found in build.gradle."
+        println "⚠️ versionName not found or not in x.y.z format"
     }
 }
 
-// Hook into the build process
+// ✅ Run version increment before release build
 tasks.whenTaskAdded { task ->
     if (task.name == 'assembleRelease') {
         task.doFirst {
@@ -104,8 +121,13 @@ tasks.whenTaskAdded { task ->
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force 'junit:junit:4.13.2'
+    }
+}
+
 dependencies {
-    // Updated dependencies with stable versions
     implementation 'com.google.android.gms:play-services-maps:19.1.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
