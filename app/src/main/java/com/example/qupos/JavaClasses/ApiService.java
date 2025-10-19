@@ -3,7 +3,7 @@ package com.example.qupos.JavaClasses;
 import android.content.Context;
 
 import com.example.qupos.BuildConfig;
-import com.example.qupos.Dao.HelperClass;
+import com.example.qupos.ApiCall.HelperClass;
 
 import org.json.JSONObject;
 

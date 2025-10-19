@@ -1296,7 +1296,7 @@ public class Dashboard extends AppCompatActivity {
                                             String date = responseDetails.getString("entryDate");
                                             String amount = responseDetails.getString("decimalAmount");
                                             Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
-
+                                            balanceEnquiry("");
                                             if (!Serial.isEmpty()) {
                                                 Utils.hideSoftKeyboard(Dashboard.this);
                                                 Utils.saveRefs(Dashboard.this, Network, AgentID, CustomerID, basketID);
@@ -1430,6 +1430,7 @@ public class Dashboard extends AppCompatActivity {
                                             String AgentID = responseDetails.getString("agentID");
                                             String amount = responseDetails.getString("decimalAmount");
                                             String date = responseDetails.getString("entryDate");
+                                            balanceEnquiry("");
                                             Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
                                             if (!Serial.isEmpty()) {
                                                 Utils.hideSoftKeyboard(Dashboard.this);
@@ -1893,63 +1894,65 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    JSONObject res = ApiService.balanceEnquiry(ISP, Utils.getString(Dashboard.this, "profile", "phone"), Dashboard.this);
-                    if (res.getInt("responseCode") == 200) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    getLastTransaction(null);
-                                    String responseString = res.getString("response");
-                                    JSONObject responseJson = new JSONObject(responseString);
-                                    JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
-                                    JSONArray paramsList = methodResponse.getJSONArray("paramsList");
-                                    JSONObject userObject = paramsList.getJSONObject(0);
-                                    String balance = userObject.getString("decimalBalance");
-                                    getAccount(balance);
-                                    Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
+                    balanceEnquiry(ISP);
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    try {
-                                        Utils.showToast(Dashboard.this, res.getString("response"));
-                                    } catch (JSONException ex) {
-                                        throw new RuntimeException(ex);
-                                    }
-                                }
-                            }
-                        });
-
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Utils.showToast(Dashboard.this, res.getString("response"));
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        });
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Utils.showToast(Dashboard.this, "Service Provider Offline");
-                            Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
-                        }
-                    });
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
         }).start();
     }
+    private void balanceEnquiry(String ISP) {
+        try {
+            JSONObject res = ApiService.balanceEnquiry(
+                    ISP,
+                    Utils.getString(Dashboard.this, "profile", "phone"),
+                    Dashboard.this
+            );
+
+
+            if (res.getInt("responseCode") == 200) {
+                runOnUiThread(() -> {
+                    try {
+                        getLastTransaction(null);
+                        String responseString = res.getString("response");
+                        JSONObject responseJson = new JSONObject(responseString);
+                        JSONObject methodResponse = responseJson.getJSONObject("methodResponse");
+                        JSONArray paramsList = methodResponse.getJSONArray("paramsList");
+                        JSONObject userObject = paramsList.getJSONObject(0);
+                        String balance = userObject.getString("decimalBalance");
+
+                        getAccount(balance);
+                        Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        try {
+                            Utils.showToast(Dashboard.this, res.getString("response"));
+                        } catch (JSONException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+            } else {
+                runOnUiThread(() -> {
+                    try {
+                        Utils.showToast(Dashboard.this, res.getString("response"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            runOnUiThread(() ->
+                    Utils.showToast(Dashboard.this, "An error occurred. Please try again.")
+            );
+            Utils.CloseLoadingLayout(Dashboard.this, Dashboard.this);
+        }
+    }
 
     private void getAccount(String bal) {
+
         SharedPreferences sharedPreferences = this.getSharedPreferences("profile", Context.MODE_PRIVATE);
         if (!bal.isEmpty()) {
             Utils.saveString(Dashboard.this, "profile", "balance", bal);
